@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cara Menggunakan Komputer dengan Benar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f0f8ff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .slide {
+            display: none;
+            max-width: 1000px;
+            width: 90%;
+            padding: 20px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .active {
+            display: block;
+        }
+
+        .slide-content {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            justify-content: space-between;
+        }
+
+        .left,
+        .right {
+            width: 50%;
+        }
+
+        .right {
+            background-color: #f1f9ff;
+            padding: 10px;
+            border-left: 4px solid #1e88e5;
+            border-radius: 8px;
+        }
+
+        h1,
+        h2 {
+            color: #1e88e5;
+        }
+
+        img {
+            width: 100%;
+            max-height: 250px;
+            margin: 10px auto;
+            display: block;
+            border-radius: 8px;
+        }
+
+        .controls {
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 16px;
+            background-color: #1e88e5;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0d47a1;
+        }
+
+        button.hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .slide-content {
+                flex-direction: column;
+            }
+
+            .left,
+            .right {
+                width: 100%;
+            }
+        }
+
+        .quiz-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .quiz-grid button {
+            padding: 12px;
+            font-size: 16px;
+            background-color: #1e88e5;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        .quiz-grid button:hover {
+            background-color: #0d47a1;
+        }
+
+        .quiz-grid button:disabled {
+            background-color: #ccc;
+            cursor: default;
+        }
+
+        .matching-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .match-item {
+            background-color: #d0f5d8;
+            padding: 10px 20px;
+            border: 1px solid #6cc46c;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .match-item:hover {
+            background-color: #a8e6b1;
+        }
+
+        .match-item.matched {
+            background-color: #90caf9;
+        }
+
+        .match-item.selected {
+            outline: 2px solid #2196F3;
+        }
+
+        .hint-box {
+            background-color: #f0f8ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            border-radius: 10px;
+            max-width: 250px;
+        }
+
+        .hint-box h3 {
+            margin-top: 0;
+            color: #0077cc;
+        }
+
+        .hint-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide active">
+        <h2>Navigasi Aplikasi secara Aman dan Efektif</h2>
+        <p></p>
+    </div>
+
+    <div class="slide">
+        <h2>1.2 Navigasi Aplikasi secara Aman dan Efektif</h2>
+        <p><strong>Apa itu Aplikasi?</strong></p>
+        <p>Aplikasi adalah program atau perangkat lunak yang dirancang untuk membantu pengguna melakukan aktivitas
+            tertentu di perangkat digital seperti smartphone, tablet, atau komputer.</p>
+
+        <p><strong>Contoh Kegunaan Aplikasi:</strong></p>
+        <ul>
+            <li>📚 Belajar: aplikasi latihan soal, membaca buku digital</li>
+            <li>🎮 Bermain: game edukatif dan hiburan</li>
+            <li>📞 Komunikasi: video call, chatting</li>
+            <li>🎨 Kreativitas: menggambar, membuat musik, menyusun video</li>
+            <li>📂 Produktivitas: menulis, membuat presentasi, menyusun tugas</li>
+        </ul>
+
+        <p><strong>Dari Mana Aplikasi Didapat?</strong></p>
+        <ul>
+            <li>📱 <strong>Google Play Store</strong> (untuk perangkat Android)</li>
+            <li>🍎 <strong>App Store</strong> (untuk perangkat iOS seperti iPhone dan iPad)</li>
+            <li>🪟 <strong>Microsoft Store</strong> – untuk komputer/laptop Windows</li>
+            <li>💻 <strong>Mac App Store</strong> – untuk komputer Mac (macOS)</li>
+        </ul>
+    </div>
+
+    <div class="slide">
+        <h2>Gunakan Keyboard dan Mouse dengan Lembut</h2>
+        <p>Tekan keyboard dengan lembut dan gunakan satu jari saja untuk mengklik mouse. Ini akan menjaga peralatan
+            tetap
+            awet dan tidak cepat rusak.</p>
+    </div>
+
+    <div class="slide">
+        <h2>Jaga Komputer Tetap Bersih dan Aman</h2>
+        <p>Jauhkan makanan dan minuman dari komputer. Jangan menyentuh layar dengan tangan, dan simpan serta atur file
+            dengan hati-hati agar tidak hilang.</p>
+    </div>
+
+    <div class="slide">
+        <h2>Nyalakan Komputer dengan Benar</h2>
+        <p>Klik tombol power dan tunggu hingga layar komputer menyala dan siap digunakan. Jangan terburu-buru menekan
+            tombol
+            lainnya.</p>
+    </div>
+
+    <div class="slide">
+        <h2>Gunakan Waktu dengan Bijak</h2>
+        <p>Gunakan komputer secukupnya, jangan terlalu lama. Ingat waktu belajar dan istirahat agar tubuh dan mata tetap
+            sehat.</p>
+    </div>
+
+    <div class="slide">
+        <h2>Minta Bantuan Jika Bingung</h2>
+        <p>Jika kamu menghadapi masalah dengan komputer, tanyakan kepada guru, orang tua, atau kakak. Jangan mencoba
+            memperbaiki sendiri tanpa pengawasan orang dewasa.</p>
+    </div>
+
+    <div class="slide">
+        <h2>Matikan Komputer dengan Benar</h2>
+        <p>Gunakan menu "Shut Down" pada tombol power. Tunggu hingga layar benar-benar mati. Jangan mematikan komputer
+            langsung dari tombol power fisik.</p>
+    </div>
+
+    <!-- Slide Multiple Choice Question -->
+    <div class="slide">
+        <div class="slide-content">
+            <div class="left">
+                <h2>Quiz: Menggunakan Komputer dengan Benar</h2>
+                <p><strong>Apa yang harus dilakukan saat menyalakan komputer?</strong></p>
+                <div class="quiz-grid">
+                    <button onclick="checkAnswer(this, false)">Menekan semua tombol keyboard</button>
+                    <button onclick="checkAnswer(this, false)">Menekan tombol shut down</button>
+                    <button onclick="checkAnswer(this, true)">Menekan tombol power dan menunggu layar menyala</button>
+                    <button onclick="checkAnswer(this, false)">Menekan layar dengan jari</button>
+                </div>
+                <p id="quiz-feedback" style="margin-top:10px; font-weight:bold;"></p>
+            </div>
+            <div class="right">
+                <h3>Tips</h3>
+                <p>Pikirkan apa yang harus dilakukan agar komputer tidak rusak</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide Matching Game -->
+    <div class="slide">
+        <h2>Hubungkan Input dengan Fungsinya</h2>
+        <div class="matching-container">
+
+            <!-- Kolom Kiri: Input -->
+            <div id="left-items" class="column">
+                <div class="match-item" id="item1">Tekan tombol Shut Down</div>
+                <div class="match-item" id="item2">Duduk tegak</div>
+                <div class="match-item" id="item3">Gunakan komputer secukupnya</div>
+            </div>
+
+            <!-- Kolom Tengah: Output -->
+            <div id="right-items" class="column">
+                <div class="match-item" id="match1">Untuk mematikan komputer</div>
+                <div class="match-item" id="match3">Agar tidak kecanduan</div>
+                <div class="match-item" id="match2">Agar posisi tubuh nyaman</div>
+            </div>
+
+            <!-- Kolom Kanan: Hint -->
+            <div class="hint-box">
+                <h3>Tips</h3>
+                <ul>
+                    <li>Keyboard digunakan untuk mengetik.</li>
+                    <li>Mouse memindahkan kursor di layar.</li>
+                    <li>Microphone menangkap suara dari mulut kita.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <button onclick="checkMatching()">Cek Jawaban</button>
+            <button onclick="resetMatching()">Ulangi</button>
+        </div>
+    </div>
+
+    <!-- Kesimpulan -->
+    <div class="slide">
+        <div class="slide-content">
+            <div class="left">
+                <h2>Kesimpulan</h2>
+                <p>Dengan mengikuti langkah-langkah di atas, kamu bisa menggunakan komputer dengan aman dan nyaman.
+                    Selalu
+                    ingat
+                    untuk menjaga kesehatan mata dan tubuh saat menggunakan komputer.</p>
+                <p>Contohnya: mengetik, menggambar, bermain game, mendengarkan musik, mencari informasi dari internet.
+                </p>
+            </div>
+            <div class="right">
+                <h3>Selamat Belajar!</h3>
+                <p>Semoga kamu semakin pintar menggunakan komputer. Jangan lupa untuk selalu bertanya jika ada yang
+                    tidak
+                    dimengerti.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="prevBtn" onclick="prevSlide()">Sebelumnya</button>
+        <button id="nextBtn" onclick="nextSlide()">Berikutnya</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leader-line/1.0.7/leader-line.min.js"></script>
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                if (i === index) slide.classList.add('active');
+            });
+
+            prevBtn.classList.toggle('hidden', index === 0);
+            nextBtn.classList.toggle('hidden', index === slides.length - 1);
+
+        }
+
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+        }
+
+        showSlide(currentSlide);
+
+        // MULTIPLE CHOICE QUESTION
+        function checkAnswer(button, isCorrect) {
+            const feedback = document.getElementById("quiz-feedback");
+
+            // Reset semua tombol warna
+            const buttons = button.parentElement.querySelectorAll("button");
+            buttons.forEach(btn => btn.style.backgroundColor = "#1e88e5");
+
+            // Beri feedback dan warna
+            if (isCorrect) {
+                feedback.textContent = "✅ Benar! Keyboard adalah alat input.";
+                feedback.style.color = "green";
+                button.style.backgroundColor = "green";
+            } else {
+                feedback.textContent = "❌ Coba lagi.";
+                feedback.style.color = "red";
+                button.style.backgroundColor = "darkred";
+            }
+        }
+
+        // MATCHING GAME
+        let selectedLeft = null;
+        const matchedPairs = [];
+        const correctPairs = {
+            item1: 'match1', // Keyboard → Mengetik huruf
+            item2: 'match2', // Mouse → Menggerakkan pointer
+            item3: 'match3'  // Microphone → Merekam suara
+        };
+        const lines = [];
+
+        // Pilih kiri
+        document.querySelectorAll('#left-items .match-item').forEach(item => {
+            item.addEventListener('click', () => {
+                selectedLeft = item;
+                document.querySelectorAll('.match-item').forEach(i => i.classList.remove('selected'));
+                item.classList.add('selected');
+            });
+        });
+
+        // Pilih kanan dan buat garis
+        document.querySelectorAll('#right-items .match-item').forEach(item => {
+            item.addEventListener('click', () => {
+                if (selectedLeft) {
+                    const leftId = selectedLeft.id;
+                    const rightId = item.id;
+                    const pairId = leftId + '-' + rightId;
+
+                    // Cegah duplikat
+                    if (!matchedPairs.includes(pairId)) {
+                        const line = new LeaderLine(
+                            document.getElementById(leftId),
+                            document.getElementById(rightId),
+                            { color: '#2196F3', size: 2, path: 'straight' }
+                        );
+                        lines.push(line);
+                        matchedPairs.push(pairId);
+
+                        selectedLeft.classList.remove('selected');
+                        selectedLeft.classList.add('matched');
+                        item.classList.add('matched');
+                        selectedLeft = null;
+                    }
+                }
+            });
+        });
+
+        // Fungsi cek jawaban
+        function checkMatching() {
+            let correct = 0;
+            matchedPairs.forEach(pair => {
+                const [left, right] = pair.split('-');
+                if (correctPairs[left] === right) {
+                    correct++;
+                }
+            });
+            alert(`Kamu benar ${correct} dari ${Object.keys(correctPairs).length} pasangan.`);
+        }
+
+        // Fungsi ulangi quiz
+        function resetMatching() {
+            matchedPairs.length = 0;
+            selectedLeft = null;
+            lines.forEach(line => line.remove());
+            lines.length = 0;
+
+            document.querySelectorAll('.match-item').forEach(item => {
+                item.classList.remove('matched');
+                item.classList.remove('selected');
+            });
+        }
+    </script>
+</body>
+
+</html>

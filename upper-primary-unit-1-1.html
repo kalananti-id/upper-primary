@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Komputer dan Komponennya</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f0f8ff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .slide {
+      display: none;
+      max-width: 1000px;
+      width: 90%;
+      padding: 20px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .active {
+      display: block;
+    }
+
+    .slide-content {
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      justify-content: space-between;
+    }
+
+    .left,
+    .right {
+      width: 50%;
+    }
+
+    .right {
+      background-color: #f1f9ff;
+      padding: 10px;
+      border-left: 4px solid #1e88e5;
+      border-radius: 8px;
+    }
+
+    h1,
+    h2 {
+      color: #1e88e5;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 16px;
+    }
+
+    table,
+    th,
+    td {
+      border: 1px solid #ccc;
+    }
+
+    th,
+    td {
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #e3f2fd;
+    }
+
+    img {
+      width: 100%;
+      max-height: 250px;
+      margin: 10px auto;
+      display: block;
+      border-radius: 8px;
+    }
+
+    .controls {
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 0 10px;
+      font-size: 16px;
+      background-color: #1e88e5;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0d47a1;
+    }
+
+    button.hidden {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .slide-content {
+        flex-direction: column;
+      }
+
+      .left,
+      .right {
+        width: 100%;
+      }
+    }
+
+    .quiz-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .quiz-grid button {
+      padding: 12px;
+      font-size: 16px;
+      background-color: #1e88e5;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.3s ease;
+    }
+
+    .quiz-grid button:hover {
+      background-color: #0d47a1;
+    }
+
+    .quiz-grid button:disabled {
+      background-color: #ccc;
+      cursor: default;
+    }
+
+    .matching-container {
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-start;
+      gap: 20px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .match-item {
+      background-color: #d0f5d8;
+      padding: 10px 20px;
+      border: 1px solid #6cc46c;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+      min-width: 150px;
+    }
+
+    .match-item:hover {
+      background-color: #a8e6b1;
+    }
+
+    .match-item.matched {
+      background-color: #90caf9;
+    }
+
+    .match-item.selected {
+      outline: 2px solid #2196F3;
+    }
+
+    .hint-box {
+      background-color: #f0f8ff;
+      border-left: 4px solid #2196F3;
+      padding: 15px;
+      border-radius: 10px;
+      max-width: 250px;
+    }
+
+    .hint-box h3 {
+      margin-top: 0;
+      color: #0077cc;
+    }
+
+    .hint-box ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Slide dengan dua kolom -->
+  <div class="slide active">
+    <h1>Mengenal Perangkat Digital</h1>
+    <p>Apa itu Perangkat Digital?</p>
+    <p>Yuk kita pelajari bersama!</p>
+  </div>
+
+  <div class="slide">
+    <div class="slide-content">
+      <div class="left">
+        <h2>Apa Itu Perangkat Digital?</h2>
+        <p>Perangkat Digital adalah alat yang menggunakan teknologi elektronik dan sinyal digital untuk membantu kita
+          dalam berbagai aktivitas.</p>
+        <ul>
+          <li>Bisa menyimpan data</li>
+          <li>Dapat terhubung ke internet</li>
+          <li>Menggunakan layar dan tombol (fisik atau sentuh)</li>
+        </ul>
+      </div>
+      <div class="right">
+        <h3>Contoh Perangkat Digital dan Kegunaannya:</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Perangkat Digital</th>
+              <th>Kegunaan Utama</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Komputer / Laptop</td>
+              <td>Mengetik, belajar online, mengedit, browsing, bermain game edukatif</td>
+            </tr>
+            <tr>
+              <td>Smartphone</td>
+              <td>Komunikasi, media sosial, kamera, aplikasi belajar dan hiburan</td>
+            </tr>
+            <tr>
+              <td>Tablet</td>
+              <td>Membaca e-book, menggambar digital, menonton video, aplikasi belajar</td>
+            </tr>
+            <tr>
+              <td>Smartwatch</td>
+              <td>Menunjukkan waktu, mengukur aktivitas fisik, menerima notifikasi</td>
+            </tr>
+            <tr>
+              <td>Smart TV</td>
+              <td>Menonton video online, bermain game ringan, akses aplikasi hiburan</td>
+            </tr>
+            <tr>
+              <td>Kamera Digital</td>
+              <td>Mengambil foto dan video berkualitas tinggi</td>
+            </tr>
+            <tr>
+              <td>E-Reader (Kindle)</td>
+              <td>Membaca buku digital, nyaman untuk mata, hemat baterai</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <div class="slide-content">
+      <div class="left">
+        <h2>Bagian Penting pada Perangkat Digital</h2>
+        <p>Setiap perangkat digital memiliki beberapa bagian penting yang membantu pengguna menjalankan berbagai fungsi.
+          Bagian-bagian ini memungkinkan kita melihat informasi, memberikan perintah, mendengarkan suara, merekam,
+          mengisi daya, dan lainnya.</p>
+        <ul>
+          <li><strong>Layar (Display):</strong> Menampilkan gambar, tulisan, dan video.</li>
+          <li><strong>Tombol/Keyboard/Touchscreen:</strong> Memasukkan perintah atau mengetik.</li>
+          <li><strong>Speaker:</strong> Mengeluarkan suara dari perangkat.</li>
+          <li><strong>Mikrofon:</strong> Merekam suara pengguna.</li>
+          <li><strong>Kamera:</strong> Mengambil foto atau merekam video.</li>
+          <li><strong>Baterai:</strong> Menyimpan energi listrik.</li>
+          <li><strong>Port dan Konektor:</strong> Mengisi daya, menghubungkan USB, earphone, dll.</li>
+        </ul>
+        <p><em>Yuk kenali fungsi bagian-bagian ini di perangkat yang kamu pakai sehari-hari!</em></p>
+      </div>
+      <div class="right">
+        <h3>Fakta Menarik</h3>
+        <ul>
+          <li>Layar fleksibel bisa dilipat tanpa merusak gambar di dalamnya.</li>
+          <li>Keyboard QWERTY dibuat untuk memperlambat pengetikan agar mesin tik tidak macet!</li>
+          <li>Layar sentuh ditemukan lebih dulu dari mouse, pada tahun 1965.</li>
+          <li>Speaker bisa membuat air bergetar jika diletakkan di atasnya saat musik diputar.</li>
+          <li>Kamera ponsel bisa memotret bintang — seperti teleskop mini di saku kita!</li>
+          <li>Baterai modern bisa diisi ulang 80% hanya dalam waktu 30 menit!</li>
+          <li>Mikrofon ponsel bisa mendeteksi suara sangat pelan, bahkan napas.</li>
+          <li>Port USB-C bisa digunakan bolak-balik, tidak perlu dibolak-balikkan!</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <div class="slide-container">
+      <h2>Cara Menggunakan Perangkat Digital dengan Bijak dan Aman</h2>
+      <p>Menggunakan perangkat digital seperti smartphone, laptop, atau tablet memang sangat membantu, tapi kita juga
+        harus tahu cara menggunakannya dengan bijak dan aman agar tidak merugikan diri sendiri maupun orang lain.</p>
+    </div>
+  </div>
+
+  <div class="slide">
+    <div class="slide-container">
+      <h3>1. Jaga Privasi dan Keamanan</h3>
+      <ul>
+        <li>Gunakan password yang kuat dan tidak mudah ditebak.</li>
+        <li>Jangan membagikan informasi pribadi (alamat, nomor telepon, akun, dll) ke orang asing atau di tempat umum.
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="slide">
+    <div class="slide-container">
+      <h3>2. Menggunakan Sesuai Kebutuhan</h3>
+      <ul>
+        <li>Gunakan perangkat untuk belajar, bekerja, atau hiburan yang sehat.</li>
+        <li>Jangan menggunakan perangkat terlalu lama.</li>
+        <li>Hindari penggunaan sebelum tidur agar kualitas tidur tetap baik.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="slide">
+    <div class="slide-container">
+      <h3>3. Perhatikan Etika Digital</h3>
+      <ul>
+        <li>Bersikap sopan saat berkomunikasi di media sosial, chat, atau forum.</li>
+        <li>Jangan menyebarkan berita bohong (hoaks).</li>
+        <li>Hargai privasi orang lain, misalnya tidak memotret tanpa izin.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="slide">
+    <div class="slide-container">
+      <h3>4. Hindari Konten Negatif</h3>
+      <ul>
+        <li>Gunakan aplikasi dan game yang sesuai usia.</li>
+        <li>Blokir atau laporkan konten berbahaya, tidak pantas, atau penuh kekerasan.</li>
+        <li>Minta bimbingan orang tua atau guru.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="slide">
+    <div class="slide-container">
+      <h3>5. Hindari Kecanduan</h3>
+      <ul>
+        <li>Tentukan jadwal screen time (waktu menatap layar) setiap hari.</li>
+        <li>Ajak diri sendiri melakukan aktivitas lain: bermain di luar, membaca buku, olahraga.</li>
+        <li>Gunakan aplikasi pengatur waktu jika perlu.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="slide">
+    <div class="slide-container">
+      <h2>Postur Duduk yang Benar</h2>
+      <p>Menggunakan perangkat digital terlalu lama dengan posisi tubuh yang salah dapat menyebabkan nyeri punggung,
+        leher tegang, mata lelah, dan masalah kesehatan lainnya. Yuk, pelajari postur yang benar!</p>
+
+      <ol>
+        <li><strong>Duduk Tegak</strong>
+          <ul>
+            <li>Punggung bersandar pada sandaran kursi.</li>
+            <li>Bahu rileks, tidak membungkuk ke depan.</li>
+          </ul>
+        </li>
+
+        <li><strong>Posisi Layar Sejajar dengan Mata</strong>
+          <ul>
+            <li>Layar setinggi mata, tidak terlalu rendah.</li>
+            <li>Jarak mata ke layar sekitar 40–75 cm (sepanjang lengan).</li>
+            <li>Hindari menunduk lama saat melihat HP/tablet.</li>
+          </ul>
+        </li>
+
+        <li><strong>Kursi dan Meja yang Sesuai</strong>
+          <ul>
+            <li>Kursi tinggi yang pas, kaki menapak lantai.</li>
+            <li>Paha sejajar dengan lantai.</li>
+            <li>Meja tidak terlalu tinggi/rendah dari posisi duduk.</li>
+          </ul>
+        </li>
+
+        <li><strong>Posisi Tangan dan Pergelangan</strong>
+          <ul>
+            <li>Tangan dan pergelangan sejajar dengan meja saat mengetik.</li>
+            <li>Siku membentuk sudut 90°.</li>
+            <li>Jangan mengetik terlalu keras atau menekuk pergelangan.</li>
+          </ul>
+        </li>
+
+        <li><strong>Istirahatkan Tubuh Secara Berkala</strong>
+          <ul>
+            <li>Setiap 20–30 menit, alihkan pandangan ke benda jauh selama 20 detik.</li>
+            <li>Berdiri dan lakukan peregangan ringan tiap 1 jam.</li>
+          </ul>
+        </li>
+
+        <li><strong>Gunakan Penerangan yang Cukup</strong>
+          <ul>
+            <li>Gunakan lampu terang agar mata tidak cepat lelah.</li>
+            <li>Hindari memakai perangkat di ruangan gelap terlalu lama.</li>
+          </ul>
+        </li>
+      </ol>
+
+      <p><em>Postur duduk yang baik akan membuat tubuh tetap sehat dan nyaman selama belajar atau bekerja dengan perangkat digital.</em></p>
+    </div>
+  </div>
+
+    <!-- Slide Multiple Choice Question -->
+    <div class="slide">
+      <div class="slide-content">
+        <div class="left">
+          <h2>Quiz: Bagian Komputer</h2>
+          <p><strong>Manakah yang termasuk alat input?</strong></p>
+          <div class="quiz-grid">
+            <button onclick="checkAnswer(this, false)">Monitor</button>
+            <button onclick="checkAnswer(this, true)">Keyboard</button>
+            <button onclick="checkAnswer(this, false)">Speaker</button>
+            <button onclick="checkAnswer(this, false)">Printer</button>
+          </div>
+          <p id="quiz-feedback" style="margin-top:10px; font-weight:bold;"></p>
+        </div>
+        <div class="right">
+          <h3>Tips</h3>
+          <p>💡 Pikirkan fungsi alat tersebut. Apakah digunakan untuk memasukkan informasi?</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide">
+      <div class="slide-content">
+        <div class="left">
+          <h2>Quiz: Etika Digital</h2>
+          <p><strong>Manakah contoh etika digital yang baik?</strong></p>
+          <div class="quiz-grid">
+            <button onclick="checkAnswer(this, false)">Mengirim pesan kasar saat marah</button>
+            <button onclick="checkAnswer(this, false)">Menyebarkan berita tanpa mengecek fakta</button>
+            <button onclick="checkAnswer(this, true)">Menghormati privasi orang lain</button>
+            <button onclick="checkAnswer(this, false)">Memotret teman tanpa izin</button>
+          </div>
+          <p id="quiz-feedback2" style="margin-top:10px; font-weight:bold;"></p>
+        </div>
+        <div class="right">
+          <h3>Tips</h3>
+          <p>Etika digital berarti bersikap baik, sopan, dan bertanggung jawab saat menggunakan teknologi.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide">
+      <div class="slide-content">
+        <div class="left">
+          <h2>Quiz: Waktu Layar</h2>
+          <p><strong>Apa kebiasaan sehat saat menggunakan perangkat digital?</strong></p>
+          <div class="quiz-grid">
+            <button onclick="checkAnswer(this, false)">Menggunakan perangkat di tempat gelap setiap malam</button>
+            <button onclick="checkAnswer(this, false)">Menggunakan perangkat sepanjang hari tanpa istirahat</button>
+            <button onclick="checkAnswer(this, false)">Tidak peduli waktu karena perangkat itu penting</button>
+            <button onclick="checkAnswer(this, true)">Mengatur jadwal screen time dan beristirahat</button>
+          </div>
+          <p id="quiz-feedback3" style="margin-top:10px; font-weight:bold;"></p>
+        </div>
+        <div class="right">
+          <h3>Tips</h3>
+          <p>Etika digital berarti bersikap baik, sopan, dan bertanggung jawab saat menggunakan teknologi.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide Matching Game -->
+    <div class="slide">
+      <h2>Hubungkan Input dengan Fungsinya</h2>
+      <div class="matching-container">
+
+        <!-- Kolom Kiri: Input -->
+        <div id="left-items" class="column">
+          <div class="match-item" id="item1">Keyboard</div>
+          <div class="match-item" id="item2">Microphone</div>
+          <div class="match-item" id="item3">Mouse</div>
+        </div>
+
+        <!-- Kolom Tengah: Output -->
+        <div id="right-items" class="column">
+          <div class="match-item" id="match1">Mengetik huruf</div>
+          <div class="match-item" id="match3">Menggerakkan pointer</div>
+          <div class="match-item" id="match2">Merekam suara</div>
+        </div>
+
+        <!-- Kolom Kanan: Hint -->
+        <div class="hint-box">
+          <h3>Tips</h3>
+          <ul>
+            <li>Keyboard digunakan untuk mengetik.</li>
+            <li>Mouse memindahkan kursor di layar.</li>
+            <li>Microphone menangkap suara dari mulut kita.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 20px;">
+        <button onclick="checkMatching()">Cek Jawaban</button>
+        <button onclick="resetMatching()">Ulangi</button>
+      </div>
+
+      <p id="resultText" style="font-weight: bold; color: green; margin-top: 20px;"></p>
+    </div>
+
+    <!-- Kesimpulan -->
+    <div class="slide">
+      <h2>Kesimpulan</h2>
+      <p>Komputer adalah alat yang sangat berguna untuk belajar dan bermain.</p>
+      <p>Kita telah belajar tentang berbagai komponen komputer, cara input data, dan melakukan beberapa kuis.</p>
+      <p>Terus eksplorasi dan pelajari lebih banyak tentang teknologi!</p>
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Computer_icon.svg/1200px-Computer_icon.svg.png"
+        alt="Komputer" style="max-width: 50%; height: auto; margin-top: 10px;">
+    </div>
+
+    <div class="controls">
+      <button id="prevBtn" onclick="prevSlide()">Sebelumnya</button>
+      <button id="nextBtn" onclick="nextSlide()">Berikutnya</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leader-line/1.0.7/leader-line.min.js"></script>
+    <script>
+      let currentSlide = 0;
+      const slides = document.querySelectorAll('.slide');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+
+      function showSlide(index) {
+        slides.forEach((slide, i) => {
+          slide.classList.remove('active');
+          if (i === index) slide.classList.add('active');
+        });
+
+        prevBtn.classList.toggle('hidden', index === 0);
+        nextBtn.classList.toggle('hidden', index === slides.length - 1);
+
+      }
+
+      function nextSlide() {
+        resetQuiz();
+        if (currentSlide < slides.length - 1) {
+          currentSlide++;
+          showSlide(currentSlide);
+        }
+      }
+
+      function prevSlide() {
+        if (currentSlide > 0) {
+          currentSlide--;
+          showSlide(currentSlide);
+        }
+      }
+
+      showSlide(currentSlide);
+
+      // MULTIPLE CHOICE QUESTION
+      function checkAnswer(button, isCorrect) {
+        const feedback = document.getElementById("quiz-feedback");
+        const feedback2 = document.getElementById("quiz-feedback2");
+        const feedback3 = document.getElementById("quiz-feedback3");
+
+        // Reset semua tombol warna
+        const buttons = button.parentElement.querySelectorAll("button");
+        buttons.forEach(btn => btn.style.backgroundColor = "#1e88e5");
+
+        // Beri feedback dan warna
+        if (isCorrect) {
+          feedback.textContent = "✅ Benar! Keyboard adalah alat input.";
+          feedback.style.color = "green";
+          button.style.backgroundColor = "green";
+
+          feedback2.textContent = "✅ Benar! Menghormati privasi orang lain adalah contoh etika digital yang baik.";
+          feedback2.style.color = "green";
+          button.style.backgroundColor = "green";
+
+          feedback3.textContent = "✅ Benar! Mengatur jadwal screen time dan beristirahat adalah kebiasaan sehat.";
+          feedback3.style.color = "green";
+          button.style.backgroundColor = "green";
+        } else {
+          feedback.textContent = "❌ Coba lagi.";
+          feedback.style.color = "red";
+          button.style.backgroundColor = "darkred";
+
+          feedback2.textContent = "❌ Coba lagi.";
+          feedback2.style.color = "red";
+          button.style.backgroundColor = "darkred";
+
+          feedback3.textContent = "❌ Coba lagi.";
+          feedback3.style.color = "red";
+          button.style.backgroundColor = "darkred";
+        }
+      }
+
+      function resetQuiz() {
+        const buttons = document.querySelectorAll(".quiz-grid button");
+        buttons.forEach(btn => {
+          btn.style.backgroundColor = "";
+          btn.disabled = false;
+        });
+
+        const feedbacks = document.querySelectorAll("[id^='quiz-feedback']");
+        feedbacks.forEach(fb => {
+          fb.textContent = "";
+        });
+      }
+
+      // MATCHING GAME
+      let selectedLeft = null;
+      const matchedPairs = [];
+      const correctPairs = {
+        item1: 'match1', // Keyboard → Mengetik huruf
+        item2: 'match2', // Mouse → Menggerakkan pointer
+        item3: 'match3'  // Microphone → Merekam suara
+      };
+      const lines = [];
+
+      // Pilih kiri
+      document.querySelectorAll('#left-items .match-item').forEach(item => {
+        item.addEventListener('click', () => {
+          selectedLeft = item;
+          document.querySelectorAll('.match-item').forEach(i => i.classList.remove('selected'));
+          item.classList.add('selected');
+        });
+      });
+
+      // Pilih kanan dan buat garis
+      document.querySelectorAll('#right-items .match-item').forEach(item => {
+        item.addEventListener('click', () => {
+          if (selectedLeft) {
+            const leftId = selectedLeft.id;
+            const rightId = item.id;
+            const pairId = leftId + '-' + rightId;
+
+            // Cegah duplikat
+            if (!matchedPairs.includes(pairId)) {
+              const line = new LeaderLine(
+                document.getElementById(leftId),
+                document.getElementById(rightId),
+                { color: '#2196F3', size: 2, path: 'straight' }
+              );
+              lines.push(line);
+              matchedPairs.push(pairId);
+
+              selectedLeft.classList.remove('selected');
+              selectedLeft.classList.add('matched');
+              item.classList.add('matched');
+              selectedLeft = null;
+            }
+          }
+        });
+      });
+
+      // Fungsi cek jawaban
+      function checkMatching() {
+        let correct = 0;
+        matchedPairs.forEach(pair => {
+          const [left, right] = pair.split('-');
+          if (correctPairs[left] === right) {
+            correct++;
+          }
+        });
+
+        const resultText = document.getElementById("resultText");
+        resultText.textContent = `Kamu benar ${correct} dari ${Object.keys(correctPairs).length} pasangan.`;
+        resultText.style.color = correct === Object.keys(correctPairs).length ? "green" : "red";
+      }
+
+      // Fungsi ulangi quiz
+      function resetMatching() {
+        matchedPairs.length = 0;
+        selectedLeft = null;
+        lines.forEach(line => line.remove());
+        lines.length = 0;
+
+        document.querySelectorAll('.match-item').forEach(item => {
+          item.classList.remove('matched');
+          item.classList.remove('selected');
+        });
+        document.getElementById("resultText").textContent = "";
+      }
+    </script>
+
+</body>
+
+</html>
