@@ -1,0 +1,3196 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>
+    Mengenal Pola dalam Kehidupan Sehari-hari dan Program Scratch
+  </title>
+
+  <!-- External Libraries -->
+  <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <!-- Prism.js for syntax highlighting -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+  <!-- KaTeX for Math Rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css"
+    integrity="sha384-5TcZemv2l/9On385z///+d7MSYlvIEw9FuZTIdZ14vJLqWphw7e7ZPuOiCHJcFCP" crossorigin="anonymous" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js"
+    integrity="sha384-cMkvdD8LoxVzGF/RPUKAcvmm49FQ0oxwDF3BGKtDXcEc+T1b2N+teh/OJfpU0jr6"
+    crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js"
+    integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous" onload="renderMathInElement(document.body, {
+        delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$', right: '$', display: false}
+        ]
+      });"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Oxygen, Ubuntu, Cantarell, sans-serif;
+      background-color: #f5f5f5;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .main-container {
+      display: flex;
+      height: 100vh;
+    }
+
+    /* Left Panel - Slides */
+    .slides-panel {
+      width: 50%;
+      background: #f8f9fa;
+      color: #2c3e50;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      border-right: 2px solid #e9ecef;
+    }
+
+    .slide-header {
+      background: #ffffff;
+      padding: 20px;
+      border-bottom: 2px solid #e9ecef;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .slide-header h1 {
+      font-size: 1.4em;
+      margin-bottom: 5px;
+      color: #2c3e50;
+    }
+
+    .slide-header p {
+      font-size: 0.9em;
+      color: #6c757d;
+    }
+
+    .slide-content {
+      flex: 1;
+      padding: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-y: auto;
+      transition: all 0.3s ease;
+      min-height: 0;
+    }
+
+    .slide {
+      display: none;
+      width: 100%;
+      max-width: 600px;
+      text-align: center;
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    .slide.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .slide h2 {
+      font-size: 2.5em;
+      margin-bottom: 30px;
+      color: #8e44ad;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .slide h3 {
+      font-size: 1.8em;
+      margin-bottom: 25px;
+      color: #3498db;
+    }
+
+    .slide p,
+    .slide li {
+      font-size: 1.1em;
+      line-height: 1.6;
+      margin-bottom: 15px;
+      color: #34495e;
+    }
+
+    .slide ul {
+      text-align: left;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .slide ul li {
+      margin: 10px 0;
+      padding-left: 10px;
+    }
+
+    /* Privacy visualization */
+    .privacy-visual {
+      width: 300px;
+      height: 300px;
+      margin: 20px auto;
+      position: relative;
+      background: linear-gradient(135deg, #8e44ad 0%, #3498db 100%);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .privacy-visual:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 40px rgba(142, 68, 173, 0.4);
+    }
+
+    .privacy-visual::before {
+      content: "";
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, #8e44ad, #3498db, #8e44ad);
+      border-radius: 22px;
+      z-index: -1;
+      animation: borderGlow 3s ease-in-out infinite;
+    }
+
+    @keyframes borderGlow {
+
+      0%,
+      100% {
+        opacity: 0.5;
+      }
+
+      50% {
+        opacity: 1;
+      }
+    }
+
+    .privacy-icon {
+      font-size: 4em;
+      color: white;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+      }
+    }
+
+    /* Data types cards */
+    .data-types-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .data-card {
+      background: #ffffff;
+      border: 2px solid #e9ecef;
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      opacity: 1;
+      transform: translateY(20px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .data-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .data-card h4 {
+      color: #2c3e50;
+      margin-bottom: 15px;
+      font-size: 1.2em;
+    }
+
+    .data-card .icon {
+      font-size: 3em;
+      margin-bottom: 15px;
+      transition: transform 0.3s ease;
+    }
+
+    .data-card:hover .icon {
+      transform: scale(1.2) rotate(10deg);
+    }
+
+
+    /* Threat simulation */
+    .threat-simulation {
+      background: #fff3cd;
+      border: 2px solid #ffeaa7;
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .threat-simulation::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255, 193, 7, 0.1), transparent);
+      animation: sweep 3s ease-in-out infinite;
+    }
+
+    @keyframes sweep {
+      0% {
+        transform: translateX(-100%) translateY(-100%);
+      }
+
+      50% {
+        transform: translateX(0%) translateY(0%);
+      }
+
+      100% {
+        transform: translateX(100%) translateY(100%);
+      }
+    }
+
+    .threat-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Interactive privacy checker */
+    .privacy-checker {
+      background: #d4edda;
+      border: 2px solid #c3e6cb;
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: left;
+    }
+
+    .privacy-input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1em;
+      margin: 10px 0;
+    }
+
+    .privacy-button {
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: all 0.3s ease;
+    }
+
+    .privacy-button:hover {
+      background: #218838;
+      transform: translateY(-2px);
+    }
+
+    .privacy-result {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+
+    .privacy-result.safe {
+      background: #d1ecf1;
+      color: #0c5460;
+    }
+
+    .privacy-result.warning {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    /* Code Block Styles */
+    .code-block {
+      background: #2d3748 !important;
+      border: 2px solid #4a5568;
+      border-radius: 10px;
+      padding: 0;
+      margin: 20px 0;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      max-height: 400px;
+      overflow-y: auto;
+      text-align: left !important;
+    }
+
+    .code-block pre {
+      margin: 0 !important;
+      padding: 20px !important;
+      background: #2d3748 !important;
+      border-radius: 10px;
+      font-family: "Fira Code", "Courier New", Monaco, "Lucida Console",
+        monospace !important;
+      font-size: 1.1em !important;
+      line-height: 1.6 !important;
+      overflow-x: auto;
+      text-align: left !important;
+    }
+
+    .code-block code {
+      background: transparent !important;
+      color: #e2e8f0 !important;
+      font-family: inherit !important;
+      text-align: left !important;
+    }
+
+    .code-block pre[class*="language-"] {
+      background: #2d3748 !important;
+      color: #e2e8f0 !important;
+    }
+
+    /* Floating background elements */
+    .floating-element {
+      position: absolute;
+      opacity: 0.1;
+      pointer-events: none;
+      font-size: 2em;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0px) rotate(0deg);
+      }
+
+      33% {
+        transform: translateY(-20px) rotate(5deg);
+      }
+
+      66% {
+        transform: translateY(10px) rotate(-3deg);
+      }
+    }
+
+    /* Right Panel - Explanation */
+    .explanation-panel {
+      width: 50%;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .explanation-content {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+      line-height: 1.6;
+      color: #2c3e50;
+    }
+
+    .explanation-content h3 {
+      color: #8e44ad;
+      margin-bottom: 15px;
+      font-size: 1.4em;
+    }
+
+    .explanation-content p {
+      margin-bottom: 15px;
+      text-align: justify;
+    }
+
+    .explanation-content ul {
+      margin-left: 20px;
+      margin-bottom: 15px;
+    }
+
+    .explanation-content li {
+      margin-bottom: 8px;
+    }
+
+    /* Progress Bar */
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: #e9ecef;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #8e44ad, #3498db);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* Navigation */
+    .slide-nav {
+      position: sticky;
+      bottom: 0;
+      background: #ffffff;
+      padding: 15px 30px;
+      border-top: 2px solid #e9ecef;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05);
+      z-index: 10;
+    }
+
+    .nav-button {
+      background: #8e44ad;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: all 0.3s ease;
+    }
+
+    .nav-button:hover {
+      background: #732d91;
+      transform: translateY(-2px);
+    }
+
+    .nav-button:disabled {
+      background: #bdc3c7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .slide-counter {
+      font-size: 1em;
+      color: #7f8c8d;
+    }
+
+    /* Utility classes */
+    .warning-box {
+      background: #fff3cd;
+      border: 1px solid #ffeaa7;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 15px 0;
+      border-left: 4px solid #fdcb6e;
+    }
+
+    .warning-box h4 {
+      color: #e17055;
+      margin-bottom: 10px;
+    }
+
+    .info-box {
+      background: #d1ecf1;
+      border: 1px solid #bee5eb;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 15px 0;
+      border-left: 4px solid #17a2b8;
+    }
+
+    .info-box h4 {
+      color: #138496;
+      margin-bottom: 10px;
+    }
+
+    .example-box {
+      background: #d4edda;
+      border: 1px solid #c3e6cb;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 15px 0;
+      border-left: 4px solid #28a745;
+    }
+
+    .example-box h4 {
+      color: #155724;
+      margin-bottom: 10px;
+    }
+
+    .clickable {
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .clickable:hover {
+      transform: scale(1.05);
+    }
+
+    .custom-list {
+      list-style: none;
+      padding-left: 0;
+      margin-top: 12px;
+    }
+
+    .custom-list li {
+      position: relative;
+      padding-left: 28px;
+      margin-bottom: 12px;
+    }
+
+    .custom-list li::before {
+      content: "🔹";
+      position: absolute;
+      left: -16px;
+      top: 0;
+      font-size: 18px;
+    }
+
+    /* Privacy vs Security comparison */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .comparison-card {
+      background: #ffffff;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .privacy-card {
+      border-left: 5px solid #8e44ad;
+    }
+
+    .security-card {
+      border-left: 5px solid #3498db;
+    }
+
+    .comparison-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Privacy Game Styles */
+    .privacy-game {
+      background: #f8f9fa;
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px 0;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .game-scenario {
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-left: 4px solid #8e44ad;
+    }
+
+    .game-scenario h4 {
+      color: #8e44ad;
+      margin-bottom: 10px;
+      font-size: 1.2em;
+    }
+
+    .game-choices {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .choice-btn {
+      background: #ffffff;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      padding: 15px;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1em;
+      color: #2c3e50;
+    }
+
+    .choice-btn:hover {
+      border-color: #8e44ad;
+      background: #f8f9fa;
+      transform: translateX(5px);
+    }
+
+    .choice-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .choice-btn.correct {
+      background: #d4edda;
+      border-color: #28a745;
+      color: #155724;
+    }
+
+    .choice-btn.incorrect {
+      background: #f8d7da;
+      border-color: #dc3545;
+      color: #721c24;
+    }
+
+    .choice-btn.neutral {
+      background: #fff3cd;
+      border-color: #ffc107;
+      color: #856404;
+    }
+
+    .game-feedback {
+      background: #d1ecf1;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-left: 4px solid #17a2b8;
+    }
+
+    .feedback-content {
+      margin-bottom: 15px;
+    }
+
+    .next-scenario-btn {
+      background: #8e44ad;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: all 0.3s ease;
+    }
+
+    .next-scenario-btn:hover {
+      background: #732d91;
+      transform: translateY(-2px);
+    }
+
+    .game-score {
+      display: flex;
+      justify-content: space-between;
+      background: #e9ecef;
+      border-radius: 8px;
+      padding: 10px 15px;
+      font-weight: bold;
+      color: #495057;
+    }
+
+    .game-complete {
+      background: #d4edda;
+      border: 2px solid #28a745;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      color: #155724;
+    }
+
+    .game-complete h4 {
+      margin-bottom: 10px;
+      font-size: 1.3em;
+    }
+
+    .score-excellent {
+      color: #28a745;
+    }
+
+    .score-good {
+      color: #ffc107;
+    }
+
+    .score-needs-improvement {
+      color: #dc3545;
+    }
+
+    /* Privacy steps */
+    .privacy-steps {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .privacy-step {
+      width: 80px;
+      height: 80px;
+      background: #8e44ad;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5em;
+      box-shadow: 0 5px 15px rgba(142, 68, 173, 0.3);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      opacity: 0;
+      transform: scale(0) rotate(180deg);
+      position: relative;
+    }
+
+    .privacy-step:hover {
+      transform: scale(1.15) rotate(10deg);
+      background: #732d91;
+      box-shadow: 0 8px 25px rgba(142, 68, 173, 0.5);
+    }
+
+    .privacy-step::before {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #2c3e50;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 0.7em;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    .privacy-step:hover::before {
+      opacity: 1;
+    }
+
+    /* Access Code Popup */
+    .access-popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .access-popup {
+      background: white;
+      border: 3px solid #4a9eff;
+      border-radius: 15px;
+      padding: 40px;
+      max-width: 450px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      transform: scale(0.8);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .access-popup.show {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    .access-popup h2 {
+      color: #2c3e50;
+      margin-bottom: 15px;
+      font-size: 2em;
+    }
+
+    .access-popup p {
+      color: #666;
+      margin-bottom: 25px;
+      font-size: 1.1em;
+      line-height: 1.6;
+    }
+
+    .access-input {
+      width: 100%;
+      padding: 15px;
+      font-size: 1.2em;
+      border: 2px solid #dee2e6;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
+      letter-spacing: 2px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .access-input:focus {
+      outline: none;
+      border-color: #4a9eff;
+      box-shadow: 0 0 0 3px rgba(74, 153, 255, 0.1);
+    }
+
+    .access-submit {
+      background: #4a9eff;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 8px;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-right: 10px;
+    }
+
+    .access-submit:hover {
+      background: #357abd;
+      transform: translateY(-2px);
+    }
+
+    .access-error {
+      color: #e74c3c;
+      margin-top: 15px;
+      font-weight: bold;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .access-error.show {
+      opacity: 1;
+    }
+
+    .access-hint {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      border-radius: 5px;
+      padding: 10px;
+      margin-top: 20px;
+      font-size: 0.9em;
+      color: #856404;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Access Code Popup -->
+  <div class="access-popup-overlay" id="accessPopup">
+    <div class="access-popup">
+      <h2>🔐 Kode Akses Diperlukan</h2>
+      <p>Silakan masukkan kode akses untuk membuka materi pembelajaran ini:</p>
+      <input type="text" class="access-input" id="accessInput" placeholder="Masukkan kode akses" maxlength="10">
+      <br>
+      <button class="access-submit" onclick="checkAccessCode()">Masuk</button>
+      <div class="access-error" id="accessError">
+        Kode akses salah! Silakan coba lagi.
+      </div>
+      <div class="access-hint">
+        💡 <strong>Petunjuk:</strong> Kode akses diberikan oleh instruktur
+      </div>
+    </div>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+
+  <div class="main-container" id="mainContent" style="display: none;">
+    <!-- Left Panel - Slides -->
+    <div class="slides-panel">
+      <div class="slide-header">
+        <h1>
+          Mengenal Pola dalam Kehidupan Sehari-hari dan Program Scratch
+        </h1>
+        <p>
+          Belajar mengenali dan melanjutkan pola sederhana di sekitar kita,
+          lalu mempraktikkannya melalui perulangan (loop) di Scratch.
+        </p>
+      </div>
+
+
+      <!-- Floating Background Elements -->
+      <div class="floating-element" style="top: 25%; left: 5%; animation-delay: 0s">
+        🍓
+      </div>
+      <div class="floating-element" style="top: 40%; left: 15%; animation-delay: 1.5s">
+        🍇
+      </div>
+      <div class="floating-element" style="top: 60%; left: 8%; animation-delay: 3s">
+        🐣
+      </div>
+      <div class="floating-element" style="top: 75%; left: 18%; animation-delay: 4.5s">
+        🐱
+      </div>
+
+      <div class="slide-content">
+        <!-- Slide 1: Title -->
+        <div class="slide active" style="align-self: flex-start; max-height: calc(100vh - 200px); padding-top: 20px;">
+          <h2 style="font-size: 2.2em; margin-bottom: 20px;">Mengenal Pola</h2>
+          <div class="privacy-visual" style="width: 250px; height: 250px; margin: 15px auto;">
+            <div class="privacy-icon" style="font-size: 3.5em;">🍓🍇</div>
+          </div>
+          <p style="font-size: 1.2em; color: #8e44ad; margin-top: 15px; line-height: 1.5;">
+            <strong>Ayo kenalan dengan pola!</strong><br>
+            Dalam sesi ini, kamu akan belajar mengenali, membuat, dan melanjutkan pola — bahkan mencoba membuat pola
+            sendiri di Scratch!
+          </p>
+        </div>
+      
+
+
+
+      <!-- Slide 2: Pola vs Acak -->
+      <div class="slide" style="align-self: flex-start;">
+        <h3>Pola vs Acak</h3>
+
+        <div class="comparison-grid">
+          <!-- Preview Pola -->
+          <div class="comparison-card privacy-card">
+            <div class="icon" style="font-size:2em; margin-bottom:10px;">🔍</div>
+            <h4>Pola</h4>
+            <p style="font-size:0.9em;">Sesuatu yang <strong>teratur</strong>, berulang, dan bisa diprediksi.</p>
+          </div>
+
+          <!-- Preview Acak -->
+          <div class="comparison-card security-card">
+            <div class="icon" style="font-size:2em; margin-bottom:10px;">🎲</div>
+            <h4>Acak</h4>
+            <p style="font-size:0.9em;">Urutan/bentuk <strong>tidak jelas</strong>, sulit ditebak.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 3: Pola Visual vs Pola Digital (Preview) -->
+      <div class="slide" style="align-self: flex-start; margin-top: -20px; padding-top: 10px;">
+        <h3>Pola Visual vs Pola Digital</h3>
+
+        <div class="comparison-grid" style="margin-bottom:14px;">
+          <!-- Preview Pola Visual -->
+          <div class="comparison-card privacy-card" style="opacity:1; transform:none;">
+            <div class="icon" style="font-size:2.2em; margin-bottom:10px;">🎨</div>
+            <h4>Pola Visual</h4>
+            <p style="font-size:0.9em;">
+              Tampilan <strong>berulang</strong> yang mudah dikenali
+              (warna, bentuk, posisi).
+            </p>
+          </div>
+
+          <!-- Preview Pola Digital -->
+          <div class="comparison-card security-card" style="opacity:1; transform:none;">
+            <div class="icon" style="font-size:2.2em; margin-bottom:10px;">💻</div>
+            <h4>Pola Digital</h4>
+            <p style="font-size:0.9em;">
+              Urutan berbasis <strong>aturan/data</strong> di teknologi
+              (kode, algoritma).
+            </p>
+          </div>
+        </div>
+
+        <div class="info-box" style="margin-top:14px;">
+          <h4>💡 Inti</h4>
+          <p style="font-size:0.95em;">
+            Pola visual = terlihat langsung. Pola digital = lahir dari aturan/data.
+            Keduanya membantu memahami & memprediksi — dasar berpikir komputasional.
+          </p>
+        </div>
+      </div>
+
+      <!-- Slide 4: Pola di Kehidupan Sehari-hari -->
+      <div class="slide" style="align-self: flex-start; margin-top: -20px; padding-top: 10px;">
+        <h3>Pola di Kehidupan Sehari-hari</h3>
+        <div class="data-types-grid">
+          <!-- Pola Waktu -->
+          <div class="data-card">
+            <div class="icon">⏰</div>
+            <h4>Pola Waktu</h4>
+          </div>
+
+          <!-- Pola Perilaku -->
+          <div class="data-card">
+            <div class="icon">🧑</div>
+            <h4>Pola Perilaku</h4>
+          </div>
+
+          <!-- Pola Visual -->
+          <div class="data-card">
+            <div class="icon">🟦</div>
+            <h4>Pola Visual</h4>
+          </div>
+        </div>
+      </div>
+
+
+
+      <!-- Slide 5: Pola Waktu -->
+      <div class="slide" style="align-self: flex-start; margin-top: -20px; padding-top: 10px;">
+        <h3>Contoh: Pola Waktu</h3>
+
+        <div class="data-types-grid" style="margin-top:10px;">
+          <div class="data-card">
+            <div class="icon">🏫</div>
+            <h4>Jadwal Sekolah</h4>
+          </div>
+          <div class="data-card">
+            <div class="icon">🚦</div>
+            <h4>Lampu Lalu Lintas</h4>
+          </div>
+          <div class="data-card">
+            <div class="icon">⏰</div>
+            <h4>Alarm Harian</h4>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 6: Contoh — Pola Perilaku -->
+      <div class="slide" style="align-self: flex-start; margin-top: -20px; padding-top: 10px;">
+        <h3>Contoh: Pola Perilaku</h3>
+
+        <div class="data-types-grid" style="margin-top:10px;">
+          <div class="data-card" style="opacity:1; transform:none;">
+            <div class="icon">🌅</div>
+            <h4>Rutinitas Pagi</h4>
+          </div>
+          <div class="data-card" style="opacity:1; transform:none;">
+            <div class="icon">📖</div>
+            <h4>Kebiasaan Belajar</h4>
+          </div>
+          <div class="data-card" style="opacity:1; transform:none;">
+            <div class="icon">🛡️</div>
+            <h4>Etika Digital</h4>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 7: Pola Digital -->
+      <div class="slide" style="align-self: flex-start; margin-top: -20px; padding-top: 10px;">
+        <h3>Pola Digital</h3>
+        <div class="data-types-grid">
+
+          <!-- UI Pattern -->
+          <div class="data-card" style="opacity:1; transform:none;">
+            <div class="icon">🖥️</div>
+            <h4>UI Pattern</h4>
+            <p style="font-size:0.9em;">
+              Menu navigasi & tombol kirim yang konsisten
+            </p>
+          </div>
+
+          <!-- Pola Interaksi -->
+          <div class="data-card" style="opacity:1; transform:none;">
+            <div class="icon">🤳</div>
+            <h4>Pola Interaksi</h4>
+            <p style="font-size:0.9em;">
+              Swipe kiri untuk hapus, double tap untuk like
+            </p>
+          </div>
+
+          <!-- Pola Data -->
+          <div class="data-card" style="opacity:1; transform:none;">
+            <div class="icon">📊</div>
+            <h4>Pola Data</h4>
+            <p style="font-size:0.9em;">
+              Rekomendasi produk atau lagu dari riwayat
+            </p>
+          </div>
+
+          <!-- Pola Algoritma -->
+          <div class="data-card" style="opacity:1; transform:none;">
+            <div class="icon">⚙️</div>
+            <h4>Pola Algoritma</h4>
+            <p style="font-size:0.9em;">
+              Algoritma pencarian & sorting di aplikasi
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 8: Contoh — UI Pattern -->
+      <div class="slide" style="align-self: flex-start; margin-top: -20px; padding-top: 10px;">
+        <h3>Contoh: UI Pattern</h3>
+
+        <div class="data-types-grid">
+          <!-- Menu Navigasi -->
+          <div class="data-card" style="opacity:1; transform:none;">
+            <div class="icon">📂</div>
+            <h4>Menu Navigasi</h4>
+            <p style="font-size:0.9em;">Selalu di atas / samping layar</p>
+          </div>
+
+          <!-- Tombol Aksi -->
+          <div class="data-card" style="opacity:1; transform:none;">
+            <div class="icon">🔘</div>
+            <h4>Tombol Aksi</h4>
+            <p style="font-size:0.9em;">Tombol “Kirim” dibuat menonjol</p>
+          </div>
+
+          <!-- Ikon Familiar -->
+          <div class="data-card" style="opacity:1; transform:none;">
+            <div class="icon">🔍</div>
+            <h4>Ikon Familiar</h4>
+            <p style="font-size:0.9em;">Ikon kaca pembesar = “Cari”</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 9: Pola Interaksi -->
+      <div class="slide" style="align-self: flex-start; margin-top: -20px; padding-top: 10px;">
+        <h3>Contoh: Pola Interaksi</h3>
+
+        <div class="data-types-grid">
+          <!-- Swipe -->
+          <div class="data-card" style="opacity:1; transform:none;">
+            <div class="icon">👆➡️</div>
+            <h4>Swipe</h4>
+            <p style="font-size:0.9em;">Geser kiri/kanan untuk hapus/arsip</p>
+          </div>
+
+          <!-- Double Tap -->
+          <div class="data-card" style="opacity:1; transform:none;">
+            <div class="icon">👆👆</div>
+            <h4>Double Tap</h4>
+            <p style="font-size:0.9em;">Dua ketuk untuk “like”</p>
+          </div>
+
+          <!-- Long Press -->
+          <div class="data-card" style="opacity:1; transform:none;">
+            <div class="icon">✋⏳</div>
+            <h4>Long Press</h4>
+            <p style="font-size:0.9em;">Tahan untuk opsi lanjutan</p>
+          </div>
+
+          <!-- Pull to Refresh -->
+          <div class="data-card" style="opacity:1; transform:none;">
+            <div class="icon">⬇️🔄</div>
+            <h4>Tarik Segarkan</h4>
+            <p style="font-size:0.9em;">“Pull to refresh” daftar</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 10: Pola Data -->
+      <div class="slide" style="align-self: flex-start; margin-top: -20px; padding-top: 10px;">
+        <h3>Contoh: Pola Data</h3>
+
+        <div class="data-types-grid">
+          <!-- Rekomendasi Belanja -->
+          <div class="data-card" style="opacity:1; transform:none;">
+            <div class="icon">🛍️</div>
+            <h4>Rekomendasi Belanja</h4>
+            <p style="font-size:0.9em;">Produk ditampilkan sesuai riwayat pembelian</p>
+          </div>
+
+          <!-- Rekomendasi Musik -->
+          <div class="data-card" style="opacity:1; transform:none;">
+            <div class="icon">🎶</div>
+            <h4>Rekomendasi Musik</h4>
+            <p style="font-size:0.9em;">Lagu muncul sesuai genre favorit</p>
+          </div>
+
+          <!-- Konten Media Sosial -->
+          <div class="data-card" style="opacity:1; transform:none;">
+            <div class="icon">📱</div>
+            <h4>Konten Media Sosial</h4>
+            <p style="font-size:0.9em;">Feed disesuaikan dengan like & follow</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 11: Pola Algoritma -->
+      <div class="slide" style="align-self: flex-start; margin-top: -20px; padding-top: 10px;">
+        <h3>Pola Algoritma</h3>
+
+        <div class="data-types-grid">
+          <!-- Pencarian -->
+          <div class="data-card" style="opacity:1; transform:none;">
+            <div class="icon">🔎</div>
+            <h4>Pencarian</h4>
+            <p style="font-size:0.9em;">Google menampilkan hasil paling relevan</p>
+          </div>
+
+          <!-- Sorting -->
+          <div class="data-card" style="opacity:1; transform:none;">
+            <div class="icon">📂</div>
+            <h4>Sorting</h4>
+            <p style="font-size:0.9em;">Urutkan file atau daftar dari A–Z</p>
+          </div>
+
+          <!-- Rekomendasi -->
+          <div class="data-card" style="opacity:1; transform:none;">
+            <div class="icon">🤖</div>
+            <h4>Rekomendasi</h4>
+            <p style="font-size:0.9em;">Sistem AI memberi saran otomatis</p>
+          </div>
+        </div>
+
+        <div class="info-box" style="margin-top:14px;">
+          <h4>💡 Inti</h4>
+          <p style="font-size:0.95em;">
+            Pola algoritma adalah <strong>urutan langkah logis</strong> untuk
+            menyelesaikan masalah atau menghasilkan output tertentu.
+          </p>
+        </div>
+      </div>
+
+      <!-- Slide 12: Aktivitas - Temukan Pola -->
+      <div class="slide" style="align-self: flex-start; margin-top: -20px; padding-top: 10px;">
+        <h3>Aktivitas: Temukan Pola</h3>
+
+        <div class="data-types-grid">
+          <!-- Kehidupan Sehari-hari -->
+          <div class="data-card" style="opacity:1; transform:none;">
+            <div class="icon">🏠</div>
+            <h4>Kehidupan Sehari-hari</h4>
+            <p style="font-size:0.9em;">Cari pola waktu, perilaku, atau visual di sekitarmu.</p>
+          </div>
+
+          <!-- Dunia Digital -->
+          <div class="data-card" style="opacity:1; transform:none;">
+            <div class="icon">💻</div>
+            <h4>Aplikasi Digital</h4>
+            <p style="font-size:0.9em;">Temukan UI pattern, interaksi, data, atau algoritma di aplikasi favoritmu.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 13: Kesimpulan -->
+      <div class="slide" style="align-self: flex-start; margin-top: -20px; padding-top: 10px;">
+        <h3>Kesimpulan</h3>
+
+        <div class="data-types-grid">
+          <!-- Pola Sehari-hari -->
+          <div class="data-card" style="opacity:1; transform:none;">
+            <div class="icon">🏠</div>
+            <h4>Pola Sehari-hari</h4>
+            <p style="font-size:0.9em;">Waktu, perilaku, visual</p>
+          </div>
+
+          <!-- Pola Digital -->
+          <div class="data-card" style="opacity:1; transform:none;">
+            <div class="icon">💻</div>
+            <h4>Pola Digital</h4>
+            <p style="font-size:0.9em;">UI, interaksi, data, algoritma</p>
+          </div>
+
+          <!-- Inti -->
+          <div class="data-card" style="opacity:1; transform:none;">
+            <div class="icon">💡</div>
+            <h4>Inti</h4>
+            <p style="font-size:0.9em;">Pola = keteraturan yang memudahkan prediksi & solusi</p>
+          </div>
+        </div>
+
+        <div class="info-box" style="margin-top:14px;">
+          <h4>🔑 Pesan Penting</h4>
+          <p style="font-size:0.95em;">
+            Dengan mengenali pola, kita belajar berpikir komputasional:
+            menganalisis, memprediksi, dan merancang solusi di dunia nyata maupun digital.
+          </p>
+        </div>
+      </div>
+
+
+
+
+
+
+
+      <!-- Slide 5: Hidden Data Collection -->
+      <div class="slide">
+        <h3>Data Dikumpulkan Tanpa Disadari</h3>
+        <div class="threat-simulation">
+          <div class="threat-content">
+            <h4>⚠️ Teknik Pelacakan Tersembunyi</h4>
+            <ul style="text-align: left; margin-left: 20px;">
+              <li>🍪 <strong>Cookies:</strong> Melacak aktivitas browsing</li>
+              <li>👁️ <strong>Tracking Pixels:</strong> Pixel tak kasat mata</li>
+              <li>🔍 <strong>Fingerprinting:</strong> Identifikasi device unik</li>
+              <li>📋 <strong>Formulir:</strong> Data dari pendaftaran</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 6: Real Threats -->
+      <div class="slide">
+        <h3>Ancaman Nyata di Dunia Digital</h3>
+        <div class="data-types-grid">
+          <div class="data-card">
+            <div class="icon">🎣</div>
+            <h4>Phishing</h4>
+            <p style="font-size: 0.9em;">Email/link palsu untuk mencuri data</p>
+          </div>
+          <div class="data-card">
+            <div class="icon">🎭</div>
+            <h4>Identity Theft</h4>
+            <p style="font-size: 0.9em;">Menyamar sebagai kamu untuk penipuan</p>
+          </div>
+          <div class="data-card">
+            <div class="icon">💔</div>
+            <h4>Data Breach</h4>
+            <p style="font-size: 0.9em;">Kebocoran data massal dari perusahaan</p>
+          </div>
+          <div class="data-card">
+            <div class="icon">📱</div>
+            <h4>App Abuse</h4>
+            <p style="font-size: 0.9em;">Aplikasi mengambil data berlebihan</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 7: Interactive Privacy Checker -->
+      <div class="slide" style="text-align: left;">
+        <h3 style="text-align: center; margin-bottom: 20px;">🔍 Cek Keamanan Postingan</h3>
+        <div class="privacy-checker">
+          <h4>Test Postingan Kamu:</h4>
+          <textarea id="postInput" class="privacy-input" placeholder="Ketik postingan yang ingin dicek..."
+            rows="3"></textarea>
+          <button class="privacy-button" onclick="checkPostPrivacy()">
+            Cek Keamanan
+          </button>
+          <div id="privacyResult" class="privacy-result" style="display: none;"></div>
+        </div>
+      </div>
+
+      <!-- Slide 8: Privacy Scenario Game -->
+      <div class="slide" style="text-align: left;">
+        <h3 style="text-align: center; margin-bottom: 20px;">🎮 Privacy Guardian Challenge</h3>
+        <div class="privacy-game">
+          <div class="game-scenario" id="gameScenario">
+            <h4>Situasi #1</h4>
+            <p id="scenarioText">Kamu mendapat email dari "bank" yang meminta konfirmasi data dengan klik link. Apa
+              yang akan kamu lakukan?</p>
+          </div>
+          <div class="game-choices">
+            <button class="choice-btn" onclick="handleChoice(1, 'A')">
+              A. Langsung klik link dan isi data
+            </button>
+            <button class="choice-btn" onclick="handleChoice(1, 'B')">
+              B. Cek email bank asli dan hubungi CS
+            </button>
+            <button class="choice-btn" onclick="handleChoice(1, 'C')">
+              C. Abaikan email tersebut
+            </button>
+          </div>
+          <div class="game-feedback" id="gameFeedback" style="display: none;">
+            <div class="feedback-content" id="feedbackContent"></div>
+            <button class="next-scenario-btn" onclick="nextScenario()">
+              Skenario Selanjutnya →
+            </button>
+          </div>
+          <div class="game-score">
+            <span>Skor: <span id="currentScore">0</span>/5</span>
+            <span>Skenario: <span id="currentScenario">1</span>/5</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 9: Python Example - Data Tracker -->
+      <div class="slide" style="align-self: flex-start; margin-top: -30px; padding-top: 20px; text-align: left;">
+        <h3 style="margin-bottom: 15px; font-size: 1.6em; text-align: center;">
+          💻 Contoh: Personal Data Tracker
+        </h3>
+        <div class="code-block">
+          <pre><code class="language-python"># Program untuk melacak dan mengaudit data pribadi
+import datetime
+import hashlib
+
+class PersonalDataTracker:
+    def __init__(self):
+        self.data_log = []
+        self.privacy_score = 100
+        
+    def add_data_sharing(self, app_name, data_type, permission_level):
+        """Catat setiap kali data dibagikan"""
+        entry = {
+            'timestamp': datetime.datetime.now(),
+            'app': app_name,
+            'data_type': data_type,
+            'permission': permission_level,
+            'id': self.generate_id()
+        }
+        self.data_log.append(entry)
+        self.update_privacy_score(permission_level)
+        
+    def generate_id(self):
+        """Generate ID unik untuk setiap entry"""
+        timestamp = str(datetime.datetime.now())
+        return hashlib.md5(timestamp.encode()).hexdigest()[:8]
+        
+    def update_privacy_score(self, permission):
+        """Update skor privasi berdasarkan tingkat izin"""
+        risk_scores = {
+            'minimal': -2,
+            'medium': -5,
+            'high': -10,
+            'critical': -20
+        }
+        self.privacy_score += risk_scores.get(permission, 0)
+        
+    def get_privacy_report(self):
+        """Dapatkan laporan privasi"""
+        if self.privacy_score >= 80:
+            status = "🟢 Sangat Aman"
+        elif self.privacy_score >= 60:
+            status = "🟡 Cukup Aman"
+        else:
+            status = "🔴 Perlu Perhatian"
+            
+        return f"Privacy Score: {self.privacy_score}/100 - {status}"
+        
+    def audit_recent_sharing(self, days=7):
+        """Audit berbagi data dalam periode tertentu"""
+        cutoff = datetime.datetime.now() - datetime.timedelta(days=days)
+        recent = [entry for entry in self.data_log if entry['timestamp'] > cutoff]
+        
+        print(f"📊 Data sharing dalam {days} hari terakhir:")
+        for entry in recent:
+            print(f"- {entry['app']}: {entry['data_type']} ({entry['permission']})")
+
+# Contoh penggunaan
+tracker = PersonalDataTracker()
+tracker.add_data_sharing("Instagram", "Location", "medium")
+tracker.add_data_sharing("TikTok", "Contacts", "high")
+tracker.add_data_sharing("WhatsApp", "Phone", "minimal")
+
+print(tracker.get_privacy_report())
+tracker.audit_recent_sharing()</code></pre>
+        </div>
+      </div>
+
+      <!-- Slide 10: Protection Methods -->
+      <div class="slide">
+        <h3>Cara Melindungi Data Pribadi</h3>
+        <div class="info-box">
+          <h4>🛡️ Langkah Praktis</h4>
+          <ul class="custom-list">
+            <li>Gunakan password kuat & unik</li>
+            <li>Aktifkan 2FA di semua akun penting</li>
+            <li>Batasi izin aplikasi secara bijak</li>
+            <li>Jangan share info pribadi sembarangan</li>
+            <li>Logout dari device publik</li>
+            <li>Hindari Wi-Fi publik untuk akun sensitif</li>
+            <li>Cek privacy settings rutin</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Slide 11: Who Collects Data -->
+      <div class="slide">
+        <h3>Siapa yang Mengumpulkan Data Kamu?</h3>
+        <div class="data-types-grid">
+          <div class="data-card">
+            <div class="icon">📱</div>
+            <h4>Media Sosial</h4>
+            <p style="font-size: 0.9em;">Post, komentar, interaksi, lokasi</p>
+          </div>
+          <div class="data-card">
+            <div class="icon">🛒</div>
+            <h4>E-commerce</h4>
+            <p style="font-size: 0.9em;">Riwayat belanja, preferensi</p>
+          </div>
+          <div class="data-card">
+            <div class="icon">🎮</div>
+            <h4>Apps & Games</h4>
+            <p style="font-size: 0.9em;">Usage pattern, device info</p>
+          </div>
+          <div class="data-card">
+            <div class="icon">🏛️</div>
+            <h4>Pemerintah</h4>
+            <p style="font-size: 0.9em;">Layanan publik, identitas resmi</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 12: Legal Protection -->
+      <div class="slide">
+        <h3>Perlindungan Hukum Data Pribadi</h3>
+        <div class="info-box">
+          <h4>🏛️ UU PDP Indonesia</h4>
+          <p>Undang-Undang Nomor 27 Tahun 2022 tentang Perlindungan Data Pribadi memberikan hak kepada kamu untuk:</p>
+          <ul class="custom-list">
+            <li>Mengetahui data dikumpulkan untuk apa</li>
+            <li>Mengakses dan memperbaiki data</li>
+            <li>Menghapus data yang tidak perlu</li>
+            <li>Menarik kembali persetujuan</li>
+            <li>Menolak pemrosesan otomatis</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Slide 13: Case Study -->
+      <div class="slide">
+        <h3>Studi Kasus: Viral Challenge</h3>
+        <div class="warning-box">
+          <h4>🎯 Situasi</h4>
+          <p>
+            Ada challenge viral di TikTok yang meminta pengguna upload video dengan KTP/kartu pelajar terlihat untuk
+            "membuktikan" umur mereka. Challenge ini mulai trending dan teman-teman kamu mulai ikutan.
+          </p>
+        </div>
+        <div class="example-box">
+          <h4>🤔 Pertanyaan Diskusi</h4>
+          <ul>
+            <li>Apa risiko dari challenge ini?</li>
+            <li>Bagaimana cara menolak dengan sopan?</li>
+            <li>Solusi alternatif yang lebih aman?</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Slide 14: Reflection -->
+      <div class="slide">
+        <h3>📝 Refleksi & Evaluasi</h3>
+        <div class="info-box">
+          <h4>💭 Renungkan</h4>
+          <ul>
+            <li>Informasi pribadi apa yang paling penting dijaga?</li>
+            <li>Apakah kamu sudah pernah baca privacy policy?</li>
+            <li>Seberapa sering kamu cek pengaturan privasi?</li>
+          </ul>
+        </div>
+        <div class="warning-box">
+          <h4>📋 Tugas Mingguan</h4>
+          <p>
+            Lakukan audit privasi: cek pengaturan media sosial, hapus aplikasi yang tidak perlu, dan ganti password
+            lama!
+          </p>
+        </div>
+      </div>
+
+      <!-- Slide 15: Conclusion -->
+      <div class="slide"
+        style="align-self: flex-start; max-height: calc(100vh - 200px); overflow-y: auto; padding-top: 20px;">
+        <h3 style="font-size: 1.7em; margin-bottom: 20px;">🎯 Kesimpulan</h3>
+        <div class="privacy-visual" style="width: 250px; height: 250px; margin: 15px auto;">
+          <div class="privacy-icon" style="font-size: 3.5em;">🌟</div>
+        </div>
+        <p style="font-size: 1.1em; line-height: 1.6; margin-bottom: 20px;">
+          Privasi data adalah <strong>hak fundamental</strong> di era digital. Dengan pengetahuan yang tepat, kamu
+          bisa menjadi <strong>digital citizen</strong> yang cerdas dan bertanggung jawab.
+        </p>
+        <div class="info-box" style="margin-top: 20px;">
+          <h4>🚀 Selanjutnya</h4>
+          <p>
+            Modul berikutnya akan membahas etika digital dan netiquette - cara berinteraksi dengan sopan di dunia
+            maya.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-nav">
+      <button class="nav-button" id="prevBtn" onclick="changeSlide(-1)">
+        ← Sebelumnya
+      </button>
+      <span class="slide-counter">
+        <span id="currentSlide">1</span> / <span id="totalSlides">13</span>
+      </span>
+      <button class="nav-button" id="nextBtn" onclick="changeSlide(1)">
+        Selanjutnya →
+      </button>
+    </div>
+  </div>
+
+  <!-- Right Panel - Explanation -->
+  <div class="explanation-panel">
+    <div class="explanation-content" id="explanationContent">
+      <h3>
+        Selamat Datang di Dunia Privasi Data Digital!
+      </h3>
+
+      <p>
+        Dalam era digital yang serba terhubung ini, setiap klik, scroll, dan tap yang kamu lakukan meninggalkan jejak
+        digital. Privasi data bukan hanya tentang "menyembunyikan" informasi, tetapi tentang kontrol - kamu yang
+        menentukan siapa yang bisa mengakses data pribadi kamu dan untuk keperluan apa.
+      </p>
+
+      <h4>Mengapa Bab Ini Krusial?</h4>
+      <p>Bab ini akan membantu kamu:</p>
+      <ul>
+        <li>Memahami perbedaan antara privacy dan security</li>
+        <li>Mengenali jenis-jenis data pribadi yang perlu dilindungi</li>
+        <li>Mempelajari ancaman nyata terhadap privasi data</li>
+        <li>Menguasai teknik-teknik perlindungan yang praktis</li>
+      </ul>
+
+      <div class="example-box">
+        <h4>🎯 Tujuan Pembelajaran</h4>
+        <p>
+          Setelah mempelajari bab ini, kamu akan menjadi guardian data pribadi yang cerdas - mampu melindungi
+          informasi sensitif sambil tetap menikmati manfaat teknologi digital.
+        </p>
+      </div>
+
+      <div class="warning-box">
+        <h4>⚠️ Ingat Selalu</h4>
+        <p>
+          Data pribadi kamu adalah aset berharga. Seperti uang di dompet, kamu harus selektif dalam membagikannya dan
+          waspada terhadap yang ingin "mengambil" tanpa izin.
+        </p>
+      </div>
+
+      <p>
+        Mari mulai perjalanan menjadi digital citizen yang bijak dan bertanggung jawab! 🛡️
+      </p>
+    </div>
+  </div>
+  </div>
+
+  <script>
+    const CORRECT_ACCESS_CODE = 'RGMDSUP25';
+    let isAccessGranted = false;
+    let currentSlideIndex = 0;
+    const totalSlides = 13;
+
+    // Access Code Functions
+    function checkAccessCode() {
+      const input = document.getElementById('accessInput');
+      const error = document.getElementById('accessError');
+      const enteredCode = input.value.trim().toUpperCase();
+
+      if (enteredCode === CORRECT_ACCESS_CODE) {
+        // Correct code - grant access
+        isAccessGranted = true;
+        hideAccessPopup();
+      } else {
+        // Incorrect code - show error
+        error.classList.add('show');
+        input.style.borderColor = '#e74c3c';
+        input.focus();
+
+        // Reset error after 3 seconds
+        setTimeout(() => {
+          error.classList.remove('show');
+          input.style.borderColor = '#dee2e6';
+        }, 3000);
+
+        // Clear input
+        input.value = '';
+      }
+    }
+
+    function hideAccessPopup() {
+      const popup = document.getElementById('accessPopup');
+      const mainContent = document.getElementById('mainContent');
+
+      // Animate popup out
+      popup.querySelector('.access-popup').classList.remove('show');
+
+      setTimeout(() => {
+        popup.style.display = 'none';
+        mainContent.style.display = 'flex';
+
+        // Initialize content after access is granted
+        initializeContent();
+      }, 300);
+    }
+
+    function showAccessPopup() {
+      const popup = document.getElementById('accessPopup');
+      const mainContent = document.getElementById('mainContent');
+
+      popup.style.display = 'flex';
+      mainContent.style.display = 'none';
+
+      setTimeout(() => {
+        popup.querySelector('.access-popup').classList.add('show');
+        document.getElementById('accessInput').focus();
+      }, 100);
+    }
+
+    function initializeContent() {
+      // Initialize the main content after access is granted
+      updateSlide();
+
+      // Initialize syntax highlighting
+      if (typeof hljs !== "undefined") {
+        hljs.highlightAll();
+      }
+    }
+
+    // ============================================
+    // ACCESS CODE SETTING - Change this to enable/disable access code
+    // ============================================
+    const ENABLE_ACCESS_CODE = false; // Set to false to disable access code popup
+
+    // Check access on page refresh/reload
+    function checkAccess() {
+      if (ENABLE_ACCESS_CODE) {
+        // Show popup if access code is enabled
+        showAccessPopup();
+      } else {
+        // Skip access code and go directly to content
+        isAccessGranted = true;
+        const popup = document.getElementById('accessPopup');
+        const mainContent = document.getElementById('mainContent');
+
+        if (popup) {
+          popup.style.display = 'none';
+        }
+        if (mainContent) {
+          mainContent.style.display = 'flex';
+        }
+
+        initializeContent();
+      }
+    }
+    const slides = document.querySelectorAll(".slide");
+
+    // Explanations for each slide
+    const explanations = [
+      {
+        title: "Mengenal Pola",
+        content: `
+    <p><strong>Pola</strong> adalah rancangan atau susunan yang memiliki keteraturan dan bisa ditebak. 
+    Pola bisa berupa warna, bentuk, angka, atau perilaku yang berulang.</p>
+
+    <h4>🔎 Contoh Sehari-hari</h4>
+    <ul>
+      <li>🍓 🍇 🍓 🍇 : Pola Buah</li>
+      <li>🐣 🐱 🐱 🐣 🐱 🐱 : Pola Hewan</li>
+      <li>Merah → Kuning → Hijau : Pola pada lampu lalu lintas</li>
+    </ul>
+
+    <div class="example-box">
+      <h4>💡 Inti</h4>
+      <p>Dengan mengenali pola, kita bisa memprediksi apa yang akan muncul 
+      selanjutnya. Ini adalah langkah awal untuk berpikir komputasional 
+      dan membuat pola di <b>Scratch</b>.</p>
+    </div>
+  `,
+      },
+      {
+        title: "Pola vs Acak: Kunci Memahami Dunia Sekitar",
+        content: `
+        <p>Banyak hal di dunia ini mengikuti pola, sementara sebagian lainnya tampak acak. Memahami perbedaan keduanya membantu kita menganalisis informasi, memprediksi kejadian, dan membuat keputusan yang lebih tepat.</p>
+                
+        <h4>🔍 Pola: Sesuatu yang Teratur</h4>
+        <p>Pola adalah urutan atau bentuk yang berulang dengan cara yang bisa diprediksi. Pola membantu kita mengenali hubungan dan menghemat waktu dalam memecahkan masalah.</p>
+        
+        <ul>
+          <li><strong>Contoh:</strong> Motif kain batik yang berulang</li>
+          <li><strong>Contoh:</strong> Jadwal pelajaran yang sama setiap minggu</li>
+          <li><strong>Contoh:</strong> Urutan nada lagu yang sama di setiap pengulangan</li>
+        </ul>
+        
+        <h4>🎲 Acak: Tanpa Pola yang Jelas</h4>
+        <p>Acak berarti urutan atau bentuk yang tidak dapat diprediksi. Meski begitu, terkadang data acak bisa dianalisis untuk menemukan pola tersembunyi.</p>
+        
+        <ul>
+          <li><strong>Contoh:</strong> Lemparan koin</li>
+          <li><strong>Contoh:</strong> Hasil undian nomor lotre</li>
+          <li><strong>Contoh:</strong> Posisi awal pemain dalam game online</li>
+        </ul>
+        
+        <div class="info-box">
+          <h4>💡 Di Dunia Digital</h4>
+          <p>Dalam pemrograman, pola digunakan untuk mengatur logika program, seperti menentukan langkah-langkah animasi di game, menyusun menu aplikasi di MIT App Inventor, atau membuat filter pencarian data.</p>
+        </div>
+    `,
+      },
+      {
+        title: "Pola Visual vs Pola Digital",
+        content: `
+        <p>Pola bisa muncul dalam dua bentuk utama: <strong>visual</strong> yang langsung terlihat oleh mata, 
+        dan <strong>digital</strong> yang muncul dari data atau aturan di dalam teknologi. 
+        Keduanya sama-sama membantu kita memahami, memprediksi, dan menyusun informasi.</p>
+
+        <h4>🎨 Pola Visual</h4>
+        <p>Pola visual adalah tampilan yang <strong>berulang</strong> dan mudah dikenali. 
+        Biasanya berupa warna, bentuk, atau posisi yang konsisten.</p>
+        <ul>
+          <li>Motif batik dengan gambar yang berulang</li>
+          <li>Susunan ubin lantai yang membentuk pola tertentu</li>
+          <li>Corak geometri pada kain atau wallpaper</li>
+        </ul>
+
+        <h4>💻 Pola Digital</h4>
+        <p>Pola digital terbentuk dari <strong>aturan, data, atau perintah</strong> di dalam dunia teknologi. 
+        Pola ini tidak selalu terlihat langsung, tapi bisa dikenali ketika kita mengamati alurnya.</p>
+        <ul>
+          <li>Urutan kode program di MIT App Inventor</li>
+          <li>Pola enkripsi sandi yang menjaga keamanan data</li>
+          <li>Algoritma yang mengurutkan daftar atau mencari data</li>
+        </ul>
+
+        <div class="info-box">
+          <h4>💡 Inti Pembelajaran</h4>
+          <p>Memahami perbedaan pola visual dan pola digital membantu kita 
+          menghubungkan apa yang terjadi di dunia nyata dengan cara komputer 
+          bekerja. Inilah dasar berpikir komputasional.</p>
+        </div>
+      `
+      },
+
+      {
+        title: "Pola di Kehidupan Sehari-hari",
+        content: `
+    <p>Setelah mengenal konsep pola, mari kita lihat bagaimana pola hadir dalam 
+    <strong>kehidupan sehari-hari</strong>. Dengan mengenali pola di sekitar kita, 
+    kita bisa memprediksi apa yang akan terjadi dan mengambil keputusan lebih baik.</p>
+
+    <h4>⏰ Pola Waktu</h4>
+    <p>Urutan kegiatan pada waktu tertentu yang berulang setiap hari.</p>
+    <ul>
+      <li>Contoh: Jadwal sekolah — masuk kelas, pelajaran 1, istirahat, pelajaran 2, pulang.</li>
+    </ul>
+
+    <h4>🧑‍🎓 Pola Perilaku</h4>
+    <p>Rutinitas yang dilakukan secara berurutan.</p>
+    <ul>
+      <li>Contoh: Rutinitas pagi — bangun tidur, mandi, ganti baju, sarapan, berangkat sekolah.</li>
+    </ul>
+
+    <h4>🟦 Pola Visual</h4>
+    <p>Bentuk atau motif yang terlihat berulang di sekitar kita.</p>
+    <ul>
+      <li>Contoh: Motif batik yang memiliki pola gambar sama dan berulang.</li>
+    </ul>
+
+    <div class="info-box">
+      <h4>📌 Catatan</h4>
+      <p>Pola sehari-hari ini membantu kita beradaptasi, mengatur waktu, 
+      dan menjadi dasar untuk memahami pola di dunia digital.</p>
+    </div>
+  `
+      },
+      {
+        title: "Contoh: Pola Waktu",
+        content: `
+    <p><strong>Pola waktu</strong> adalah urutan kegiatan pada waktu tertentu yang terjadi
+    secara <strong>berulang</strong>. Dengan mengenali pola ini, kita bisa memprediksi langkah
+    berikutnya dan merencanakan kegiatan dengan lebih baik.</p>
+
+    <h4>Contoh Sehari-hari</h4>
+    <ul>
+      <li><strong>Jadwal sekolah</strong>: masuk kelas → pelajaran 1 → istirahat → pelajaran 2 → pulang.</li>
+      <li><strong>Lampu lalu lintas</strong>: merah → kuning → hijau → kembali ke merah.</li>
+      <li><strong>Alarm harian</strong>: berbunyi pada pukul yang sama setiap pagi.</li>
+    </ul>
+
+    <h4>Keterkaitan dengan Dunia Digital</h4>
+    <p>Di aplikasi, pola waktu muncul sebagai <em>timer</em>, jeda, atau siklus yang berulang.</p>
+    <ul>
+      <li><strong>MIT App Inventor</strong>: gunakan komponen <code>Clock</code> untuk membuat jeda (TimerInterval)
+      dan aksi berulang (Clock.Timer).</li>
+      <li>Contoh: animasi berkedip setiap 500 ms, notifikasi terjadwal, atau giliran pemain dalam game.</li>
+    </ul>
+
+    <div class="info-box">
+      <h4>Latihan Cepat</h4>
+      <p>Buat daftar kegiatan pagimu dan tandai mana yang berulang setiap hari. 
+      Coba ubah menjadi urutan langkah (flow) seperti pada algoritma.</p>
+    </div>
+  `
+      },
+      {
+        title: "Contoh: Pola Perilaku",
+        content: `
+    <p><strong>Pola perilaku</strong> adalah rangkaian tindakan yang dilakukan 
+    secara <strong>berurutan</strong> dan <strong>berulang</strong>. 
+    Karena konsisten, pola ini memudahkan kita membentuk kebiasaan baik dan 
+    meningkatkan efisiensi dalam keseharian.</p>
+
+    <h4>Contoh Sehari-hari</h4>
+    <ul>
+      <li><strong>Rutinitas pagi</strong>: bangun tidur → mandi → sarapan → berangkat sekolah.</li>
+      <li><strong>Kebiasaan belajar</strong>: membaca materi → mencatat poin penting → mengerjakan latihan soal.</li>
+      <li><strong>Etika digital</strong>: mengecek sumber informasi → menyaring konten → memberi kredit saat membagikan.</li>
+    </ul>
+
+    <h4>Mengapa Ini Pola?</h4>
+    <ul>
+      <li><strong>Keteraturan</strong>: urutan langkah yang konsisten.</li>
+      <li><strong>Dapat diprediksi</strong>: kita tahu langkah berikutnya tanpa berpikir lama.</li>
+      <li><strong>Efisiensi</strong>: mengurangi kebiasaan menunda dan meminimalkan lupa langkah.</li>
+    </ul>
+
+    <div class="info-box">
+      <h4>💡 Kaitan ke Dunia Digital</h4>
+      <p>Dalam pengembangan aplikasi, pola perilaku diterjemahkan sebagai 
+      <em>alur interaksi</em> (user flow) yang konsisten. 
+      Di MIT App Inventor, kamu bisa memodelkan pola ini dengan 
+      <code>procedure</code> (prosedur) dan <code>if/else</code> untuk aturan,
+      misalnya <em>alur submit tugas</em>: isi form → validasi → simpan → tampilkan pesan.</p>
+    </div>
+
+    <div class="example-box">
+      <h4>Latihan Cepat</h4>
+      <ul>
+        <li>Tulis rutinitasmu saat belajar. Apa saja langkahnya?</li>
+        <li>Tentukan aturan: kapan mulai, berapa menit per langkah, dan kapan istirahat.</li>
+        <li>Opsional: buat prototipe “Pengingat Belajar” di App Inventor
+            dengan tombol <em>Mulai</em>, <em>Istirahat</em>, dan notifikasi sederhana.</li>
+      </ul>
+    </div>
+  `
+      },
+
+      {
+        title: "Pola Digital",
+        content: `
+    <p>Di dunia digital, <strong>pola</strong> adalah sesuatu yang 
+    <strong>berulang</strong>, <strong>dapat diprediksi</strong>, dan
+    digunakan untuk memudahkan sistem bekerja atau mengatur interaksi pengguna. 
+    Ada empat jenis utama pola digital:</p>
+
+    <h4>🖥️ Pola Antarmuka Pengguna (UI Pattern)</h4>
+    <p>Desain tampilan yang konsisten agar aplikasi mudah digunakan.</p>
+    <ul>
+      <li>Menu navigasi selalu di bagian atas atau samping layar</li>
+      <li>Tombol “Kirim/Submit” dibuat menonjol dengan warna mencolok</li>
+    </ul>
+
+    <h4>🤳 Pola Interaksi</h4>
+    <p>Cara pengguna berinteraksi dengan aplikasi mengikuti kebiasaan yang dapat ditebak.</p>
+    <ul>
+      <li>Menggeser ke kiri untuk menghapus pesan</li>
+      <li>Klik dua kali untuk memberi “like” pada foto</li>
+    </ul>
+
+    <h4>📊 Pola Data</h4>
+    <p>Pola yang terlihat dari analisis data pengguna untuk memberikan rekomendasi.</p>
+    <ul>
+      <li>Aplikasi belanja menampilkan produk berdasarkan riwayat belanja</li>
+      <li>Aplikasi musik merekomendasikan lagu berdasarkan genre favorit</li>
+    </ul>
+
+    <h4>⚙️ Pola Algoritma</h4>
+    <p>Urutan langkah pemrosesan data untuk mencapai hasil tertentu.</p>
+    <ul>
+      <li>Algoritma pencarian Google yang menampilkan hasil relevan</li>
+      <li>Algoritma sorting (pengurutan) di galeri foto</li>
+    </ul>
+
+    <div class="info-box">
+      <h4>💡 Inti Pembelajaran</h4>
+      <p>Memahami pola digital membantu kita mengerti bagaimana teknologi 
+      bekerja di balik layar. Mulai dari tampilan aplikasi, cara kita berinteraksi, 
+      hingga data dan algoritma yang membuat layanan digital terasa pintar 
+      dan mudah digunakan.</p>
+    </div>
+  `
+      },
+      {
+        title: "Contoh: UI Pattern",
+        content: `
+    <p><strong>UI Pattern</strong> adalah pola pada <em>antarmuka pengguna</em> 
+    yang dirancang konsisten agar mudah dipahami. Dengan adanya pola ini, 
+    pengguna tidak perlu belajar dari awal setiap kali membuka aplikasi baru.</p>
+
+    <h4>Contoh Umum UI Pattern</h4>
+    <ul>
+      <li><strong>Menu navigasi</strong>: selalu berada di atas atau di samping layar.</li>
+      <li><strong>Tombol aksi</strong>: tombol “Kirim/Submit” dibuat menonjol dengan warna kontras.</li>
+      <li><strong>Ikon familiar</strong>: kaca pembesar untuk “Cari”, amplop untuk “Pesan”.</li>
+    </ul>
+
+    <h4>Mengapa Ini Pola?</h4>
+    <ul>
+      <li><strong>Berulang</strong>: hampir semua aplikasi menggunakan pola UI yang mirip.</li>
+      <li><strong>Dapat diprediksi</strong>: pengguna langsung tahu fungsi tombol/ikon tanpa membaca instruksi.</li>
+      <li><strong>Efisien</strong>: mempercepat interaksi & mengurangi kebingungan.</li>
+    </ul>
+
+    <div class="info-box">
+      <h4>💡 Kaitan ke MIT App Inventor</h4>
+      <p>Di App Inventor, kamu juga bisa menerapkan <em>UI Pattern</em>:
+      letakkan tombol navigasi di posisi konsisten, gunakan ikon standar,
+      dan jaga warna tombol aksi tetap sama di seluruh aplikasi.</p>
+    </div>
+
+    <div class="example-box">
+      <h4>Latihan Cepat</h4>
+      <p>Buka 3 aplikasi berbeda di ponselmu. 
+      Cari persamaan di posisi menu, tombol, atau ikon.
+      Diskusikan: apa yang membuat mereka terasa mirip?</p>
+    </div>
+  `
+      },
+      {
+        title: "Contoh: Pola Interaksi",
+        content: `
+    <p><strong>Pola interaksi</strong> adalah cara umum pengguna berinteraksi
+    dengan aplikasi melalui gestur atau tindakan yang <strong>berulang dan dapat ditebak</strong>.
+    Karena konsisten di banyak aplikasi, pengguna tidak perlu belajar dari awal.</p>
+
+    <h4>Contoh Pola Interaksi</h4>
+    <ul>
+      <li><strong>Swipe</strong>: geser ke kiri/kanan untuk menghapus atau mengarsip pesan.</li>
+      <li><strong>Double tap</strong>: dua ketukan cepat untuk memberi “like”.</li>
+      <li><strong>Long press</strong>: tahan beberapa detik untuk membuka menu opsi lanjutan.</li>
+      <li><strong>Pull to refresh</strong>: tarik daftar ke bawah untuk memuat ulang konten.</li>
+    </ul>
+
+    <h4>Mengapa Ini Pola?</h4>
+    <ul>
+      <li><strong>Konsisten</strong>: gestur yang sama muncul di banyak aplikasi.</li>
+      <li><strong>Terprediksi</strong>: pengguna tahu hasil yang akan terjadi.</li>
+      <li><strong>Efisien</strong>: mempercepat navigasi dan mengurangi kebutuhan tombol berlebih.</li>
+    </ul>
+
+    <div class="info-box">
+      <h4>💡 Di MIT App Inventor</h4>
+      <p>Gestur dapat dimodelkan dengan event handler:
+      <code>when Button.Click</code>, <code>when Canvas.Touched</code>,
+      <code>when Canvas.Dragged</code>, atau <code>when Canvas.Flung</code>.
+      Kamu bisa mensimulasikan:
+      </p>
+      <ul>
+        <li><strong>Swipe</strong>: pakai <code>Canvas.Dragged</code> (bandingkan koordinat awal–akhir), 
+            jika <em>deltaX</em> melewati ambang → jalankan aksi “hapus”.</li>
+        <li><strong>Double tap</strong>: catat waktu ketukan di <code>Canvas.Touched</code>; 
+            dua tap dalam &lt; 300ms → set “liked”.</li>
+        <li><strong>Long press</strong>: saat tap, nyalakan <code>Clock</code> (mis. 500–700ms); 
+            jika masih menahan saat timer berbunyi → tampilkan menu.</li>
+        <li><strong>Pull to refresh</strong>: deteksi drag vertikal ke bawah dari tepi atas, 
+            jika melewati ambang → panggil prosedur muat ulang.</li>
+      </ul>
+    </div>
+  `
+      },
+      {
+        title: "Contoh: Pola Data",
+        content: `
+    <p><strong>Pola data</strong> terbentuk dari informasi yang terkumpul saat 
+    kita menggunakan aplikasi. Dari kumpulan data itu, sistem dapat menemukan 
+    kebiasaan dan membuat <strong>prediksi</strong> atau <strong>rekomendasi</strong>.</p>
+
+    <h4>Contoh Pola Data</h4>
+    <ul>
+      <li><strong>Rekomendasi belanja</strong>: aplikasi e-commerce menampilkan produk
+          serupa dengan yang pernah dilihat/dibeli.</li>
+      <li><strong>Rekomendasi musik/video</strong>: Spotify atau YouTube
+          menyarankan lagu/film sesuai genre favorit.</li>
+      <li><strong>Feed media sosial</strong>: urutan postingan dipersonalisasi
+          sesuai like, komen, dan akun yang diikuti.</li>
+    </ul>
+
+    <h4>Mengapa Ini Pola?</h4>
+    <ul>
+      <li><strong>Berulang</strong>: pilihan pengguna membentuk kebiasaan (misalnya sering klik genre tertentu).</li>
+      <li><strong>Dapat diprediksi</strong>: sistem bisa menebak apa yang mungkin disukai berikutnya.</li>
+      <li><strong>Bernilai</strong>: membantu aplikasi memberi pengalaman yang lebih relevan.</li>
+    </ul>
+
+    <div class="info-box">
+      <h4>💡 Di MIT App Inventor</h4>
+      <p>Kamu bisa mensimulasikan pola data dengan menyimpan riwayat input 
+      pengguna di <code>TinyDB</code>. Misalnya:
+      </p>
+      <ul>
+        <li>Catat kategori quiz yang paling sering dipilih.</li>
+        <li>Tampilkan rekomendasi kuis berikutnya berdasarkan data itu.</li>
+      </ul>
+    </div>
+  `
+      },
+      {
+        title: "Contoh: Pola Algoritma",
+        content: `
+    <p><strong>Pola algoritma</strong> adalah serangkaian langkah logis 
+    yang berulang untuk menyelesaikan masalah atau memproses data. 
+    Algoritma adalah <em>jantung</em> dari banyak layanan digital.</p>
+
+    <h4>Contoh Pola Algoritma</h4>
+    <ul>
+      <li><strong>Pencarian</strong>: mesin pencari Google menemukan informasi
+          paling relevan dari miliaran halaman.</li>
+      <li><strong>Sorting (pengurutan)</strong>: galeri foto mengurutkan berdasarkan
+          tanggal atau nama file.</li>
+      <li><strong>Rekomendasi otomatis</strong>: sistem AI/ML memberi saran film,
+          lagu, atau produk sesuai preferensi user.</li>
+    </ul>
+
+    <h4>Mengapa Ini Pola?</h4>
+    <ul>
+      <li><strong>Berulang</strong>: langkah algoritma dijalankan dengan cara sama
+          setiap kali ada input baru.</li>
+      <li><strong>Dapat diprediksi</strong>: input yang sama akan menghasilkan output sama.</li>
+      <li><strong>Terukur</strong>: efisiensi bisa dihitung (berapa cepat & hemat memori).</li>
+    </ul>
+
+    <div class="info-box">
+      <h4>💡 Di MIT App Inventor</h4>
+      <p>Kamu bisa membangun pola algoritma dengan <code>procedure</code>, 
+      <code>if/else</code>, dan <code>loop</code> (for/while). Contoh sederhana:</p>
+      <ul>
+        <li><strong>Sorting</strong>: urutkan daftar angka kecil ke besar.</li>
+        <li><strong>Pencarian</strong>: cek apakah nama tertentu ada di dalam list.</li>
+        <li><strong>Rekomendasi</strong>: hitung kategori yang paling sering dipilih user dari TinyDB.</li>
+      </ul>
+    </div>
+  `
+      },
+      {
+        title: "Aktivitas: Temukan Pola",
+        content: `
+    <p>Sekarang saatnya kamu berlatih menemukan pola sendiri! 
+    Pola ada di mana-mana, baik di kehidupan nyata maupun di dunia digital.</p>
+
+    <h4>Tugas</h4>
+    <ul>
+      <li><strong>Kehidupan sehari-hari</strong>: temukan minimal 2 pola, 
+          bisa berupa jadwal, kebiasaan, atau pola visual di sekitar rumah/sekolah.</li>
+      <li><strong>Dunia digital</strong>: temukan minimal 2 pola di aplikasi yang sering kamu pakai, 
+          misalnya Instagram, WhatsApp, atau game favorit.</li>
+    </ul>
+
+    <h4>Pertanyaan Diskusi</h4>
+    <ul>
+      <li>Mengapa pola itu membantu aktivitasmu?</li>
+      <li>Apa yang akan terjadi kalau pola itu hilang/berubah?</li>
+      <li>Bagaimana pola itu bisa diubah menjadi algoritma di komputer?</li>
+    </ul>
+
+    <div class="info-box">
+      <h4>💡 Tips</h4>
+      <p>Gunakan tabel sederhana untuk mencatat pola yang kamu temukan. 
+      Misalnya kolom “Nama Pola”, “Jenis (waktu/perilaku/digital)”, 
+      dan “Manfaat”.</p>
+    </div>
+
+    <div class="example-box">
+      <h4>Contoh Jawaban</h4>
+      <ul>
+        <li><em>Kehidupan nyata</em>: Jadwal sekolah → pola waktu → memudahkan prediksi kegiatan harian.</li>
+        <li><em>Dunia digital</em>: Tombol like di Instagram → pola interaksi → memudahkan pengguna memberi respon.</li>
+      </ul>
+    </div>
+  `
+      },
+      {
+        title: "Kesimpulan",
+        content: `
+    <p>Pola ada di mana-mana, dari rutinitas sehari-hari hingga teknologi digital. 
+    Mengenali pola membantu kita memahami dunia, menghemat waktu, dan mengambil keputusan lebih baik.</p>
+
+    <h4>Ringkasan</h4>
+    <ul>
+      <li><strong>Pola sehari-hari</strong>: waktu (jadwal), perilaku (rutinitas), visual (motif, bentuk).</li>
+      <li><strong>Pola digital</strong>: UI pattern (tampilan konsisten), pola interaksi (gestur), pola data (rekomendasi), pola algoritma (langkah logis).</li>
+      <li><strong>Inti</strong>: pola = keteraturan yang dapat diprediksi dan bermanfaat untuk efisiensi & pemecahan masalah.</li>
+    </ul>
+
+    <h4>Kaitan dengan Computational Thinking</h4>
+    <p>Mengidentifikasi pola adalah salah satu keterampilan inti berpikir komputasional. 
+    Dari pola, kita bisa membuat generalisasi, menyusun algoritma, 
+    dan merancang solusi sistematis untuk masalah sehari-hari maupun digital.</p>
+
+    <div class="info-box">
+      <h4>💡 Pesan Akhir</h4>
+      <p>Pola bukan sekadar pengulangan, tapi <strong>alat berpikir</strong> 
+      yang menghubungkan dunia nyata dengan cara kerja komputer. 
+      Dengan melatih kemampuan mengenali pola, kamu sedang membangun dasar menjadi 
+      <em>problem solver</em> di era digital.</p>
+    </div>
+  `
+      },
+
+
+
+
+
+
+
+
+
+      {
+        title: "Latihan: Temukan Polanya!",
+        content: `
+        <p>Perhatikan deretan gambar atau angka di bawah ini, lalu tentukan apa polanya dan apa yang seharusnya muncul berikutnya.</p>
+        
+        <h4>🧩 Pola Gambar</h4>
+        <div style="font-size: 2em; margin-bottom: 10px;">
+            🔴 🟡 🔴 🟡 🔴 🟡 ?
+        </div>
+        <p><strong>Pertanyaan:</strong> Apa warna bentuk berikutnya?</p>
+        
+        <h4>🔢 Pola Angka</h4>
+        <div style="font-size: 1.5em; margin-bottom: 10px;">
+            2, 4, 8, 16, 32, ?
+        </div>
+        <p><strong>Pertanyaan:</strong> Angka berapa yang seharusnya muncul selanjutnya?</p>
+        
+        <h4>💻 Pola di Aplikasi</h4>
+        <p>Bayangkan kamu sedang membuat aplikasi di MIT App Inventor yang menampilkan pesan setiap 3 detik: “Halo”, “Selamat Datang”, “Ayo Belajar” lalu mengulang dari awal. Apa pola yang terjadi?</p>
+        
+        <div class="example-box">
+            <h4>💡 Tips</h4>
+            <p>Lihatlah apa yang berulang, berapa jarak antar angka atau waktu, atau bentuk yang muncul secara teratur.</p>
+        </div>
+    `,
+      },
+      {
+        title: "Teknik Pelacakan yang Tidak Kamu Sadari",
+        content: `
+            <p>Setiap kali kamu online, ada banyak teknologi yang diam-diam mengumpulkan data tentang kamu. Memahami cara kerja teknologi ini adalah langkah pertama untuk melindungi diri.</p>
+            
+            <h4>🍪 Cookies: Jejak Digital yang Manis</h4>
+            <p>Cookies adalah file kecil yang disimpan di browser kamu untuk mengingat preferensi dan aktivitas. Meski berguna, cookies juga bisa digunakan untuk melacak pergerakan kamu di berbagai website.</p>
+            
+            <h4>👁️ Tracking Pixels: Mata Tak Kasat</h4>
+            <p>Gambar transparan berukuran 1x1 pixel yang disisipkan dalam email atau halaman web. Ketika kamu membuka email atau mengunjungi halaman, pixel ini memberitahu pengirim bahwa kamu telah melihat konten tersebut.</p>
+            
+            <h4>🔍 Device Fingerprinting: Identitas Unik Perangkat</h4>
+            <p>Teknik yang mengidentifikasi perangkat kamu berdasarkan kombinasi karakteristik unik seperti:</p>
+            <ul>
+              <li>Jenis browser dan versi</li>
+              <li>Sistem operasi dan resolusi layar</li>
+              <li>Plugin yang terinstal</li>
+              <li>Timezone dan bahasa</li>
+            </ul>
+            
+            <h4>📋 Data dari Formulir dan Aplikasi</h4>
+            <p>Setiap kali kamu mengisi formulir online, membuat akun, atau menggunakan aplikasi, data yang kamu berikan bisa:</p>
+            <ul>
+              <li>Disimpan dalam database perusahaan</li>
+              <li>Dibagikan dengan partner bisnis</li>
+              <li>Dijual ke pihak ketiga</li>
+              <li>Digunakan untuk profiling dan targeting</li>
+            </ul>
+            
+            <div class="info-box">
+              <h4>🛡️ Cara Melindungi Diri</h4>
+              <ul>
+                <li>Gunakan browser dengan mode incognito</li>
+                <li>Install ad blocker dan privacy extensions</li>
+                <li>Rajin clear cookies dan cache</li>
+                <li>Baca terms of service sebelum daftar</li>
+              </ul>
+            </div>
+          `,
+      },
+      {
+        title: "Ancaman Nyata terhadap Privasi Data",
+        content: `
+            <p>Memahami ancaman nyata membantu kamu menjadi lebih waspada dan siap menghadapi situasi yang berisiko. Berikut adalah ancaman yang paling umum terjadi:</p>
+            
+            <h4>🎣 Phishing: Umpan Digital yang Mematikan</h4>
+            <p>Phishing adalah teknik penipuan yang menyamar sebagai entitas tepercaya untuk mencuri informasi pribadi.</p>
+            
+            <div class="example-box">
+              <h4>📱 Contoh Phishing</h4>
+              <p>Kamu menerima SMS: "Akun bank Anda terblokir! Klik link ini untuk aktivasi: bank-palsu.com/aktivasi"</p>
+            </div>
+            
+            <ul>
+              <li><strong>Email phishing:</strong> Email palsu dari "bank" atau "aplikasi"</li>
+              <li><strong>SMS phishing:</strong> SMS dengan link mencurigakan</li>
+              <li><strong>Social media phishing:</strong> Akun palsu yang meminta data</li>
+            </ul>
+            
+            <h4>🎭 Identity Theft: Pencurian Identitas</h4>
+            <p>Ketika seseorang mengumpulkan cukup informasi tentang kamu untuk menyamar sebagai kamu. Dampaknya bisa sangat serius:</p>
+            <ul>
+              <li>Membuat pinjaman atas nama kamu</li>
+              <li>Menggunakan akun media sosial untuk penipuan</li>
+              <li>Mengakses layanan keuangan</li>
+              <li>Merusak reputasi digital kamu</li>
+            </ul>
+            
+            <h4>💔 Data Breach: Kebocoran Massal</h4>
+            <p>Ketika perusahaan atau organisasi mengalami peretasan, data pengguna bisa bocor ke publik atau dijual di dark web.</p>
+            
+            <div class="warning-box">
+              <h4>⚠️ Dampak Data Breach</h4>
+              <p>Kamu mungkin tidak bisa mencegah data breach, tetapi kamu bisa meminimalkan dampaknya dengan tidak menggunakan password yang sama di berbagai platform.</p>
+            </div>
+            
+            <h4>📱 Aplikasi yang Berlebihan</h4>
+            <p>Aplikasi yang meminta akses berlebihan atau menggunakan data di luar fungsi utamanya. Contoh: aplikasi kalkulator yang meminta akses ke kontak dan lokasi.</p>
+          `,
+      },
+      {
+        title: "Uji Coba: Cek Keamanan Postingan Kamu",
+        content: `
+            <p>Sebelum mempublikasikan sesuatu di media sosial, penting untuk melakukan "security check" terlebih dahulu. Tool interaktif ini membantu kamu mengidentifikasi potensi risiko dalam postingan.</p>
+            
+            <h4>🔍 Apa yang Dicek?</h4>
+            <ul>
+              <li><strong>Informasi Sensitif:</strong> Nomor telepon, alamat, password, NIK</li>
+              <li><strong>Kata Negatif:</strong> Bahasa yang bisa menyinggung atau toxic</li>
+              <li><strong>Oversharing:</strong> Informasi yang terlalu personal</li>
+            </ul>
+            
+            <h4>💡 Tips Posting yang Aman</h4>
+            <ul>
+              <li><strong>Think Before You Post:</strong> Tanyakan "Apakah ini perlu dibagikan?"</li>
+              <li><strong>Check Your Audience:</strong> Siapa yang bisa melihat postingan ini?</li>
+              <li><strong>Consider Long-term Impact:</strong> Bagaimana dampaknya 5 tahun lagi?</li>
+              <li><strong>Protect Others:</strong> Jangan tag atau mention orang tanpa izin</li>
+            </ul>
+            
+            <div class="warning-box">
+              <h4>⚠️ Red Flags dalam Postingan</h4>
+              <ul>
+                <li>Informasi kontak yang bisa disalahgunakan</li>
+                <li>Lokasi real-time yang bisa membahayakan</li>
+                <li>Foto dokumen resmi (KTP, SIM, kartu pelajar)</li>
+                <li>Informasi keuangan atau password</li>
+                <li>Konten yang bisa merusak reputasi</li>
+              </ul>
+            </div>
+            
+            <div class="example-box">
+              <h4>🎯 Contoh Postingan Aman vs Berisiko</h4>
+              <p><strong>Aman:</strong> "Senang belajar Python hari ini! #coding #belajar"</p>
+              <p><strong>Berisiko:</strong> "Lagi di rumah sendirian, alamat Jl. Sudirman No. 123. Hubungi 08123456789 kalau mau main!"</p>
+            </div>
+          `,
+      },
+      {
+        title: "🎮 Privacy Guardian Challenge: Uji Kemampuan Proteksi Data",
+        content: `
+            <p>Sekarang saatnya menguji kemampuan kamu dalam melindungi data pribadi melalui skenario nyata yang sering terjadi dalam kehidupan digital sehari-hari!</p>
+            
+            <h4>🎯 Cara Bermain</h4>
+            <ul>
+              <li><strong>5 Skenario Realistis:</strong> Berdasarkan situasi nyata yang sering dihadapi</li>
+              <li><strong>Pilihan Ganda:</strong> Setiap skenario punya 3 opsi jawaban</li>
+              <li><strong>Instant Feedback:</strong> Langsung dapat penjelasan setelah pilih jawaban</li>
+              <li><strong>Scoring System:</strong> Skor final menunjukkan tingkat kesadaran privasi kamu</li>
+            </ul>
+            
+            <h4>🧠 Konsep yang Diuji</h4>
+            <ul>
+              <li><strong>Phishing Recognition:</strong> Mengenali email atau pesan penipuan</li>
+              <li><strong>App Permission:</strong> Memahami izin aplikasi yang berlebihan</li>
+              <li><strong>Social Engineering:</strong> Teknik manipulasi untuk mendapatkan data</li>
+              <li><strong>Oversharing Awareness:</strong> Kesadaran terhadap berbagi informasi berlebihan</li>
+              <li><strong>Viral Trend Safety:</strong> Evaluasi keamanan tren media sosial</li>
+            </ul>
+            
+            <div class="example-box">
+              <h4>💡 Tips Sukses</h4>
+              <p>Pikirkan setiap skenario dari sudut pandang: "Apa risiko terburuk yang bisa terjadi?" dan "Bagaimana cara paling aman menangani situasi ini?"</p>
+            </div>
+            
+            <div class="info-box">
+              <h4>🎖️ Sistem Penilaian</h4>
+              <ul>
+                <li><strong>80-100%:</strong> Privacy Guardian Expert! 🛡️</li>
+                <li><strong>60-79%:</strong> Good Privacy Awareness 👍</li>
+                <li><strong>0-59%:</strong> Need More Privacy Education 📚</li>
+              </ul>
+            </div>
+            
+            <div class="warning-box">
+              <h4>⚠️ Real-World Application</h4>
+              <p>Situasi-situasi ini benar-benar terjadi di dunia nyata. Skill yang kamu pelajari di sini akan sangat berguna untuk melindungi data pribadi kamu sehari-hari!</p>
+            </div>
+          `,
+      },
+      {
+        title: "💻 Personal Data Tracker: Audit Digital Kamu",
+        content: `
+            <p>Program Python ini membantu kamu melacak dan mengaudit bagaimana data pribadi kamu dibagikan kepada berbagai aplikasi dan layanan. Seperti fitness tracker, tetapi untuk privasi data!</p>
+            
+            <h4>🎯 Fitur Utama Program</h4>
+            <ul>
+              <li><strong>Data Logging:</strong> Mencatat setiap kali kamu berbagi data</li>
+              <li><strong>Privacy Scoring:</strong> Memberikan skor privasi berdasarkan risiko</li>
+              <li><strong>Audit Trail:</strong> Melihat riwayat berbagi data dalam periode tertentu</li>
+              <li><strong>Risk Assessment:</strong> Menilai tingkat risiko setiap aplikasi</li>
+            </ul>
+            
+            <h4>📊 Sistem Scoring</h4>
+            <p>Program menggunakan sistem scoring berdasarkan tingkat risiko:</p>
+            <ul>
+              <li><strong>Minimal (-2):</strong> Data dasar yang diperlukan fungsi utama</li>
+              <li><strong>Medium (-5):</strong> Data yang cukup sensitif</li>
+              <li><strong>High (-10):</strong> Data yang sangat sensitif</li>
+              <li><strong>Critical (-20):</strong> Data yang sangat berisiko jika bocor</li>
+            </ul>
+            
+            <div class="example-box">
+              <h4>💡 Contoh Penggunaan</h4>
+              <p>Setiap kali install aplikasi baru atau memberikan izin akses data, catat dalam program ini. Setelah seminggu, lihat laporan privasi kamu!</p>
+            </div>
+            
+            <div class="info-box">
+              <h4>🚀 Pengembangan Lebih Lanjut</h4>
+              <p>Program ini bisa dikembangkan dengan menambahkan:</p>
+              <ul>
+                <li>Integrasi dengan API media sosial</li>
+                <li>Notifikasi otomatis untuk aplikasi berisiko</li>
+                <li>Visualisasi data dengan grafik</li>
+                <li>Machine learning untuk deteksi anomali</li>
+              </ul>
+            </div>
+          `,
+      },
+      {
+        title: "Panduan Praktis Melindungi Data Pribadi",
+        content: `
+            <p>Melindungi privasi data tidak harus rumit atau mahal. Dengan mengikuti panduan praktis ini, kamu bisa meningkatkan keamanan digital secara signifikan.</p>
+            
+            <h4>🔐 Password dan Autentikasi</h4>
+            <ul>
+              <li><strong>Password Unik:</strong> Gunakan password berbeda untuk setiap akun</li>
+              <li><strong>Password Manager:</strong> Gunakan aplikasi seperti Bitwarden atau 1Password</li>
+              <li><strong>Two-Factor Authentication:</strong> Aktifkan 2FA di semua akun penting</li>
+              <li><strong>Biometric Login:</strong> Gunakan fingerprint atau face ID jika tersedia</li>
+            </ul>
+            
+            <h4>📱 Manajemen Aplikasi</h4>
+            <ul>
+              <li><strong>Permission Audit:</strong> Cek izin aplikasi secara berkala</li>
+              <li><strong>App Cleanup:</strong> Hapus aplikasi yang tidak digunakan</li>
+              <li><strong>Official Store Only:</strong> Download aplikasi hanya dari toko resmi</li>
+              <li><strong>Update Regularly:</strong> Selalu update aplikasi ke versi terbaru</li>
+            </ul>
+            
+            <h4>🌐 Browsing yang Aman</h4            <ul>
+              <li><strong>HTTPS Only:</strong> Pastikan website menggunakan HTTPS</li>
+              <li><strong>Private Browsing:</strong> Gunakan mode incognito untuk aktivitas sensitif</li>
+              <li><strong>Ad Blocker:</strong> Install extension untuk blokir iklan dan tracker</li>
+              <li><strong>VPN:</strong> Gunakan VPN untuk koneksi yang lebih aman</li>
+            </ul>
+            
+            <h4>📱 Media Sosial yang Bijak</h4>
+            <ul>
+              <li><strong>Privacy Settings:</strong> Atur siapa yang bisa melihat postingan</li>
+              <li><strong>Location Services:</strong> Matikan berbagi lokasi otomatis</li>
+              <li><strong>Friend List Audit:</strong> Hapus kontak yang tidak dikenal</li>
+              <li><strong>Think Before Posting:</strong> Pertimbangkan dampak jangka panjang</li>
+            </ul>
+            
+            <div class="warning-box">
+              <h4>⚠️ Jangan Lupa</h4>
+              <p>Perlindungan data adalah proses berkelanjutan, bukan aktivitas satu kali. Lakukan audit privasi secara berkala untuk memastikan keamanan tetap terjaga.</p>
+            </div>
+          `,
+      },
+      {
+        title: "Siapa yang Mengumpulkan Data Kamu?",
+        content: `
+            <p>Setiap hari, berbagai pihak mengumpulkan data pribadi kita melalui interaksi digital. Mengetahui siapa saja yang terlibat membantu kita membuat keputusan yang lebih bijak.</p>
+            
+            <h4>📱 Platform Media Sosial</h4>
+            <p>Instagram, TikTok, Facebook, dan platform lainnya mengumpulkan:</p>
+            <ul>
+              <li><strong>Konten:</strong> Postingan, komentar, like, share</li>
+              <li><strong>Metadata:</strong> Waktu posting, lokasi, device yang digunakan</li>
+              <li><strong>Behavioral Data:</strong> Berapa lama melihat post tertentu</li>
+              <li><strong>Network Data:</strong> Siapa yang kamu follow dan yang follow kamu</li>
+            </ul>
+            
+            <h4>🛒 E-commerce dan Marketplace</h4>
+            <p>Tokopedia, Shopee, dan platform belanja online mengumpulkan:</p>
+            <ul>
+              <li><strong>Purchase History:</strong> Apa yang kamu beli dan kapan</li>
+              <li><strong>Browsing Pattern:</strong> Produk yang kamu lihat</li>
+              <li><strong>Payment Info:</strong> Metode pembayaran dan alamat pengiriman</li>
+              <li><strong>Reviews:</strong> Rating dan komentar yang kamu berikan</li>
+            </ul>
+            
+            <h4>🎮 Aplikasi dan Game</h4>
+            <p>Aplikasi mobile dan game online mengumpulkan:</p>
+            <ul>
+              <li><strong>Usage Pattern:</strong> Berapa lama dan seberapa sering bermain</li>
+              <li><strong>In-app Purchases:</strong> Pembelian dalam aplikasi</li>
+              <li><strong>Device Info:</strong> Spesifikasi perangkat dan performa</li>
+              <li><strong>Contact Access:</strong> Daftar kontak untuk fitur sosial</li>
+            </ul>
+            
+            <h4>🏛️ Instansi Pemerintahan</h4>
+            <p>Melalui layanan publik, pemerintah mengumpulkan:</p>
+            <ul>
+              <li><strong>Data Identitas:</strong> KTP, SIM, paspor</li>
+              <li><strong>Data Pendidikan:</strong> Riwayat sekolah dan nilai</li>
+              <li><strong>Data Kesehatan:</strong> Rekam medis dan asuransi</li>
+              <li><strong>Data Keuangan:</strong> Pajak dan bantuan sosial</li>
+            </ul>
+            
+            <div class="info-box">
+              <h4>🎯 Yang Perlu Kamu Lakukan</h4>
+              <ul>
+                <li><strong>Baca Privacy Policy:</strong> Pahami bagaimana data kamu digunakan</li>
+                <li><strong>Audit Berkala:</strong> Cek aplikasi mana saja yang punya akses ke data kamu</li>
+                <li><strong>Selective Sharing:</strong> Hanya bagikan data yang memang diperlukan</li>
+                <li><strong>Know Your Rights:</strong> Pahami hak kamu terhadap data pribadi</li>
+              </ul>
+            </div>
+          `,
+      },
+      {
+        title: "Perlindungan Hukum Data Pribadi di Indonesia",
+        content: `
+            <p>Indonesia memiliki regulasi komprehensif untuk melindungi data pribadi warga negara. Memahami hak-hak legal kamu adalah langkah penting dalam melindungi privasi data.</p>
+            
+            <h4>🏛️ UU Perlindungan Data Pribadi (UU PDP)</h4>
+            <p>Undang-Undang Nomor 27 Tahun 2022 tentang Perlindungan Data Pribadi memberikan kerangka hukum yang kuat untuk melindungi data pribadi warga negara Indonesia.</p>
+            
+            <h4>🛡️ Hak-Hak yang Dijamin UU PDP</h4>
+            <ul>
+              <li><strong>Hak Informasi:</strong> Mengetahui data pribadi dikumpulkan oleh siapa dan untuk apa</li>
+              <li><strong>Hak Akses:</strong> Mengakses dan mendapatkan salinan data pribadi</li>
+              <li><strong>Hak Pembetulan:</strong> Memperbaiki data yang salah atau tidak akurat</li>
+              <li><strong>Hak Penghapusan:</strong> Meminta penghapusan data yang tidak diperlukan</li>
+              <li><strong>Hak Penarikan:</strong> Menarik kembali persetujuan penggunaan data</li>
+              <li><strong>Hak Penolakan:</strong> Menolak pemrosesan otomatis dan profiling</li>
+            </ul>
+            
+            <h4>⚖️ Kewajiban Pengendali Data</h4>
+            <p>Perusahaan dan organisasi yang mengumpulkan data pribadi wajib:</p>
+            <ul>
+              <li><strong>Meminta Persetujuan:</strong> Izin eksplisit sebelum mengumpulkan data</li>
+              <li><strong>Menjaga Keamanan:</strong> Implementasi langkah-langkah keamanan yang memadai</li>
+              <li><strong>Transparan:</strong> Memberikan informasi yang jelas tentang penggunaan data</li>
+              <li><strong>Melaporkan Pelanggaran:</strong> Memberitahu otoritas jika terjadi kebocoran data</li>
+            </ul>
+            
+            <div class="example-box">
+              <h4>💼 Contoh Implementasi</h4>
+              <p>Ketika kamu install aplikasi baru, kamu harus mendapat penjelasan yang jelas tentang data apa yang dikumpulkan, untuk apa digunakan, dan berapa lama disimpan.</p>
+            </div>
+            
+            <div class="warning-box">
+              <h4>⚠️ Sanksi Pelanggaran</h4>
+              <p>Perusahaan yang melanggar UU PDP bisa dikenakan sanksi administratif hingga denda maksimal 2% dari pendapatan tahunan atau Rp 25 miliar.</p>
+            </div>
+            
+            <div class="info-box">
+              <h4>🚀 Cara Melaporkan Pelanggaran</h4>
+              <p>Jika kamu merasa data pribadi kamu disalahgunakan, kamu bisa melaporkan ke Kementerian Komunikasi dan Informatika atau lembaga yang berwenang.</p>
+            </div>
+          `,
+      },
+      {
+        title: "Studi Kasus: Viral Challenge dan Risiko Privacy",
+        content: `
+            <p>Kasus viral challenge yang meminta pengguna menunjukkan dokumen identitas adalah contoh nyata bagaimana tren media sosial bisa membahayakan privasi data tanpa disadari.</p>
+            
+            <h4>🎭 Analisis Kasus</h4>
+            <p>Challenge yang meminta pengguna upload video dengan KTP/kartu pelajar terlihat sangat berbahaya karena:</p>
+            <ul>
+              <li><strong>Data Sensitif Terbuka:</strong> NIK, alamat, dan informasi pribadi jadi publik</li>
+              <li><strong>Identity Theft Risk:</strong> Data bisa digunakan untuk penipuan</li>
+              <li><strong>Permanent Record:</strong> Video bisa tersimpan selamanya di internet</li>
+              <li><strong>Viral Effect:</strong> Semakin banyak yang ikut, semakin besar risikonya</li>
+            </ul>
+            
+            <h4>🛡️ Strategi Penolakan yang Sopan</h4>
+            <ul>
+              <li><strong>"Aku prefer nggak ikut challenge yang butuh dokumen resmi"</strong></li>
+              <li><strong>"Khawatir sama privacy, tapi thanks udah ajak!"</strong></li>
+              <li><strong>"Mending kita bikin challenge yang lebih kreatif dan aman"</strong></li>
+            </ul>
+            
+            <h4>💡 Alternatif Solusi</h4>
+            <p>Untuk membuktikan umur atau identitas secara aman:</p>
+            <ul>
+              <li><strong>Verifikasi Platform:</strong> Gunakan sistem verifikasi resmi aplikasi</li>
+              <li><strong>Sensor Informasi:</strong> Tutup data sensitif jika harus upload</li>
+              <li><strong>Private Verification:</strong> Kirim ke pihak yang membutuhkan secara private</li>
+              <li><strong>Third-party Services:</strong> Gunakan layanan verifikasi identitas yang aman</li>
+            </ul>
+            
+            <div class="warning-box">
+              <h4>⚠️ Red Flags Challenge</h4>
+              <p>Waspadai challenge yang meminta:</p>
+              <ul>
+                <li>Dokumen resmi (KTP, SIM, passport)</li>
+                <li>Informasi finansial (rekening, kartu kredit)</li>
+                <li>Data pribadi sensitif (alamat, nomor telepon)</li>
+                <li>Password atau kode akses</li>
+              </ul>
+            </div>
+            
+            <div class="example-box">
+              <h4>🎯 Lesson Learned</h4>
+              <p>Popularitas dan viral tidak selalu berarti aman. Selalu evaluasi risiko privasi sebelum mengikuti tren apapun di media sosial.</p>
+            </div>
+          `,
+      },
+      {
+        title: "Refleksi dan Evaluasi Kebiasaan Digital",
+        content: `
+            <p>Refleksi adalah kunci untuk mengembangkan kesadaran tentang privasi data. Dengan mengevaluasi kebiasaan digital secara berkala, kita bisa terus memperbaiki praktik privasi kita.</p>
+            
+            <h4>🔍 Audit Privasi Pribadi</h4>
+            <p>Lakukan evaluasi diri dengan pertanyaan-pertanyaan ini:</p>
+            <ul>
+              <li><strong>Data Awareness:</strong> Informasi pribadi apa yang paling penting untuk dilindungi?</li>
+              <li><strong>Privacy Policy:</strong> Kapan terakhir kali kamu membaca privacy policy aplikasi?</li>
+              <li><strong>Settings Check:</strong> Seberapa sering kamu mengecek pengaturan privasi?</li>
+              <li><strong>Sharing Habits:</strong> Apa yang biasanya kamu bagikan di media sosial?</li>
+            </ul>
+            
+            <h4>📋 Tugas Audit Mingguan</h4>
+            <div class="example-box">
+              <h4>🎯 Checklist Audit</h4>
+              <ul>
+                <li><strong>Hari 1-2:</strong> Cek pengaturan privasi di semua akun media sosial</li>
+                <li><strong>Hari 3-4:</strong> Audit aplikasi yang terinstal dan hapus yang tidak perlu</li>
+                <li><strong>Hari 5-6:</strong> Ganti password lama yang sudah dipakai lebih dari satu tahun</li>
+                <li><strong>Hari 7:</strong> Evaluasi dan dokumentasikan hasil audit</li>
+              </ul>
+            </div>
+            
+            <h4>💭 Pertanyaan Refleksi Mendalam</h4>
+            <ul>
+              <li><strong>Value Assessment:</strong> Seberapa penting privasi data dibandingkan kemudahan teknologi?</li>
+              <li><strong>Risk Tolerance:</strong> Seberapa besar risiko yang bersedia kamu ambil untuk mendapatkan layanan gratis?</li>
+              <li><strong>Future Impact:</strong> Bagaimana kebiasaan digital kamu hari ini akan mempengaruhi masa depan?</li>
+              <li><strong>Social Responsibility:</strong> Bagaimana kamu bisa membantu teman/keluarga lebih aware tentang privasi?</li>
+            </ul>
+            
+            <div class="info-box">
+              <h4>📊 Tracking Progress</h4>
+              <p>Buatlah jurnal privasi sederhana untuk mencatat:</p>
+              <ul>
+                <li>Aplikasi baru yang diinstall dan alasannya</li>
+                <li>Perubahan pengaturan privasi yang dilakukan</li>
+                <li>Incident atau hampir-incident yang dialami</li>
+                <li>Pembelajaran dan insights yang didapat</li>
+              </ul>
+            </div>
+            
+            <div class="warning-box">
+              <h4>⚠️ Konsistensi adalah Kunci</h4>
+              <p>Privasi data bukan tentang tindakan heroik satu kali, tetapi tentang kebiasaan kecil yang konsisten dilakukan setiap hari.</p>
+            </div>
+          `,
+      },
+      {
+        title: "Kesimpulan: Menjadi Digital Guardian",
+        content: `
+            <p>Selamat! Kamu telah menyelesaikan perjalanan pembelajaran tentang privasi data digital. Sekarang kamu memiliki pengetahuan dan alat untuk menjadi guardian data pribadi yang cerdas dan bertanggung jawab.</p>
+            
+            <div class="example-box">
+              <h4>🌟 Key Takeaways</h4>
+              <ul>
+                <li><strong>Data is Power:</strong> Data pribadi adalah aset berharga yang perlu dijaga</li>
+                <li><strong>Privacy vs Security:</strong> Keduanya penting dan saling melengkapi</li>
+                <li><strong>Awareness is Key:</strong> Mengetahui risiko adalah langkah pertama perlindungan</li>
+                <li><strong>You Have Rights:</strong> UU PDP memberikan perlindungan hukum yang kuat</li>
+                <li><strong>Proactive Protection:</strong> Pencegahan lebih baik daripada perbaikan</li>
+              </ul>
+            </div>
+            
+            <h4>🚀 Action Plan untuk Masa Depan</h4>
+            <ul>
+              <li><strong>Immediate Actions:</strong> Terapkan langkah-langkah perlindungan dasar hari ini</li>
+              <li><strong>Weekly Habits:</strong> Lakukan audit privasi mingguan</li>
+              <li><strong>Monthly Review:</strong> Evaluasi dan perbarui strategi perlindungan</li>
+              <li><strong>Continuous Learning:</strong> Tetap update dengan perkembangan teknologi dan regulasi</li>
+            </ul>
+            
+            <h4>💪 Menjadi Privacy Advocate</h4>
+            <p>Sebagai generasi digital native, kamu punya peran penting dalam:</p>
+            <ul>
+              <li><strong>Educating Others:</strong> Berbagi pengetahuan dengan teman dan keluarga</li>
+              <li><strong>Leading by Example:</strong> Menunjukkan praktik privasi yang baik</li>
+              <li><strong>Supporting Good Practices:</strong> Pilih produk dan layanan yang menghormati privasi</li>
+              <li><strong>Speaking Up:</strong> Laporkan pelanggaran dan dukung regulasi yang melindungi konsumen</li>
+            </ul>
+            
+            <div class="info-box">
+              <h4>🎓 What's Next?</h4>
+              <p><strong>Modul Berikutnya:</strong> Etika Digital dan Netiquette<br>
+              Kita akan belajar cara berinteraksi dengan sopan dan bertanggung jawab di dunia digital, membangun komunitas online yang sehat dan positif.</p>
+            </div>
+            
+            <div class="warning-box">
+              <h4>🛡️ Remember Always</h4>
+              <p>Privasi data bukan tentang paranoia, tetapi tentang kontrol. Kamu berhak menentukan bagaimana data pribadi kamu digunakan. Gunakan kekuatan ini dengan bijak!</p>
+            </div>
+          `,
+      },
+      {
+        title: "Apa Itu Pola?",
+        content: `
+            <p>Pola adalah rangkaian elemen yang diulang dengan cara tertentu. Dalam kehidupan sehari-hari, pola bisa berupa kebiasaan, rutinitas, atau bahkan struktur sosial.</p>
+            
+            <h4>🔍 Mengamati Pola</h4>
+            <p>Untuk memahami pola, kita perlu mengamati dan mengenali elemen-elemen yang berulang. Ini seperti menjadi detektif yang mencari petunjuk!</p>
+            
+            <div class="example-box">
+              <h4>🕵️‍♂️ Contoh Pengamatan Pola</h4>
+              <p>Jika kamu melihat anak kecil menggambar lingkaran-lingkaran kecil yang saling terhubung, itu adalah pola. Atau, jika kamu mendengar lagu dengan nada yang diulang, itu juga pola.</p>
+            </div>
+            
+            <div class="info-box">
+              <h4>🎯 Mengapa Penting untuk Mengenali Pola?</h4>
+              <p>Mengenali pola membantu kita dalam banyak hal, seperti:</p>
+              <ul>
+                <li>🔑 Memecahkan masalah dengan lebih mudah</li>
+                <li>🎨 Menciptakan karya seni atau desain yang menarik</li>
+                <li>📈 Menganalisis data untuk mengambil keputusan yang tepat</li>
+                <li>🧠 Melatih otak untuk berpikir kritis dan kreatif</li>
+              </ul>
+            </div>
+          `,
+      },
+      {
+        title: "Contoh Pola dalam Kehidupan Sehari-hari",
+        content: `
+            <p>Pola dapat ditemukan di mana saja, mulai dari alam, seni, hingga teknologi. Berikut adalah beberapa contoh pola yang umum:</p>
+            
+            <h4>🌿 Pola Alam</h4>
+            <p>Di alam, pola sering kali terlihat dalam bentuk simetri, ritme, dan keseimbangan. Contoh:</p>
+            <ul>
+              <li>Daun tanaman yang tumbuh bersusun</li>
+              <li>Gelombang laut yang datang silih berganti</li>
+              <li>Ritme detak jantung manusia</li>
+            </ul>
+            
+            <h4>🎨 Pola Seni dan Desain</h4>
+            <p>Dalam seni, pola digunakan untuk menciptakan keindahan dan harmoni. Contoh:</p>
+            <ul>
+              <li>Motif batik yang berulang</li>
+              <li>Polka dot pada kain atau wallpaper</li>
+              <li>Rangakaian warna dalam lukisan abstrak</li>
+            </ul>
+            
+            <h4>📊 Pola Data dan Statistik</h4>
+            <p>Dalam analisis data, pola membantu kita memahami tren dan membuat prediksi. Contoh:</p>
+            <ul>
+              <li>Grafik garis yang menunjukkan pertumbuhan penjualan dari waktu ke waktu</li>
+              <li>Diagram batang yang membandingkan jumlah pengunjung sebelum dan sesudah promosi</li>
+              <li>Peta panas yang menunjukkan lokasi dengan aktivitas tertinggi</li>
+            </ul>
+            
+            <div class="warning-box">
+              <h4>⚠️ Hati-hati dengan Pola yang Menyesatkan</h4>
+              <p>Tidak semua pola itu baik atau aman. Beberapa pola bisa menyesatkan atau berbahaya, seperti:</p>
+              <ul>
+                <li>Pola pikir negatif yang berulang</li>
+                <li>Pola kebiasaan buruk yang sulit dihilangkan</li>
+                <li>Pola penipuan yang menyamar sebagai kesempatan</li>
+              </ul>
+            </div>
+          `,
+      },
+      {
+        title: "Latihan: Mengenali dan Membuat Pola",
+        content: `
+            <p>Untuk melatih keterampilan mengenali dan membuat pola, coba lakukan latihan berikut:</p>
+            
+            <h4>🕵️‍♀️ Tugas 1: Mengenali Pola</h4>
+            <p>Amati lingkungan sekitar kamu dan coba identifikasi pola-pola berikut:</p>
+            <ul>
+              <li>Pola warna pada bendera negara</li>
+              <li>Pola bentuk pada jendela gedung</li>
+              <li>Pola suara dalam lagu kesukaan</li>
+            </ul>
+            
+            <h4>🎨 Tugas 2: Membuat Pola</h4>
+            <p>Buatlah pola sederhana menggunakan bentuk dan warna favorit kamu. Misalnya:</p>
+            <ul>
+              <li>Bentuk: Lingkaran, segitiga, kotak</li>
+              <li>Warna: Merah, biru, hijau, kuning</li>
+            </ul>
+            
+            <h4>📊 Tugas 3: Menganalisis Pola Data</h4>
+            <p>Ambil data sederhana (misal: tinggi badan teman-teman) dan coba buat grafik untuk menunjukkan pola atau tren.</p>
+            
+            <div class="info-box">
+              <h4>🎯 Tips Sukses</h4>
+              <p>Gunakan kreativitas dan imajinasi kamu. Tidak ada jawaban benar atau salah, yang penting adalah proses belajar dan eksplorasi.</p>
+            </div>
+          `,
+      },
+    ];
+
+    function updateSlide() {
+      // Hide all slides
+      slides.forEach((slide) => slide.classList.remove("active"));
+
+      // Show current slide
+      slides[currentSlideIndex].classList.add("active");
+
+      // Update navigation
+      document.getElementById("currentSlide").textContent = currentSlideIndex + 1;
+      document.getElementById("prevBtn").disabled = currentSlideIndex === 0;
+      document.getElementById("nextBtn").disabled = currentSlideIndex === totalSlides - 1;
+
+      // Update progress bar
+      const progress = ((currentSlideIndex + 1) / totalSlides) * 100;
+      document.getElementById("progressFill").style.width = progress + "%";
+
+      // Update explanation
+      updateExplanation();
+
+      // Trigger slide-specific animations
+      animateSlideEntrance(currentSlideIndex);
+    }
+
+    function animateSlideEntrance(slideIndex) {
+      const currentSlide = slides[slideIndex];
+
+      // Animate based on slide content
+      switch (slideIndex) {
+        case 1: // Privacy vs Security comparison
+          setTimeout(() => {
+            if (currentSlideIndex === 1) {
+              // Animate privacy steps first
+              animatePrivacySteps();
+
+              // Then animate comparison cards
+              setTimeout(() => {
+                const cards = currentSlide.querySelectorAll(".comparison-card");
+                cards.forEach((el) => (el.style.visibility = "visible"));
+                gsap.fromTo(
+                  cards,
+                  { opacity: 0, x: -30 },
+                  {
+                    opacity: 1,
+                    x: 0,
+                    duration: 0.6,
+                    stagger: 0.2,
+                    ease: "back.out(1.7)",
+                  }
+                );
+              }, 800);
+            }
+          }, 50);
+          break;
+
+        case 2: // Data types grid
+          setTimeout(() => {
+            if (currentSlideIndex === 2) {
+              const dataCards = currentSlide.querySelectorAll(".data-card");
+              dataCards.forEach((el) => (el.style.visibility = "visible"));
+              gsap.fromTo(
+                dataCards,
+                { opacity: 0, y: 30, scale: 0.9 },
+                {
+                  opacity: 1,
+                  y: 0,
+                  scale: 1,
+                  duration: 0.6,
+                  stagger: 0.15,
+                  ease: "back.out(1.7)",
+                }
+              );
+            }
+          }, 50);
+          break;
+
+        case 5: // Threats grid
+        case 10: // Who collects data
+          setTimeout(() => {
+            if (currentSlideIndex === slideIndex) {
+              const dataCards = currentSlide.querySelectorAll(".data-card");
+              dataCards.forEach((el) => (el.style.visibility = "visible"));
+              gsap.fromTo(
+                dataCards,
+                { opacity: 0, y: 20, rotation: 5 },
+                {
+                  opacity: 1,
+                  y: 0,
+                  rotation: 0,
+                  duration: 0.5,
+                  stagger: 0.1,
+                  ease: "back.out(1.7)",
+                }
+              );
+            }
+          }, 50);
+          break;
+      }
+    }
+
+    function animatePrivacySteps() {
+      const steps = document.querySelectorAll(".privacy-step");
+
+      // Reset all steps with smoother initial state
+      gsap.set(steps, {
+        opacity: 0,
+        scale: 0.3,
+        rotation: 180,
+        y: 20,
+        visibility: "visible",
+      });
+
+      // Create timeline for smoother sequence
+      const tl = gsap.timeline();
+
+      // Animate steps entrance
+      tl.to(steps, {
+        opacity: 1,
+        scale: 1,
+        rotation: 0,
+        y: 0,
+        duration: 0.6,
+        stagger: 0.15,
+        ease: "back.out(1.7)",
+      });
+    }
+
+    function updateExplanation() {
+      const explanation = explanations[currentSlideIndex];
+      document.getElementById("explanationContent").innerHTML = `
+          <h3>${explanation.title}</h3>
+          ${explanation.content}
+        `;
+    }
+
+    function changeSlide(direction) {
+      const newIndex = currentSlideIndex + direction;
+      if (newIndex >= 0 && newIndex < totalSlides) {
+        currentSlideIndex = newIndex;
+        updateSlide();
+      }
+    }
+
+    // Interactive privacy checker
+    function checkPostPrivacy() {
+      const input = document.getElementById("postInput").value;
+      const resultDiv = document.getElementById("privacyResult");
+
+      if (!input.trim()) {
+        resultDiv.innerHTML = "⚠️ Masukkan teks yang ingin dicek terlebih dahulu.";
+        resultDiv.className = "privacy-result warning";
+        resultDiv.style.display = "block";
+        return;
+      }
+
+      const sensitiveInfo = [
+        'nomor hp', 'no hp', 'telepon', '08', '062', '061',
+        'alamat', 'rumah', 'jalan', 'rt', 'rw',
+        'password', 'sandi', 'pin', 'kode',
+        'nik', 'ktp', 'sim', 'passport'
+      ];
+
+      const negativeWords = [
+        'benci', 'bodoh', 'jelek', 'menyebalkan', 'goblok',
+        'anjing', 'bangsat', 'tolol', 'idiot'
+      ];
+
+      const warnings = [];
+      const postLower = input.toLowerCase();
+
+      // Check for sensitive information
+      for (const info of sensitiveInfo) {
+        if (postLower.includes(info)) {
+          warnings.push(`⚠️ Terdeteksi informasi sensitif: "${info}"`);
+        }
+      }
+
+      // Check for negative words
+      for (const word of negativeWords) {
+        if (postLower.includes(word)) {
+          warnings.push(`⚠️ Kata negatif terdeteksi: "${word}"`);
+        }
+      }
+
+      if (warnings.length > 0) {
+        resultDiv.innerHTML = `
+            <strong>❌ POSTINGAN TIDAK AMAN:</strong><br>
+            ${warnings.join('<br>')}
+            <br><br>💡 Pertimbangkan untuk mengedit sebelum posting!
+          `;
+        resultDiv.className = "privacy-result warning";
+      } else {
+        resultDiv.innerHTML = "✅ Postingan terlihat aman untuk dibagikan!";
+        resultDiv.className = "privacy-result safe";
+      }
+
+      resultDiv.style.display = "block";
+    }
+
+    // Privacy Game Logic
+    let gameState = {
+      currentScenario: 1,
+      score: 0,
+      scenarios: [
+        {
+          id: 1,
+          title: "Situasi #1",
+          text: "Kamu mendapat email dari 'bank' yang meminta konfirmasi data dengan klik link. Apa yang akan kamu lakukan?",
+          choices: [
+            { text: "A. Langsung klik link dan isi data", correct: false, explanation: "❌ Ini adalah tanda phishing! Jangan pernah klik link mencurigakan." },
+            { text: "B. Cek email bank asli dan hubungi CS", correct: true, explanation: "✅ Tepat! Selalu verifikasi melalui kanal resmi bank." },
+            { text: "C. Abaikan email tersebut", correct: false, explanation: "⚠️ Lebih baik laporkan ke bank untuk mencegah korban lain." }
+          ]
+        },
+        {
+          id: 2,
+          title: "Situasi #2",
+          text: "Aplikasi game meminta akses ke kontak, lokasi, dan kamera. Padahal ini cuma game puzzle sederhana. Apa reaksi kamu?",
+          choices: [
+            { text: "A. Kasih akses semua, yang penting bisa main", correct: false, explanation: "❌ Aplikasi game puzzle tidak butuh akses sebanyak itu!" },
+            { text: "B. Tolak semua akses dan cari game lain", correct: true, explanation: "✅ Benar! Red flag kalau aplikasi minta akses berlebihan." },
+            { text: "C. Kasih akses tapi nanti dicabut lagi", correct: false, explanation: "⚠️ Sekali akses dikasih, data sudah bisa diambil." }
+          ]
+        },
+        {
+          id: 3,
+          title: "Situasi #3",
+          text: "Teman kamu posting foto liburan dengan boarding pass terlihat jelas. Apa yang sebaiknya kamu lakukan?",
+          choices: [
+            { text: "A. Kasih like dan comment biasa", correct: false, explanation: "❌ Boarding pass berisi data sensitif seperti nama lengkap dan kode booking!" },
+            { text: "B. DM teman untuk hapus foto tersebut", correct: true, explanation: "✅ Tepat! Boarding pass bisa disalahgunakan untuk penipuan." },
+            { text: "C. Screenshot dan share ke group lain", correct: false, explanation: "❌ Ini malah memperluas penyebaran data sensitif!" }
+          ]
+        },
+        {
+          id: 4,
+          title: "Situasi #4",
+          text: "Kamu dapat pesan WhatsApp dari nomor tidak dikenal yang mengaku dari e-commerce, minta konfirmasi alamat untuk hadiah. Bagaimana?",
+          choices: [
+            { text: "A. Balas dengan alamat lengkap", correct: false, explanation: "❌ Ini bisa jadi social engineering untuk kumpulkan data pribadi!" },
+            { text: "B. Tanya dulu di akun resmi e-commerce", correct: true, explanation: "✅ Benar! Selalu verifikasi melalui kanal resmi perusahaan." },
+            { text: "C. Ignore dan block nomor tersebut", correct: false, explanation: "⚠️ Sebaiknya juga laporkan ke e-commerce untuk mencegah korban lain." }
+          ]
+        },
+        {
+          id: 5,
+          title: "Situasi #5",
+          text: "Ada trend viral di media sosial yang meminta upload foto KTP untuk 'verifikasi umur'. Teman-teman mulai ikutan. Apa yang kamu lakukan?",
+          choices: [
+            { text: "A. Ikutan biar tidak ketinggalan trend", correct: false, explanation: "❌ KTP berisi data super sensitif! Sekali bocor, bisa untuk penipuan." },
+            { text: "B. Tidak ikut dan edukasi teman-teman", correct: true, explanation: "✅ Perfect! Kamu jadi privacy advocate yang melindungi komunitas." },
+            { text: "C. Upload KTP tapi data penting ditutup", correct: false, explanation: "⚠️ Editing bisa di-reverse, masih berisiko. Lebih baik tidak upload sama sekali." }
+          ]
+        }
+      ]
+    };
+
+    function handleChoice(scenarioId, choice) {
+      const scenario = gameState.scenarios.find(s => s.id === scenarioId);
+      const choiceIndex = choice.charCodeAt(0) - 65; // Convert A,B,C to 0,1,2
+      const selectedChoice = scenario.choices[choiceIndex];
+
+      // Update score
+      if (selectedChoice.correct) {
+        gameState.score++;
+      }
+
+      // Update UI
+      const buttons = document.querySelectorAll('.choice-btn');
+      buttons.forEach((btn, index) => {
+        btn.disabled = true;
+        if (index === choiceIndex) {
+          btn.classList.add(selectedChoice.correct ? 'correct' : 'incorrect');
+        } else if (scenario.choices[index].correct) {
+          btn.classList.add('correct');
+        } else {
+          btn.classList.add('neutral');
+        }
+      });
+
+      // Show feedback
+      document.getElementById('feedbackContent').innerHTML = selectedChoice.explanation;
+      document.getElementById('gameFeedback').style.display = 'block';
+      document.getElementById('currentScore').textContent = gameState.score;
+    }
+
+    function nextScenario() {
+      if (gameState.currentScenario < gameState.scenarios.length) {
+        gameState.currentScenario++;
+        const scenario = gameState.scenarios[gameState.currentScenario - 1];
+
+        // Update scenario content
+        document.querySelector('.game-scenario h4').textContent = scenario.title;
+        document.getElementById('scenarioText').textContent = scenario.text;
+
+        // Update choice buttons
+        const buttons = document.querySelectorAll('.choice-btn');
+        buttons.forEach((btn, index) => {
+          btn.textContent = scenario.choices[index].text;
+          btn.disabled = false;
+          btn.className = 'choice-btn';
+          btn.onclick = () => handleChoice(scenario.id, String.fromCharCode(65 + index));
+        });
+
+        // Hide feedback and update counters
+        document.getElementById('gameFeedback').style.display = 'none';
+        document.getElementById('currentScenario').textContent = gameState.currentScenario;
+      } else {
+        // Game complete
+        showGameComplete();
+      }
+    }
+
+    function showGameComplete() {
+      const percentage = (gameState.score / gameState.scenarios.length) * 100;
+      let scoreClass = 'score-needs-improvement';
+      let message = 'Perlu belajar lebih banyak tentang privasi data!';
+
+      if (percentage >= 80) {
+        scoreClass = 'score-excellent';
+        message = 'Luar biasa! Kamu sudah menjadi Privacy Guardian yang handal!';
+      } else if (percentage >= 60) {
+        scoreClass = 'score-good';
+        message = 'Bagus! Kamu sudah punya kesadaran privasi yang baik.';
+      }
+
+      document.querySelector('.privacy-game').innerHTML = `
+          <div class="game-complete">
+            <h4>🎉 Challenge Selesai!</h4>
+            <p class="${scoreClass}">Skor: ${gameState.score}/${gameState.scenarios.length} (${percentage.toFixed(0)}%)</p>
+            <p>${message}</p>
+            <button class="next-scenario-btn" onclick="resetGame()">Main Lagi</button>
+          </div>
+        `;
+    }
+
+    function resetGame() {
+      gameState.currentScenario = 1;
+      gameState.score = 0;
+
+      // Reset to first scenario
+      location.reload(); // Simple reset by reloading
+    }
+
+    // Keyboard navigation
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowLeft") changeSlide(-1);
+      if (e.key === "ArrowRight") changeSlide(1);
+    });
+
+    // Initialize
+    document.addEventListener("DOMContentLoaded", function () {
+      checkAccess();
+    });
+  </script>
+</body>
+
+</html>
