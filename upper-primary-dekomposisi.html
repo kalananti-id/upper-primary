@@ -1,0 +1,2414 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dekomposisi: Memecah Masalah Menjadi Bagian Kecil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['Poppins', 'ui-sans-serif', 'system-ui'],
+                        body: ['Inter', 'ui-sans-serif', 'system-ui'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eefbf7', 100: '#d6f6ee', 200: '#adecde', 300: '#7adcc9', 400: '#42c4ad',
+                            500: '#1ea48f', 600: '#168778', 700: '#136b62', 800: '#11554f', 900: '#0f4642'
+                        },
+                        accent: {
+                            50: '#fff6ee', 100: '#ffe9d6', 200: '#ffd2ad', 300: '#ffb27a', 400: '#ff8b42',
+                            500: '#fb6a1e', 600: '#de4f16', 700: '#b93e14', 800: '#953314', 900: '#7b2b13'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Poppins:wght@600;800&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Smooth in/out for slides */
+        .slide-enter {
+            opacity: 0;
+            transform: translateY(12px) scale(0.98);
+        }
+
+        .slide-enter-active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            transition: all 300ms ease;
+        }
+
+        .slide-exit {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .slide-exit-active {
+            opacity: 0;
+            transform: translateY(-12px) scale(0.98);
+            transition: all 250ms ease;
+        }
+
+        /* DnD visual states */
+        .drag-over {
+            outline: 3px dashed #42c4ad;
+            border-radius: 12px;
+            background: rgba(66, 196, 173, 0.08);
+        }
+
+        .draggable-ghost {
+            opacity: 0.4;
+        }
+
+        .no-select {
+            user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-brand-50 via-white to-accent-50 text-slate-800 font-body">
+    <!-- Password Gate (selalu diminta) -->
+<div id="passwordGate" class="fixed inset-0 z-[9999] bg-white/90 backdrop-blur-sm flex items-center justify-center">
+  <div class="w-full max-w-md p-6 md:p-8 rounded-2xl bg-white shadow-xl border border-slate-200">
+    <div class="flex items-center gap-3">
+      <div class="p-2 rounded-xl bg-brand-100 ring-4 ring-white shadow">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="3" y="10" width="18" height="10" rx="2" fill="#42c4ad"/>
+          <path d="M7 10V8a5 5 0 1 1 10 0v2" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div>
+        <h2 class="font-display text-xl md:text-2xl font-extrabold text-slate-900">Masukkan Password</h2>
+        <p class="text-slate-600 text-sm">Kelas akan dibuka setelah password benar.</p>
+      </div>
+    </div>
+
+    <form id="gateForm" class="mt-5 space-y-3">
+      <input
+        id="gateInput" type="text"
+        class="w-full px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-300"
+        placeholder="Password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" autofocus
+      >
+      <p id="gateMsg" class="text-xs h-4 text-accent-600"></p>
+      <button id="gateBtn" type="submit"
+              class="w-full px-4 py-2 rounded-lg bg-brand-500 hover:bg-brand-600 text-white">
+        Masuk
+      </button>
+    </form>
+  </div>
+</div>
+
+
+<script>
+(function(){
+  // Password target
+  const PASS = 'RGMDSUP25';
+
+  // Elemen
+  const gate  = document.getElementById('passwordGate');
+  const form  = document.getElementById('gateForm');
+  const input = document.getElementById('gateInput');
+  const msg   = document.getElementById('gateMsg');
+
+  if (!gate || !form || !input) return;
+
+  // Selalu tampilkan gate saat load
+  gate.classList.remove('hidden');
+  setTimeout(()=>{ try{ input.focus(); input.select(); }catch(e){} }, 30);
+
+  // Normalisasi ringan saat cek (abaikan spasi & case supaya tidak nyangkut karena typo kecil)
+  function norm(s){ return String(s||'').replace(/\s+/g,'').toUpperCase(); }
+
+  // Submit form
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    const val = norm(input.value);
+    if (val === norm(PASS)) {
+      msg.textContent = '';
+      gate.classList.add('hidden');   // buka slide
+      input.value = '';
+    } else {
+      msg.textContent = 'Password salah. Coba lagi.';
+      input.focus();
+      input.select();
+      // efek shake kecil (opsional)
+      const card = gate.querySelector('.max-w-md');
+      if (card){
+        card.classList.remove('shake');
+        void card.offsetWidth;
+        card.classList.add('shake');
+      }
+    }
+  });
+
+  // Bersihkan pesan saat mengetik
+  input.addEventListener('input', ()=>{ msg.textContent = ''; });
+
+  // Blokir navigasi keyboard saat gate tampil
+  document.addEventListener('keydown', function(e){
+    if (gate.classList.contains('hidden')) return;
+    const tag = (e.target.tagName || '').toLowerCase();
+    const typing = tag === 'input' || tag === 'textarea' || tag === 'select';
+    if (!typing) { e.preventDefault(); e.stopPropagation(); }
+  }, true);
+
+  // Inject CSS untuk efek "shake" (opsional)
+  (function addShake(){
+    if (document.getElementById('gate-shake-style')) return;
+    const s = document.createElement('style');
+    s.id = 'gate-shake-style';
+    s.textContent =
+      '@keyframes gate-shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}' +
+      '#passwordGate .shake{animation:gate-shake .38s ease;}';
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+
+
+
+    <div class="max-w-6xl mx-auto px-4 md:px-8 py-6 md:py-8">
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6">
+            <div class="flex items-center gap-3">
+                <div class="p-2 rounded-xl bg-brand-100 ring-4 ring-white shadow-md">
+                    <!-- Simple puzzle logo -->
+                    <svg width="36" height="36" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+                        <rect x="8" y="8" width="20" height="20" rx="4" fill="#42c4ad" />
+                        <rect x="36" y="8" width="20" height="20" rx="4" fill="#fb6a1e" />
+                        <rect x="8" y="36" width="20" height="20" rx="4" fill="#7adcc9" />
+                        <rect x="36" y="36" width="20" height="20" rx="4" fill="#ffb27a" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-xs font-semibold tracking-wider uppercase text-brand-700">Upper Primary</p>
+                    <h1 class="font-display text-xl md:text-2xl font-extrabold text-slate-900">Dekomposisi: Memecah
+                        Masalah Menjadi Bagian Kecil</h1>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+
+                <div class="hidden md:flex items-center gap-2">
+                    <button id="prevBtn"
+                        class="px-3 py-2 rounded-lg bg-white hover:bg-slate-50 text-slate-700 shadow-sm border border-slate-200 transition focus:outline-none focus:ring-2 focus:ring-brand-300">Sebelumnya</button>
+                    <button id="nextBtn"
+                        class="px-3 py-2 rounded-lg bg-brand-500 hover:bg-brand-600 text-white shadow-sm transition focus:outline-none focus:ring-2 focus:ring-brand-300">Berikutnya</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Progress -->
+        <div class="mt-5 md:mt-6">
+            <div class="flex items-center justify-between mb-2">
+                <p id="progressText" class="text-sm text-slate-600">Slide 1 dari 8</p>
+                <div class="hidden md:flex gap-1" id="dotNav" aria-label="Navigasi slide"></div>
+            </div>
+            <div class="w-full bg-slate-200/60 h-2 rounded-full overflow-hidden">
+                <div id="progressBar"
+                    class="h-2 bg-gradient-to-r from-brand-400 to-accent-500 rounded-full transition-all"
+                    style="width: 10%"></div>
+            </div>
+        </div>
+
+        <!-- Slides Container -->
+        <main id="slides" class="relative mt-6 md:mt-8">
+            <!-- Slide 1 – Judul & Pembuka -->
+            <section class="slide" data-slide="1" aria-hidden="false">
+                <div class="grid md:grid-cols-2 gap-6 md:gap-10 items-center">
+                    <div class="p-6 md:p-8 rounded-2xl bg-white/80 backdrop-blur shadow-lg border border-slate-200">
+                        <span
+                            class="inline-block text-xs uppercase tracking-widest font-semibold text-brand-700 bg-brand-100 px-3 py-1 rounded-full mb-4">Berpikir
+                            Komputasional</span>
+                        <h2 class="font-display text-3xl md:text-4xl font-extrabold leading-tight text-slate-900">
+                            Dekomposisi: Memecah Masalah Menjadi <span class="text-brand-600">Bagian Kecil</span></h2>
+                        <p class="mt-4 text-slate-700 text-lg">Cara pintar agar tugas besar terasa ringan, rapi, dan
+                            bisa diselesaikan selangkah demi selangkah.</p>
+
+                        <div class="mt-6 flex flex-wrap gap-3">
+                            <button data-jump="2"
+                                class="px-4 py-2 rounded-lg bg-brand-500 hover:bg-brand-600 text-white shadow-sm transition focus:outline-none focus:ring-2 focus:ring-brand-300">Mulai</button>
+                        </div>
+                    </div>
+                    <div
+                        class="p-6 md:p-8 rounded-2xl bg-gradient-to-br from-brand-100 via-white to-accent-100 shadow-inner border border-slate-200">
+                        <!-- Visual: Puzzle + Sandwich -->
+                        <div class="grid grid-cols-3 gap-4">
+                            <!-- Sandwich SVG -->
+                            <div class="col-span-3 flex justify-center">
+                                <svg viewBox="0 0 300 140" class="w-full max-w-md" aria-label="Ilustrasi sandwich">
+                                    <!-- Bread top -->
+                                    <path d="M20 40 Q150 -10 280 40 L280 60 Q150 10 20 60 Z" fill="#F4D9A6"
+                                        stroke="#d9b57b" stroke-width="3" />
+                                    <!-- Lettuce -->
+                                    <path d="M25 65 Q50 55 75 65 T125 65 T175 65 T225 65 T275 65 L275 75 L25 75 Z"
+                                        fill="#7adcc9" stroke="#42c4ad" stroke-width="2" />
+                                    <!-- Tomato -->
+                                    <rect x="40" y="75" width="220" height="14" rx="7" fill="#fb6a1e" />
+                                    <!-- Cheese -->
+                                    <rect x="30" y="91" width="240" height="10" rx="3" fill="#ffb27a" />
+                                    <!-- Bread bottom -->
+                                    <rect x="20" y="104" width="260" height="18" rx="9" fill="#EFCF97" stroke="#d9b57b"
+                                        stroke-width="3" />
+                                </svg>
+                            </div>
+                            <!-- Puzzle mini -->
+                            <div class="col-span-3 grid grid-cols-4 gap-2 mt-2">
+                                <div class="h-8 rounded-lg bg-brand-400"></div>
+                                <div class="h-8 rounded-lg bg-accent-400"></div>
+                                <div class="h-8 rounded-lg bg-brand-300"></div>
+                                <div class="h-8 rounded-lg bg-accent-300"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <aside class="notes mt-4 hidden">
+                    <div class="p-4 rounded-xl bg-white shadow border border-slate-200">
+                        <p class="text-sm text-slate-700">Catatan fasilitator: “Pernah bingung saat menghadapi tugas
+                            besar? Hari ini kita belajar cara memecah masalah supaya lebih mudah.”</p>
+                    </div>
+                </aside>
+            </section>
+
+            <!-- Slide 2 – Ice Breaking (Revised) -->
+            <section class="slide hidden" data-slide="2" aria-hidden="true">
+                <div class="grid md:grid-cols-2 gap-6 md:gap-10 items-start">
+                    <!-- Panel Kiri: Aktivitas Siswa -->
+                    <div class="p-6 md:p-8 rounded-2xl bg-white shadow-lg border border-slate-200">
+                        <h3 class="font-display text-2xl md:text-3xl font-extrabold text-slate-900">
+                            Ice Breaking: Pecah Tugas “Membuat Sandwich”
+                        </h3>
+                        <p class="mt-3 text-slate-700">
+                            Kita akan memecah satu tugas besar menjadi langkah-langkah kecil. Ini adalah inti dari
+                            <strong>dekomposisi</strong>.
+                        </p>
+                        <p class="mt-2 text-slate-700">
+                            Tugas kamu: <strong>menuliskan langkah-langkah kecil untuk membuat sandwich.</strong>
+                        </p>
+
+                        <!-- Instruksi yang jelas -->
+                        <div class="mt-4 p-3 rounded-xl bg-slate-50 border border-slate-200">
+                            <h4 class="font-semibold text-slate-800">Instruksi</h4>
+                            <ol class="list-decimal ml-5 mt-2 text-slate-700 space-y-1">
+                                <li>Tuliskan <em>langkah-langkah kecil</em> untuk membuat sandwich (misalnya “Ambil
+                                    roti”, “Oles selai").</li>
+                                <li>Pastikan jumlahnya 3–6 langkah dan gunakan <em>kata kerja di awal</em>.</li>
+                                <li>Urutkan langkah-langkah agar hasilnya masuk akal.</li>
+                            </ol>
+                            <p class="mt-2 text-xs text-slate-500">
+                                Hint: Bedakan langkah <em>persiapan</em>, <em>proses</em>, dan <em>penutup</em>.
+                            </p>
+                        </div>
+
+                        <form id="sandwichForm" class="mt-5 space-y-3" aria-describedby="criteriaBox">
+                            <div class="flex gap-2">
+                                <input id="sandwichInput" type="text"
+                                    class="flex-1 px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-300"
+                                    placeholder="Contoh: Ambil roti" />
+                                <button
+                                    class="px-3 py-2 rounded-lg bg-brand-500 hover:bg-brand-600 text-white">Tambah</button>
+                            </div>
+                            <div id="criteriaBox" class="text-xs text-slate-500">
+                                Tip: tambahkan 3–6 langkah, tiap item diawali kata kerja, lalu menyusunnya menjadi
+                                urutan logis
+                            </div>
+                        </form>
+
+                        <div class="mt-4">
+                            <ul id="sandwichList" class="space-y-2" aria-label="Daftar langkah sandwich"></ul>
+                            <div class="mt-4 flex flex-wrap gap-2">
+                                <button id="clearSandwich"
+                                    class="px-3 py-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-50">Bersihkan</button>
+                                <button id="sampleSandwich"
+                                    class="px-3 py-2 rounded-lg bg-accent-500 hover:bg-accent-600 text-white">Contoh</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Panel Kanan: Tujuan & Pengait Konsep -->
+                    <div
+                        class="p-6 md:p-8 rounded-2xl bg-gradient-to-br from-accent-50 to-brand-50 border border-slate-200">
+                        <h4 class="font-semibold text-slate-800">Tujuan Aktivitas</h4>
+                        <p class="text-slate-700 mt-1">
+                            Menunjukkan bahwa satu tugas besar (“membuat sandwich”) terdiri dari beberapa langkah kecil
+                            yang saling terhubung — itulah <strong>dekomposisi</strong>.
+                        </p>
+
+                        <!-- Visual langkah-langkah kecil -->
+                        <div id="sandwichStepsView" class="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3"
+                            aria-live="polite"></div>
+
+                        <!-- Hubungkan ke Dekomposisi -->
+                        <div class="mt-6 p-4 rounded-xl bg-white border border-slate-200">
+                            <h5 class="font-semibold text-slate-800">Menghubungkan ke Dekomposisi</h5>
+                            <div class="mt-2 grid grid-cols-1 gap-2 text-sm">
+                                <div>
+                                    <span
+                                        class="inline-flex items-center px-2 py-1 rounded-md bg-brand-100 text-brand-800 font-medium">Masalah</span>
+                                    <p class="mt-1 text-slate-700">“Membuat sandwich yang enak.”</p>
+                                </div>
+                                <div>
+                                    <span
+                                        class="inline-flex items-center px-2 py-1 rounded-md bg-accent-100 text-accent-800 font-medium">Bagian-bagian</span>
+                                    <ul class="mt-1 list-disc ml-5 text-slate-700">
+                                        <li><em>Persiapan</em>: Ambil roti, siapkan isian.</li>
+                                        <li><em>Proses</em>: Oles selai, susun isian.</li>
+                                        <li><em>Penutup</em>: Tutup roti, potong.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <p class="mt-3 text-slate-700">
+                                Saat kita memecah tugas besar jadi langkah kecil, kita lebih fokus, rapi, dan hasilnya
+                                konsisten.
+                            </p>
+                        </div>
+
+                        <!-- Cek cepat & refleksi -->
+                        <div class="mt-4 grid gap-3">
+                            <div class="p-3 rounded-lg bg-slate-50 border border-slate-200">
+                                <p class="text-sm text-slate-800 font-medium">Cek Cepat</p>
+                                <ul class="mt-1 text-sm text-slate-700 list-disc ml-5">
+                                    <li>Apakah tiap langkah dimulai dengan kata kerja?</li>
+                                    <li>Apakah urutannya logis dari awal → akhir?</li>
+                                    <li>Adakah langkah yang bisa digabung atau dipecah?</li>
+                                </ul>
+                            </div>
+                            <div class="p-3 rounded-lg bg-slate-50 border border-slate-200">
+                                <p class="text-sm text-slate-800 font-medium">Refleksi Singkat</p>
+                                <p class="text-sm text-slate-700 mt-1">Kalau kamu ganti “sandwich” dengan “berangkat
+                                    sekolah”, langkah mana yang mirip?</p>
+                            </div>
+                        </div>
+
+                        <!-- Visual badge -->
+                        <div class="mt-6 flex items-center gap-3">
+                            <span class="text-2xl">🥪</span>
+                            <p class="text-sm text-slate-600">Setiap langkah adalah “potongan” yang menyusun hasil
+                                akhir.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="notes mt-4 hidden">
+                    <div class="p-4 rounded-xl bg-white shadow border border-slate-200">
+                        <p class="text-sm text-slate-700">
+                            Pancing jawaban, tulis cepat di daftar, lalu bantu rapikan: kelompokkan jadi
+                            Persiapan–Proses–Penutup.
+                            Tekankan definisi dekomposisi: “memecah tugas besar menjadi bagian-bagian kecil yang bisa
+                            dikerjakan berurutan”.
+                        </p>
+                    </div>
+                </aside>
+            </section>
+
+
+            <!-- Slide 3 – Konsep Dekomposisi (Revised for Upper Primary, Tas Sekolah) -->
+            <section class="slide hidden" data-slide="3" aria-hidden="true">
+                <div class="p-6 md:p-8 rounded-2xl bg-white shadow-lg border border-slate-200">
+                    <div class="grid md:grid-cols-2 gap-6 md:gap-10 items-start">
+                        <!-- Kiri: Definisi & Kenapa Penting -->
+                        <div>
+                            <h3 class="font-display text-2xl md:text-3xl font-extrabold text-slate-900">Apa itu
+                                Dekomposisi?</h3>
+                            <p class="mt-3 text-lg text-slate-700">
+                                <span class="font-semibold">Dekomposisi</span> adalah proses memecah satu masalah besar
+                                menjadi langkah-langkah kecil yang lebih mudah dikerjakan.
+                            </p>
+
+                            <div class="mt-4 grid gap-3">
+                                <!-- Kenapa Penting -->
+                                <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                                    <h4 class="font-semibold text-slate-800">Kenapa Penting?</h4>
+                                    <ul class="mt-2 space-y-1 text-slate-700">
+                                        <li>• Langkah jadi jelas dan terukur</li>
+                                        <li>• Mengurangi bingung & menunda-nunda</li>
+                                        <li>• Memudahkan mulai sampai selesai</li>
+                                        <li>• Menghemat waktu & mencegah lupa</li>
+                                    </ul>
+                                </div>
+
+                                <!-- Ciri-ciri Langkah Kecil yang Baik -->
+                                <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                                    <h4 class="font-semibold text-slate-800">Ciri-ciri Langkah Kecil yang Baik</h4>
+                                    <ul class="mt-2 space-y-1 text-slate-700">
+                                        <li>• Diawali <em>kata kerja</em> (Cek, Pilih, Masukkan, Siapkan)</li>
+                                        <li>• Satu aksi, bukan banyak hal sekaligus</li>
+                                        <li>• Dapat dikerjakan singkat (±1–3 menit)</li>
+                                        <li>• Urutannya bisa diuji: awal → tengah → akhir</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Kanan: Visual, Contoh vs Bukan Contoh, Kesalahan Umum -->
+                        <div
+                            class="p-4 rounded-xl bg-gradient-to-br from-brand-50 to-accent-50 border border-slate-200">
+                            <!-- Diagram besar -> kecil -->
+                            <div class="flex items-center justify-between gap-3">
+                                <div class="flex-1 text-center">
+                                    <div
+                                        class="mx-auto w-28 h-28 rounded-2xl bg-brand-400/90 shadow-inner flex items-center justify-center text-white font-bold">
+                                        Masalah
+                                    </div>
+                                    <p class="mt-2 text-sm text-slate-600">“Siapkan tas sekolah untuk besok”</p>
+                                </div>
+                                <div class="text-3xl text-slate-500" aria-hidden="true">→</div>
+                                <div class="flex-[1.5] grid grid-cols-3 gap-3">
+                                    <div
+                                        class="h-16 rounded-xl bg-brand-300/90 flex items-center justify-center p-2 text-center leading-tight text-[11px] md:text-xs font-semibold text-slate-900 break-words">
+                                        Tugas mini 1
+                                    </div>
+                                    <div
+                                        class="h-16 rounded-xl bg-accent-300/90 flex items-center justify-center p-2 text-center leading-tight text-[11px] md:text-xs font-semibold text-slate-900 break-words">
+                                        Tugas mini 2
+                                    </div>
+                                    <div
+                                        class="h-16 rounded-xl bg-brand-200/90 flex items-center justify-center p-2 text-center leading-tight text-[11px] md:text-xs font-semibold text-slate-900 break-words">
+                                        Tugas mini 3
+                                    </div>
+                                    <div
+                                        class="h-16 rounded-xl bg-accent-200/90 flex items-center justify-center p-2 text-center leading-tight text-[11px] md:text-xs font-semibold text-slate-900 break-words">
+                                        Tugas mini 4
+                                    </div>
+                                    <div
+                                        class="h-16 rounded-xl bg-brand-100/90 flex items-center justify-center p-2 text-center leading-tight text-[11px] md:text-xs font-semibold text-slate-900 break-words">
+                                        Tugas mini 5
+                                    </div>
+                                    <div
+                                        class="h-16 rounded-xl bg-accent-100/90 flex items-center justify-center p-2 text-center leading-tight text-[11px] md:text-xs font-semibold text-slate-900 break-words">
+                                        Tugas mini 6
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Contoh vs Bukan Contoh -->
+                            <div class="mt-5 grid md:grid-cols-2 gap-3">
+                                <div class="p-3 rounded-lg bg-white border border-slate-200">
+                                    <h5 class="font-semibold text-slate-800">Contoh Langkah Kecil</h5>
+                                    <ul class="mt-2 text-sm text-slate-700 space-y-1">
+                                        <li>✅ Cek jadwal pelajaran</li>
+                                        <li>✅ Pilih buku sesuai jadwal</li>
+                                        <li>✅ Siapkan alat tulis</li>
+                                        <li>✅ Isi botol minum</li>
+                                        <li>✅ Masukkan buku & alat tulis ke tas</li>
+                                        <li>✅ Letakkan tas di dekat pintu</li>
+                                    </ul>
+                                </div>
+                                <div class="p-3 rounded-lg bg-white border border-slate-200">
+                                    <h5 class="font-semibold text-slate-800">Bukan Contoh (Terlalu Umum/Ngambang)</h5>
+                                    <ul class="mt-2 text-sm text-slate-700 space-y-1">
+                                        <li>⚠️ “Tas rapi” (hasil, bukan langkah)</li>
+                                        <li>⚠️ “Jangan lupa buku” (peringatan, bukan aksi)</li>
+                                        <li>⚠️ “Siapkan semua keperluan” (terlalu besar/umum)</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Kesalahan Umum -->
+                            <div class="mt-4 p-3 rounded-lg bg-slate-50 border border-slate-200">
+                                <h5 class="font-semibold text-slate-800">Kesalahan Umum</h5>
+                                <ul class="mt-2 text-sm text-slate-700 space-y-1">
+                                    <li>• Mencampur <em>hasil akhir</em> dengan <em>langkah</em></li>
+                                    <li>• Langkah terlalu besar (“Siapkan semua perlengkapan”)</li>
+                                    <li>• Urutan tidak logis (masukkan buku sebelum mengecek jadwal)</li>
+                                    <li>• Melompati tahap penting (lupa cek alat tulis/botol minum)</li>
+                                </ul>
+                            </div>
+
+                            <!-- Cek Cepat -->
+                            <div class="mt-4 p-3 rounded-lg bg-white border border-slate-200">
+                                <h5 class="font-semibold text-slate-800">Cek Cepat</h5>
+                                <ul class="mt-2 text-sm text-slate-700 list-disc ml-5">
+                                    <li>Apakah setiap item diawali kata kerja?</li>
+                                    <li>Apakah bisa dikerjakan cepat & satu aksi?</li>
+                                    <li>Apakah urutannya masuk akal dari awal → akhir?</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="notes mt-4 hidden">
+                    <div class="p-4 rounded-xl bg-white shadow border border-slate-200">
+                        <p class="text-sm text-slate-700">
+                            Ajak siswa bedakan “hasil” vs “langkah”. Minta ubah kalimat umum menjadi aksi spesifik
+                            berawalan kata kerja.
+                            Gunakan pola: <strong>Persiapan → Proses → Penutup</strong> (contoh: cek jadwal →
+                            pilih/siapkan → masukkan & letakkan).
+                        </p>
+                    </div>
+                </aside>
+            </section>
+
+
+
+            <!-- =========================================================
+            Slide 4 – Studi Kasus Sehari-Hari (Fokus Dekomposisi)
+            ========================================================= -->
+            <section class="slide hidden" data-slide="4" aria-hidden="true">
+                <div class="grid md:grid-cols-2 gap-6 md:gap-10 items-start">
+                    <!-- Kiri: Input Siswa -->
+                    <div class="p-6 md:p-8 rounded-2xl bg-white shadow-lg border border-slate-200">
+                        <h3 class="font-display text-2xl md:text-3xl font-extrabold text-slate-900">
+                            Kasus: Kala Sering Terlambat
+                        </h3>
+                        <p class="mt-2 text-slate-700">
+                            <strong>Masalah:</strong> Kala sering terlambat masuk sekolah karena urutan kegiatan pagi
+                            tidak jelas (bingung menentukan prioritas). Bantu Kala membuat <strong>langkah-langkah
+                                kecil</strong> agar pagi lebih rapi & terstruktur dan tidak terlambat lagi.
+                        </p>
+
+                        <!-- Instruksi -->
+                        <div class="mt-4 p-3 rounded-xl bg-slate-50 border border-slate-200">
+                            <h4 class="font-semibold text-slate-800">Instruksi</h4>
+                            <ol class="list-decimal ml-5 mt-2 text-slate-700 space-y-1">
+                                <li>Tuliskan <em>langkah-langkah kecil</em> kegiatan pagi (3–8 item), diawali <em>kata
+                                        kerja</em>.</li>
+                                <li><strong>Kelompokkan</strong> setiap langkah ke: Persiapan, Proses, atau Penutup.
+                                </li>
+                                <li>Setelah rapi, klik <em>Kirim ke Slide 5</em> untuk diurutkan & diberi waktu.</li>
+                            </ol>
+                        </div>
+
+                        <!-- Chip langkah cepat -->
+                        <div id="morningChips" class="mt-3 flex flex-wrap gap-2">
+                            <button type="button" class="chip">Bangun tidur</button>
+                            <button type="button" class="chip">Merapikan tempat tidur</button>
+                            <button type="button" class="chip">Mandi</button>
+                            <button type="button" class="chip">Gosok gigi</button>
+                            <button type="button" class="chip">Memakai seragam</button>
+                            <button type="button" class="chip">Sarapan</button>
+                            <button type="button" class="chip">Siapkan tas sekolah</button>
+                            <button type="button" class="chip">Berangkat</button>
+                        </div>
+
+                        <!-- Form tambah langkah -->
+                        <form id="morningForm" class="mt-4 space-y-3">
+                            <div class="flex gap-2">
+                                <input id="morningInput" type="text"
+                                    class="flex-1 px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-300"
+                                    placeholder="Contoh: Mandi" />
+                                <button
+                                    class="px-3 py-2 rounded-lg bg-brand-500 hover:bg-brand-600 text-white">Tambah</button>
+                            </div>
+                            <p class="text-xs text-slate-500">
+                                Kriteria: 3–8 langkah • tiap item satu aksi & diawali kata kerja • gunakan kata kerja
+                                yang jelas (Cek, Pilih, Masukkan, dsb).
+                            </p>
+                        </form>
+
+                        <!-- Daftar langkah (pilih kategori, tanpa durasi) -->
+                        <ul id="morningList" class="mt-4 space-y-2" aria-label="Daftar langkah pagi"></ul>
+
+                        <!-- Aksi -->
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            <button id="morningSample"
+                                class="px-3 py-2 rounded-lg bg-accent-500 hover:bg-accent-600 text-white">Contoh</button>
+                            <button id="morningClear"
+                                class="px-3 py-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-50">Bersihkan</button>
+                            <button id="toSlide5"
+                                class="px-3 py-2 rounded-lg bg-brand-600 hover:bg-brand-700 text-white">Kirim ke Slide
+                                5</button>
+                        </div>
+                        <p id="sendStatus" class="mt-2 text-xs text-slate-500" aria-live="polite"></p>
+                    </div>
+
+                    <!-- Kanan: Visualisasi Decomposition -->
+                    <div
+                        class="p-6 md:p-8 rounded-2xl bg-gradient-to-br from-brand-50 to-white border border-slate-200">
+                        <!-- Kanban kategori -->
+                        <div class="grid md:grid-cols-3 gap-3">
+                            <div class="col">
+                                <div class="col-head bg-brand-100 text-brand-900">Persiapan</div>
+                                <ul id="persiapanCol" class="col-body" aria-label="Langkah Persiapan"></ul>
+                            </div>
+                            <div class="col">
+                                <div class="col-head bg-accent-100 text-accent-900">Proses</div>
+                                <ul id="prosesCol" class="col-body" aria-label="Langkah Proses"></ul>
+                            </div>
+                            <div class="col">
+                                <div class="col-head bg-slate-100 text-slate-900">Penutup</div>
+                                <ul id="penutupCol" class="col-body" aria-label="Langkah Penutup"></ul>
+                            </div>
+                        </div>
+
+                        <!-- Kenapa ini dekomposisi -->
+                        <div class="mt-5 p-3 rounded-lg bg-white border border-slate-200">
+                            <p class="text-sm text-slate-800 font-medium">Kenapa ini disebut dekomposisi?</p>
+                            <ul class="mt-1 text-sm text-slate-700 list-disc ml-5">
+                                <li>Kita memecah <em>masalah besar</em> (“pagi berantakan”) menjadi bagian-bagian kecil
+                                    yang bisa dikerjakan.</li>
+                                <li>Kategori Persiapan–Proses–Penutup membantu melihat struktur keseluruhan.</li>
+                                <li>Langkah kecil memudahkan kita fokus & tidak kewalahan.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Cek dekomposisi -->
+                        <div class="mt-3 p-3 rounded-lg bg-slate-50 border border-slate-200">
+                            <p class="text-sm text-slate-800 font-medium">Cek Cepat</p>
+                            <ul class="mt-1 text-sm text-slate-700 list-disc ml-5">
+                                <li>Apakah setiap item diawali kata kerja?</li>
+                                <li>Apakah ada item terlalu besar (perlu dipecah lagi)?</li>
+                                <li>Apakah ketiga kategori sudah terisi masuk akal?</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="notes mt-4 hidden">
+                    <div class="p-4 rounded-xl bg-white shadow border border-slate-200">
+                        <p class="text-sm text-slate-700">
+                            Fokus pada <strong>memecah & mengelompokkan</strong>. Jangan bahas durasi/urutan di
+                            sini—lanjut di Slide 5.
+                            Jika siswa kesulitan, beri contoh kata kerja & bantu pecah “langkah besar” jadi 2–3
+                            sub-langkah.
+                        </p>
+                    </div>
+                </aside>
+
+                <!-- Styles kecil (scoped sederhana) -->
+                <style>
+                    .chip {
+                        padding: .375rem .625rem;
+                        border-radius: .5rem;
+                        border: 1px solid rgb(226 232 240);
+                        background: #fff;
+                        font-size: .8125rem;
+                        color: rgb(71 85 105)
+                    }
+
+                    .chip:hover {
+                        background: #f8fafc
+                    }
+
+                    .col .col-head {
+                        padding: .5rem .75rem;
+                        border-radius: .75rem .75rem 0 0;
+                        font-weight: 600;
+                        border: 1px solid rgb(226 232 240)
+                    }
+
+                    .col .col-body {
+                        min-height: 3rem;
+                        border: 1px solid rgb(226 232 240);
+                        border-top: none;
+                        border-radius: 0 0 .75rem .75rem;
+                        padding: .5rem
+                    }
+
+                    .pill {
+                        display: inline-flex;
+                        align-items: center;
+                        gap: .375rem;
+                        padding: .25rem .5rem;
+                        border-radius: .75rem;
+                        border: 1px solid rgb(226 232 240);
+                        background: #fff;
+                        font-size: .75rem;
+                        color: rgb(71 85 105)
+                    }
+
+                    .item {
+                        display: flex;
+                        gap: .5rem;
+                        align-items: center;
+                        justify-content: space-between;
+                        border: 1px solid rgb(226 232 240);
+                        background: #fff;
+                        border-radius: .625rem;
+                        padding: .5rem .625rem
+                    }
+
+                    .item .text {
+                        font-weight: 600;
+                        color: rgb(30 41 59);
+                        font-size: .875rem;
+                        flex: 1;
+                        min-width: 5rem
+                    }
+
+                    .select {
+                        border: 1px solid rgb(226 232 240);
+                        border-radius: .5rem;
+                        padding: .25rem .5rem;
+                        font-size: .75rem;
+                        color: rgb(71 85 105)
+                    }
+                </style>
+
+                <!-- Script khusus Slide 4 -->
+                <script>
+                        (function () {
+                            const form = document.getElementById('morningForm');
+                            const input = document.getElementById('morningInput');
+                            const list = document.getElementById('morningList');
+                            const sampleBtn = document.getElementById('morningSample');
+                            const clearBtn = document.getElementById('morningClear');
+                            const chipsWrap = document.getElementById('morningChips');
+
+                            const colPrep = document.getElementById('persiapanCol');
+                            const colProc = document.getElementById('prosesCol');
+                            const colEnd = document.getElementById('penutupCol');
+
+                            const sendBtn = document.getElementById('toSlide5');
+                            const sendStatus = document.getElementById('sendStatus');
+
+                            let items = []; // {id, text, cat}
+                            const CATS = ['Persiapan', 'Proses', 'Penutup'];
+                            function uid() { return Math.random().toString(36).slice(2, 9); }
+
+                            function addItem(text) {
+                                if (!text) return;
+                                items.push({ id: uid(), text: text.trim(), cat: 'Persiapan' });
+                                input.value = '';
+                                render();
+                            }
+                            function removeItem(id) {
+                                items = items.filter(it => it.id !== id);
+                                render();
+                            }
+                            function render() {
+                                // list kiri (editable)
+                                list.innerHTML = items.map(it => `
+          <li class="item" data-id="${it.id}">
+            <span class="text">${it.text}</span>
+            <select class="select cat" aria-label="Kategori">
+              ${CATS.map(c => `<option ${c === it.cat ? 'selected' : ''}>${c}</option>`).join('')}
+            </select>
+            <div class="flex gap-1">
+              <button class="pill up" title="Naik">↑</button>
+              <button class="pill down" title="Turun">↓</button>
+              <button class="pill del" title="Hapus">Hapus</button>
+            </div>
+          </li>
+        `).join('');
+
+                                // kanban
+                                const byCat = {
+                                    'Persiapan': items.filter(i => i.cat === 'Persiapan'),
+                                    'Proses': items.filter(i => i.cat === 'Proses'),
+                                    'Penutup': items.filter(i => i.cat === 'Penutup')
+                                };
+                                colPrep.innerHTML = byCat['Persiapan'].map(i => `<li class="pill">${i.text}</li>`).join('') || `<li class="text-xs text-slate-400">—</li>`;
+                                colProc.innerHTML = byCat['Proses'].map(i => `<li class="pill">${i.text}</li>`).join('') || `<li class="text-xs text-slate-400">—</li>`;
+                                colEnd.innerHTML = byCat['Penutup'].map(i => `<li class="pill">${i.text}</li>`).join('') || `<li class="text-xs text-slate-400">—</li>`;
+                            }
+
+                            // events
+                            form.addEventListener('submit', e => {
+                                e.preventDefault();
+                                const v = (input.value || '').trim();
+                                if (v) addItem(v);
+                            });
+                            chipsWrap.addEventListener('click', e => {
+                                const btn = e.target.closest('.chip'); if (!btn) return;
+                                addItem(btn.textContent.trim());
+                            });
+                            sampleBtn.addEventListener('click', e => {
+                                e.preventDefault();
+                                items = [
+                                    { id: uid(), text: 'Bangun tidur', cat: 'Persiapan' },
+                                    { id: uid(), text: 'Merapikan tempat tidur', cat: 'Persiapan' },
+                                    { id: uid(), text: 'Mandi', cat: 'Proses' },
+                                    { id: uid(), text: 'Gosok gigi', cat: 'Proses' },
+                                    { id: uid(), text: 'Sarapan', cat: 'Proses' },
+                                    { id: uid(), text: 'Siapkan tas sekolah', cat: 'Penutup' },
+                                    { id: uid(), text: 'Berangkat', cat: 'Penutup' },
+                                ];
+                                render();
+                            });
+                            clearBtn.addEventListener('click', e => {
+                                e.preventDefault(); items = []; render();
+                            });
+                            list.addEventListener('click', e => {
+                                const li = e.target.closest('li.item'); if (!li) return;
+                                const id = li.dataset.id;
+                                if (e.target.classList.contains('del')) removeItem(id);
+                                if (e.target.classList.contains('up')) {
+                                    const idx = items.findIndex(i => i.id === id);
+                                    if (idx > 0) { const tmp = items[idx - 1]; items[idx - 1] = items[idx]; items[idx] = tmp; render(); }
+                                }
+                                if (e.target.classList.contains('down')) {
+                                    const idx = items.findIndex(i => i.id === id);
+                                    if (idx < items.length - 1) { const tmp = items[idx + 1]; items[idx + 1] = items[idx]; items[idx] = tmp; render(); }
+                                }
+                            });
+                            list.addEventListener('change', e => {
+                                const li = e.target.closest('li.item'); if (!li) return;
+                                const id = li.dataset.id;
+                                if (e.target.classList.contains('cat')) {
+                                    const val = e.target.value;
+                                    items = items.map(it => it.id === id ? { ...it, cat: val } : it);
+                                    render();
+                                }
+                            });
+
+                            // Kirim ke Slide 5 (simpen ke localStorage + langsung init + loncat ke slide 5)
+                            sendBtn.addEventListener('click', e => {
+                                e.preventDefault();
+                                const payload = items.map(({ text, cat }) => ({ text, cat }));
+                                localStorage.setItem('dekomposisiSteps', JSON.stringify(payload));
+
+                                // kalau helper Slide 5 sudah ada, inisialisasi langsung biar kelihatan tanpa reload
+                                if (typeof window.initTimeListFromSteps === 'function') {
+                                    window.initTimeListFromSteps(payload);
+                                }
+
+                                // pindah ke Slide 5 (index 0-based => slide ke-5 = index 4)
+                                if (typeof window.goTo === 'function') {
+                                    window.goTo(4);
+                                }
+
+                                sendStatus.textContent = `Terkirim ${payload.length} langkah ke Slide 5.`;
+                            });
+
+
+                            // init
+                            render();
+                        })();
+                </script>
+            </section>
+
+
+            <!-- =========================================================
+            Slide 5 – Urutan & Estimasi Waktu (Sequencing + Timeline)
+            ========================================================= -->
+            <section class="slide hidden" data-slide="5" aria-hidden="true">
+                <div class="p-6 md:p-8 rounded-2xl bg-white shadow-lg border border-slate-200">
+                    <div class="flex flex-col md:flex-row gap-6 md:gap-10">
+                        <div class="flex-1">
+                            <h3 class="font-display text-2xl md:text-3xl font-extrabold text-slate-900">Urutan &
+                                Estimasi Waktu</h3>
+                            <p class="mt-2 text-slate-700">Buat urutan kegiatan Kala dan estimasi menitnya. Lihat
+                                timelinenya!</p>
+                            <div id="timeList" class="mt-4 space-y-3"></div>
+                            <div class="mt-3 flex flex-wrap gap-2">
+                                <button id="timeSample"
+                                    class="px-3 py-2 rounded-lg bg-accent-500 hover:bg-accent-600 text-white">Contoh</button>
+                                <button id="timeClear"
+                                    class="px-3 py-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-50">Bersihkan</button>
+                                <button id="timeAdd"
+                                    class="px-3 py-2 rounded-lg bg-brand-500 hover:bg-brand-600 text-white">Tambah
+                                    langkah</button>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-slate-800" id="timelineTitle">Timeline 05.00–06.00</h4>
+                            <div
+                                class="mt-2 p-4 rounded-xl bg-gradient-to-br from-brand-50 to-accent-50 border border-slate-200">
+                                <div class="flex justify-between text-xs text-slate-600">
+                                    <span>05:00</span><span>05:15</span><span>05:30</span><span>05:45</span><span>06:00</span>
+                                </div>
+                                <div id="timelineBar"
+                                    class="mt-2 w-full h-8 rounded-lg bg-slate-200/70 overflow-hidden relative"></div>
+                                <p id="totalTime" class="mt-3 text-sm text-slate-700">Total: 0 menit</p>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-3">Catatan: warna berbeda mewakili langkah yang berbeda.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controller Script (Enhanced) -->
+                <script>
+                    (function () {
+                        if (window.__timeSlideEnhanced) return; // cegah double init bila ada script lain
+                        window.__timeSlideEnhanced = true;
+
+                        const START_HHMM = "05:00";
+                        const TARGET_MIN = 60;
+                        const COLORS = ["#22c55e", "#3b82f6", "#f59e0b", "#ec4899", "#14b8a6", "#8b5cf6", "#ef4444", "#06b6d4", "#84cc16", "#f97316"];
+
+                        const el = {
+                            list: document.getElementById("timeList"),
+                            bar: document.getElementById("timelineBar"),
+                            total: document.getElementById("totalTime"),
+                            title: document.getElementById("timelineTitle"),
+                            btnSample: document.getElementById("timeSample"),
+                            btnClear: document.getElementById("timeClear"),
+                            btnAdd: document.getElementById("timeAdd"),
+                        };
+                        if (!el.list || !el.bar || !el.total) return;
+
+                        // --- klaim tombol agar listener lama (jika ada) tidak jalan
+                        function claimButton(btn, handler) {
+                            if (!btn) return btn;
+                            const clone = btn.cloneNode(true);
+                            btn.replaceWith(clone);
+                            clone.addEventListener("click", function (e) {
+                                e.preventDefault();
+                                e.stopImmediatePropagation();
+                                handler(e);
+                            }, { capture: true });
+                            return clone;
+                        }
+                        el.btnSample = claimButton(el.btnSample, onSample);
+                        el.btnClear = claimButton(el.btnClear, onClear);
+                        el.btnAdd = claimButton(el.btnAdd, onAdd);
+
+                        let items = []; // {id,text,cat,min,color}
+
+                        // waktu utils
+                        function toMinutes(hhmm) { const [h, m] = (hhmm || "0:0").split(":").map(Number); return (h * 60 + m) % (24 * 60); }
+                        function fromBase(baseMin, addMin) {
+                            const t = (baseMin + addMin + 24 * 60) % (24 * 60), h = String(Math.floor(t / 60)).padStart(2, "0"), m = String(t % 60).padStart(2, "0");
+                            return `${h}:${m}`;
+                        }
+                        const BASE_MIN = toMinutes(START_HHMM);
+
+                        // state helpers
+                        function pickColor(i) { return COLORS[i % COLORS.length]; }
+                        function makeItem(text, cat, min, color) {
+                            return { id: Math.random().toString(36).slice(2, 9), text: text || "", cat: cat || "", min: Math.max(0, Number(min) || 0), color: color || pickColor(items.length) };
+                        }
+                        function escapeHtml(s) { return (s || "").replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[m])); }
+
+                        // render list
+                        function rowTemplate(it, idx) {
+                            return `
+                            <div class="time-row group flex items-center gap-2 border border-slate-200 rounded-xl p-2 bg-white hover:shadow-sm transition">
+                            <span class="w-6 text-xs text-slate-500 select-none">${idx + 1}.</span>
+                            <span class="inline-block w-3 h-3 rounded ring-1 ring-white" style="background:${it.color}"></span>
+                            <input class="time-text flex-1 px-2 py-1 rounded-md border border-slate-200 focus:ring-2 focus:ring-brand-300 text-sm"
+                                    value="${escapeHtml(it.text)}" aria-label="Langkah ${idx + 1}">
+                            <input class="time-min w-24 px-2 py-1 rounded-md border border-slate-200 focus:ring-2 focus:ring-brand-300 text-sm"
+                                    type="number" min="0" step="5" value="${Number(it.min) || 0}" aria-label="Menit">
+                            <span class="hidden md:inline text-[11px] text-slate-500 px-2 py-1 rounded bg-slate-50 border border-slate-200">${it.cat ? it.cat : ''}</span>
+                            <div class="flex gap-1 opacity-70 group-hover:opacity-100 transition">
+                                <button class="btn-up pill-sm"   title="Naik">↑</button>
+                                <button class="btn-down pill-sm" title="Turun">↓</button>
+                                <button class="btn-del pill-sm"  title="Hapus">✕</button>
+                            </div>
+                            </div>
+                        `;
+                        }
+                        function renderList() { el.list.innerHTML = items.map((it, idx) => rowTemplate(it, idx)).join(""); }
+
+                        // render timeline
+                        function renderTimeline() {
+                            const total = items.reduce((a, b) => a + (Number(b.min) || 0), 0);
+                            const scale = Math.max(TARGET_MIN, total, 1);
+                            el.bar.innerHTML = "";
+
+                            // grid 15 menit
+                            for (let q = 15; q < scale; q += 15) {
+                                const g = document.createElement("div");
+                                g.className = "tl-grid";
+                                g.style.left = (q / scale * 100) + "%";
+                                el.bar.appendChild(g);
+                            }
+
+                            let acc = 0;
+                            items.forEach(it => {
+                                const dur = Math.max(0, Number(it.min) || 0);
+                                if (!dur) return;
+                                const leftPct = (acc / scale) * 100, widthPct = (dur / scale) * 100;
+                                const from = fromBase(BASE_MIN, acc), to = fromBase(BASE_MIN, acc + dur);
+
+                                const seg = document.createElement("div");
+                                seg.className = "tl-seg";
+                                seg.style.left = leftPct + "%";
+                                seg.style.width = widthPct + "%";
+                                seg.style.background = it.color;
+                                seg.title = `${from}–${to} • ${it.text} (${dur}m)`;
+
+                                if (widthPct > 12) {
+                                    const label = document.createElement("span");
+                                    label.className = "tl-label";
+                                    label.textContent = it.text;
+                                    seg.appendChild(label);
+                                }
+                                el.bar.appendChild(seg);
+                                acc += dur;
+                            });
+
+                            const status = total <= TARGET_MIN ? "On track" : `Lewat target (+${total - TARGET_MIN}m)`;
+                            el.total.textContent = `Total: ${total} menit • ${status}`;
+                            // judul yang konsisten
+                            if (el.title) el.title.innerHTML = `Timeline <span class="text-slate-500 font-normal">05.00–06.00</span>`;
+                        }
+
+                        // delegasi event list
+                        el.list.addEventListener("input", (e) => {
+                            const row = e.target.closest(".time-row"); if (!row) return;
+                            const idx = [...el.list.children].indexOf(row); if (idx < 0) return;
+                            if (e.target.classList.contains("time-text")) items[idx].text = e.target.value;
+                            if (e.target.classList.contains("time-min")) { items[idx].min = Math.max(0, Number(e.target.value) || 0); renderTimeline(); }
+                        });
+                        el.list.addEventListener("click", (e) => {
+                            const row = e.target.closest(".time-row"); if (!row) return;
+                            const idx = [...el.list.children].indexOf(row); if (idx < 0) return;
+                            if (e.target.classList.contains("btn-del")) { items.splice(idx, 1); renderList(); renderTimeline(); }
+                            if (e.target.classList.contains("btn-up") && idx > 0) { [items[idx - 1], items[idx]] = [items[idx], items[idx - 1]]; renderList(); renderTimeline(); }
+                            if (e.target.classList.contains("btn-down") && idx < items.length - 1) { [items[idx + 1], items[idx]] = [items[idx], items[idx + 1]]; renderList(); renderTimeline(); }
+                        });
+
+                        // tombol
+                        function onAdd() {
+                            items.push(makeItem("Langkah baru", "", 5, pickColor(items.length)));
+                            renderList(); renderTimeline();
+                            const last = el.list.querySelector(".time-row:last-child .time-text"); last && last.focus();
+                        }
+                        function onClear() { items = []; renderList(); renderTimeline(); }
+                        function onSample() {
+                            // data contoh = 45 menit total (sesuai screenshot)
+                            const sample = [
+                                { text: "Bangun tidur", cat: "Persiapan", min: 0 },
+                                { text: "Merapikan tempat tidur", cat: "Persiapan", min: 5 },
+                                { text: "Mandi", cat: "Proses", min: 10 },
+                                { text: "Gosok gigi", cat: "Proses", min: 5 },
+                                { text: "Sarapan", cat: "Proses", min: 15 },
+                                { text: "Siapkan tas sekolah", cat: "Penutup", min: 10 },
+                                { text: "Berangkat", cat: "Penutup", min: 0 },
+                            ];
+                            window.initTimeListFromSteps(sample);
+                            try { localStorage.setItem("dekomposisiSteps", JSON.stringify(sample)); } catch (_) { }
+                        }
+
+                        // API publik untuk Slide 4 dan tombol Contoh
+                        window.initTimeListFromSteps = function (steps) {
+                            const seeded = (steps || []).map((s, i) => {
+                                const m = (s && typeof s.min !== "undefined") ? s.min : guessMinutes(s.text);
+                                return makeItem(s.text, s.cat, m, pickColor(i));
+                            });
+                            items = seeded;
+                            renderList(); renderTimeline();
+                        };
+
+                        function guessMinutes(text = "") {
+                            const t = text?.toLowerCase() || "";
+                            if (/(bangun|berangkat)/.test(t)) return 0;
+                            if (/(mandi|memakai seragam)/.test(t)) return 10;
+                            if (/(gosok gigi|merapikan)/.test(t)) return 5;
+                            if (/sarapan/.test(t)) return 15;
+                            if (/(tas|siapkan)/.test(t)) return 10;
+                            return 5;
+                        }
+
+                        // autoload dari Slide 4 kalau ada
+                        (function () {
+                            try {
+                                const saved = localStorage.getItem("dekomposisiSteps");
+                                if (saved) {
+                                    const steps = JSON.parse(saved);
+                                    if (Array.isArray(steps) && steps.length) { window.initTimeListFromSteps(steps); return; }
+                                }
+                            } catch (_) { }
+                            renderList(); renderTimeline();
+                        })();
+
+                    })();
+                </script>
+
+                <!-- Style kecil (timeline & tombol) -->
+                <style>
+                    .pill-sm {
+                        padding: .25rem .5rem;
+                        border: 1px solid rgb(226 232 240);
+                        border-radius: .5rem;
+                        background: #fff;
+                    }
+
+                    .pill-sm:hover {
+                        background: #f8fafc;
+                    }
+
+                    #timelineBar {
+                        position: relative;
+                        border-radius: .75rem;
+                        box-shadow: inset 0 1px 0 rgba(255, 255, 255, .6);
+                    }
+
+                    #timelineBar .tl-grid {
+                        position: absolute;
+                        top: 0;
+                        bottom: 0;
+                        width: 1px;
+                        background: rgba(0, 0, 0, .08);
+                    }
+
+                    #timelineBar .tl-seg {
+                        position: absolute;
+                        top: 2px;
+                        bottom: 2px;
+                        border-radius: .5rem;
+                        box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .15), 0 1px 2px rgba(0, 0, 0, .08);
+                        overflow: hidden;
+                    }
+
+                    #timelineBar .tl-label {
+                        position: absolute;
+                        left: 8px;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        font-size: 11px;
+                        color: #fff;
+                        text-shadow: 0 1px 1px rgba(0, 0, 0, .35);
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        max-width: 90%;
+                    }
+                </style>
+            </section>
+
+
+
+            <!-- Slide 6 – Contoh Tambahan (final, no-duplicate) -->
+            <section class="slide hidden" data-slide="6" aria-hidden="true" aria-labelledby="slide6-title">
+                <!-- Header Slide -->
+                <header class="mb-2 md:mb-4">
+                    <h2 id="slide6-title" class="font-display text-2xl md:text-3xl font-extrabold text-slate-900">
+                        Contoh Tambahan — Terapkan Dekomposisi
+                    </h2>
+                    <p class="mt-1 text-slate-700">
+                        Dua situasi nyata untuk berlatih memecah masalah menjadi langkah kecil:
+                        <em>Situasi 1</em> (menyiapkan tas) dan <em>Situasi 2</em> (pergi ke pasar).
+                    </p>
+                </header>
+
+                <div class="grid md:grid-cols-2 gap-6 md:gap-10">
+                    <!-- Situasi 1 -->
+                    <div class="p-6 md:p-8 rounded-2xl bg-white shadow-lg border border-slate-200"
+                        aria-labelledby="situ1-title">
+                        <div class="flex items-center gap-2">
+                            <span class="situ-badge bg-brand-100 text-brand-900">Situasi 1</span>
+                            <h3 id="situ1-title" class="font-display text-xl md:text-2xl font-extrabold text-slate-900">
+                                Menyiapkan Tas Sekolah (Hari Senin)
+                            </h3>
+                        </div>
+
+                        <div class="mt-2 text-sm text-slate-700">
+                            <p><span class="font-semibold">Masalah:</span> Sering ada buku yang tertinggal.</p>
+                            <p><span class="font-semibold">Target:</span> Tas siap <em>malam sebelumnya</em> dalam ≤ 10
+                                menit.</p>
+                            <p><span class="font-semibold">Kendala:</span> Jadwal: Matematika, IPA, PJOK. Botol minum
+                                harus terisi.</p>
+                        </div>
+
+                        <!-- Form tambah item -->
+                        <form id="bagForm" class="mt-3 flex gap-2">
+                            <input id="bagInput"
+                                class="flex-1 px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-300"
+                                placeholder="Contoh: Cek jadwal pelajaran" />
+                            <select id="bagCat" class="px-2 py-2 rounded-lg border border-slate-300 text-sm">
+                                <option>Persiapan</option>
+                                <option>Proses</option>
+                                <option>Penutup</option>
+                            </select>
+                            <button
+                                class="px-3 py-2 rounded-lg bg-brand-500 hover:bg-brand-600 text-white">Tambah</button>
+                        </form>
+
+                        <ul id="bagChecklist" class="mt-4 space-y-2" aria-label="Checklist Tas Sekolah"></ul>
+
+                        <div class="mt-3 flex flex-wrap gap-2">
+                            <button id="bagSample"
+                                class="px-3 py-2 rounded-lg bg-accent-500 hover:bg-accent-600 text-white">Contoh</button>
+                            <button id="bagClear"
+                                class="px-3 py-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-50">Bersihkan</button>
+                        </div>
+
+                        <p class="mt-2 text-xs text-slate-500">
+                            Tip: Bedakan <em>Persiapan</em> (cek & siapkan) vs <em>Proses</em> (masukkan) vs
+                            <em>Penutup</em> (taruh tas di tempat).
+                        </p>
+                    </div>
+
+                    <!-- Situasi 2 -->
+                    <div class="p-6 md:p-8 rounded-2xl bg-white shadow-lg border border-slate-200"
+                        aria-labelledby="situ2-title">
+                        <div class="flex items-center gap-2">
+                            <span class="situ-badge bg-accent-100 text-accent-900">Situasi 2</span>
+                            <h3 id="situ2-title" class="font-display text-xl md:text-2xl font-extrabold text-slate-900">
+                                Pergi ke Pasar (Bahan Sop)
+                            </h3>
+                        </div>
+
+                        <div class="mt-2 text-sm text-slate-700">
+                            <p><span class="font-semibold">Masalah:</span> Belanja sering tidak lengkap.</p>
+                            <p><span class="font-semibold">Target:</span> Beli 4 bahan (wortel, kentang, kol, bawang)
+                                sesuai budget Rp30.000.</p>
+                            <p><span class="font-semibold">Kendala:</span> Bawa tas belanja sendiri & cek kembalian.</p>
+                        </div>
+
+                        <!-- Form tambah item -->
+                        <form id="marketForm" class="mt-3 flex gap-2">
+                            <input id="marketInput"
+                                class="flex-1 px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-300"
+                                placeholder="Contoh: Tulis daftar belanja" />
+                            <select id="marketCat" class="px-2 py-2 rounded-lg border border-slate-300 text-sm">
+                                <option>Persiapan</option>
+                                <option>Proses</option>
+                                <option>Penutup</option>
+                            </select>
+                            <button
+                                class="px-3 py-2 rounded-lg bg-brand-500 hover:bg-brand-600 text-white">Tambah</button>
+                        </form>
+
+                        <ul id="marketChecklist" class="mt-4 space-y-2" aria-label="Checklist Pergi ke Pasar"></ul>
+
+                        <div class="mt-3 flex flex-wrap gap-2">
+                            <button id="marketSample"
+                                class="px-3 py-2 rounded-lg bg-accent-500 hover:bg-accent-600 text-white">Contoh</button>
+                            <button id="marketClear"
+                                class="px-3 py-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-50">Bersihkan</button>
+                        </div>
+
+                        <!-- Visual: Diagram Pohon (Masalah → Bagian → Langkah) -->
+                        <div
+                            class="mt-4 p-4 rounded-xl bg-gradient-to-br from-brand-50 to-accent-50 border border-slate-200">
+                            <h4 class="font-semibold text-slate-800">Visual: Masalah → Bagian → Langkah</h4>
+                            <svg viewBox="0 0 520 190" class="w-full">
+                                <defs>
+                                    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                                        <path d="M0,0 L0,6 L6,3 z" fill="#1ea48f" />
+                                    </marker>
+                                </defs>
+                                <!-- Root -->
+                                <rect x="16" y="12" width="150" height="36" rx="8" fill="#7adcc9" />
+                                <text x="91" y="34" fill="#0f4642" font-weight="700" text-anchor="middle"
+                                    font-family="Inter">Pergi ke pasar</text>
+                                <!-- Level 1 -->
+                                <line x1="91" y1="48" x2="91" y2="84" stroke="#1ea48f" stroke-width="2"
+                                    marker-end="url(#arrow)" />
+                                <rect x="40" y="84" width="102" height="28" rx="8" fill="#E6FBF6" />
+                                <text x="91" y="102" fill="#11554f" font-size="12" text-anchor="middle"
+                                    font-family="Inter">Persiapan</text>
+                                <line x1="142" y1="98" x2="240" y2="98" stroke="#1ea48f" stroke-width="2"
+                                    marker-end="url(#arrow)" />
+                                <rect x="240" y="84" width="90" height="28" rx="8" fill="#E6FBF6" />
+                                <text x="285" y="102" fill="#11554f" font-size="12" text-anchor="middle"
+                                    font-family="Inter">Proses</text>
+                                <line x1="330" y1="98" x2="420" y2="98" stroke="#1ea48f" stroke-width="2"
+                                    marker-end="url(#arrow)" />
+                                <rect x="420" y="84" width="90" height="28" rx="8" fill="#E6FBF6" />
+                                <text x="465" y="102" fill="#11554f" font-size="12" text-anchor="middle"
+                                    font-family="Inter">Penutup</text>
+                                <!-- Level 2 -->
+                                <!-- Persiapan (kiri) -->
+                                <line x1="91" y1="112" x2="91" y2="140" stroke="#1ea48f" stroke-width="2"
+                                    marker-end="url(#arrow)" />
+                                <text x="91" y="152" font-size="12" fill="#11554f" text-anchor="middle"
+                                    font-family="Inter">
+                                    <tspan x="91" dy="0">• Tulis daftar</tspan>
+                                    <tspan x="91" dy="16">• Siapkan uang</tspan>
+                                    <tspan x="91" dy="16">• Bawa tas</tspan>
+                                </text>
+
+                                <!-- Proses (tengah) -->
+                                <line x1="285" y1="112" x2="285" y2="140" stroke="#1ea48f" stroke-width="2"
+                                    marker-end="url(#arrow)" />
+                                <text x="285" y="152" font-size="12" fill="#11554f" text-anchor="middle"
+                                    font-family="Inter">
+                                    <tspan x="285" dy="0">• Berangkat</tspan>
+                                    <tspan x="285" dy="16">• Pilih bahan</tspan>
+                                    <tspan x="285" dy="16">• Bayar</tspan>
+                                </text>
+
+                                <!-- Penutup (kanan) -->
+                                <line x1="465" y1="112" x2="465" y2="140" stroke="#1ea48f" stroke-width="2"
+                                    marker-end="url(#arrow)" />
+                                <text x="465" y="152" font-size="12" fill="#11554f" text-anchor="middle"
+                                    font-family="Inter">
+                                    <tspan x="465" dy="0">• Cek kembalian</tspan>
+                                    <tspan x="465" dy="16">• Simpan belanjaan</tspan>
+                                </text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="notes mt-4 hidden">
+                    <div class="p-4 rounded-xl bg-white shadow border border-slate-200">
+                        <p class="text-sm text-slate-700">
+                            Tekankan: “situasi jelas = dekomposisi jelas”. Minta siswa sebut
+                            <strong>Masalah/Target/Kendala</strong> dulu, baru pecah jadi langkah.
+                            Hubungkan kategori Persiapan–Proses–Penutup dengan Slide 4 & 5.
+                        </p>
+                    </div>
+                </aside>
+
+                <!-- Styles khusus Slide 6 (scoped) -->
+                <style>
+                    /* Header styling + chip em */
+                    section[data-slide="6"] header {
+                        border-bottom: 0 !important;
+                    }
+
+                    #slide6-title::after {
+                        content: none !important;
+                        display: none !important;
+                    }
+
+                    /* Badge, checklist, actions */
+                    .situ-badge {
+                        display: inline-flex;
+                        align-items: center;
+                        gap: .375rem;
+                        padding: .125rem .5rem;
+                        border-radius: .75rem;
+                        border: 1px solid rgb(226 232 240);
+                        font-size: .75rem;
+                        line-height: 1.1
+                    }
+
+                    section[data-slide="6"] .chk {
+                        display: flex;
+                        align-items: center;
+                        gap: .5rem;
+                        padding: .5rem .625rem;
+                        border: 1px solid rgb(226 232 240);
+                        background: #fff;
+                        border-radius: .625rem
+                    }
+
+                    section[data-slide="6"] .badge {
+                        font-size: .7rem;
+                        padding: .125rem .5rem;
+                        border-radius: .75rem;
+                        border: 1px solid rgb(226 232 240);
+                        background: #f8fafc;
+                        color: rgb(71 85 105)
+                    }
+
+                    section[data-slide="6"] .chk.done {
+                        opacity: .65;
+                        text-decoration: line-through
+                    }
+
+                    section[data-slide="6"] .act {
+                        padding: .25rem .5rem;
+                        border: 1px solid rgb(226 232 240);
+                        border-radius: .5rem;
+                        background: #fff;
+                        font-size: .75rem
+                    }
+
+                    section[data-slide="6"] .act:hover {
+                        background: #f8fafc
+                    }
+                </style>
+
+                <!-- Script interaktif (scoped, anti-duplikat) -->
+                <script>
+                    (function () {
+                        // Ambil SECTION terakhir (jika masih ada duplikat di halaman)
+                        const sections = document.querySelectorAll('section[data-slide="6"]');
+                        const root = sections[sections.length - 1];
+                        if (!root) return;
+
+                        const bagList = root.querySelector('#bagChecklist');
+                        const bagForm = root.querySelector('#bagForm');
+                        const bagInput = root.querySelector('#bagInput');
+                        const bagCat = root.querySelector('#bagCat');
+                        const bagSampleBtn = root.querySelector('#bagSample');
+                        const bagClearBtn = root.querySelector('#bagClear');
+
+                        const marketList = root.querySelector('#marketChecklist');
+                        const marketForm = root.querySelector('#marketForm');
+                        const marketInput = root.querySelector('#marketInput');
+                        const marketCat = root.querySelector('#marketCat');
+                        const marketSampleBtn = root.querySelector('#marketSample');
+                        const marketClearBtn = root.querySelector('#marketClear');
+
+                        let bagItems = [];
+                        let marketItems = [];
+
+                        const BAG_SAMPLE = [
+                            { text: 'Cek jadwal pelajaran Senin', cat: 'Persiapan' },
+                            { text: 'Pilih buku Matematika & IPA', cat: 'Persiapan' },
+                            { text: 'Siapkan baju olahraga (PJOK)', cat: 'Persiapan' },
+                            { text: 'Isi botol minum', cat: 'Proses' },
+                            { text: 'Masukkan buku & alat tulis ke tas', cat: 'Proses' },
+                            { text: 'Letakkan tas dekat pintu', cat: 'Penutup' }
+                        ];
+                        const MARKET_SAMPLE = [
+                            { text: 'Tulis daftar: wortel, kentang, kol, bawang', cat: 'Persiapan' },
+                            { text: 'Siapkan uang Rp30.000 & tas belanja', cat: 'Persiapan' },
+                            { text: 'Berangkat ke pasar', cat: 'Proses' },
+                            { text: 'Pilih sayur segar sesuai daftar', cat: 'Proses' },
+                            { text: 'Bayar & minta struk', cat: 'Proses' },
+                            { text: 'Cek kembalian', cat: 'Penutup' },
+                            { text: 'Simpan belanjaan di tas / kulkas', cat: 'Penutup' }
+                        ];
+
+                        function uid() { return Math.random().toString(36).slice(2, 9); }
+                        function render(listEl, arr) {
+                            listEl.innerHTML = arr.map(it => `
+        <li class="chk ${it.done ? 'done' : ''}" data-id="${it.id}">
+          <input type="checkbox" ${it.done ? 'checked' : ''} aria-label="centang ${it.text}">
+          <span class="flex-1 text-slate-800 font-medium">${it.text}</span>
+          <span class="badge">${it.cat}</span>
+          <button class="act del" title="Hapus">Hapus</button>
+        </li>
+      `).join('') || `<li class="text-sm text-slate-500">Belum ada langkah. Tambahkan di form di atas.</li>`;
+                        }
+
+                        // Tambah item
+                        bagForm.addEventListener('submit', e => {
+                            e.preventDefault();
+                            const text = (bagInput.value || '').trim(); if (!text) return;
+                            bagItems.push({ id: uid(), text, cat: bagCat.value, done: false });
+                            bagInput.value = ''; render(bagList, bagItems);
+                        });
+                        marketForm.addEventListener('submit', e => {
+                            e.preventDefault();
+                            const text = (marketInput.value || '').trim(); if (!text) return;
+                            marketItems.push({ id: uid(), text, cat: marketCat.value, done: false });
+                            marketInput.value = ''; render(marketList, marketItems);
+                        });
+
+                        // Toggle & hapus
+                        bagList.addEventListener('click', e => {
+                            const li = e.target.closest('li.chk'); if (!li) return;
+                            const id = li.dataset.id;
+                            if (e.target.matches('input[type="checkbox"]')) {
+                                bagItems = bagItems.map(x => x.id === id ? { ...x, done: e.target.checked } : x); render(bagList, bagItems);
+                            }
+                            if (e.target.classList.contains('del')) {
+                                bagItems = bagItems.filter(x => x.id !== id); render(bagList, bagItems);
+                            }
+                        });
+                        marketList.addEventListener('click', e => {
+                            const li = e.target.closest('li.chk'); if (!li) return;
+                            const id = li.dataset.id;
+                            if (e.target.matches('input[type="checkbox"]')) {
+                                marketItems = marketItems.map(x => x.id === id ? { ...x, done: e.target.checked } : x); render(marketList, marketItems);
+                            }
+                            if (e.target.classList.contains('del')) {
+                                marketItems = marketItems.filter(x => x.id !== id); render(marketList, marketItems);
+                            }
+                        });
+
+                        // Contoh & Bersihkan
+                        bagSampleBtn.addEventListener('click', e => {
+                            e.preventDefault(); bagItems = BAG_SAMPLE.map(s => ({ id: uid(), ...s, done: false })); render(bagList, bagItems);
+                        });
+                        marketSampleBtn.addEventListener('click', e => {
+                            e.preventDefault(); marketItems = MARKET_SAMPLE.map(s => ({ id: uid(), ...s, done: false })); render(marketList, marketItems);
+                        });
+                        bagClearBtn.addEventListener('click', e => { e.preventDefault(); bagItems = []; render(bagList, bagItems); });
+                        marketClearBtn.addEventListener('click', e => { e.preventDefault(); marketItems = []; render(marketList, marketItems); });
+
+                        // init
+                        render(bagList, bagItems);
+                        render(marketList, marketItems);
+                    })();
+                </script>
+            </section>
+
+            <!-- Slide 7 – Langkah-Langkah Dekomposisi (dengan materi lengkap) -->
+            <section class="slide hidden" data-slide="7" aria-hidden="true" aria-labelledby="flow-title">
+                <div class="p-6 md:p-8 rounded-2xl bg-white shadow-lg border border-slate-200">
+                    <h3 id="flow-title" class="font-display text-2xl md:text-3xl font-extrabold text-slate-900">
+                        5 Langkah Dekomposisi
+                    </h3>
+                    <p class="mt-2 text-slate-700">Klik tiap kotak untuk melihat penjelasan, contoh mini, dan pertanyaan
+                        pemandu.</p>
+
+                    <div class="mt-5 grid md:grid-cols-5 gap-3" id="flow" role="list" aria-describedby="flow-desc">
+                    </div>
+                    <p id="flow-desc" class="sr-only">Daftar 5 langkah. Pilih salah satu kartu untuk membaca detail.</p>
+
+                    <!-- Konten detail -->
+                    <div class="mt-4 grid md:grid-cols-2 gap-4">
+                        <!-- Detail langkah dinamis -->
+                        <div id="flowDetail"
+                            class="p-4 rounded-xl bg-gradient-to-br from-brand-50 to-accent-50 border border-slate-200 text-slate-800 text-sm"
+                            aria-live="polite"></div>
+
+                        <!-- Cheat Sheet selalu terlihat -->
+                        <div class="p-4 rounded-xl bg-white border border-slate-200 text-slate-800">
+                            <h4 class="font-semibold">Cheat Sheet</h4>
+
+                            <div class="mt-2 grid sm:grid-cols-2 gap-3">
+                                <div class="p-3 rounded-lg bg-slate-50 border border-slate-200">
+                                    <h5 class="font-semibold text-slate-800 text-sm">Kata kerja bantu</h5>
+                                    <p class="text-sm text-slate-700 mt-1">
+                                        <span class="font-medium">Persiapan:</span> cek, kumpulkan, catat, pilih,
+                                        urutkan<br />
+                                        <span class="font-medium">Proses:</span> susun, isi, pasang, potong, ulangi,
+                                        uji<br />
+                                        <span class="font-medium">Penutup:</span> simpan, rapikan, evaluasi, kirim,
+                                        gabungkan
+                                    </p>
+                                </div>
+
+                                <div class="p-3 rounded-lg bg-slate-50 border border-slate-200">
+                                    <h5 class="font-semibold text-slate-800 text-sm">Kalimat pancing</h5>
+                                    <ul class="mt-1 text-sm text-slate-700 list-disc ml-5 space-y-1">
+                                        <li>“Apa yang harus ada <em>di akhir</em>?”</li>
+                                        <li>“Bagian mana yang bisa dikerjakan terpisah?”</li>
+                                        <li>“Satu langkah ini butuh berapa menit?”</li>
+                                        <li>“Urutan logis dari awal → akhir?”</li>
+                                    </ul>
+                                </div>
+
+                                <div class="p-3 rounded-lg bg-slate-50 border border-slate-200">
+                                    <h5 class="font-semibold text-slate-800 text-sm">Kesalahan umum</h5>
+                                    <ul class="mt-1 text-sm text-slate-700 list-disc ml-5 space-y-1">
+                                        <li>Menulis <em>hasil</em>, bukan langkah.</li>
+                                        <li>Langkah terlalu besar (“Siapkan semua”).</li>
+                                        <li>Urutan melompat (loncat tahapan penting).</li>
+                                    </ul>
+                                </div>
+
+                                <div class="p-3 rounded-lg bg-slate-50 border border-slate-200">
+                                    <h5 class="font-semibold text-slate-800 text-sm">Rubrik cepat (0–2)</h5>
+                                    <ul class="mt-1 text-sm text-slate-700 list-disc ml-5 space-y-1">
+                                        <li><span class="font-medium">2:</span> langkah spesifik, urut, dapat
+                                            dieksekusi.</li>
+                                        <li><span class="font-medium">1:</span> masih umum / urutan kurang jelas.</li>
+                                        <li><span class="font-medium">0:</span> hanya hasil / tidak dapat dikerjakan.
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <!-- Style kecil -->
+                    <style>
+                        section[data-slide="7"] .flow-card {
+                            position: relative;
+                            text-align: left;
+                            background: #fff;
+                            border: 1px solid rgb(226 232 240);
+                            border-radius: .75rem;
+                            padding: 1rem;
+                            transition: box-shadow .2s, border-color .2s, transform .08s;
+                        }
+
+                        section[data-slide="7"] .flow-card:hover {
+                            border-color: rgb(16 185 129 / .35);
+                            box-shadow: 0 4px 16px rgba(2, 6, 23, .05);
+                        }
+
+                        section[data-slide="7"] .flow-card:active {
+                            transform: translateY(1px);
+                        }
+
+                        section[data-slide="7"] .flow-card__step {
+                            font-size: .75rem;
+                            color: rgb(100 116 139);
+                            margin-bottom: .25rem;
+                        }
+
+                        section[data-slide="7"] .flow-card__title {
+                            font-weight: 700;
+                            color: rgb(15 23 42);
+                            line-height: 1.2;
+                        }
+
+                        section[data-slide="7"] .flow-card--active {
+                            border-color: rgb(52 211 153);
+                            box-shadow: 0 0 0 3px rgba(16, 185, 129, .25);
+                        }
+
+                        @media (min-width:768px) {
+                            section[data-slide="7"] .flow-card__arrow {
+                                position: absolute;
+                                right: -12px;
+                                top: 50%;
+                                transform: translateY(-50%);
+                                color: rgb(203 213 225);
+                            }
+
+                            section[data-slide="7"] .flow-card:hover .flow-card__arrow {
+                                color: rgb(16 185 129);
+                            }
+                        }
+
+                        /* bullet rapat */
+                        section[data-slide="7"] .detail ul {
+                            list-style: disc;
+                            margin-left: 1.25rem;
+                        }
+
+                        section[data-slide="7"] .detail li+li {
+                            margin-top: .25rem;
+                        }
+
+                        section[data-slide="7"] .mini {
+                            font-size: .85em;
+                            color: #475569;
+                        }
+
+                        section[data-slide="7"] code {
+                            background: #f1f5f9;
+                            padding: .075rem .35rem;
+                            border-radius: .35rem;
+                        }
+                    </style>
+
+                    <!-- Script interaktif -->
+                    <script>
+                        (function () {
+                            const root = document.currentScript.closest('section[data-slide="7"]') || document.querySelector('section[data-slide="7"]');
+                            if (!root) return;
+                            const flow = root.querySelector('#flow');
+                            const flowDetail = root.querySelector('#flowDetail');
+                            if (!flow || !flowDetail) return;
+
+                            // Materi lengkap per langkah (HTML pendek + contoh mini)
+                            const flowData = [
+                                {
+                                    t: 'Pahami masalah utama',
+                                    d: `
+          <div class="detail">
+            <ul>
+              <li>Tentukan <strong>tujuan</strong> & <strong>batasan</strong> (waktu, alat, aturan).</li>
+              <li>Tuliskan <strong>output akhir</strong> yang diharapkan.</li>
+              <li>Kumpulkan info penting: siapa, di mana, kapan.</li>
+            </ul>
+            <p class="mini mt-2"><strong>Contoh mini:</strong> “Tas siap malam ini (≤10 menit), berisi buku Matematika, IPA, PJOK, botol terisi.”</p>
+            <p class="mini"><strong>Prompt:</strong> Apa yang harus ada di akhir? Apa yang <em>tidak</em> perlu?</p>
+          </div>`
+                                },
+                                {
+                                    t: 'Identifikasi bagian besar',
+                                    d: `
+          <div class="detail">
+            <ul>
+              <li>Kelompokkan ke <em>bagian</em> (mis. Persiapan, Proses, Penutup).</li>
+              <li>Cari sub-masalah yang bisa dikerjakan terpisah.</li>
+              <li>Urutkan bagian secara kasar (awal → tengah → akhir).</li>
+            </ul>
+            <p class="mini mt-2"><strong>Contoh mini:</strong> Persiapan: cek jadwal • Proses: masukkan barang • Penutup: taruh tas.</p>
+            <p class="mini"><strong>Prompt:</strong> Bagian mana yang bisa paralel? Mana yang wajib duluan?</p>
+          </div>`
+                                },
+                                {
+                                    t: 'Pecah jadi langkah kecil',
+                                    d: `
+          <div class="detail">
+            <ul>
+              <li>Tulis langkah berawalan <strong>kata kerja</strong>.</li>
+              <li>Satu langkah = <strong>satu aksi</strong> (1–3 menit).</li>
+              <li>Hindari kata umum: “rapikan semua”, “siapkan semua”.</li>
+            </ul>
+            <p class="mini mt-2"><strong>Contoh mini:</strong> “Cek jadwal Senin” → “Ambil buku Matematika & IPA” → “Isi botol”.</p>
+            <p class="mini"><strong>Prompt:</strong> Bisakah langkah ini dikerjakan tanpa kebingungan?</p>
+          </div>`
+                                },
+                                {
+                                    t: 'Kerjakan satu per satu',
+                                    d: `
+          <div class="detail">
+            <ul>
+              <li>Fokus pada langkah aktif, beri <strong>cek</strong> saat selesai.</li>
+              <li>Uji cepat sebelum lanjut (apakah langkah valid?).</li>
+              <li>Catat kendala & perbaiki urutan bila perlu.</li>
+            </ul>
+            <p class="mini mt-2"><strong>Contoh mini:</strong> Setelah isi botol, <em>cek</em> tutup rapat → lanjut ke buku.</p>
+            <p class="mini"><strong>Prompt:</strong> Apa indikator bahwa langkah ini selesai?</p>
+          </div>`
+                                },
+                                {
+                                    t: 'Gabungkan jadi solusi',
+                                    d: `
+          <div class="detail">
+            <ul>
+              <li>Satukan hasil langkah, cek <strong>kelengkapan</strong> & <strong>urutan</strong>.</li>
+              <li>Refleksi: langkah mana yang bisa dipersingkat?</li>
+              <li>Dokumentasikan urutan terbaik sebagai <code>template</code>.</li>
+            </ul>
+            <p class="mini mt-2"><strong>Contoh mini:</strong> Tas siap di dekat pintu, daftar “Senin” disimpan untuk pekan depan.</p>
+            <p class="mini"><strong>Prompt:</strong> Jika diulang besok, bagian mana yang tetap sama?</p>
+          </div>`
+                                }
+                            ];
+
+                            let current = 0;
+
+                            function renderFlow() {
+                                flow.innerHTML = '';
+                                flow.setAttribute('role', 'list');
+                                flowData.forEach((item, i) => {
+                                    const btn = document.createElement('button');
+                                    btn.type = 'button';
+                                    btn.className = 'flow-card group';
+                                    btn.setAttribute('role', 'listitem');
+                                    btn.setAttribute('aria-pressed', i === current ? 'true' : 'false');
+                                    btn.setAttribute('tabindex', i === current ? '0' : '-1');
+                                    btn.innerHTML = `
+          <div class="flow-card__step">Langkah ${i + 1}</div>
+          <div class="flow-card__title">${item.t}</div>
+          ${i < flowData.length - 1 ? '<div class="flow-card__arrow hidden md:block" aria-hidden="true">→</div>' : ''}
+        `;
+                                    if (i === current) btn.classList.add('flow-card--active');
+
+                                    btn.addEventListener('click', () => select(i));
+                                    btn.addEventListener('keydown', (e) => {
+                                        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); focusTo(i + 1); }
+                                        if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); focusTo(i - 1); }
+                                        if (e.key === 'Home') { e.preventDefault(); focusTo(0); }
+                                        if (e.key === 'End') { e.preventDefault(); focusTo(flowData.length - 1); }
+                                        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(i); }
+                                    });
+
+                                    flow.appendChild(btn);
+                                });
+                                updateDetail();
+                            }
+
+                            function select(i) {
+                                current = (i + flowData.length) % flowData.length;
+                                [...flow.children].forEach((el, idx) => {
+                                    el.classList.toggle('flow-card--active', idx === current);
+                                    el.setAttribute('aria-pressed', idx === current ? 'true' : 'false');
+                                    el.setAttribute('tabindex', idx === current ? '0' : '-1');
+                                });
+                                updateDetail();
+                            }
+
+                            function focusTo(i) {
+                                const idx = (i + flowData.length) % flowData.length;
+                                const el = flow.children[idx];
+                                if (el) { el.focus(); select(idx); }
+                            }
+
+                            function updateDetail() {
+                                const item = flowData[current];
+                                flowDetail.innerHTML = `<h5 class="font-semibold mb-1">${item.t}</h5>${item.d}`;
+                            }
+
+                            renderFlow();
+
+                            // Hook opsional saat pindah slide (kalau kamu punya window.goTo)
+                            if (!window.__flow7_hooked && typeof window.goTo === 'function') {
+                                window.__flow7_hooked = true;
+                                const orig = window.goTo;
+                                window.goTo = function (i) {
+                                    const r = orig(i);
+                                    try {
+                                        const slides = document.querySelectorAll('.slide');
+                                        const cur = slides[i];
+                                        if (cur && cur.dataset.slide === '7' && flow.children.length) {
+                                            // pastikan tetap ada highlight & detail
+                                            if (!flow.querySelector('.flow-card--active')) select(0);
+                                        }
+                                    } catch (_) { }
+                                    return r;
+                                }
+                            }
+                        })();
+                    </script>
+            </section>
+
+            <!-- Slide 8 – Kesimpulan -->
+            <section class="slide hidden" data-slide="10" aria-hidden="true">
+                <div class="grid md:grid-cols-2 gap-6 md:gap-10 items-start">
+                    <div class="p-6 md:p-8 rounded-2xl bg-white shadow-lg border border-slate-200">
+                        <h3 class="font-display text-2xl md:text-3xl font-extrabold text-slate-900">Kesimpulan</h3>
+                        <ul class="mt-3 space-y-2 text-slate-700">
+                            <li>• Dekomposisi membantu kita fokus & efisien.</li>
+                            <li>• Bisa dipakai di sekolah, rumah, dan kegiatan lain.</li>
+                            <li>• Masalah besar jadi mudah saat dipecah kecil.</li>
+                        </ul>
+                        <div
+                            class="mt-5 p-4 rounded-xl bg-gradient-to-br from-brand-50 to-accent-50 border border-slate-200">
+                            <p class="font-semibold text-slate-900">Pertanyaan refleksi</p>
+                            <p class="text-slate-700 mt-1">Besok pagi, kegiatan apa yang bisa kamu coba pakai
+                                dekomposisi?</p>
+                            <div class="mt-3 flex gap-2">
+                                <input id="commitInput" type="text"
+                                    class="flex-1 px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-300"
+                                    placeholder="Tuliskan komitmen singkat...">
+                                <button id="commitSave"
+                                    class="px-3 py-2 rounded-lg bg-brand-500 hover:bg-brand-600 text-white">Simpan</button>
+                            </div>
+                            <p id="commitShow" class="mt-3 text-sm text-slate-700"></p>
+                        </div>
+                    </div>
+                    <div class="p-6 md:p-8 rounded-2xl bg-white shadow-lg border border-slate-200">
+                        <h4 class="font-semibold text-slate-800">Mini Kuis</h4>
+                        <p class="text-slate-700 mt-1">Pilih pernyataan yang benar tentang dekomposisi:</p>
+                        <div class="mt-3 space-y-2" id="quizBox"></div>
+                        <div class="mt-3">
+                            <button id="quizCheck"
+                                class="px-3 py-2 rounded-lg bg-accent-500 hover:bg-accent-600 text-white">Cek</button>
+                            <button id="quizReset"
+                                class="px-3 py-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-50">Reset</button>
+                        </div>
+                        <p id="quizFeedback" class="mt-3 text-sm font-semibold"></p>
+                        <p class="mt-6 text-xs text-slate-500">Kamu bisa gunakan tombol panah kiri/kanan di keyboard
+                            untuk pindah slide.</p>
+                    </div>
+                </div>
+
+                <script>
+(function(){
+  // Scope hanya ke slide ini supaya tidak bentrok
+  const root = document.currentScript.closest('section[data-slide="10"]') || document.querySelector('section[data-slide="10"]');
+  if (!root) return;
+
+  // Elemen komitmen
+  const commitInput = root.querySelector('#commitInput');
+  let   commitSave  = root.querySelector('#commitSave');
+  const commitShow  = root.querySelector('#commitShow');
+
+  // Elemen kuis
+  const quizBox      = root.querySelector('#quizBox');
+  let   quizCheck    = root.querySelector('#quizCheck');
+  let   quizReset    = root.querySelector('#quizReset');
+  const quizFeedback = root.querySelector('#quizFeedback');
+
+  if (!quizBox || !quizCheck || !quizReset) return;
+
+  // Data kuis
+  const quizData = [
+    { t: 'Dekomposisi membantu memulai dari bagian kecil.', ok: true },
+    { t: 'Dekomposisi artinya mengerjakan semua sekaligus.', ok: false },
+    { t: 'Dekomposisi bisa dipakai di kegiatan sehari-hari.', ok: true },
+  ];
+
+  // Utility: klaim tombol agar event listener lama tidak ikut nempel
+  function claim(btn, handler){
+    if (!btn) return btn;
+    const clone = btn.cloneNode(true);
+    btn.replaceWith(clone);
+    clone.addEventListener('click', (e)=>{
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      handler(e);
+    }, {capture:true});
+    return clone;
+  }
+
+  // Render kuis
+  function renderQuiz(){
+    quizBox.innerHTML = '';
+    quizData.forEach((q, i)=>{
+      const row = document.createElement('label');
+      row.className = 'flex items-center gap-3 p-2 rounded-lg bg-slate-50 border border-slate-200';
+      row.innerHTML = `
+        <input type="checkbox" data-idx="${i}" class="h-5 w-5 rounded border-slate-300 text-brand-600 focus:ring-brand-300">
+        <span class="text-slate-700">${q.t}</span>
+      `;
+      quizBox.appendChild(row);
+    });
+    quizFeedback.textContent = '';
+    quizFeedback.className = 'mt-3 text-sm font-semibold';
+  }
+
+  // Komitmen
+  commitSave = claim(commitSave, ()=>{
+    const val = (commitInput?.value || '').trim();
+    commitShow.textContent = val ? `Komitmenmu: ${val}` : '';
+    if (val && commitInput) commitInput.value = '';
+  });
+
+  // Aksi kuis
+  quizCheck = claim(quizCheck, ()=>{
+    const checks = quizBox.querySelectorAll('input[type="checkbox"]');
+    let correct = true;
+    checks.forEach(ch=>{
+      const i = parseInt(ch.getAttribute('data-idx'), 10);
+      if ((ch.checked ? true : false) !== quizData[i].ok) correct = false;
+    });
+    quizFeedback.textContent = correct
+      ? 'Betul semua! Kamu paham dekomposisi.'
+      : 'Masih ada yang keliru. Coba pikirkan lagi.';
+    quizFeedback.className = 'mt-3 text-sm font-semibold ' + (correct ? 'text-brand-600' : 'text-accent-600');
+  });
+
+  quizReset = claim(quizReset, renderQuiz);
+
+  // Inisialisasi
+  renderQuiz();
+
+  // (Opsional) jika kamu punya navigator goTo, pastikan kuis tetap siap saat slide ini dibuka
+  if (!window.__quiz10_hooked && typeof window.goTo === 'function'){
+    window.__quiz10_hooked = true;
+    const orig = window.goTo;
+    window.goTo = function(i){
+      const r = orig(i);
+      try{
+        const slides = document.querySelectorAll('.slide');
+        const cur = slides[i];
+        if (cur && cur.dataset.slide === '10' && !quizBox.children.length){
+          renderQuiz();
+        }
+      }catch(_){}
+      return r;
+    }
+  }
+})();
+</script>
+
+
+            </section>
+
+            <!-- Overview Modal (dinonaktifkan) -->
+        </main>
+
+        <!-- Footer Controls (mobile visible) -->
+        <footer class="mt-6 md:mt-8 flex md:hidden items-center justify-between">
+            <button id="prevBtnM"
+                class="px-4 py-3 rounded-xl bg-white hover:bg-slate-50 text-slate-700 shadow-sm border border-slate-200 w-[48%]">Sebelumnya</button>
+            <button id="nextBtnM"
+                class="px-4 py-3 rounded-xl bg-brand-500 hover:bg-brand-600 text-white shadow-sm w-[48%]">Berikutnya</button>
+        </footer>
+    </div>
+
+    <script>
+        // Utility helpers
+        const $ = (sel, parent = document) => parent.querySelector(sel);
+        const $$ = (sel, parent = document) => Array.from(parent.querySelectorAll(sel));
+
+        // Slides state
+        const slides = $$('.slide');
+        let current = 0;
+
+        const progressText = $('#progressText');
+        const progressBar = $('#progressBar');
+        const dotNav = $('#dotNav');
+
+        // Build dot navigation
+        function buildDots() {
+            dotNav.innerHTML = '';
+            slides.forEach((_, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'w-2.5 h-2.5 rounded-full bg-slate-300 hover:bg-slate-400 transition';
+                btn.title = 'Slide ' + (idx + 1);
+                btn.addEventListener('click', () => goTo(idx));
+                dotNav.appendChild(btn);
+            });
+        }
+
+        function updateDots() {
+            const dots = $$('#dotNav button');
+            dots.forEach((d, i) => {
+                d.className = 'w-2.5 h-2.5 rounded-full transition ' + (i === current ? 'bg-brand-500' : 'bg-slate-300 hover:bg-slate-400');
+            });
+        }
+
+        function animateSlide(fromIdx, toIdx) {
+            if (fromIdx === toIdx) return;
+            const from = slides[fromIdx];
+            const to = slides[toIdx];
+            if (!from || !to) return;
+
+            from.classList.remove('slide-enter', 'slide-enter-active');
+            from.classList.add('slide-exit');
+            requestAnimationFrame(() => {
+                from.classList.add('slide-exit-active');
+                setTimeout(() => {
+                    from.classList.add('hidden');
+                    from.classList.remove('slide-exit', 'slide-exit-active');
+                }, 250);
+            });
+
+            to.classList.remove('hidden');
+            to.classList.add('slide-enter');
+            requestAnimationFrame(() => {
+                to.classList.add('slide-enter-active');
+                setTimeout(() => {
+                    to.classList.remove('slide-enter', 'slide-enter-active');
+                }, 300);
+            });
+        }
+
+        function goTo(index) {
+            index = Math.max(0, Math.min(slides.length - 1, index));
+            const prev = current;
+            current = index;
+
+            slides.forEach((s, i) => s.setAttribute('aria-hidden', i === current ? 'false' : 'true'));
+            animateSlide(prev, current);
+
+            const percent = ((current + 1) / slides.length) * 100;
+            progressBar.style.width = percent + '%';
+            progressText.textContent = `Slide ${current + 1} dari ${slides.length}`;
+            updateDots();
+
+            // kalau masuk Slide 5, refresh dari localStorage
+            try {
+                const slide = slides[current];
+                if (slide && slide.dataset.slide === '5' && typeof window.initTimeListFromSteps === 'function') {
+                    const saved = localStorage.getItem('dekomposisiSteps');
+                    if (saved) {
+                        const steps = JSON.parse(saved);
+                        if (Array.isArray(steps) && steps.length) {
+                            window.initTimeListFromSteps(steps);
+                        }
+                    }
+                }
+            } catch (_) { }
+
+        }
+
+        function next() { goTo(current + 1); }
+        function prev() { goTo(current - 1); }
+
+        // Controls
+        $('#prevBtn').addEventListener('click', prev);
+        $('#nextBtn').addEventListener('click', next);
+        $('#prevBtnM').addEventListener('click', prev);
+        $('#nextBtnM').addEventListener('click', next);
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            const tag = (e.target.tagName || '').toLowerCase();
+            const typing = tag === 'input' || tag === 'textarea';
+            if (typing) return;
+            if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
+            if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+            const num = parseInt(e.key, 10);
+            if (!isNaN(num) && num >= 1 && num <= slides.length) {
+                goTo(num - 1);
+            }
+        });
+
+
+        // Jump buttons
+        $$('#slides [data-jump]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const idx = parseInt(btn.getAttribute('data-jump'), 10) - 1;
+                goTo(idx);
+            });
+        });
+
+        // Overview modal
+        // Fitur pratinjau slide dinonaktifkan karena tombol dihapus
+
+        // Slide 2 – Sandwich steps
+        const sandwichForm = $('#sandwichForm');
+        const sandwichInput = $('#sandwichInput');
+        const sandwichList = $('#sandwichList');
+        const sandwichStepsView = $('#sandwichStepsView');
+        const clearSandwich = $('#clearSandwich');
+        const sampleSandwich = $('#sampleSandwich');
+
+        let sandwichSteps = [];
+        function renderSandwich() {
+            sandwichList.innerHTML = '';
+            sandwichStepsView.innerHTML = '';
+            sandwichSteps.forEach((step, idx) => {
+                const li = document.createElement('li');
+                li.className = 'flex items-center justify-between gap-2 p-2 rounded-lg bg-slate-50 border border-slate-200';
+                li.innerHTML = `
+          <span class="text-sm text-slate-700">${idx + 1}. ${step}</span>
+          <div class="flex gap-1">
+            <button data-act="up" data-idx="${idx}" class="px-2 py-1 rounded bg-white border hover:bg-slate-100 text-xs">↑</button>
+            <button data-act="down" data-idx="${idx}" class="px-2 py-1 rounded bg-white border hover:bg-slate-100 text-xs">↓</button>
+            <button data-act="del" data-idx="${idx}" class="px-2 py-1 rounded bg-accent-500 text-white hover:bg-accent-600 text-xs">Hapus</button>
+          </div>`;
+                sandwichList.appendChild(li);
+
+                const card = document.createElement('div');
+                card.className = 'p-3 rounded-xl bg-white border border-slate-200 shadow-sm text-center';
+                card.innerHTML = `<div class="text-xs text-slate-500">Langkah ${idx + 1}</div><div class="text-sm font-semibold text-slate-800 mt-1">${step}</div>`;
+                sandwichStepsView.appendChild(card);
+            });
+        }
+        sandwichForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const val = sandwichInput.value.trim();
+            if (!val) return;
+            sandwichSteps.push(val);
+            sandwichInput.value = '';
+            renderSandwich();
+        });
+        sandwichList.addEventListener('click', (e) => {
+            const btn = e.target.closest('button'); if (!btn) return;
+            const idx = parseInt(btn.getAttribute('data-idx'), 10);
+            const act = btn.getAttribute('data-act');
+            if (act === 'del') sandwichSteps.splice(idx, 1);
+            if (act === 'up' && idx > 0) [sandwichSteps[idx - 1], sandwichSteps[idx]] = [sandwichSteps[idx], sandwichSteps[idx - 1]];
+            if (act === 'down' && idx < sandwichSteps.length - 1) [sandwichSteps[idx + 1], sandwichSteps[idx]] = [sandwichSteps[idx], sandwichSteps[idx + 1]];
+            renderSandwich();
+        });
+        clearSandwich.addEventListener('click', () => { sandwichSteps = []; renderSandwich(); });
+        sampleSandwich.addEventListener('click', () => {
+            sandwichSteps = ['Ambil roti', 'Oles selai', 'Tambahkan isi', 'Tutup roti', 'Potong', 'Sajikan'];
+            renderSandwich();
+        });
+
+        // Slide 4 – Morning activities
+        const morningForm = $('#morningForm');
+        const morningInput = $('#morningInput');
+        const morningList = $('#morningList');
+        const morningPreview = $('#morningPreview');
+        const morningSample = $('#morningSample');
+        const morningClear = $('#morningClear');
+        let morningItems = [];
+
+        function renderMorning() {
+            morningList.innerHTML = '';
+            morningPreview.innerHTML = '';
+            morningItems.forEach((item, idx) => {
+                const li = document.createElement('li');
+                li.className = 'flex items-center justify-between gap-2 p-2 rounded-lg bg-slate-50 border border-slate-200';
+                li.innerHTML = `<span class="text-sm text-slate-700">${item}</span>
+          <div class="flex gap-1">
+            <button data-act="up" data-idx="${idx}" class="px-2 py-1 rounded bg-white border hover:bg-slate-100 text-xs">↑</button>
+            <button data-act="down" data-idx="${idx}" class="px-2 py-1 rounded bg-white border hover:bg-slate-100 text-xs">↓</button>
+            <button data-act="del" data-idx="${idx}" class="px-2 py-1 rounded bg-accent-500 text-white hover:bg-accent-600 text-xs">Hapus</button>
+          </div>`;
+                morningList.appendChild(li);
+
+                const li2 = document.createElement('li');
+                li2.textContent = item;
+                morningPreview.appendChild(li2);
+            });
+        }
+        morningForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const val = morningInput.value.trim();
+            if (!val) return;
+            morningItems.push(val);
+            morningInput.value = '';
+            renderMorning();
+        });
+        morningList.addEventListener('click', (e) => {
+            const btn = e.target.closest('button'); if (!btn) return;
+            const idx = parseInt(btn.getAttribute('data-idx'), 10);
+            const act = btn.getAttribute('data-act');
+            if (act === 'del') morningItems.splice(idx, 1);
+            if (act === 'up' && idx > 0) [morningItems[idx - 1], morningItems[idx]] = [morningItems[idx], morningItems[idx - 1]];
+            if (act === 'down' && idx < morningItems.length - 1) [morningItems[idx + 1], morningItems[idx]] = [morningItems[idx], morningItems[idx + 1]];
+            renderMorning();
+        });
+        morningSample.addEventListener('click', () => {
+            morningItems = ['Bangun tidur', 'Salat/berdoa', 'Mandi & sikat gigi', 'Sarapan', 'Pakai seragam', 'Cek tas & botol', 'Berangkat'];
+            renderMorning();
+        });
+        morningClear.addEventListener('click', () => { morningItems = []; renderMorning(); });
+
+        // Slide 5 – Time estimation + timeline
+        (function () {
+            if (window.__timeSlideEnhanced) return;
+            window.__timeSlideEnhanced = true;
+
+            const START_HHMM = "05:00";
+            const TARGET_MIN = 60;
+            const COLORS = ["#22c55e", "#3b82f6", "#f59e0b", "#ec4899", "#14b8a6", "#8b5cf6", "#ef4444", "#06b6d4", "#84cc16", "#f97316"];
+
+            const el = {
+                list: document.getElementById("timeList"),
+                bar: document.getElementById("timelineBar"),
+                total: document.getElementById("totalTime"),
+                btnSample: document.getElementById("timeSample"),
+                btnClear: document.getElementById("timeClear"),
+                btnAdd: document.getElementById("timeAdd"),
+            };
+            if (!el.list || !el.bar || !el.total) return;
+
+            // --- klaim tombol agar listener lama tidak ikut jalan
+            function claim(btn, handler) {
+                if (!btn) return btn;
+                const clone = btn.cloneNode(true);
+                btn.replaceWith(clone);
+                clone.addEventListener("click", e => {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    handler(e);
+                }, { capture: true });
+                return clone;
+            }
+            el.btnSample = claim(el.btnSample, onSample);
+            el.btnClear = claim(el.btnClear, onClear);
+            el.btnAdd = claim(el.btnAdd, onAdd);
+
+            let items = []; // {id,text,cat,min,color}
+
+            // --- utils waktu
+            function toMinutes(hhmm) { const [h, m] = (hhmm || "0:0").split(":").map(Number); return (h * 60 + m) % (24 * 60); }
+            function fromBase(base, add) {
+                const t = (base + add + 24 * 60) % (24 * 60), h = String(Math.floor(t / 60)).padStart(2, "0"), m = String(t % 60).padStart(2, "0");
+                return `${h}:${m}`;
+            }
+            const BASE_MIN = toMinutes(START_HHMM);
+
+            // --- state helpers
+            function pickColor(i) { return COLORS[i % COLORS.length]; }
+            function makeItem(text, cat, min, color) {
+                return { id: Math.random().toString(36).slice(2, 9), text: text || "", cat: cat || "", min: Math.max(0, Number(min) || 0), color: color || pickColor(items.length) };
+            }
+            function escapeHtml(s) { return (s || "").replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[m])); }
+
+            // --- render list
+            function rowTemplate(it, idx) {
+                return `
+      <div class="time-row group flex items-center gap-2 border border-slate-200 rounded-xl p-2 bg-white">
+        <span class="w-6 text-xs text-slate-500 select-none">${idx + 1}.</span>
+        <span class="inline-block w-3 h-3 rounded ring-1 ring-white" style="background:${it.color}"></span>
+        <input class="time-text flex-1 px-2 py-1 rounded-md border border-slate-200 focus:ring-2 focus:ring-brand-300 text-sm"
+               value="${escapeHtml(it.text)}" aria-label="Langkah ${idx + 1}">
+        <input class="time-min w-20 px-2 py-1 rounded-md border border-slate-200 focus:ring-2 focus:ring-brand-300 text-sm"
+               type="number" min="0" step="5" value="${Number(it.min) || 0}" aria-label="Menit">
+        <span class="hidden md:inline text-[11px] text-slate-500 px-2 py-1 rounded bg-slate-50 border border-slate-200">${it.cat ? it.cat : ''}</span>
+        <div class="flex gap-1 opacity-80">
+          <button class="btn-up px-2 py-1 text-xs rounded border border-slate-200 hover:bg-slate-50">↑</button>
+          <button class="btn-down px-2 py-1 text-xs rounded border border-slate-200 hover:bg-slate-50">↓</button>
+          <button class="btn-del px-2 py-1 text-xs rounded border border-slate-200 hover:bg-slate-50">Hapus</button>
+        </div>
+      </div>
+    `;
+            }
+            function renderList() { el.list.innerHTML = items.map((it, idx) => rowTemplate(it, idx)).join(""); }
+
+            // --- render timeline
+            function renderTimeline() {
+                const total = items.reduce((a, b) => a + (Number(b.min) || 0), 0);
+                const scale = Math.max(TARGET_MIN, total, 1);
+                el.bar.innerHTML = "";
+
+                // grid 15 menit
+                for (let q = 15; q < scale; q += 15) {
+                    const g = document.createElement("div");
+                    g.style.position = "absolute"; g.style.left = (q / scale * 100) + "%"; g.style.top = 0; g.style.bottom = 0;
+                    g.style.width = "1px"; g.style.background = "rgba(0,0,0,.08)";
+                    el.bar.appendChild(g);
+                }
+
+                let acc = 0;
+                items.forEach(it => {
+                    const dur = Math.max(0, Number(it.min) || 0);
+                    if (!dur) return;
+                    const leftPct = (acc / scale) * 100, widthPct = (dur / scale) * 100;
+                    const from = fromBase(BASE_MIN, acc), to = fromBase(BASE_MIN, acc + dur);
+
+                    const seg = document.createElement("div");
+                    seg.style.position = "absolute"; seg.style.top = "2px"; seg.style.bottom = "2px";
+                    seg.style.left = leftPct + "%"; seg.style.width = widthPct + "%";
+                    seg.style.borderRadius = ".5rem"; seg.style.background = it.color;
+                    seg.style.boxShadow = "inset 0 -1px 0 rgba(0,0,0,.15), 0 1px 2px rgba(0,0,0,.08)";
+                    seg.title = `${from}–${to} • ${it.text} (${dur}m)`;
+
+                    if (widthPct > 12) {
+                        const label = document.createElement("span");
+                        label.style.position = "absolute"; label.style.left = "8px"; label.style.top = "50%";
+                        label.style.transform = "translateY(-50%)"; label.style.fontSize = "11px"; label.style.color = "#fff";
+                        label.style.textShadow = "0 1px 1px rgba(0,0,0,.35)"; label.style.whiteSpace = "nowrap";
+                        label.style.overflow = "hidden"; label.style.textOverflow = "ellipsis"; label.style.maxWidth = "90%";
+                        label.textContent = it.text;
+                        seg.appendChild(label);
+                    }
+                    el.bar.appendChild(seg);
+                    acc += dur;
+                });
+
+                el.total.textContent = `Total: ${total} menit • ${total <= TARGET_MIN ? 'On track' : 'Lewat target (+' + (total - TARGET_MIN) + 'm)'}`;
+            }
+
+            // --- delegasi event list
+            el.list.addEventListener("input", (e) => {
+                const row = e.target.closest(".time-row"); if (!row) return;
+                const idx = [...el.list.children].indexOf(row); if (idx < 0) return;
+                if (e.target.classList.contains("time-text")) items[idx].text = e.target.value;
+                if (e.target.classList.contains("time-min")) { items[idx].min = Math.max(0, Number(e.target.value) || 0); renderTimeline(); }
+            });
+            el.list.addEventListener("click", (e) => {
+                const row = e.target.closest(".time-row"); if (!row) return;
+                const idx = [...el.list.children].indexOf(row); if (idx < 0) return;
+                if (e.target.classList.contains("btn-del")) { items.splice(idx, 1); renderList(); renderTimeline(); }
+                if (e.target.classList.contains("btn-up") && idx > 0) { [items[idx - 1], items[idx]] = [items[idx], items[idx - 1]]; renderList(); renderTimeline(); }
+                if (e.target.classList.contains("btn-down") && idx < items.length - 1) { [items[idx + 1], items[idx]] = [items[idx], items[idx + 1]]; renderList(); renderTimeline(); }
+            });
+
+            // --- tombol
+            function onAdd() {
+                items.push(makeItem("Langkah baru", "", 5, pickColor(items.length)));
+                renderList(); renderTimeline();
+                const last = el.list.querySelector(".time-row:last-child .time-text"); last && last.focus();
+            }
+            function onClear() { items = []; renderList(); renderTimeline(); }
+            function onSample() {
+                // Contoh sesuai screenshot (total 45 menit)
+                const sample = [
+                    { text: "Bangun tidur", cat: "Persiapan", min: 0 },
+                    { text: "Merapikan tempat tidur", cat: "Persiapan", min: 5 },
+                    { text: "Mandi", cat: "Proses", min: 10 },
+                    { text: "Gosok gigi", cat: "Proses", min: 5 },
+                    { text: "Sarapan", cat: "Proses", min: 15 },
+                    { text: "Siapkan tas sekolah", cat: "Penutup", min: 10 },
+                    { text: "Berangkat", cat: "Penutup", min: 0 },
+                ];
+                window.initTimeListFromSteps(sample);
+                try { localStorage.setItem("dekomposisiSteps", JSON.stringify(sample)); } catch (_) { }
+            }
+
+            // --- API publik (dipakai Slide 4)
+            window.initTimeListFromSteps = function (steps) {
+                const seeded = (steps || []).map((s, i) => makeItem(s.text, s.cat, (typeof s.min !== 'undefined' ? s.min : guessMinutes(s.text)), pickColor(i)));
+                items = seeded; renderList(); renderTimeline();
+            };
+
+            function guessMinutes(text = "") {
+                const t = text?.toLowerCase() || "";
+                if (/(bangun|berangkat)/.test(t)) return 0;
+                if (/(mandi|memakai seragam)/.test(t)) return 10;
+                if (/(gosok gigi|merapikan)/.test(t)) return 5;
+                if (/sarapan/.test(t)) return 15;
+                if (/(tas|siapkan)/.test(t)) return 10;
+                return 5;
+            }
+
+            // --- autoload dari Slide 4 (kalau ada)
+            try {
+                const saved = localStorage.getItem("dekomposisiSteps");
+                if (saved) {
+                    const steps = JSON.parse(saved);
+                    if (Array.isArray(steps) && steps.length) { window.initTimeListFromSteps(steps); return; }
+                }
+            } catch (_) { }
+            renderList(); renderTimeline();
+
+        })();
+
+        // Slide 6 – Checklists
+        const bagChecklist = $('#bagChecklist');
+        const marketChecklist = $('#marketChecklist');
+        const bagItems = ['Cek jadwal pelajaran', 'Pilih buku', 'Siapkan alat tulis', 'Siapkan bekal', 'Botol minum'];
+        const marketItems = ['Buat daftar belanja', 'Siapkan uang', 'Pilih barang', 'Bayar', 'Bawa pulang'];
+
+        function renderChecklist(container, items) {
+            container.innerHTML = '';
+            items.forEach((text, i) => {
+                const li = document.createElement('li');
+                li.className = 'flex items-center gap-3 p-2 rounded-lg bg-slate-50 border border-slate-200';
+                li.innerHTML = `
+          <input id="${container.id}-${i}" type="checkbox" class="h-5 w-5 rounded border-slate-300 text-brand-600 focus:ring-brand-300">
+          <label for="${container.id}-${i}" class="flex-1 text-slate-700">${text}</label>
+        `;
+                container.appendChild(li);
+            });
+        }
+        renderChecklist(bagChecklist, bagItems);
+        renderChecklist(marketChecklist, marketItems);
+
+
+        // Init
+        buildDots();
+        updateDots();
+        // Pre-fill some gentle defaults
+        sandwichSteps = ['Ambil roti', 'Oles selai', 'Tambahkan isi'];
+        renderSandwich();
+        addTask('Bangun & merapikan', 10);
+        renderReflect();
+
+        // Accessibility: ensure slides have proper aria
+        slides.forEach((s, i) => s.setAttribute('aria-labelledby', (s.querySelector('h2,h3')?.id || `slide-title-${i + 1}`)));
+    </script>
+    <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'983f6be26326b7c5',t:'MTc1ODY4NjkxNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
+</body>
+
+</html>
