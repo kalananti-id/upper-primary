@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pertemuan 1 – Problem Solving (UP 2.5)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html,
+    body {
+      height: 100%;
+    }
+
+    .slide {
+      min-height: 100vh;
+      display: none;
+    }
+
+    .slide.active {
+      display: flex;
+    }
+
+    /* Soft color palette for upper primary */
+    .bg-hero {
+      background: linear-gradient(135deg, #E6F3FF 0%, #F7FEE7 100%);
+    }
+
+    /* blue→mint */
+    .card {
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
+    }
+
+    .btn {
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+
+    .btn:active {
+      transform: scale(.98);
+    }
+
+    /* Simple fade/slide animation; reduced motion respected */
+    @media (prefers-reduced-motion: no-preference) {
+      .fade-in {
+        animation: fadeIn .6s ease both;
+      }
+
+      .slide-up {
+        animation: slideUp .6s ease both;
+      }
+
+      .pop {
+        animation: pop .5s ease both;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0
+      }
+
+      to {
+        opacity: 1
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(16px);
+        opacity: 0
+      }
+
+      to {
+        transform: none;
+        opacity: 1
+      }
+    }
+
+    @keyframes pop {
+      from {
+        transform: scale(.95);
+        opacity: 0
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1
+      }
+    }
+
+    /* Progress dots */
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 9999px;
+      background: #BFDBFE;
+    }
+
+    .dot.active {
+      background: #3B82F6;
+    }
+
+    /* Access Code Overlay */
+    .gate-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, .85);
+      backdrop-filter: blur(6px);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .gate-card {
+      width: min(92vw, 560px);
+      background: #fff;
+      border-radius: 1.5rem;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .2);
+      padding: 1.5rem;
+    }
+
+    .gate-input {
+      outline: none;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen font-sans text-slate-800 bg-hero">
+  <!-- Access Code Overlay (case-insensitive) -->
+  <div id="accessOverlay" class="gate-overlay" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
+    <div class="gate-card">
+      <div class="text-center">
+        <div class="text-5xl mb-2">🔒</div>
+        <h2 id="gateTitle" class="text-2xl md:text-3xl font-extrabold text-slate-900 mb-1">Masukkan Akses Kode</h2>
+        <p class="text-slate-600 mb-6">Ketikkan kode untuk membuka slides.</p>
+      </div>
+      <form id="gateForm" class="grid gap-3">
+        <input id="gateInput" type="text" class="gate-input w-full rounded-xl border border-slate-300 px-4 py-3 text-lg"
+          autocomplete="off" />
+        <button class="btn px-4 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-lg">Buka Slides</button>
+        <p id="gateMsg" class="text-sm text-rose-600 h-5"></p>
+      </form>
+    </div>
+  </div>
+  <!-- Nav Top -->
+  <header class="w-full p-4 md:p-6 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="leading-tight">
+        <p class="text-sm md:text-base font-semibold">Pemecahan Masalah (Problem Solving)</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <button id="btnPrev"
+        class="btn px-3 py-2 rounded-xl bg-white/80 hover:bg-white border border-slate-200 shadow-sm text-slate-700 text-sm">◀
+        Sebelumnya</button>
+      <button id="btnNext" class="btn px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow">Berikutnya
+        ▶</button>
+    </div>
+  </header>
+
+  <!-- Slides Wrapper -->
+  <main id="slides" class="w-full max-w-6xl mx-auto px-4 md:px-6 pb-24">
+
+    <!-- Slide 1: Judul -->
+    <section class="slide active items-center justify-center">
+      <div class="w-full grid md:grid-cols-2 gap-8 items-center">
+        <div class="fade-in">
+          <h1 class="text-3xl md:text-5xl font-extrabold text-slate-900 mb-4">Pemecahan Masalah <span
+              class="text-blue-600">(Problem Solving)</span></h1>
+          <p class="text-lg md:text-xl text-slate-700">Belajar menyelesaikan masalah dengan cara berpikir terstruktur.
+          </p>
+        </div>
+        <div class="slide-up">
+          <div class="card rounded-3xl bg-white p-6">
+            <div class="grid grid-cols-3 gap-4">
+              <div class="rounded-2xl h-28 bg-blue-100 grid place-items-center text-5xl">💡</div>
+              <div class="rounded-2xl h-28 bg-emerald-100 grid place-items-center text-5xl">🧠</div>
+              <div class="rounded-2xl h-28 bg-yellow-100 grid place-items-center text-5xl">🧩</div>
+              <div class="rounded-2xl h-28 bg-pink-100 grid place-items-center text-5xl">🚲</div>
+              <div class="rounded-2xl h-28 bg-indigo-100 grid place-items-center text-5xl">💻</div>
+              <div class="rounded-2xl h-28 bg-teal-100 grid place-items-center text-5xl">📚</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 2: Apersepsi -->
+    <section class="slide items-center justify-center">
+      <div class="card rounded-3xl bg-white p-8 w-full">
+        <h2 class="text-2xl md:text-4xl font-bold mb-4">Pernah Menghadapi Masalah?</h2>
+        <p class="text-lg md:text-xl text-slate-700">Pernahkah kamu lupa di mana menyimpan buku PR? Atau komputer
+          tiba-tiba tidak mau menyala? Semua orang pernah menghadapi masalah. Apa yang kamu lakukan?</p>
+        <div class="mt-6 grid sm:grid-cols-2 gap-4">
+          <div class="rounded-2xl p-4 bg-blue-50">📚 <span class="font-medium">Buku PR hilang</span> — ingat tempat
+            terakhir, lalu cari sistematis.</div>
+          <div class="rounded-2xl p-4 bg-emerald-50">💻 <span class="font-medium">Komputer tidak menyala</span> — cek
+            kabel & tombol power dulu.</div>
+        </div>
+        <div>
+          <p class="text-lg md:text-xl text-slate-700"><br>Masalah apa yang kamu hadapi saat ini?</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Slide 4: Definisi (diperjelas untuk SD) -->
+    <section class="slide items-center justify-center">
+      <div class="card rounded-3xl bg-white p-8 w-full">
+        <h2 class="text-2xl md:text-4xl font-bold mb-4">Apa itu Problem Solving?</h2>
+        <p class="text-lg md:text-xl text-slate-700">
+          Problem Solving adalah <span class="font-semibold">cara berpikir terarah</span> untuk menyelesaikan masalah.
+          Bayangkan kamu jadi <span class="font-semibold">detektif</span>: kamu mencari tahu apa yang terjadi, membuat
+          rencana,
+          mencoba, lalu melihat apakah berhasil. Bukan buru-buru, tapi <span class="font-semibold">tenang, logis, dan
+            urut</span>.
+        </p>
+
+        <div class="mt-6 grid md:grid-cols-2 gap-6">
+          <!-- Kiri: 4 langkah sederhana -->
+          <div class="space-y-3">
+            <div class="rounded-2xl p-4 bg-blue-50">
+              <div class="text-lg font-semibold">Think — Pikirkan</div>
+              <p class="text-slate-700">Tanyakan: <em>“Apa masalahnya? Kapan mulai terjadi?”</em>
+                Contoh: “Buku PR tidak ada di tas.”</p>
+            </div>
+            <div class="rounded-2xl p-4 bg-emerald-50">
+              <div class="text-lg font-semibold">Plan — Rencanakan</div>
+              <p class="text-slate-700">Buat langkah urut dan sederhana.
+                <em>“Cek meja belajar → ruang tamu → kelas.”</em>
+              </p>
+            </div>
+            <div class="rounded-2xl p-4 bg-yellow-50">
+              <div class="text-lg font-semibold">Try — Coba</div>
+              <p class="text-slate-700">Lakukan rencana <span class="font-semibold">satu per satu</span>.
+                Jangan lompat-lompat agar mudah mengecek.</p>
+            </div>
+            <div class="rounded-2xl p-4 bg-pink-50">
+              <div class="text-lg font-semibold">Reflect — Cek & Perbaiki</div>
+              <p class="text-slate-700">Berhasil atau belum? Kalau belum, <em>perbaiki rencana</em> dan coba cara lain.
+              </p>
+            </div>
+
+            <div class="flex flex-wrap gap-2 pt-1">
+              <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-sm">Think</span>
+              <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-sm">Plan</span>
+              <span class="px-3 py-1 rounded-full bg-yellow-100 text-yellow-800 text-sm">Try</span>
+              <span class="px-3 py-1 rounded-full bg-pink-100 text-pink-800 text-sm">Reflect</span>
+            </div>
+          </div>
+
+          <!-- Kanan: Contoh konkret sederhana -->
+          <div class="rounded-3xl p-5 bg-indigo-50">
+            <div class="text-lg font-bold mb-2">Contoh Mini: Botol Minum Tumpah di Tas</div>
+            <ol class="list-decimal list-inside space-y-1 text-slate-800">
+              <li><span class="font-semibold">Think:</span> “Tas basah dan buku lembab.”</li>
+              <li><span class="font-semibold">Plan:</span> Keluarkan barang → lap tumpahan → jemur buku → pindah botol
+                ke kantong luar.</li>
+              <li><span class="font-semibold">Try:</span> Lakukan langkahnya satu per satu.</li>
+              <li><span class="font-semibold">Reflect:</span> Tas sudah kering? Besok pakai botol yang rapat dan kantong
+                plastik.</li>
+            </ol>
+            <div class="mt-3 rounded-2xl p-3 bg-white text-slate-700">
+              💡 <span class="font-semibold">Tips 3T:</span> <span class="font-semibold">Tenang</span> dulu →
+              pikirkan urutan <span class="font-semibold">Terstruktur</span> → pilih solusi <span
+                class="font-semibold">Tepat</span>.
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Check -->
+        <div class="mt-6 rounded-2xl p-4 bg-sky-50 text-sky-900">
+          <div class="font-semibold mb-1">Cek Cepat:</div>
+          <p class="text-slate-800">Tentukan mana <span class="font-semibold">Think / Plan / Try / Reflect</span> untuk
+            kalimat berikut:</p>
+          <ul class="list-disc list-inside">
+            <li>“Cek dulu kabel komputer terpasang.”</li>
+            <li>“Kenapa internet tiba-tiba lemot?”</li>
+            <li>“Kalau gagal, kita pindah lebih dekat ke router.”</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Slide 5: Pentingnya (diperjelas) -->
+    <section class="slide items-center justify-center">
+      <div class="w-full grid md:grid-cols-2 gap-8 items-center">
+        <!-- Ikon visual -->
+        <div class="grid grid-cols-2 gap-4 order-2 md:order-1">
+          <div class="rounded-2xl h-24 bg-blue-50 grid place-items-center text-3xl">🧭</div>
+          <div class="rounded-2xl h-24 bg-emerald-50 grid place-items-center text-3xl">🧩</div>
+          <div class="rounded-2xl h-24 bg-yellow-50 grid place-items-center text-3xl">🛠️</div>
+          <div class="rounded-2xl h-24 bg-pink-50 grid place-items-center text-3xl">😌</div>
+        </div>
+
+        <!-- Penjelasan dan konsekuensi -->
+        <div class="card rounded-3xl bg-white p-8 order-1 md:order-2">
+          <h2 class="text-2xl md:text-4xl font-extrabold mb-4">Kenapa Pemecahan Masalah Penting?</h2>
+
+          <ul class="space-y-4 text-lg md:text-xl">
+            <!-- 1. Mandiri -->
+            <li>
+              <div class="text-xl font-semibold">Mandiri</div>
+              <div class="text-slate-600 text-base">bisa mencoba menyelesaikan sendiri dulu dengan langkah sederhana.
+              </div>
+              <div class="mt-2 grid sm:grid-cols-2 gap-2 text-base">
+                <div class="rounded-xl p-3 bg-emerald-50 text-emerald-900">
+                  ✅ <span class="font-medium">Dengan Problem Solving:</span> Wi-Fi putus → cek sambungan, restart Wi-Fi,
+                  lalu lapor guru/IT.
+                </div>
+                <div class="rounded-xl p-3 bg-rose-50 text-rose-900">
+                  ⚠️ <span class="font-medium">Tanpa Problem Solving:</span> Panik, tidak kirim tugas, menunggu bantuan
+                  tanpa mencoba apa-apa.
+                </div>
+              </div>
+            </li>
+
+            <!-- 2. Logis & Teratur -->
+            <li>
+              <div class="text-xl font-semibold">Logis & Teratur</div>
+              <div class="text-slate-600 text-base">urutkan langkah dari yang paling mudah & aman terlebih dulu.</div>
+              <div class="mt-2 grid sm:grid-cols-2 gap-2 text-base">
+                <div class="rounded-xl p-3 bg-emerald-50 text-emerald-900">
+                  ✅ Cek hal paling mungkin dulu (kabel listrik), baru lanjut ke hal yang lebih rumit.
+                </div>
+                <div class="rounded-xl p-3 bg-rose-50 text-rose-900">
+                  ⚠️ Lompat-lompat langkah → tidak tahu bagian mana yang sebenarnya menyelesaikan masalah.
+                </div>
+              </div>
+            </li>
+
+            <!-- 3. Tenang (Tidak Panik) -->
+            <li>
+              <div class="text-xl font-semibold">Tenang (Tidak Panik)</div>
+              <div class="text-slate-600 text-base">tarik napas, identifikasi masalah, pilih satu solusi, coba
+                pelan-pelan.</div>
+              <div class="mt-2 grid sm:grid-cols-2 gap-2 text-base">
+                <div class="rounded-xl p-3 bg-emerald-50 text-emerald-900">
+                  ✅ Fokus: “Apa masalahnya? Apa langkah pertama yang aman?”
+                </div>
+                <div class="rounded-xl p-3 bg-rose-50 text-rose-900">
+                  ⚠️ Panik → waktu habis, keputusan buruk, tugas tidak selesai.
+                </div>
+              </div>
+            </li>
+
+            <!-- 4. Efisien & Tepat -->
+            <li>
+              <div class="text-xl font-semibold">Efisien & Tepat</div>
+              <div class="text-slate-600 text-base">hemat waktu/tenaga dengan menguji penyebab paling mungkin dulu.
+              </div>
+              <div class="mt-2 grid sm:grid-cols-2 gap-2 text-base">
+                <div class="rounded-xl p-3 bg-emerald-50 text-emerald-900">
+                  ✅ Coba solusi sederhana dulu (nyalakan ulang aplikasi) → evaluasi → lanjut jika perlu.
+                </div>
+                <div class="rounded-xl p-3 bg-rose-50 text-rose-900">
+                  ⚠️ Asal coba yang rumit → buang waktu, kadang bikin masalah baru.
+                </div>
+              </div>
+            </li>
+          </ul>
+
+          <!-- Mini Aktivitas -->
+          <div class="mt-6 rounded-2xl p-4 bg-sky-50 text-sky-900 text-base">
+            <span class="font-semibold">Mini Aktivitas:</span>
+            Sebutkan 1 contoh saat kamu <em>tidak</em> memakai problem solving dan apa akibatnya.
+            Lalu ubah jadi versi <em>pakai</em> problem solving (sebut langkahnya).
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Slide 6: 6 Langkah (diperjelas untuk SD) -->
+    <section class="slide items-center justify-center">
+      <div class="card rounded-3xl bg-white p-8 w-full">
+        <h2 class="text-2xl md:text-4xl font-bold mb-2">Enam Langkah Pemecahan Masalah</h2>
+        <p class="text-slate-700 text-base md:text-lg">
+          Ikuti langkah ini seperti <span class="font-semibold">peta harta karun</span>: selesaikan satu langkah, baru
+          lanjut ke langkah berikutnya.
+        </p>
+
+        <div class="mt-4 grid md:grid-cols-3 gap-4 text-base md:text-lg">
+          <!-- 1. Mengenali -->
+          <div class="rounded-2xl p-4 bg-blue-50">
+            <div class="font-semibold">1. Mengenali — Apa yang terjadi?</div>
+            <div class="text-slate-600">Pertanyaan pemandu: <em>“Masalahnya apa? Kapan mulai?”</em></div>
+            <div class="mt-2">
+              <div class="text-emerald-700">✅ <span class="font-medium">Do:</span> Sebutkan masalah jelas. <span
+                  class="italic">“Komputer tidak menyala.”</span></div>
+              <div class="text-rose-700">⛔ <span class="font-medium">Don't:</span> Panik atau langsung menuduh perangkat
+                rusak.</div>
+            </div>
+          </div>
+
+          <!-- 2. Analisis -->
+          <div class="rounded-2xl p-4 bg-emerald-50">
+            <div class="font-semibold">2. Analisis — Kenapa terjadi?</div>
+            <div class="text-slate-600">Pertanyaan pemandu: <em>“Apa penyebab paling mungkin?”</em></div>
+            <div class="mt-2">
+              <div class="text-emerald-700">✅ Cek hal sederhana: kabel, tombol power, baterai.</div>
+              <div class="text-rose-700">⛔ Langsung menyimpulkan: “Rusak total!”</div>
+            </div>
+          </div>
+
+          <!-- 3. Ide Solusi -->
+          <div class="rounded-2xl p-4 bg-yellow-50">
+            <div class="font-semibold">3. Ide Solusi — Ada pilihan apa saja?</div>
+            <div class="text-slate-600">Tulis 2–3 pilihan singkat.</div>
+            <ul class="list-disc list-inside mt-2 text-slate-700">
+              <li>Colok ulang kabel</li>
+              <li>Tekan tombol power 5 detik</li>
+              <li>Minta bantuan guru/IT</li>
+            </ul>
+          </div>
+
+          <!-- 4. Pilih & Coba -->
+          <div class="rounded-2xl p-4 bg-pink-50">
+            <div class="font-semibold">4. Pilih & Coba — Mana yang paling pas?</div>
+            <div class="text-slate-600">Mulai dari yang paling mudah & aman.</div>
+            <div class="mt-2">
+              <div class="text-emerald-700">✅ Coba <span class="font-medium">satu</span> solusi dulu, lalu cek hasilnya.
+              </div>
+              <div class="text-rose-700">⛔ Coba semua sekaligus sampai bingung.</div>
+            </div>
+          </div>
+
+          <!-- 5. Evaluasi -->
+          <div class="rounded-2xl p-4 bg-indigo-50">
+            <div class="font-semibold">5. Evaluasi — Berhasil tidak?</div>
+            <div class="text-slate-600">Tanya diri sendiri: <em>“Sudah berfungsi? Apa yang berubah?”</em></div>
+            <div class="mt-2">
+              <div class="text-emerald-700">✅ Catat apa yang berhasil/tidak.</div>
+              <div class="text-rose-700">⛔ Lanjut mencoba tanpa memeriksa.</div>
+            </div>
+          </div>
+
+          <!-- 6. Cegah Terulang -->
+          <div class="rounded-2xl p-4 bg-teal-50">
+            <div class="font-semibold">6. Cegah Terulang — Bagaimana ke depan?</div>
+            <div class="text-slate-600">Buat aturan kecil agar aman.</div>
+            <ul class="list-disc list-inside mt-2 text-slate-700">
+              <li>Pastikan kabel terpasang rapat</li>
+              <li>Simpan buku PR di map khusus</li>
+              <li>Gunakan checklist sebelum pulang</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Mini Latihan: Tandai Langkah -->
+        <div class="mt-6 rounded-2xl p-4 bg-sky-50 text-sky-900 text-base">
+          <div class="font-semibold mb-1">Latihan Kilat:</div>
+          <p class="text-slate-800">Kalimat: <em>“Kalau gagal, kita pindah lebih dekat ke router.”</em> — ini termasuk
+            langkah nomor berapa?</p>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- Slide 7: Contoh 1 (Interaktif) -->
+    <section class="slide items-center justify-center">
+      <div class="w-full grid md:grid-cols-2 gap-8 items-center">
+
+        <!-- Kiri: Interaktif Urutkan Langkah -->
+        <div class="card rounded-3xl bg-white p-8">
+          <h2 class="text-2xl md:text-3xl font-bold mb-3">Contoh 1: Buku PR Hilang</h2>
+          <p class="text-slate-700 mb-3">
+            <span class="font-semibold">Urutkan langkah yang benar</span> dengan cara
+            <span class="font-semibold">drag & drop</span> kartu di bawah ini. Setelah selesai, klik
+            <span class="font-semibold">Cek Urutan</span>. Kalau butuh, klik <span class="font-semibold">Reset</span>
+            untuk mengacak ulang.
+          </p>
+
+          <!-- List drag & drop -->
+          <ol id="s7-list" class="list-decimal list-inside text-base md:text-lg space-y-2">
+            <li class="s7-item rounded-xl p-3 bg-blue-50 border border-blue-100" draggable="true" data-order="2">Ingat
+              tempat terakhir digunakan</li>
+            <li class="s7-item rounded-xl p-3 bg-emerald-50 border border-emerald-100" draggable="true" data-order="4">
+              Temukan & simpan di tempat tetap</li>
+            <li class="s7-item rounded-xl p-3 bg-pink-50 border border-pink-100" draggable="true" data-order="5">Catat
+              agar tidak lupa lagi</li>
+            <li class="s7-item rounded-xl p-3 bg-yellow-50 border border-yellow-100" draggable="true" data-order="3">Cek
+              meja belajar / ruang tamu / kelas</li>
+            <li class="s7-item rounded-xl p-3 bg-indigo-50 border border-indigo-100" draggable="true" data-order="1">
+              Sadar buku tidak ada di tas</li>
+          </ol>
+
+          <div class="mt-4 flex flex-wrap gap-2">
+            <button id="s7-check" class="btn px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white">Cek
+              Urutan</button>
+            <button id="s7-reset" class="btn px-4 py-2 rounded-xl bg-white border border-slate-200">Reset</button>
+            <button id="s7-reveal"
+              class="btn px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white">Tampilkan Kunci</button>
+          </div>
+
+          <div id="s7-feedback" class="mt-3 text-base"></div>
+
+          <!-- Kunci jawaban (disembunyikan) -->
+          <div id="s7-key" class="mt-4 rounded-2xl p-4 bg-emerald-50 text-emerald-900 hidden">
+            <div class="font-semibold mb-2">Kunci Urutan yang Benar:</div>
+            <ol class="list-decimal list-inside space-y-1">
+              <li>Sadar buku tidak ada di tas</li>
+              <li>Ingat tempat terakhir digunakan</li>
+              <li>Cek meja belajar / ruang tamu / kelas</li>
+              <li>Temukan & simpan di tempat tetap</li>
+              <li>Catat agar tidak lupa lagi</li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- Kanan: Visual tetap -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="rounded-2xl h-28 bg-blue-100 grid place-items-center text-5xl">📚</div>
+          <div class="rounded-2xl h-28 bg-yellow-100 grid place-items-center text-5xl">🧐</div>
+          <div class="rounded-2xl h-28 bg-emerald-100 grid place-items-center text-5xl">🔍</div>
+          <div class="rounded-2xl h-28 bg-pink-100 grid place-items-center text-5xl">✅</div>
+        </div>
+      </div>
+
+      <!-- Inline script khusus Slide 7 -->
+      <script>
+        (function () {
+          const list = document.getElementById('s7-list');
+          if (!list) return;
+          const items = () => Array.from(list.querySelectorAll('.s7-item'));
+          const feedback = document.getElementById('s7-feedback');
+          const key = document.getElementById('s7-key');
+          const btnCheck = document.getElementById('s7-check');
+          const btnReset = document.getElementById('s7-reset');
+          const btnReveal = document.getElementById('s7-reveal');
+
+          // Drag & drop
+          let dragEl = null;
+          list.addEventListener('dragstart', (e) => {
+            dragEl = e.target.closest('.s7-item');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', dragEl?.dataset.order || '');
+          });
+          list.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            const over = e.target.closest('.s7-item');
+            if (!over || over === dragEl) return;
+            const rect = over.getBoundingClientRect();
+            const next = (e.clientY - rect.top) / rect.height > 0.5;
+            list.insertBefore(dragEl, next ? over.nextSibling : over);
+          });
+
+          function checkOrder() {
+            const order = items().map(li => Number(li.dataset.order));
+            const correct = [1, 2, 3, 4, 5];
+            let ok = true;
+            items().forEach((li, i) => {
+              const isRight = order[i] === correct[i];
+              li.classList.toggle('ring-2', !isRight);
+              li.classList.toggle('ring-rose-400', !isRight);
+              li.classList.toggle('ring-offset-2', !isRight);
+              if (!isRight) ok = false;
+            });
+            if (ok) {
+              feedback.className = 'mt-3 text-emerald-700';
+              feedback.textContent = '🎉 Benar! Urutanmu sudah tepat.';
+            } else {
+              feedback.className = 'mt-3 text-rose-700';
+              feedback.textContent = 'Belum tepat. Coba cek lagi ya—mulai dari menyadari masalah dulu.';
+            }
+          }
+
+          function shuffle() {
+            const arr = items();
+            for (let i = arr.length - 1; i > 0; i--) {
+              const j = Math.floor(Math.random() * (i + 1));
+              list.insertBefore(arr[j], arr[i]);
+              const tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+            }
+            feedback.textContent = '';
+            key.classList.add('hidden');
+            items().forEach(li => li.classList.remove('ring-2', 'ring-rose-400', 'ring-offset-2'));
+          }
+
+          btnCheck?.addEventListener('click', checkOrder);
+          btnReset?.addEventListener('click', shuffle);
+          btnReveal?.addEventListener('click', () => key.classList.toggle('hidden'));
+
+          // Acak posisi saat pertama kali slide dimuat
+          shuffle();
+        })();
+      </script>
+    </section>
+
+
+    <!-- Slide 8: Contoh 2 (Interaktif) -->
+    <section class="slide items-center justify-center">
+      <div class="w-full grid md:grid-cols-2 gap-8 items-start">
+
+        <!-- Kiri: Interaktif Urutkan Langkah -->
+        <div class="card rounded-3xl bg-white p-8">
+          <h2 class="text-2xl md:text-3xl font-bold mb-3">Contoh 2: Komputer Tidak Menyala</h2>
+          <p class="text-slate-700 mb-3">
+            <span class="font-semibold">Urutkan langkah yang benar</span> dengan cara
+            <span class="font-semibold">drag & drop</span> kartu di bawah ini. Setelah selesai, klik
+            <span class="font-semibold">Cek Urutan</span>. Kalau butuh, klik <span class="font-semibold">Reset</span>
+            untuk mengacak ulang.
+          </p>
+
+          <!-- List drag & drop -->
+          <ol id="s8-list" class="list-decimal list-inside text-base md:text-lg space-y-2">
+            <li class="s8-item rounded-xl p-3 bg-blue-50 border border-blue-100" draggable="true" data-order="2">
+              Pastikan tombol power dinyalakan</li>
+            <li class="s8-item rounded-xl p-3 bg-emerald-50 border border-emerald-100" draggable="true" data-order="5">
+              Catat penyebab agar tidak terulang</li>
+            <li class="s8-item rounded-xl p-3 bg-indigo-50 border border-indigo-100" draggable="true" data-order="1">Cek
+              kabel listrik tersambung rapat</li>
+            <li class="s8-item rounded-xl p-3 bg-yellow-50 border border-yellow-100" draggable="true" data-order="3">
+              Periksa sumber listrik (stop kontak/sakelar) atau coba stop kontak lain</li>
+            <li class="s8-item rounded-xl p-3 bg-pink-50 border border-pink-100" draggable="true" data-order="4">Minta
+              bantuan guru/orang tua jika perlu</li>
+          </ol>
+
+          <div class="mt-4 flex flex-wrap gap-2">
+            <button id="s8-check" class="btn px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white">Cek
+              Urutan</button>
+            <button id="s8-reset" class="btn px-4 py-2 rounded-xl bg-white border border-slate-200">Reset</button>
+            <button id="s8-reveal"
+              class="btn px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white">Tampilkan Kunci</button>
+          </div>
+
+          <div id="s8-feedback" class="mt-3 text-base"></div>
+
+          <!-- Kunci jawaban (disembunyikan) -->
+          <div id="s8-key" class="mt-4 rounded-2xl p-4 bg-emerald-50 text-emerald-900 hidden">
+            <div class="font-semibold mb-2">Kunci Urutan yang Benar:</div>
+            <ol class="list-decimal list-inside space-y-1">
+              <li>Cek kabel listrik tersambung rapat</li>
+              <li>Pastikan tombol power dinyalakan</li>
+              <li>Periksa sumber listrik (stop kontak/sakelar) atau coba stop kontak lain</li>
+              <li>Minta bantuan guru/orang tua jika perlu</li>
+              <li>Catat penyebab agar tidak terulang</li>
+            </ol>
+          </div>
+
+          <!-- Kanan: Tip & Visual -->
+          <div class="grid gap-4">
+            <div class="rounded-2xl p-4 bg-blue-50 text-blue-900 text-base md:text-lg">
+              💡 <span class="font-semibold">Tip:</span> lakukan <span class="font-semibold">satu solusi setiap
+                kali</span> percobaan agar mudah mengevaluasi.
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="rounded-2xl h-28 bg-blue-100 grid place-items-center text-5xl">🔌</div>
+              <div class="rounded-2xl h-28 bg-yellow-100 grid place-items-center text-5xl">⏻</div>
+              <div class="rounded-2xl h-28 bg-emerald-100 grid place-items-center text-5xl">⚡</div>
+              <div class="rounded-2xl h-28 bg-pink-100 grid place-items-center text-5xl">🧑‍🏫</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Inline script khusus Slide 8 -->
+        <script>
+          (function () {
+            const list = document.getElementById('s8-list');
+            if (!list) return;
+            const items = () => Array.from(list.querySelectorAll('.s8-item'));
+            const feedback = document.getElementById('s8-feedback');
+            const key = document.getElementById('s8-key');
+            const btnCheck = document.getElementById('s8-check');
+            const btnReset = document.getElementById('s8-reset');
+            const btnReveal = document.getElementById('s8-reveal');
+
+            // Drag & drop
+            let dragEl = null;
+            list.addEventListener('dragstart', (e) => {
+              dragEl = e.target.closest('.s8-item');
+              e.dataTransfer.effectAllowed = 'move';
+              e.dataTransfer.setData('text/plain', dragEl?.dataset.order || '');
+            });
+            list.addEventListener('dragover', (e) => {
+              e.preventDefault();
+              const over = e.target.closest('.s8-item');
+              if (!over || over === dragEl) return;
+              const rect = over.getBoundingClientRect();
+              const next = (e.clientY - rect.top) / rect.height > 0.5;
+              list.insertBefore(dragEl, next ? over.nextSibling : over);
+            });
+
+            function checkOrder() {
+              const order = items().map(li => Number(li.dataset.order));
+              const correct = [1, 2, 3, 4, 5];
+              let ok = true;
+              items().forEach((li, i) => {
+                const isRight = order[i] === correct[i];
+                li.classList.toggle('ring-2', !isRight);
+                li.classList.toggle('ring-rose-400', !isRight);
+                li.classList.toggle('ring-offset-2', !isRight);
+                if (!isRight) ok = false;
+              });
+              if (ok) {
+                feedback.className = 'mt-3 text-emerald-700';
+                feedback.textContent = '🎉 Benar! Urutanmu sudah tepat.';
+              } else {
+                feedback.className = 'mt-3 text-rose-700';
+                feedback.textContent = 'Belum tepat. Coba cek lagi ya—mulai dari langkah paling sederhana dulu.';
+              }
+            }
+
+            function shuffle() {
+              const arr = items();
+              for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                list.insertBefore(arr[j], arr[i]);
+                const tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+              }
+              feedback.textContent = '';
+              key.classList.add('hidden');
+              items().forEach(li => li.classList.remove('ring-2', 'ring-rose-400', 'ring-offset-2'));
+            }
+
+            btnCheck?.addEventListener('click', checkOrder);
+            btnReset?.addEventListener('click', shuffle);
+            btnReveal?.addEventListener('click', () => key.classList.toggle('hidden'));
+
+            // Acak posisi saat pertama kali slide dimuat
+            shuffle();
+          })();
+        </script>
+    </section>
+
+
+    <!-- Slide 9: Aktivitas Kelompok (Instruksi Diperjelas) -->
+    <section class="slide items-center justify-center">
+      <div class="card rounded-3xl bg-white p-8 w-full">
+        <h2 class="text-2xl md:text-3xl font-extrabold mb-3">Aktivitas: Menjadi Problem Solver</h2>
+        <p class="text-lg">Pilih <span class="font-semibold">1 situasi</span> dan gunakan
+          <span class="font-semibold">6 langkah problem solving</span>.
+        </p>
+
+        <!-- Pilihan situasi -->
+        <div class="grid md:grid-cols-3 gap-4 mt-4 text-lg">
+          <div class="rounded-2xl p-4 bg-emerald-50">🚲 Sepeda bocor saat berangkat sekolah</div>
+          <div class="rounded-2xl p-4 bg-yellow-50">📶 Laptop tidak tersambung Wi-Fi</div>
+          <div class="rounded-2xl p-4 bg-pink-50">📝 Teman lupa membawa tugas</div>
+          <div class="rounded-2xl p-4 bg-purple-50">🔋 Baterai laptop/tablet habis sebelum kelas</div>
+          <div class="rounded-2xl p-4 bg-sky-50">☔ Payung ketinggalan saat hujan pulang sekolah</div>
+        </div>
+
+        <!-- Langkah kerja -->
+        <div class="mt-4 rounded-2xl p-4 bg-slate-50">
+          <div class="font-semibold mb-2">Langkah Kerja</div>
+          <ol class="list-decimal list-inside space-y-1 text-base">
+            <li>Tulis <span class="font-medium">kalimat masalah</span> yang jelas (Langkah 1: Mengenali).</li>
+            <li>Tentukan <span class="font-medium">penyebab paling mungkin</span> (Langkah 2: Analisis).</li>
+            <li>Daftar <span class="font-medium">3 ide solusi</span> (Langkah 3: Ide Solusi).</li>
+            <li>Pilih 1 solusi terbaik + alasan, lalu tulis <span class="font-medium">cara mencobanya</span> (Langkah 4:
+              Pilih & Coba).</li>
+            <li>Tetapkan <span class="font-medium">indikator berhasil</span> & rencana cadangan (Langkah 5: Evaluasi).
+            </li>
+            <li>Tulis <span class="font-medium">2 cara pencegahan</span> agar tidak terulang (Langkah 6: Cegah
+              Terulang).</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 13: Penutup & Jembatan -->
+<section class="slide items-center justify-center">
+  <div class="text-center max-w-4xl mx-auto card rounded-3xl bg-white p-10">
+    <div class="text-5xl md:text-6xl mb-4">✨</div>
+    <h2 class="text-2xl md:text-4xl font-extrabold mb-3">Penutup</h2>
+
+    <!-- Ringkasan & Jembatan -->
+    <div class="grid md:grid-cols-2 gap-4 text-left">
+      <div class="rounded-2xl p-4 bg-emerald-50 text-emerald-900">
+        <div class="font-semibold mb-1">📌 Ringkasan</div>
+        <ul class="list-disc list-inside text-base md:text-lg">
+          <li><span class="font-medium">Problem Solving</span> = <span class="font-medium">Think → Plan → Try → Reflect</span>.</li>
+          <li><span class="font-medium">6 Langkah:</span> Mengenali • Analisis • Ide • Pilih & Coba • Evaluasi • Cegah.</li>
+          <li>Mulai dari solusi <span class="font-medium">paling sederhana & aman</span>, uji <span class="font-medium">satu per satu</span>.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Quote Penutup kecil -->
+    <blockquote class="mt-6 text-xl md:text-2xl font-semibold leading-snug text-slate-800">
+      “Masalah itu bukan penghalang — tapi kesempatan untuk belajar berpikir lebih cerdas.”
+    </blockquote>
+  </div>
+</section>
+
+
+  </main>
+
+  <!-- Footer: Controls & Progress -->
+  <footer class="fixed bottom-0 inset-x-0 p-3">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <button id="btnPrevBottom"
+          class="btn px-3 py-2 rounded-xl bg-white/90 border border-slate-200 shadow-sm text-slate-700 text-sm">◀
+          Sebelumnya</button>
+        <button id="btnNextBottom" class="btn px-3 py-2 rounded-xl bg-blue-600 text-white shadow">Selanjutnya ▶</button>
+      </div>
+      <div class="flex items-center gap-2" id="dots" aria-label="Progress slide"></div>
+      <div class="w-12"></div>
+    </div>
+  </footer>
+
+
+  <script>
+    // ===== Access Code Gate (case-insensitive) =====
+    const ACCESS_CODE = 'RGMDSUP25';
+    const overlay = document.getElementById('accessOverlay');
+    const gateForm = document.getElementById('gateForm');
+    const gateInput = document.getElementById('gateInput');
+    const gateMsg = document.getElementById('gateMsg');
+
+    function lockUI() {
+      document.querySelector('header').style.display = 'none';
+      document.querySelector('main').style.display = 'none';
+      document.querySelector('footer').style.display = 'none';
+      overlay.style.display = 'flex';
+      gateInput?.focus();
+    }
+    function unlockUI() {
+      overlay.style.display = 'none';
+      document.querySelector('header').style.display = '';
+      document.querySelector('main').style.display = '';
+      document.querySelector('footer').style.display = '';
+    }
+
+    // Always require code every load (no persistence)
+    lockUI();
+
+    gateForm?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const val = (gateInput?.value || '').trim().toUpperCase();
+      if (val === ACCESS_CODE) {
+        gateMsg.textContent = '';
+        unlockUI();
+      } else {
+        gateMsg.textContent = 'Kode salah. Coba lagi ya.';
+      }
+    });
+
+
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const dots = document.getElementById('dots');
+    let current = 0;
+
+    function renderDots() {
+      dots.innerHTML = '';
+      slides.forEach((_, i) => {
+        const d = document.createElement('button');
+        d.className = 'dot' + (i === current ? ' active' : '');
+        d.setAttribute('aria-label', 'Ke slide ' + (i + 1));
+        d.onclick = () => go(i);
+        dots.appendChild(d);
+      });
+    }
+
+    function show(idx) {
+      slides.forEach((s, i) => s.classList.toggle('active', i === idx));
+      current = idx;
+      renderDots();
+      // Scroll to top of slide for small screens
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function go(idx) {
+      if (idx < 0) idx = 0;
+      if (idx > slides.length - 1) idx = slides.length - 1;
+      show(idx);
+    }
+
+    document.getElementById('btnNext').addEventListener('click', () => go(current + 1));
+    document.getElementById('btnPrev').addEventListener('click', () => go(current - 1));
+    // Bottom nav
+    document.getElementById('btnNextBottom')?.addEventListener('click', () => go(current + 1));
+    document.getElementById('btnPrevBottom')?.addEventListener('click', () => go(current - 1));
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') go(current + 1);
+      if (e.key === 'ArrowLeft') go(current - 1);
+    });
+
+    // Initialize
+    renderDots();
+  </script>
+</body>
+
+</html>
