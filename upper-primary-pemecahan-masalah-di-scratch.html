@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Problem Solving dalam Coding (Scratch)</title>
+    <style>
+        :root {
+            --bg: #f7faff;
+            --ink: #0f172a;
+            --muted: #475569;
+            --card: #ffffff;
+            --ring: #a5b4fc;
+            --blue: #dbeafe;
+            --green: #dcfce7;
+            --yellow: #fef9c3;
+            --pink: #ffe4e6;
+            --indigo: #e0e7ff;
+            --sky: #e0f2fe;
+            --purple: #f3e8ff;
+            --primary: #2563eb;
+            --primary-600: #1d4ed8;
+            --accent: #10b981;
+            --danger: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--ink);
+            font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Arial
+        }
+
+        h1,
+        h2,
+        h3 {
+            margin: 0 0 .5rem 0
+        }
+
+        .wrap {
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column
+        }
+
+        .stage {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px
+        }
+
+        .deck {
+            width: min(1100px, 95vw)
+        }
+
+        .slide {
+            display: none
+        }
+
+        .slide.active {
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: 0 6px 24px rgba(15, 23, 42, .08);
+        }
+
+        .title {
+            font-size: clamp(24px, 4vw, 40px);
+            font-weight: 800
+        }
+
+        .subtitle {
+            font-size: clamp(16px, 2vw, 22px);
+            color: var(--muted)
+        }
+
+        .grid {
+            display: grid;
+            gap: 12px
+        }
+
+        .g2 {
+            grid-template-columns: repeat(2, 1fr)
+        }
+
+        .g3 {
+            grid-template-columns: repeat(3, 1fr)
+        }
+
+        .pill {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-weight: 600
+        }
+
+        .btn {
+            border: 1px solid #cbd5e1;
+            background: #fff;
+            border-radius: 14px;
+            padding: 10px 14px;
+            cursor: pointer;
+            font-weight: 600
+        }
+
+        .btn.primary {
+            background: var(--primary);
+            color: #fff;
+            border-color: transparent
+        }
+
+        .btn.primary:hover {
+            background: var(--primary-600)
+        }
+
+        .btn.ghost {
+            background: #fff
+        }
+
+        .muted {
+            color: var(--muted)
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 14px
+        }
+
+        .note {
+            background: var(--sky);
+            color: #0c4a6e;
+            padding: 12px;
+            border-radius: 16px;
+            border: 1px solid #bae6fd
+        }
+
+        .ok {
+            color: #065f46
+        }
+
+        .err {
+            color: #b91c1c
+        }
+
+        .stack {
+            display: flex;
+            flex-direction: column;
+            gap: 10px
+        }
+
+        .center {
+            text-align: center
+        }
+
+        .icons {
+            font-size: 44px
+        }
+
+        .emoji {
+            font-size: 28px
+        }
+
+        .chip {
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-weight: 700
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap
+        }
+
+        .kbd {
+            background: #0f172a;
+            color: #fff;
+            border-radius: 6px;
+            padding: 1px 6px;
+            font-weight: 700
+        }
+
+        .progress {
+            font-weight: 700;
+            color: #334155
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px
+        }
+
+        .nav .btn {
+            min-width: 140px
+        }
+
+        .sr {
+            position: absolute;
+            left: -9999px
+        }
+
+        /* interactive cards */
+        .opt {
+            background: #fff;
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 10px 12px;
+            cursor: pointer
+        }
+
+        .opt.correct {
+            border-color: #86efac;
+            background: var(--green)
+        }
+
+        .opt.wrong {
+            border-color: #fecaca;
+            background: #ffe4e6
+        }
+
+        .draggable {
+            user-select: none
+        }
+
+        .slot {
+            border: 2px dashed #cbd5e1;
+            border-radius: 14px;
+            padding: 10px;
+            min-height: 44px
+        }
+
+        .ring {
+            outline: 3px solid var(--ring);
+            outline-offset: 2px
+        }
+
+        /* gate */
+        .gate {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, .6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 50
+        }
+
+        .gate .panel {
+            background: #fff;
+            max-width: 560px;
+            width: 100%;
+            border-radius: 20px;
+            padding: 22px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .18)
+        }
+
+        .input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            font-size: 16px
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: var(--primary)
+        }
+
+        .small {
+            font-size: 14px;
+            color: #64748b
+        }
+
+        /* Animasi lembut */
+        @keyframes floatY {
+            0% {
+                transform: translateY(0)
+            }
+
+            50% {
+                transform: translateY(-6px)
+            }
+
+            100% {
+                transform: translateY(0)
+            }
+        }
+
+        @keyframes bob {
+            0% {
+                transform: translateY(0) rotate(0deg)
+            }
+
+            50% {
+                transform: translateY(-4px) rotate(1deg)
+            }
+
+            100% {
+                transform: translateY(0) rotate(0deg)
+            }
+        }
+
+        @keyframes screenGlow {
+
+            0%,
+            100% {
+                box-shadow: 0 8px 0 0 #cbd5e1 inset, 0 0 0 rgba(37, 99, 235, 0)
+            }
+
+            50% {
+                box-shadow: 0 8px 0 0 #cbd5e1 inset, 0 0 24px rgba(37, 99, 235, .18)
+            }
+        }
+
+        /* Hormati preferensi rendah gerak */
+        @media (prefers-reduced-motion: reduce) {
+
+            .anim,
+            .anim * {
+                animation: none !important;
+            }
+        }
+
+        /* Tooltip Do/Don't */
+        .tooltip {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px
+        }
+
+        .tipbtn {
+            display: inline-grid;
+            place-items: center;
+            width: 22px;
+            height: 22px;
+            border-radius: 999px;
+            font-weight: 800;
+            font-size: 12px;
+            cursor: default;
+            color: #0f172a;
+            background: #e2e8f0;
+            border: 1px solid #cbd5e1;
+        }
+
+        .tipbtn:hover {
+            background: #e0f2fe;
+            border-color: #93c5fd
+        }
+
+        .tt {
+            position: absolute;
+            left: 50%;
+            bottom: 140%;
+            transform: translateX(-50%) translateY(6px);
+            background: #0f172a;
+            color: #fff;
+            border-radius: 12px;
+            padding: 10px 12px;
+            font-size: 12px;
+            width: 240px;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, .24);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .18s ease, transform .18s ease;
+        }
+
+        .tooltip:hover .tt {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0)
+        }
+
+        .tt b {
+            display: block;
+            margin-bottom: 4px
+        }
+
+        .tt .do {
+            color: #86efac
+        }
+
+        /* hijau */
+        .tt .dont {
+            color: #fecaca
+        }
+
+        /* merah */
+        @media (prefers-reduced-motion: reduce) {
+            .tooltip .tt {
+                transition: none
+            }
+        }
+
+        /* Spasi lega di dalam kartu tantangan */
+        .challenge-box {
+            padding: 20px 22px !important;
+            border-radius: 16px;
+        }
+
+        .challenge-box .title {
+            margin-bottom: 8px;
+        }
+
+        .challenge-box p {
+            margin: 0 0 10px 0;
+            line-height: 1.5;
+        }
+
+        .challenge-box .list {
+            display: grid;
+            gap: 8px;
+        }
+
+        /* Kotak checklist yang nyaman dibaca */
+        .check-item {
+            background: #fff;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 12px 14px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            line-height: 1.4;
+        }
+
+        .check-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="stage">
+            <main class="deck">
+
+                <!-- Slide 1: Judul & Tujuan (dengan ilustrasi) -->
+                <section class="slide active" data-slide="1">
+                    <div class="card">
+                        <div class="grid g2" style="align-items:center; gap:16px">
+                            <!-- Kiri: Judul & Tujuan -->
+                            <div>
+                                <h1 class="title">Problem Solving dalam Coding (Scratch)</h1>
+                                <p class="subtitle">
+                                    Belajar memperbaiki <em>bug</em> di Scratch dengan 4 langkah ringkas:
+                                    <b>Mengenali → Analisis → Perbaikan → Coba & Evaluasi</b>.
+                                </p>
+                                <div class="grid g3" style="margin-top:16px">
+                                    <div class="chip"
+                                        style="background:var(--blue);color:#1e3a8a; font-size:14px; padding:16px 18px;">
+                                        🎯 Pemecahan masalah & coding</div>
+                                    <div class="chip"
+                                        style="background:var(--yellow);color:#92400e; font-size:14px; padding:16px 18px;">
+                                        🧩 Masalah sederhana</div>
+                                    <div class="chip"
+                                        style="background:var(--pink);color:#9f1239; font-size:14px; padding:16px 18px;">
+                                        🛠️ Langkah perbaikan</div>
+                                </div>
+                            </div>
+
+                            <!-- Kanan: Ilustrasi / Simbol (emoji di dalam layar + animasi lembut) -->
+                            <div class="center anim">
+                                <div
+                                    style="position:relative; width:min(380px,40vw); aspect-ratio:1/1;margin-inline:auto; border-radius:28px; padding:18px;background: radial-gradient(120% 120% at 20% 20%, var(--sky) 0%, #fff 60%);border:1px solid #e2e8f0; box-shadow:0 8px 28px rgba(15,23,42,.08);">
+                                    <!-- layar laptop -->
+                                    <div
+                                        style="position:absolute; left:12%; right:12%; bottom:18%;height:44%; background:#0f172a; border-radius:14px;overflow:hidden; display:grid; place-items:center; padding:10px;animation: screenGlow 6s ease-in-out infinite;">
+                                        <!-- konten DI DALAM layar -->
+                                        <div
+                                            style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; width:88%;">
+                                            <!-- Logika -->
+                                            <div
+                                                style="background:var(--blue); color:#1e3a8a; border:2px solid #bfdbfe;width:100%; aspect-ratio:1/1; border-radius:999px;display:grid; place-items:center; font-size:32px;animation: floatY 4.5s ease-in-out infinite;animation-delay: .1s;">
+                                                🧩</div>
+
+                                            <!-- Ide -->
+                                            <div
+                                                style="background:var(--yellow); color:#92400e; border:2px solid #fde68a;width:100%; aspect-ratio:1/1; border-radius:999px;display:grid; place-items:center; font-size:32px;animation: bob 5.2s ease-in-out infinite;animation-delay: .4s;">
+                                                💡</div>
+
+                                            <!-- Perbaikan -->
+                                            <div
+                                                style="background:var(--pink); color:#9f1239; border:2px solid #fecdd3;width:100%; aspect-ratio:1/1; border-radius:999px;display:grid; place-items:center; font-size:32px;animation: floatY 4.8s ease-in-out infinite;animation-delay: .7s;">
+                                                🛠️</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- keyboard / alas -->
+                                    <div
+                                        style="position:absolute; left:18%; right:18%; bottom:14%;height:10px; background:#94a3b8; border-radius:8px;">
+                                    </div>
+                                </div>
+                                <div class="muted" style="margin-top:8px">Di layar: 🧩 logika • 💡 ide • 🛠️ perbaikan
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Slide 2: Recap – Enam Langkah (umum, non-coding) — versi colorful -->
+                <section class="slide" data-slide="2">
+                    <div class="card rounded-3xl bg-white p-8 w-full">
+                        <h2 class="title">Recap: Enam Langkah Pemecahan Masalah</h2>
+                        <p class="subtitle">
+                            Ingat peta langkahnya: selesaikan <span class="font-semibold">satu per satu</span>, baru
+                            lanjut ke langkah berikutnya.
+                        </p>
+
+                        <div class="mt-4 grid md:grid-cols-3 gap-4 text-base md:text-lg">
+                            <!-- 1. Mengenali -->
+                            <div class="rounded-2xl p-4" style="background:var(--blue); border:2px solid #93c5fd;">
+                                <div class="font-semibold">🔍 1. Mengenali — Apa yang terjadi?</div>
+                                <div class="text-slate-700 mt-1">Contoh: <em>“Buku PR tidak ada di tas.”</em></div>
+                            </div>
+
+                            <!-- 2. Analisis -->
+                            <div class="rounded-2xl p-4" style="background:var(--green); border:2px solid #86efac;">
+                                <div class="font-semibold">🧠 2. Analisis — Kenapa terjadi?</div>
+                                <div class="text-slate-700 mt-1">Contoh: <em>“Mungkin tertinggal di meja belajar.”</em>
+                                </div>
+                            </div>
+
+                            <!-- 3. Ide -->
+                            <div class="rounded-2xl p-4" style="background:var(--yellow); border:2px solid #fde68a;">
+                                <div class="font-semibold">💡 3. Ide — Ada pilihan apa?</div>
+                                <div class="text-slate-700 mt-1">Tulis 2–3 ide singkat.</div>
+                            </div>
+
+                            <!-- 4. Pilih & Coba -->
+                            <div class="rounded-2xl p-4" style="background:var(--pink); border:2px solid #fecdd3;">
+                                <div class="font-semibold">▶️ 4. Pilih & Coba — Mulai dari yang mudah</div>
+                                <div class="text-slate-700 mt-1">Uji <span class="font-semibold">satu</span> ide dulu.
+                                </div>
+                            </div>
+
+                            <!-- 5. Evaluasi -->
+                            <div class="rounded-2xl p-4" style="background:var(--indigo); border:2px solid #c7d2fe;">
+                                <div class="font-semibold">✅ 5. Evaluasi — Berhasil tidak?</div>
+                                <div class="text-slate-700 mt-1">Apa yang berubah?</div>
+                            </div>
+
+                            <!-- 6. Cegah -->
+                            <div class="rounded-2xl p-4" style="background:var(--sky); border:2px solid #bae6fd;">
+                                <div class="font-semibold">🛡️ 6. Cegah — Bagaimana agar tak terulang?</div>
+                                <div class="text-slate-700 mt-1">Buat aturan kecil/checklist.</div>
+                            </div>
+
+                            <div style="height:16px"></div>
+
+                            <div class="mt-4 p-4 rounded-2xl text-sky-900" style="background:linear-gradient(90deg,#e0f2fe,#fff);
+            border:2px dashed #93c5fd;">
+                                💡 Aturan emas: <span class="font-semibold">coba satu perubahan</span> dulu, lalu cek
+                                hasil.
+                            </div>
+                        </div>
+                </section>
+
+
+                <!-- Slide 3: Menghubungkan ke Coding (Scratch) — versi colorful -->
+                <section class="slide" data-slide="3">
+                    <div class="card rounded-3xl bg-white p-8 w-full">
+                        <h2 class="title">Dari 6 Langkah → ke Coding di Scratch</h2>
+                        <p class="subtitle">
+                            Sekarang, kita pakai langkah yang sama untuk <span class="font-semibold">memperbaiki
+                                program</span> di Scratch (debugging).
+                        </p>
+
+                        <div class="mt-4 grid md:grid-cols-3 gap-4 text-base md:text-lg">
+                            <!-- 1 -->
+                            <div class="rounded-2xl p-4" style="background:var(--blue); border:2px solid #93c5fd;">
+                                <div class="font-semibold">🔍 1. Mengenali</div>
+                                <div class="text-slate-700 mt-1">Contoh: <em>“Sprite tidak bergerak saat bendera
+                                        hijau.”</em></div>
+                            </div>
+
+                            <!-- 2 -->
+                            <div class="rounded-2xl p-4" style="background:var(--green); border:2px solid #86efac;">
+                                <div class="font-semibold">🧠 2. Analisis</div>
+                                <div class="text-slate-700 mt-1">Event belum ada? Urutan blok? Arah/ukuran?</div>
+                            </div>
+
+                            <!-- 3 -->
+                            <div class="rounded-2xl p-4" style="background:var(--yellow); border:2px solid #fde68a;">
+                                <div class="font-semibold">💡 3. Ide</div>
+                                <!-- Gambar kode (responsif) -->
+                                <figure style="margin:10px 0 0">
+                                    <img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/e82a19ec-1c46-4549-acad-f5421032375d.png"
+                                        alt="Blok Scratch: when green flag clicked" loading="lazy"
+                                        style="width:20%; margin-top:10px;margin-bottom:10px;margin-left:10px;margin-right:10px;" />
+
+                                    <img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/194fc72c-2e5f-4672-ad5e-a52f7909f950.png"
+                                        alt="Blok Scratch: when green flag clicked" loading="lazy"
+                                        style="width:20%; margin-top:10px;margin-bottom:10px;margin-left:10px;margin-right:10px;" />
+                                    <figcaption class="text-slate-700" style="font-size:12px; margin-top:6px;">
+                                        Tambah event <em>when green flag clicked</em>, lalu gerakkan <em>move 10
+                                            steps</em>.
+                                    </figcaption>
+                                </figure>
+                            </div>
+
+                            <!-- 4 -->
+                            <div class="rounded-2xl p-4" style="background:var(--pink); border:2px solid #fecdd3;">
+                                <div class="font-semibold">▶️ 4. Pilih & Coba</div>
+                                <div class="text-slate-700 mt-1">Uji <span class="font-semibold">satu perubahan</span>
+                                    lalu jalankan.</div>
+                            </div>
+
+                            <!-- 5 -->
+                            <div class="rounded-2xl p-4" style="background:var(--indigo); border:2px solid #c7d2fe;">
+                                <div class="font-semibold">✅ 5. Evaluasi</div>
+                                <div class="text-slate-700 mt-1">Sudah bergerak? Jika belum, kembali ke analisis.</div>
+                            </div>
+
+                            <!-- 6 -->
+                            <div class="rounded-2xl p-4" style="background:var(--sky); border:2px solid #bae6fd;">
+                                <div class="font-semibold">🛡️ 6. Cegah</div>
+                                <div class="text-slate-700 mt-1">Buat <em>inisialisasi</em> di awal, beri komentar, cek
+                                    urutan.</div>
+                            </div>
+                        </div>
+
+                        <div style="height:16px"></div>
+
+                        <div class="mt-4 p-4 rounded-2xl text-amber-900"
+                            style="background:linear-gradient(90deg,#fde68a,#fff); border:2px dashed #fbbf24;">
+                            📝 Catatan: Kita akan praktik dengan proyek contoh yang <span class="font-semibold">sengaja
+                                ada bug</span>.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Slide 4: Apa itu Debugging? (ramah SD + interaktif) -->
+                <section class="slide" data-slide="4">
+                    <div class="card rounded-3xl bg-white p-8 w-full">
+                        <h2 class="title">
+                            Apa itu Debugging?
+                        </h2>
+                        <p class="subtitle">
+                            <b>Debugging</b> adalah kegiatan <span class="font-semibold">mencari & memperbaiki kesalahan
+                                (bug)</span>
+                            pada program. Bayangkan kamu seperti <b>detektif</b> yang mencari “penyebab” kenapa program
+                            tidak jalan.
+                        </p>
+
+                        <!-- Kotak berwarna: definisi cepat -->
+                        <div class="mt-4 grid md:grid-cols-3 gap-4 text-base md:text-lg">
+                            <div class="rounded-2xl p-4" style="background:var(--blue); border:2px solid #93c5fd;">
+                                <div class="font-semibold">🐞 Bug itu apa?</div>
+                                <div class="text-slate-700 mt-1">Hal kecil yang bikin program <b>tidak bekerja</b>
+                                    seperti yang kita mau.
+                                    Contoh: sprite <b>tidak bergerak</b> saat bendera hijau.</div>
+                            </div>
+                            <div class="rounded-2xl p-4" style="background:var(--green); border:2px solid #86efac;">
+                                <div class="font-semibold">🧠 Debugging itu apa?</div>
+                                <div class="text-slate-700 mt-1">Proses <b>menemukan sebab</b> lalu <b>memperbaiki</b>
+                                    dengan langkah
+                                    teratur: Mengenali → Analisis → Ide → Coba → Evaluasi → Cegah.</div>
+                            </div>
+                            <div class="rounded-2xl p-4" style="background:var(--yellow); border:2px solid #fde68a;">
+                                <div class="font-semibold">🧱 Di Scratch caranya?</div>
+                                <div class="text-slate-700 mt-1">Cek <b>blok</b> & <b>event</b> (🚩), urutan blok,
+                                    arah/posisi sprite, suara,
+                                    variabel. <span class="font-semibold">Coba satu perubahan dulu</span>.</div>
+                            </div>
+                        </div>
+
+                        <div style="height:16px"></div>
+
+                        <!-- Do / Don't singkat -->
+                        <div class="mt-4 grid md:grid-cols-2 gap-4 text-base">
+                            <div class="rounded-2xl p-4" style="background:var(--sky); border:2px solid #bae6fd;">
+                                <div class="font-semibold">✅ Do</div>
+                                <ul class="list-disc list-inside text-slate-700 mt-1">
+                                    <li>Tulis masalah <b>jelas</b> (contoh: “sprite diam”).</li>
+                                    <li>Coba <b>1 hal</b> dulu, lalu cek hasil.</li>
+                                    <li>Catat apa yang berhasil dan <b>cara mencegah</b>.</li>
+                                </ul>
+                            </div>
+                            <div class="rounded-2xl p-4" style="background:var(--pink); border:2px solid #fecdd3;">
+                                <div class="font-semibold">⛔ Don’t</div>
+                                <ul class="list-disc list-inside text-slate-700 mt-1">
+                                    <li>Menebak tanpa mencoba.</li>
+                                    <li>Mengubah banyak hal sekaligus.</li>
+                                    <li>Langsung menyalahkan komputer.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div style="height:16px"></div>
+                        <!-- Mini cek pemahaman -->
+                        <div class="mt-4">
+                            <h3 class="text-xl md:text-2xl font-bold mb-2">Mini Cek: Ini Debugging atau Bukan?</h3>
+                            <div class="grid md:grid-cols-3 gap-3 text-base md:text-lg">
+                                <button class="opt" data-kind="yes"
+                                    style="background:#fff;border:2px solid #e5e7eb;border-radius:14px;padding:10px 12px;">
+                                    🔍 Mengecek apakah event <b>when green flag clicked</b> sudah ada
+                                </button>
+                                <button class="opt" data-kind="no"
+                                    style="background:#fff;border:2px solid #e5e7eb;border-radius:14px;padding:10px 12px;">
+                                    🎨 Mengganti warna backdrop agar lebih cantik
+                                </button>
+                                <button class="opt" data-kind="yes"
+                                    style="background:#fff;border:2px solid #e5e7eb;border-radius:14px;padding:10px 12px;">
+                                    🧪 Mencoba <b>move 10 steps</b> lalu melihat hasilnya
+                                </button>
+                            </div>
+                            <div id="dbg-msg" class="mt-2 text-slate-700">Klik kartu untuk menjawab. Hijau = benar,
+                                merah = coba lagi.</div>
+                        </div>
+
+                        <div style="height:16px"></div>
+                        <!-- Catatan penutup -->
+                        <div class="mt-4 p-4 rounded-2xl text-amber-900"
+                            style="background:linear-gradient(90deg,#fde68a,#fff); border:2px dashed #fbbf24;">
+                            💡 Ingat: Debugging itu seperti detektif. Kita mencari sebab, mencoba perbaikan, lalu
+                            mencegah agar tidak terulang.
+                        </div>
+                    </div>
+
+                    <!-- Script interaksi mini cek -->
+                    <script>
+                        (function () {
+                            const slide = document.currentScript.closest('section');
+                            const cards = slide.querySelectorAll('button.opt');
+                            const msg = slide.querySelector('#dbg-msg');
+                            cards.forEach(c => {
+                                c.addEventListener('click', () => {
+                                    const ok = c.dataset.kind === 'yes';
+                                    c.style.borderColor = ok ? '#86efac' : '#fecaca';
+                                    c.style.background = ok ? 'var(--green)' : 'var(--pink)';
+                                    msg.textContent = ok ? '✅ Benar! Itu bagian dari debugging.' : '❌ Bukan debugging. Itu hanya hiasan/tampilan.';
+                                });
+                            });
+                        })();
+                    </script>
+                </section>
+
+                <!-- Slide 5: Demo Terarah (lebih jelas & terstruktur) -->
+                <section class="slide" data-slide="5">
+                    <div class="card">
+                        <h2 class="title">Demo: Sprite Tidak Bergerak</h2>
+                        <p class="subtitle">Buka proyek Scratch <a
+                                href="https://bit.ly/scratch-bug-1">bit.ly/scratch-bug-1</a>. Ikuti urutan dari atas ke
+                            bawah untuk memperbaiki proyek ini.</p>
+
+                        <!-- Bagian 1: Sebelum Jalankan -->
+                        <div style="height:16px"></div>
+                        <legend style="font-weight:800; color:#1e3a8a; padding:0 8px">🟦 1) Sebelum Jalankan</legend>
+                        <fieldset
+                            style="border:2px solid #bfdbfe; border-radius:16px; padding:12px; margin-top:10px; background:var(--blue)">
+                            <div class="grid g3" style="margin-top:6px">
+                                <label class="opt"><input type="checkbox" /> Ada event <b>when green flag
+                                        clicked</b></label>
+                                <label class="opt"><input type="checkbox" /> Tambahkan <b>move 10 steps</b></label>
+                                <label class="opt"><input type="checkbox" /> Arah benar: <b>point in direction
+                                        90</b></label>
+                            </div>
+
+                            <div class="note" style="margin-top:10px">💡 <b>Tip:</b> Pastikan blok <em>move</em>
+                                menempel di bawah <em>when green flag clicked</em> (tidak terpisah).</div>
+                        </fieldset>
+
+                        <!-- Bagian 2: Coba & Amati -->
+                        <div style="height:16px"></div>
+                        <legend style="font-weight:800; color:#065f46; padding:0 8px">🟩 2) Coba & Amati</legend>
+                        <fieldset
+                            style="border:2px solid #bbf7d0; border-radius:16px; padding:12px; margin-top:12px; background:var(--green)">
+                            <div class="grid g3" style="margin-top:6px">
+                                <label class="opt"><input type="checkbox" /> Klik bendera hijau ▶️ (jalankan)</label>
+                                <label class="opt"><input type="checkbox" /> Sprite <b>muncul</b> (<em>show</em>) &
+                                    ukurannya pas</label>
+                                <label class="opt"><input type="checkbox" /> Posisi awal oke: <b>go to x: y:</b></label>
+                            </div>
+                            <div class="note" style="margin-top:10px">👀 <b>Amati:</b> Apakah sprite bergerak sedikit?
+                                Jika ya, bagus! Kalau belum, lanjut ke langkah 3.</div>
+                        </fieldset>
+
+                        <!-- Bagian 3: Jika Masih Diam -->
+                        <div style="height:16px"></div>
+                        <legend style="font-weight:800; color:#3730a3; padding:0 8px">🟪 3) Jika Masih Diam</legend>
+                        <fieldset
+                            style="border:2px solid #c7d2fe; border-radius:16px; padding:12px; margin-top:12px; background:var(--indigo)">
+                            <div class="grid g3" style="margin-top:6px">
+                                <label class="opt"><input type="checkbox" /> Coba tambah <b>move 50 steps</b> (untuk
+                                    menguji terlihat bergerak)</label>
+                                <label class="opt"><input type="checkbox" /> Pastikan tidak ada <b>stop all</b> yang
+                                    menghentikan program</label>
+                                <label class="opt"><input type="checkbox" /> Pastikan tidak sedang <b>hide</b> atau
+                                    ukuran <b>0%</b></label>
+                            </div>
+                            <div class="note" style="margin-top:10px">🔁 <b>Ingat:</b> <u>Uji satu perubahan dulu</u>,
+                                lalu cek hasil. Jika belum berhasil, kembali ke analisis dan pilih perubahan berikutnya.
+                            </div>
+                        </fieldset>
+
+                        <!-- Tombol Aksi -->
+                        <div class="row" style="margin-top:12px">
+                            <button id="s3-checkall" class="btn">✔️ Tandai Semua</button>
+                            <button id="s3-clear" class="btn">🧹 Hapus Centang</button>
+                            <span class="muted">/ Tulis 1 cara <b>pencegahan</b> jika sprite sudah bergerak (misalnya
+                                blok inisialisasi di awal).</span>
+                        </div>
+
+                        <!-- Ringkasan -->
+                        <div class="note" style="margin-top:12px">✅ Jika sudah bergerak: tulis 1 cara <b>pencegahan</b>
+                            (mis. set posisi & arah di awal, beri komentar “Inisialisasi”).</div>
+                    </div>
+
+                    <!-- Script kecil untuk tombol -->
+                    <script>
+                        (function () {
+                            const slide = document.currentScript.closest('section');
+                            const inputs = slide.querySelectorAll('input[type="checkbox"]');
+                            slide.querySelector('#s3-checkall')?.addEventListener('click', () => inputs.forEach(i => i.checked = true));
+                            slide.querySelector('#s3-clear')?.addEventListener('click', () => inputs.forEach(i => i.checked = false));
+                        })();
+                    </script>
+                </section>
+
+                <!-- Slide 6: Praktik Mandiri – 3 Tantangan Debugging -->
+                <section class="slide" data-slide="6">
+                    <div class="card">
+                        <h2 class="title">Praktik Mandiri: 3 Tantangan Debugging</h2>
+                        <p class="subtitle">Pilih satu dahulu (urutan bebas). Ikuti langkah debugging: <b>Mengenali →
+                                Analisis → Ide → Coba → Evaluasi → Cegah</b>.</p>
+
+                        <div class="grid g3" style="margin-top:12px">
+                            <!-- Tantangan 1 -->
+                            <div class="rounded-2xl challenge-box"
+                                style="background:var(--blue); border:2px solid #93c5fd;">
+                                <div class="font-semibold text-lg" style="margin-bottom:8px;">🧩 <strong>Tantangan
+                                        1</strong></div>
+                                <p class="text-slate-700">Bagaimana caranya agar Cat selalu mulai dari posisi tengah
+                                    stage dan ukuran normal?</p>
+                                <a class="btn primary" href="https://scratch.mit.edu/projects/1201011104/"
+                                    target="_blank" rel="noopener noreferrer"
+                                    style="margin-bottom:12px; display:inline-block;">Buka Proyek</a>
+                            </div>
+
+                            <!-- Tantangan 2 -->
+                            <div class="rounded-2xl challenge-box"
+                                style="background:var(--green); border:2px solid #86efac; padding:20px 22px; border-radius:16px;">
+                                <div class="font-semibold text-lg" style="margin-bottom:8px;">🛠️ <strong>Tantangan
+                                        2</strong></div>
+
+                                <p class="text-slate-700" style="margin:0 0 10px 0; line-height:1.5;">
+                                    Bagaimana cara agar Cat bisa menari bersamaan dengan musik?
+                                </p>
+
+                                <a class="btn primary" href="https://scratch.mit.edu/projects/1201012599/"
+                                    target="_blank" rel="noopener noreferrer"
+                                    style="margin-bottom:12px; display:inline-block;">Buka Proyek</a>
+                            </div>
+
+                            <!-- Tantangan 3 -->
+                            <div class="rounded-2xl challenge-box"
+                                style="background:var(--yellow); border:2px solid #fde68a; padding:20px 22px; border-radius:16px;">
+                                <div class="font-semibold text-lg" style="margin-bottom:8px;">🔢 <strong>Tantangan
+                                        3</strong></div>
+
+                                <p class="text-slate-700" style="margin:0 0 10px 0; line-height:1.5;">
+                                    Bagaimana cara membuat Cat benar-benar melompat, bukan terbang?
+                                </p>
+
+                                <a class="btn primary" href="https://scratch.mit.edu/projects/1201013128/"
+                                    target="_blank" rel="noopener noreferrer"
+                                    style="margin-bottom:12px; display:inline-block;">Buka Proyek</a>
+                            </div>
+
+
+                            <!-- Petunjuk umum -->
+                            <div class="note" style="margin-top:12px">Ingat: <b>coba satu perubahan dulu</b>,
+                                lalu cek hasil. Jika belum berhasil, kembali ke analisis.
+                            </div>
+
+                        </div>
+
+                        <script>
+                            (function () {
+                                const slide = document.currentScript.closest('section');
+                                const checks = slide.querySelectorAll('input[type="checkbox"]');
+                                slide.querySelector('#mark-all-s6')?.addEventListener('click', () => checks.forEach(c => c.checked = true));
+                                slide.querySelector('#clear-all-s6')?.addEventListener('click', () => checks.forEach(c => c.checked = false));
+                            })();
+                        </script>
+                </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <!-- Slide 7: Diskusi & Refleksi -->
+                <section class="slide" data-slide="7">
+                    <div class="card">
+                        <h2 class="title">Refleksi Cepat</h2>
+                        <p class="subtitle">Klik pernyataan yang paling sesuai dengan pengalamanmu hari ini.</p>
+                        <div class="stack">
+                            <button class="opt" data-poll>Langkah yang paling membantu saya adalah <b>Menganalisis
+                                    penyebab</b>.</button>
+                            <button class="opt" data-poll>Saya terbiasa <b>coba satu perubahan dulu</b> lalu
+                                mengevaluasi.</button>
+                            <button class="opt" data-poll>Saya ingin lebih jago membuat <b>pencegahan</b> agar bug tidak
+                                terulang.</button>
+                        </div>
+                        <div id="pollMsg" class="muted" style="margin-top:10px">Terima kasih! Pilihanmu tercatat.</div>
+                    </div>
+                </section>
+
+                <!-- Slide 8: Ringkasan & Kesimpulan -->
+                <section class="slide" data-slide="8">
+                    <div class="card rounded-3xl bg-white p-8 w-full">
+                        <h2 class="title">
+                            Ringkasan & Kesimpulan
+                        </h2>
+                        <p class="subtitle">Apa yang kita pelajari hari ini — versi singkat dan jelas.</p>
+
+                        <div class="grid g2" style="margin-top:12px; gap:14px">
+                            <!-- Ringkasan Hari Ini -->
+                            <div class="rounded-2xl p-4" style="background:var(--blue); border:2px solid #93c5fd;">
+                                <div class="font-semibold text-lg">📘 Ringkasan</div>
+                                <ul class="list-disc list-inside text-slate-700 mt-2">
+                                    <li>Debugging = <strong>mencari & memperbaiki bug</strong> secara teratur.</li>
+                                    <li>Pakai <strong>6 langkah</strong>: Mengenali → Analisis → Ide → Coba → Evaluasi →
+                                        Cegah.</li>
+                                    <li>Aturan emas: <strong>coba satu perubahan dulu</strong>, lalu cek hasil.</li>
+                                    <li>Contoh di Scratch: perbaiki <em>event</em>, urutan blok, arah/posisi, suara,
+                                        variabel.</li>
+                                </ul>
+                            </div>
+
+                            <!-- Kesimpulan Utama -->
+                            <div class="rounded-2xl p-4" style="background:var(--green); border:2px solid #86efac;">
+                                <div class="font-semibold text-lg">✅ Kesimpulan</div>
+                                <ol class="list-decimal list-inside text-slate-700 mt-2">
+                                    <li><strong>Detektif dulu, tukang perbaiki kemudian.</strong> Pahami masalah sebelum
+                                        mengubah kode.</li>
+                                    <li><strong>Langkah kecil itu kuat.</strong> Satu perubahan → cek → catat hasil.
+                                    </li>
+                                    <li><strong>Cegah itu hemat waktu.</strong> Inisialisasi & komentar membantu bug
+                                        tidak terulang.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Slide 9: Penutup & Jembatan -->
+                <section class="slide" data-slide="9">
+                    <div class="card center">
+                        <div class="icons">✨</div>
+                        <h2 class="title">Bagus! Kamu Problem Solver 🎉</h2>
+                        <p class="subtitle">Coding = latihan berpikir logis & terstruktur. Besok, kita lanjut eksplor
+                            bug lain di Scratch.</p>
+                        <blockquote class="note" style="margin-top:10px">“Programmer hebat bukan yang tak pernah salah,
+                            tapi yang tahu <b>menemukan & memperbaiki</b> kesalahannya.”</blockquote>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+
+        <!-- Navigation -->
+        <footer class="nav">
+            <button id="prev" class="btn">⬅️ Sebelumnya</button>
+            <div class="progress"><span id="pnow">1</span>/<span id="ptotal">9</span></div>
+            <button id="next" class="btn primary">Selanjutnya ➡️</button>
+        </footer>
+    </div>
+
+    <!-- Access Gate -->
+    <div id="gate" class="gate" role="dialog" aria-modal="true">
+        <div class="panel">
+            <h3 class="title" style="font-size:26px">Masukkan Kode Akses</h3>
+            <p class="small">Gunakan kode kelas yang telah dibagikan guru.</p>
+            <input id="gateInput" class="input" placeholder="Kode akses" autofocus />
+            <div class="row" style="margin-top:10px;justify-content:flex-end">
+                <button id="unlock" class="btn primary">Buka</button>
+                <button id="skip" class="btn ghost">Lewati</button>
+            </div>
+            <p id="gateMsg" class="small"></p>
+        </div>
+    </div>
+
+    <script>
+        // Slides state
+        const slides = Array.from(document.querySelectorAll('.slide'));
+        const pnow = document.getElementById('pnow');
+        const ptotal = document.getElementById('ptotal');
+        const prev = document.getElementById('prev');
+        const next = document.getElementById('next');
+        let idx = 0; ptotal.textContent = String(slides.length);
+
+        function show(i) {
+            idx = Math.max(0, Math.min(slides.length - 1, i));
+            slides.forEach((s, j) => s.classList.toggle('active', j === idx));
+            pnow.textContent = String(idx + 1);
+            prev.disabled = idx === 0; next.disabled = idx === slides.length - 1;
+            if (idx === slides.length - 1) { next.textContent = 'Selesai ✅'; } else { next.textContent = 'Selanjutnya ➡️'; }
+            // focus ring flash
+            const act = slides[idx].querySelector('.card');
+            if (act) { act.classList.add('ring'); setTimeout(() => act.classList.remove('ring'), 250); }
+        }
+        prev.addEventListener('click', () => show(idx - 1));
+        next.addEventListener('click', () => show(idx + 1));
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('gate')) return; // gate blocks nav
+            if (e.key === 'ArrowRight' || e.key === 'PageDown') show(idx + 1);
+            if (e.key === 'ArrowLeft' || e.key === 'PageUp') show(idx - 1);
+        });
+
+        // Drag & Drop ordering (Slide 4)
+        (function () {
+            const list = document.getElementById('dnd'); if (!list) return;
+            let dragEl = null; const items = () => Array.from(list.children);
+            list.addEventListener('dragstart', e => { dragEl = e.target.closest('.draggable'); e.dataTransfer.effectAllowed = 'move'; });
+            list.addEventListener('dragover', e => { e.preventDefault(); const over = e.target.closest('.draggable'); if (!over || over === dragEl) return; const r = over.getBoundingClientRect(); const next = (e.clientY - r.top) / r.height > 0.5; list.insertBefore(dragEl, next ? over.nextSibling : over); });
+            const correct = [1, 2, 3, 4, 5];
+            document.getElementById('checkOrder').addEventListener('click', () => {
+                const order = items().map(li => Number(li.dataset.order));
+                const ok = order.every((v, i) => v === correct[i]);
+                document.getElementById('orderMsg').textContent = ok ? '🎉 Benar! Urutannya tepat.' : 'Belum pas. Coba mulai dari mengenali bug dulu.';
+            });
+            document.getElementById('resetOrder').addEventListener('click', () => {
+                const arr = items(); for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); list.insertBefore(arr[j], arr[i]); const t = arr[i]; arr[i] = arr[j]; arr[j] = t; }
+                document.getElementById('orderMsg').textContent = '';
+            });
+        })();
+
+        // MCQ (Slide 5)
+        (function () {
+            const cards = document.querySelectorAll('[data-ans]');
+            cards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const ans = card.getAttribute('data-ans');
+                    const correct = (ans === '1' && card.textContent.includes('Cek kabel')) ||
+                        (ans === '2' && card.textContent.includes('Event tidak ada')) ||
+                        (ans === '1' && card.textContent.includes('Cegah terulang'));
+                    card.classList.remove('wrong', 'correct');
+                    card.classList.add(correct ? 'correct' : 'wrong');
+                    const msg = document.getElementById('mcqMsg');
+                    msg.textContent = correct ? '✅ Benar!' : '❌ Coba lagi ya.';
+                })
+            })
+        })();
+
+        // Poll (Slide 8)
+        (function () {
+            const btns = document.querySelectorAll('[data-poll]');
+            const msg = document.getElementById('pollMsg');
+            btns.forEach(b => b.addEventListener('click', () => { b.classList.add('correct'); msg.textContent = 'Terima kasih!'; }))
+        })();
+
+        // Access Gate (case-insensitive) — code "RGMDSUP25"
+        (function () {
+            const gate = document.getElementById('gate');
+            const input = document.getElementById('gateInput');
+            const unlock = document.getElementById('unlock');
+            const skip = document.getElementById('skip');
+            const msg = document.getElementById('gateMsg');
+            function open() { gate.remove(); input?.blur(); }
+            function check() { const v = (input.value || '').trim().toLowerCase(); if (v === 'rgmdsup25') { open(); } else { msg.textContent = 'Kode salah. Coba lagi.'; msg.style.color = 'var(--danger)'; } }
+            unlock.addEventListener('click', check);
+            input.addEventListener('keydown', e => { if (e.key === 'Enter') check(); });
+            skip.addEventListener('click', open); // izinkan lewati bila perlu
+        })();
+    </script>
+</body>
+
+</html>
