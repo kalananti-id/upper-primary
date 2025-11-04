@@ -7,6 +7,98 @@
     <title>Scratch Paint Editor Learning Journey</title>
     <script src="/_sdk/element_sdk.js"></script>
     <style>
+        /* Tambahkan style untuk overlay autentikasi */
+        .auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+        }
+
+        .auth-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .auth-container h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .auth-container p {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .auth-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2em;
+            border: 3px solid #3498db;
+            border-radius: 10px;
+            text-align: center;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+
+        .auth-input:focus {
+            outline: none;
+            border-color: #2980b9;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+        }
+
+        .auth-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .auth-btn:hover {
+            background: #229954;
+            transform: translateY(-2px);
+        }
+
+        .auth-error {
+            color: #e74c3c;
+            margin-top: 15px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .auth-success {
+            color: #27ae60;
+            margin-top: 15px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
         body {
             box-sizing: border-box;
             margin: 0;
@@ -483,6 +575,22 @@
 
 <body>
     <main>
+        <!-- Overlay Autentikasi -->
+        <div class="auth-overlay" id="authOverlay">
+            <div class="auth-container">
+                <h1>🔐 Akses Presentasi</h1>
+                <p>Masukkan kode akses untuk melanjutkan</p>
+                <input type="text" class="auth-input" id="authCode" placeholder="Masukkan kode akses" maxlength="9">
+                <button class="auth-btn" onclick="checkAccessCode()">MASUK</button>
+                <div class="auth-error" id="authError">
+                    ❌ Kode akses salah! Silakan coba lagi.
+                </div>
+                <div class="auth-success" id="authSuccess">
+                    ✅ Akses diberikan! Memuat presentasi...
+                </div>
+            </div>
+        </div>
+
         <div class="slides-container">
             <div class="slide-counter"><span id="currentSlide">1</span> / <span id="totalSlides">11</span>
             </div>
@@ -806,7 +914,7 @@
                     <div class="progress-fill" style="width: 45%"></div>
                 </div>
             </div>
-            
+
             <!-- Slide 9: Animation Techniques -->
             <div class="slide">
                 <h2>🎬 Teknik Duplicate &amp; Edit</h2>
@@ -990,6 +1098,66 @@
         </div>
     </main>
     <script>
+        // ===== SISTEM AUTENTIKASI =====
+        const ACCESS_CODE = "RGMDSUP25";
+
+        // Fungsi untuk auto kapital dan batasi input
+        function setupAuthInput() {
+            const authInput = document.getElementById('authCode');
+
+            // Auto kapital semua huruf
+            authInput.addEventListener('input', function (e) {
+                this.value = this.value.toUpperCase();
+            });
+
+            // Enter untuk submit
+            authInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    checkAccessCode();
+                }
+            });
+
+            // Fokus otomatis ke input
+            authInput.focus();
+        }
+
+        // Fungsi cek kode akses
+        function checkAccessCode() {
+            const inputCode = document.getElementById('authCode').value;
+            const errorDiv = document.getElementById('authError');
+            const successDiv = document.getElementById('authSuccess');
+
+            if (inputCode.toUpperCase() === ACCESS_CODE) {
+                // Kode benar
+                errorDiv.style.display = 'none';
+                successDiv.style.display = 'block';
+
+                // Tunggu 1 detik lalu tampilkan presentasi
+                setTimeout(function () {
+                    document.getElementById('authOverlay').style.display = 'none';
+                    document.getElementById('presentationContainer').classList.remove('hidden');
+                    // Inisialisasi presentasi setelah berhasil login
+                    initializePresentation();
+                }, 1000);
+
+            } else {
+                // Kode salah
+                errorDiv.style.display = 'block';
+                successDiv.style.display = 'none';
+
+                // Animasi shake untuk feedback error
+                const authContainer = document.querySelector('.auth-container');
+                authContainer.style.animation = 'shake 0.5s';
+                setTimeout(() => {
+                    authContainer.style.animation = '';
+                }, 500);
+
+                // Fokus kembali ke input
+                document.getElementById('authCode').focus();
+                document.getElementById('authCode').select();
+            }
+        }
+
         // Configuration
         const defaultConfig = {
             main_title: "Paint Editor Scratch",
