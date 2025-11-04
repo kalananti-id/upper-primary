@@ -689,20 +689,58 @@
                 <h2>🛠️ Mengenal Tools Paint Editor</h2>
                 <p>Klik setiap tool untuk mempelajari fungsinya</p>
                 <div class="tools-grid">
+                    <div class="tool-card" onclick="revealTool(this, 'select')">
+                        <div class="tool-icon" style="align-items: center;">
+                            <img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/3d58b987-9d47-4cf3-96db-f4751ea07592.png"
+                                alt="Select Icon" style="width: 40px;">
+                        </div>
+                        <div class="tool-name">
+                            Select
+                        </div>
+                        <div class="tool-desc">
+                            Memilih bagian gambar
+                        </div>
+                    </div>
+                    <div class="tool-card" onclick="revealTool(this, 'reshape')">
+                        <div class="tool-icon" style="align-items: center;">
+                            <img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/b476b95a-c6fa-4ec0-83cf-02409e2dc019.png"
+                                alt="Reshape Icon" style="width: 40px; align-self: center;">
+                        </div>
+                        <div class="tool-name">
+                            Reshape
+                        </div>
+                        <div class="tool-desc">
+                            Mengubah bentuk garis dan kurva
+                        </div>
+                    </div>
                     <div class="tool-card" onclick="revealTool(this, 'brush')">
                         <div class="tool-icon">
-                            🖌️
+                            <img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/71bccafc-b97f-4801-8a63-a261f02d5187.png"
+                                alt="Brush Icon" style="width: 40px;">
                         </div>
                         <div class="tool-name">
                             Brush
                         </div>
                         <div class="tool-desc">
-                            Menggambar bebas dengan kuas
+                            Menggambar bebas
+                        </div>
+                    </div>
+                    <div class="tool-card" onclick="revealTool(this, 'eraser')">
+                        <div class="tool-icon">
+                            <img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/e22bd3cc-f43e-4e04-9dba-fc46918e8223.png"
+                                alt="Eraser Icon" style="width: 40px;">
+                        </div>
+                        <div class="tool-name">
+                            Eraser
+                        </div>
+                        <div class="tool-desc">
+                            Menghapus bagian gambar
                         </div>
                     </div>
                     <div class="tool-card" onclick="revealTool(this, 'fill')">
                         <div class="tool-icon">
-                            🪣
+                            <img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/d8ecbbce-a58a-4815-92c4-b929c0170a14.png"
+                                alt="Fill Icon" style="width: 40px;">
                         </div>
                         <div class="tool-name">
                             Fill
@@ -711,26 +749,52 @@
                             Mengisi area dengan warna
                         </div>
                     </div>
-                    <div class="tool-card" onclick="revealTool(this, 'shape')">
+                    <div class="tool-card" onclick="revealTool(this, 'text')">
                         <div class="tool-icon">
-                            🔷
+                            <img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/6dd97ea8-4933-4e83-8100-bb8106e9a4f7.png"
+                                alt="Text Icon" style="width: 40px;">
                         </div>
                         <div class="tool-name">
-                            Shape
+                            Text
                         </div>
                         <div class="tool-desc">
-                            Membuat bentuk geometris
+                            Menambahkan teks ke gambar
                         </div>
                     </div>
                     <div class="tool-card" onclick="revealTool(this, 'line')">
                         <div class="tool-icon">
-                            📏
+                            <img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/502dd1c9-d1fe-4e95-aec0-0ebbc718f1d5.png"
+                                alt="Line Icon" style="width: 40px;">
                         </div>
                         <div class="tool-name">
                             Line
                         </div>
                         <div class="tool-desc">
                             Menggambar garis lurus
+                        </div>
+                    </div>
+                    <div class="tool-card" onclick="revealTool(this, 'circle')">
+                        <div class="tool-icon">
+                            <img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/0f4ae94a-c3a4-4c06-8fa6-adc6c54535a9.png"
+                                alt="Circle Icon" style="width: 40px;">
+                        </div>
+                        <div class="tool-name">
+                            Circle
+                        </div>
+                        <div class="tool-desc">
+                            Membuat lingkaran dan oval
+                        </div>
+                    </div>
+                    <div class="tool-card" onclick="revealTool(this, 'rectangle')">
+                        <div class="tool-icon">
+                            <img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/17bcf192-6f5e-47f7-8340-9968f6c7e222.png"
+                                alt="Rectangle Icon" style="width: 40px;">
+                        </div>
+                        <div class="tool-name">
+                            Rectangle
+                        </div>
+                        <div class="tool-desc">
+                            Membuat persegi dan persegi panjang
                         </div>
                     </div>
                 </div>
@@ -741,97 +805,9 @@
                 <div class="progress-bar">
                     <div class="progress-fill" style="width: 45%"></div>
                 </div>
-            </div><!-- Slide 7: Hands-on Practice -->
-            <div class="slide">
-                <h2>✋ Praktik Langsung</h2>
-                <p>Mari coba menggunakan tools untuk membuat gambar sederhana</p>
-                <div class="interactive-demo">
-                    <h3>🎨 Canvas Latihan</h3>
-                    <div class="demo-canvas" id="practiceCanvas" onclick="addDrawing(event)">
-                        <div
-                            style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #a0aec0;">
-                            Klik untuk menggambar!
-                        </div>
-                    </div>
-                    <div style="margin: 20px 0;"><button class="nav-btn" onclick="selectTool('brush')" id="brushBtn">🖌️
-                            Brush</button> <button class="nav-btn" onclick="selectTool('fill')" id="fillBtn">🪣
-                            Fill</button> <button class="nav-btn" onclick="selectTool('shape')" id="shapeBtn">🔷
-                            Shape</button> <button class="nav-btn" onclick="clearCanvas()">🗑️ Clear</button>
-                    </div>
-                    <p id="toolStatus">Tool aktif: Brush</p>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 55%"></div>
-                </div>
-            </div><!-- Slide 8: Creating Sprites -->
-            <div class="slide">
-                <h2>🐱 Membuat Sprite Sederhana</h2>
-                <p>Langkah-langkah membuat sprite dengan multiple costumes</p>
-                <div class="journey-steps">
-                    <div class="step" id="step1" onclick="completeStep(1)">
-                        <div class="step-number">
-                            1
-                        </div>
-                        <div class="step-title">
-                            Buat Sprite Baru
-                        </div>
-                        <div class="step-desc">
-                            Paint new sprite
-                        </div>
-                    </div>
-                    <div class="step" id="step2" onclick="completeStep(2)">
-                        <div class="step-number">
-                            2
-                        </div>
-                        <div class="step-title">
-                            Desain Costume 1
-                        </div>
-                        <div class="step-desc">
-                            Pose pertama
-                        </div>
-                    </div>
-                    <div class="step" id="step3" onclick="completeStep(3)">
-                        <div class="step-number">
-                            3
-                        </div>
-                        <div class="step-title">
-                            Duplicate Costume
-                        </div>
-                        <div class="step-desc">
-                            Copy untuk frame 2
-                        </div>
-                    </div>
-                    <div class="step" id="step4" onclick="completeStep(4)">
-                        <div class="step-number">
-                            4
-                        </div>
-                        <div class="step-title">
-                            Edit Frame 2
-                        </div>
-                        <div class="step-desc">
-                            Ubah pose sedikit
-                        </div>
-                    </div>
-                </div>
-                <div class="highlight">
-                    <h3>🎭 Contoh: Sprite Kucing Berjalan</h3>
-                    <div class="sprite-frames">
-                        <div class="frame" onclick="animateFrame(1)">
-                            🐱
-                        </div>
-                        <div class="frame" onclick="animateFrame(2)">
-                            🙀
-                        </div>
-                        <div class="frame" onclick="animateFrame(3)">
-                            😸
-                        </div>
-                    </div>
-                    <p>Klik frame untuk melihat animasi sederhana!</p>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 64%"></div>
-                </div>
-            </div><!-- Slide 9: Animation Techniques -->
+            </div>
+            
+            <!-- Slide 9: Animation Techniques -->
             <div class="slide">
                 <h2>🎬 Teknik Duplicate &amp; Edit</h2>
                 <p>Cara efisien membuat frame animasi</p>
@@ -953,7 +929,7 @@
                 <div class="scratch-logo">
                     🎉
                 </div>
-                <h2>Selamat! Anda Telah Menguasai Paint Editor</h2>
+                <h2>Selamat! Kamu Telah Menguasai Paint Editor</h2>
                 <div class="tools-grid">
                     <div class="tool-card revealed">
                         <div class="tool-icon">
@@ -1002,7 +978,7 @@
                 </div>
                 <div class="highlight">
                     <h3>🚀 Langkah Selanjutnya</h3>
-                    <p>Sekarang Anda siap membuat proyek animasi dengan sprite dan backdrop yang menarik!</p>
+                    <p>Sekarang Kamu siap membuat proyek animasi dengan sprite dan backdrop yang menarik!</p>
                 </div>
                 <div class="progress-bar">
                     <div class="progress-fill" style="width: 100%"></div>
@@ -1171,21 +1147,41 @@
             element.classList.add('revealed');
 
             const details = {
+                select: {
+                    title: "Select Tool",
+                    desc: "Digunakan untuk memilih bagian gambar agar dapat dipindah, diubah ukuran, atau dimodifikasi. Sangat berguna untuk mengatur elemen dalam gambar."
+                },
+                reshape: {
+                    title: "Reshape Tool",
+                    desc: "Digunakan untuk mengubah bentuk objek dengan menarik titik-titik kontrolnya. Cocok untuk menyesuaikan kurva dan sudut pada gambar vector."
+                },
                 brush: {
-                    title: "🖌️ Brush Tool",
-                    desc: "Digunakan untuk menggambar bebas seperti menggunakan kuas. Anda dapat mengatur ukuran dan warna kuas. Cocok untuk membuat garis organik dan detail halus."
+                    title: "Brush Tool",
+                    desc: "Digunakan untuk menggambar bebas seperti menggunakan kuas. Kamu dapat mengatur ukuran dan warna kuas. Cocok untuk membuat garis organik dan detail halus."
+                },
+                eraser: {
+                    title: "Eraser Tool",
+                    desc: "Digunakan untuk menghapus bagian gambar. Ukuran penghapus dapat diatur sesuai kebutuhan. Berguna untuk memperbaiki kesalahan atau menghilangkan elemen yang tidak diinginkan."
                 },
                 fill: {
-                    title: "🪣 Fill Tool",
+                    title: "Fill Tool",
                     desc: "Mengisi area tertutup dengan warna solid. Klik pada area yang ingin diisi, dan seluruh area dengan warna yang sama akan berubah. Sangat efisien untuk mewarnai bentuk besar."
                 },
-                shape: {
-                    title: "🔷 Shape Tool",
-                    desc: "Membuat bentuk geometris seperti persegi, lingkaran, dan segitiga. Bentuk akan presisi dan simetris. Ideal untuk membuat elemen UI dan bentuk dasar sprite."
+                text: {
+                    title: "Text Tool",
+                    desc: "Digunakan untuk menambahkan teks ke gambar. Kamu dapat memilih font, ukuran, dan warna teks. Ideal untuk menambahkan label, judul, atau keterangan pada gambar."
                 },
                 line: {
-                    title: "📏 Line Tool",
+                    title: "Line Tool",
                     desc: "Menggambar garis lurus dengan ketebalan yang dapat diatur. Berguna untuk membuat outline, border, dan elemen struktural dalam desain sprite."
+                },
+                circle: {
+                    title: "Circle Tool",
+                    desc: "Digunakan untuk menggambar lingkaran dan oval. Kamu dapat mengatur ukuran dan proporsi bentuk. Cocok untuk membuat elemen bulat seperti mata, roda, atau dekorasi."
+                },
+                rectangle: {
+                    title: "Rectangle Tool",
+                    desc: "Digunakan untuk menggambar persegi panjang dan kotak. Ukuran dan proporsi dapat diatur sesuai kebutuhan. Ideal untuk membuat elemen kotak seperti badan karakter, jendela, atau tombol."
                 }
             };
 
