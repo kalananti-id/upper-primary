@@ -1,0 +1,1639 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Sesi 20 – Debugging Animasi di Scratch</title>
+    <style>
+        :root {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            --bg: #e0f2fe;
+            /* very light sky blue */
+            --card: #f9fafb;
+            /* almost white */
+            --accent: #0284c7;
+            /* sky blue */
+            --accent-soft: rgba(56, 189, 248, 0.15);
+            --text: #0f172a;
+            /* dark navy text */
+            --muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: radial-gradient(circle at top, #e0f2fe, #ffffff);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .deck {
+            width: min(1100px, 100vw - 32px);
+            height: min(620px, 100vh - 32px);
+            background: linear-gradient(135deg, #f1f5f9, #e0f2fe);
+            border-radius: 24px;
+            padding: 20px 24px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.2);
+            overflow: hidden;
+        }
+
+        /* Floating decoration – bright & soft */
+        .orb {
+            position: absolute;
+            border-radius: 999px;
+            filter: blur(22px);
+            opacity: 0.8;
+            animation: float 14s infinite alternate ease-in-out;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .orb.one {
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.6), transparent);
+            top: -40px;
+            right: 80px;
+            animation-delay: -3s;
+        }
+
+        .orb.two {
+            width: 260px;
+            height: 260px;
+            background: radial-gradient(circle, rgba(250, 204, 21, 0.5), transparent);
+            bottom: -80px;
+            left: -40px;
+        }
+
+        @keyframes float {
+            from {
+                transform: translateY(0px) translateX(0px);
+            }
+
+            to {
+                transform: translateY(-18px) translateX(14px);
+            }
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 2;
+        }
+
+        header .title {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        header .badge {
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: rgba(56, 189, 248, 0.15);
+            border: 1px solid rgba(2, 132, 199, 0.4);
+            color: #075985;
+        }
+
+        header .meta {
+            text-align: right;
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .slides-wrapper {
+            flex: 1;
+            border-radius: 18px;
+            background: #ffffffcc;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            padding: 20px 22px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            display: flex;
+        }
+
+        .slide {
+            width: 100%;
+            flex-shrink: 0;
+            opacity: 0;
+            transform: translateX(40px);
+            pointer-events: none;
+            transition: opacity 0.35s ease, transform 0.35s ease;
+            position: absolute;
+            inset: 20px 22px;
+            overflow-y: auto;
+            padding-right: 6px;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
+            position: relative;
+            inset: 0;
+        }
+
+        .slide h1,
+        .slide h2,
+        .slide h3 {
+            margin-bottom: 10px;
+        }
+
+        .slide h1 {
+            font-size: 26px;
+            font-weight: 800;
+        }
+
+        .slide h2 {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .slide h3 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+
+        p {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        ul,
+        ol {
+            margin-left: 18px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        li {
+            margin-bottom: 4px;
+        }
+
+        .pill-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 6px;
+            margin-bottom: 10px;
+        }
+
+        .pill {
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.7);
+            background: #e0f2fe;
+            color: #075985;
+        }
+
+        .code-block {
+            background: #f1f5f9;
+            border-radius: 10px;
+            border: 1px solid rgba(148, 163, 184, 0.8);
+            padding: 10px 12px;
+            font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 12px;
+            margin: 10px 0;
+            white-space: pre-line;
+        }
+
+        .code-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--muted);
+            margin-bottom: 4px;
+        }
+
+        .note {
+            font-size: 12px;
+            color: var(--muted);
+            border-left: 3px solid var(--accent);
+            padding-left: 8px;
+            margin-top: 6px;
+            background: #eff6ff;
+            border-radius: 4px;
+            padding-top: 4px;
+            padding-bottom: 4px;
+        }
+
+        .two-cols {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 16px;
+            align-items: flex-start;
+            margin-top: 8px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid rgba(148, 163, 184, 0.7);
+            padding: 10px 12px;
+        }
+
+        .label {
+            display: inline-block;
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            color: #075985;
+            margin-bottom: 4px;
+        }
+
+        .list-tight li {
+            margin-bottom: 2px;
+        }
+
+        .step-list li::marker {
+            color: var(--accent);
+        }
+
+        .present-tip {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #0369a1;
+            background: #e0f2fe;
+            border-radius: 6px;
+            padding: 6px 8px;
+        }
+
+        footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button.nav-btn {
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.8);
+            background: #ffffff;
+            color: var(--text);
+            padding: 6px 12px;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.1s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        button.nav-btn:hover {
+            background: #e0f2fe;
+            border-color: var(--accent);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(148, 163, 184, 0.5);
+        }
+
+        button.nav-btn:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        button.nav-btn[disabled] {
+            opacity: 0.45;
+            cursor: default;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .slide-indicator {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .dots {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: rgba(148, 163, 184, 0.6);
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .dot.active {
+            background: var(--accent);
+            transform: scale(1.4);
+        }
+
+        .hint {
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        /* ==== NEW: styling untuk animasi langkah debugging (slide 11) ==== */
+
+        .debug-flow {
+            position: relative;
+            margin: 10px 0 20px;
+            padding: 10px 10px 18px;
+            background: #e0f2fe;
+            border-radius: 12px;
+            border: 1px solid rgba(148, 163, 184, 0.7);
+            overflow: hidden;
+        }
+
+        .debug-flow-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #0369a1;
+            margin-bottom: 6px;
+        }
+
+        .debug-line {
+            position: relative;
+            height: 4px;
+            background: rgba(148, 163, 184, 0.5);
+            border-radius: 999px;
+            margin: 12px 12px 18px;
+        }
+
+        .debug-dot {
+            position: absolute;
+            top: 50%;
+            width: 14px;
+            height: 14px;
+            border-radius: 999px;
+            background: #0ea5e9;
+            box-shadow: 0 0 0 6px rgba(56, 189, 248, 0.35);
+            transform: translate(-50%, -50%);
+            animation: travel 7s infinite ease-in-out;
+        }
+
+        @keyframes travel {
+            0% {
+                left: 6%;
+            }
+
+            16% {
+                left: 6%;
+            }
+
+            25% {
+                left: 23%;
+            }
+
+            41% {
+                left: 23%;
+            }
+
+            50% {
+                left: 40%;
+            }
+
+            58% {
+                left: 40%;
+            }
+
+            66% {
+                left: 57%;
+            }
+
+            74% {
+                left: 57%;
+            }
+
+            82% {
+                left: 74%;
+            }
+
+            90% {
+                left: 74%;
+            }
+
+            100% {
+                left: 90%;
+            }
+        }
+
+        .debug-nodes {
+            display: flex;
+            justify-content: space-between;
+            margin: 0 12px;
+        }
+
+        .debug-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 11px;
+            color: #0369a1;
+        }
+
+        .debug-node-circle {
+            width: 20px;
+            height: 20px;
+            border-radius: 999px;
+            border: 2px solid rgba(148, 163, 184, 0.8);
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .debug-node label {
+            text-align: center;
+            max-width: 70px;
+        }
+
+        .step-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        @media (max-width: 880px) {
+            .step-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 620px) {
+            .step-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .step-card {
+            background: #ffffff;
+            border-radius: 10px;
+            border: 1px solid rgba(148, 163, 184, 0.7);
+            padding: 8px 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), transparent);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .step-card:hover::after {
+            opacity: 1;
+        }
+
+        .step-number {
+            font-size: 11px;
+            font-weight: 700;
+            color: #0369a1;
+            margin-bottom: 2px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+        }
+
+        .step-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .step-text {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 3px;
+        }
+
+        .step-question {
+            font-size: 12px;
+            color: #0f172a;
+            font-style: italic;
+        }
+
+        .step-emoji {
+            position: absolute;
+            right: 6px;
+            bottom: 4px;
+            font-size: 16px;
+            opacity: 0.75;
+        }
+
+        /* ==== tombol langkah & popup debugging (slide 11) ==== */
+
+        .step-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 6px 0 12px;
+        }
+
+        .step-btn {
+            flex: 1 1 120px;
+            min-width: 120px;
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.9);
+            background: #ffffff;
+            padding: 6px 10px;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            color: #0f172a;
+            transition: background 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .step-btn span {
+            font-weight: 600;
+            color: #0369a1;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-size: 11px;
+        }
+
+        .step-btn:hover {
+            background: #e0f2fe;
+            border-color: #0284c7;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(148, 163, 184, 0.4);
+        }
+
+        .step-btn:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        .step-btn small {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        /* popup modal */
+
+        .debug-modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .debug-modal-backdrop.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .debug-modal {
+            width: min(520px, 90vw);
+            max-height: min(420px, 80vh);
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 22px 60px rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(148, 163, 184, 0.7);
+            padding: 14px 16px 12px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .debug-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .debug-modal-title {
+            font-size: 16px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #0f172a;
+        }
+
+        .debug-modal-badge {
+            font-size: 11px;
+            padding: 2px 7px;
+            border-radius: 999px;
+            background: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid rgba(148, 163, 184, 0.8);
+        }
+
+        .debug-modal-close {
+            border: none;
+            background: transparent;
+            font-size: 18px;
+            cursor: pointer;
+            color: #64748b;
+            padding: 2px 4px;
+        }
+
+        .debug-modal-body {
+            font-size: 13px;
+            color: #0f172a;
+            line-height: 1.6;
+            overflow-y: auto;
+            padding-right: 4px;
+            margin-top: 4px;
+        }
+
+        .debug-modal-body p {
+            margin-bottom: 6px;
+        }
+
+        .debug-modal-body ul {
+            margin-left: 16px;
+            margin-bottom: 6px;
+        }
+
+        .debug-modal-footer {
+            margin-top: 6px;
+            font-size: 12px;
+            color: #0369a1;
+            background: #e0f2fe;
+            border-radius: 8px;
+            padding: 6px 8px;
+        }
+
+
+        @media (max-width: 840px) {
+            .two-cols {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .deck {
+                height: 100vh;
+                width: 100vw;
+                border-radius: 0;
+            }
+
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+
+            header .meta {
+                text-align: left;
+            }
+
+            .slides-wrapper {
+                padding: 14px 14px;
+            }
+
+            .slide {
+                inset: 14px;
+            }
+        }
+
+        /* ==== TRACKER SLIDE ==== */
+
+        .tracker-card {
+            background: #ffffff;
+            border: 1px solid rgba(148, 163, 184, 0.6);
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .tracker-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #0f172a;
+            background: #f1f5f9;
+            border: 1px solid rgba(148, 163, 184, 0.5);
+            padding: 8px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .tracker-item:hover {
+            background: #e0f2fe;
+        }
+
+        .tracker-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        /* ===== ACCESS GATE OVERLAY ===== */
+
+        .access-gate {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+
+        .access-box {
+            background: #ffffff;
+            padding: 22px 26px;
+            border-radius: 16px;
+            width: min(380px, 90vw);
+            border: 1px solid rgba(148, 163, 184, 0.6);
+            box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
+            text-align: center;
+        }
+
+        .access-box h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #0f172a;
+        }
+
+        .access-box p {
+            font-size: 13px;
+            margin-bottom: 16px;
+            color: #64748b;
+        }
+
+        .access-input {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid #94a3b8;
+            font-size: 14px;
+            text-transform: uppercase;
+            outline: none;
+            margin-bottom: 10px;
+        }
+
+        .access-input:focus {
+            border-color: #0ea5e9;
+        }
+
+        .access-btn {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            background: #0ea5e9;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .access-btn:hover {
+            background: #0284c7;
+        }
+
+        .access-error {
+            font-size: 12px;
+            color: #dc2626;
+            height: 14px;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="access-gate" id="accessGate">
+        <div class="access-box">
+            <h2>Kode Akses</h2>
+            <p>Masukkan kode untuk membuka materi ini.</p>
+            <input type="text" id="accessInput" class="access-input" placeholder="Masukkan kode…" autofocus>
+            <button class="access-btn" id="accessBtn">Buka Slides</button>
+            <div class="access-error" id="accessError"></div>
+        </div>
+    </div>
+
+    <div class="deck">
+        <div class="orb one"></div>
+        <div class="orb two"></div>
+
+        <header>
+            <div class="title">
+                🐱 Scratch Debugging
+                <span class="badge">Coding di Scratch</span>
+            </div>
+        </header>
+
+        <div class="slides-wrapper" id="slides-wrapper">
+            <!-- SLIDE 1 -->
+            <section class="slide active">
+                <h1>Debugging Coding Scratch</h1>
+                
+                <p>
+                    Kamu akan belajar menjadi <strong>detektif bug</strong> di Scratch:
+                </p>
+                <ul>
+                    <li>Melihat apa yang aneh dari animasi.</li>
+                    <li>Mencari tahu <strong>blok mana yang menyebabkan masalah</strong>.</li>
+                    <li>Mencoba perubahan kecil dan menguji lagi.</li>
+                </ul>
+                <div class="pill-list">
+                    <span class="pill">Persiapan Proyek</span>
+                    <span class="pill">Detektif Kode</span>
+                    <span class="pill">Animasi Lebih Rapi</span>
+                </div>
+                <p class="present-tip">
+                    Saat presentasi proyek nanti, kamu bisa bilang:
+                    <em>“Sebelum membuat proyek ini, saya belajar debugging dulu supaya animasi saya tidak error.”</em>
+                </p>
+            </section>
+
+            <!-- SLIDE 2 -->
+            <section class="slide">
+                <h2>Apa Itu Debugging?</h2>
+                <p class="subtitle">
+                    Kata “debugging” mungkin terdengar rumit, tapi sebenarnya sederhana.
+                </p>
+                <p><strong>Debugging</strong> adalah:</p>
+                <ul class="step-list">
+                    <li>Menemukan <strong>bagian yang salah</strong> dalam program (bug).</li>
+                    <li>Mencoba <strong>cara memperbaikinya</strong>.</li>
+                    <li>Mengulang sampai program berjalan sesuai yang kamu mau.</li>
+                </ul>
+                <p><strong>Bug</strong> adalah:</p>
+                <ul>
+                    <li>Animasi tidak jalan.</li>
+                    <li>Sprite berputar terus.</li>
+                    <li>Sprite muncul di posisi yang aneh.</li>
+                </ul>
+                <p class="note">
+                    Jadi, debugging = <strong>“memburu bug”</strong> sampai animasimu halus dan enak ditonton.
+                </p>
+            </section>
+
+            <!-- SLIDE 3 -->
+            <section class="slide">
+                <h2>Mengapa Debugging Penting untuk Proyek?</h2>
+                <p class="subtitle">
+                    Debugging membuat animasimu lebih baik dan mudah dimengerti. Lihat perbedaannya:
+                </p>
+                <div class="two-cols">
+                    <div class="card">
+                        <span class="label">Tanpa Debugging</span>
+                        <ul class="list-tight">
+                            <li>Animasi berhenti di tengah-tengah.</li>
+                            <li>Sprite bergerak tidak jelas.</li>
+                            <li>Penonton bingung dengan ceritamu.</li>
+                            <li>Guru sulit menilai idemu karena kodenya “berantakan”.</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <span class="label">Dengan Debugging</span>
+                        <ul class="list-tight">
+                            <li>Animasi <strong>jalan sampai akhir</strong>.</li>
+                            <li>Gerakan sprite terlihat <strong>lebih halus</strong>.</li>
+                            <li>Cerita proyekmu mudah dimengerti.</li>
+                            <li>Kamu bisa menjelaskan prosesnya, bukan hanya hasilnya.</li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="present-tip">
+                    Di presentasi, kamu bisa jelaskan:
+                    <em>“Saya melakukan debugging supaya ide inovasi saya bisa terlihat jelas dan tidak terganggu
+                        error.”</em>
+                </p>
+            </section>
+
+            <!-- SLIDE 4 -->
+<section class="slide">
+    <h2>Tujuan Belajar Sesi Ini</h2>
+    <p class="subtitle">Setelah sesi ini, kamu bukan hanya bisa memperbaiki animasi—tapi juga memahami prosesnya!</p>
+
+    <div class="two-cols">
+        
+        <!-- Kolom kiri -->
+        <div>
+            <h3>🌟 Apa yang Akan Kamu Kuasai?</h3>
+            <ul class="step-list">
+                <li>
+                    <strong>Mengidentifikasi masalah</strong> pada kode animasi sederhana.  
+                    <br><span style="color:#64748b; font-size:13px;">
+                        Kamu bisa menemukan bagian mana dari animasi yang terasa aneh, seperti tidak bergerak, berputar terus,
+                        atau muncul di posisi salah.
+                    </span>
+                </li>
+
+                <li>
+                    <strong>Memperbaiki masalah</strong> dengan perubahan kecil yang masuk akal.  
+                    <br><span style="color:#64748b; font-size:13px;">
+                        Kamu belajar memperbaiki animasi dengan mengubah satu hal kecil dulu, bukan semuanya sekaligus.
+                        Ini cara kerja programmer profesional!
+                    </span>
+                </li>
+
+                <li>
+                    <strong>Menjelaskan alasan</strong> memilih blok atau perbaikan itu.  
+                    <br><span style="color:#64748b; font-size:13px;">
+                        Kamu bisa berkata, “Saya menambahkan blok <em>arah menghadap 90</em> supaya sprite berjalan ke kanan.”
+                        Nah, ini membuat presentasimu lebih meyakinkan.
+                    </span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Kolom kanan -->
+        <div class="card" style="background:#f0f9ff;">
+            <span class="label">Kenapa Ini Penting?</span>
+            <ul style="font-size:14px; line-height:1.6;">
+                <li>Animasi akhir proyekmu jadi lebih rapi.</li>
+                <li>Kamu tidak panik kalau ada bug—karena kamu sudah tahu langkah-langkahnya.</li>
+                <li>Kamu bisa menjelaskan prosesmu dengan percaya diri saat presentasi.</li>
+                <li>Guru bisa melihat bagaimana kamu berpikir sebagai <strong>Programmer Muda</strong>.</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <p class="note">
+        Semua kemampuan ini akan membantu kamu saat membuat
+        <strong>proyek animasi inovasi</strong>-mu. Ingat, bukan hanya hasil akhirnya yang penting—tapi juga <em>cara kamu sampai di sana</em>.
+    </p>
+
+    <p class="present-tip">
+        Contoh kalimat presentasi:  
+        <em>
+            “Dalam sesi debugging, saya belajar menemukan bug, membuat perubahan kecil,
+            dan menjelaskan kenapa saya memilih blok tertentu.”
+        </em>
+    </p>
+</section>
+
+
+            <!-- SLIDE 5 -->
+            <section class="slide">
+                <h2>Bug 1: Sprite Tidak Bergerak</h2>
+                <p class="subtitle">
+                    Kamu ingin kucing berjalan ke kanan saat tombol panah kanan ditekan.
+                </p>
+                <p><strong>Gejala:</strong> kamu tekan panah kanan, tapi sprite diam saja.</p>
+
+                <div class="two-cols">
+                    <div class="card">
+                        <span class="label">Kemungkinan Penyebab</span>
+                        <ul>
+                            <li>Event-nya salah (bukan tombol panah).</li>
+                            <li>Blok gerak tidak ada di skrip yang sama.</li>
+                            <li>Arah sprite menghadap ke arah lain.</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <span class="label">Contoh Kode Perbaikan</span>
+                        <div class="code-block">
+                            [ketika tombol panah kanan ditekan]
+                            [arah menghadap 90]
+                            [gerak 10 langkah]
+                        </div>
+                    </div>
+                </div>
+
+                <p class="note">
+                    Di Scratch, angka 90 berarti sprite menghadap ke kanan.
+                    Jadi sebelum bergerak, kita “menyetel arah” dulu.
+                </p>
+            </section>
+
+            <!-- SLIDE 6 -->
+            <section class="slide">
+                <h2>Mengapa Memakai Kode Ini? (Bug 1)</h2>
+                <p><strong>Kenapa pakai “ketika tombol panah kanan ditekan”?</strong></p>
+                <ul>
+                    <li>Supaya gerakan hanya terjadi <strong>saat pemain menekan tombol</strong>.</li>
+                    <li>Ini membuat animasi terasa seperti game yang bisa dikendalikan.</li>
+                </ul>
+
+                <p><strong>Kenapa pakai “arah menghadap 90” dulu?</strong></p>
+                <ul>
+                    <li>Supaya sprite selalu menghadap kanan sebelum bergerak.</li>
+                    <li>Tanpa ini, kadang sprite menghadap ke kiri dan terlihat berjalan mundur.</li>
+                </ul>
+
+                <p><strong>Kenapa “gerak 10 langkah”?</strong></p>
+                <ul>
+                    <li>10 langkah cukup jelas kelihatan di layar.</li>
+                    <li>Kalau terlalu kecil, pergerakan seperti tidak terlihat → orang mengira “bug”, padahal cuma
+                        kurang jauh.</li>
+                </ul>
+
+                <p class="present-tip">
+                    Contoh kalimat presentasi:
+                    <em>“Saya menambahkan blok <strong>arah menghadap 90</strong> supaya kucing saya selalu berjalan ke
+                        kanan, bukan terbalik.”</em>
+                </p>
+            </section>
+
+            <!-- SLIDE 7 -->
+            <section class="slide">
+                <h2>Bug 2: Sprite Berputar Terus</h2>
+                <p class="subtitle">
+                    Kamu ingin sprite berputar sebentar, tapi malah berputar tanpa henti.
+                </p>
+
+                <div class="two-cols">
+                    <div class="card">
+                        <span class="label">Contoh Kode Bermasalah</span>
+                        <div class="code-block">
+                            [ketika bendera hijau diklik]
+                            [selamanya]
+                            [putar 15 derajat]
+                        </div>
+                        <p class="note">
+                            “Selamanya” artinya komputer <strong>tidak pernah berhenti</strong> menjalankan blok di
+                            dalamnya.
+                        </p>
+                    </div>
+                    <div class="card">
+                        <span class="label">Contoh Kode Perbaikan</span>
+                        <div class="code-block">
+                            [ketika bendera hijau diklik]
+                            [ulangi 10 kali]
+                            [putar 15 derajat]
+                        </div>
+                    </div>
+                </div>
+
+                <p class="present-tip">
+                    Jelaskan bahwa kamu mengganti <strong>“selamanya”</strong> dengan
+                    <strong>“ulangi 10 kali”</strong> agar animasi punya batas dan terlihat lebih rapi.
+                </p>
+            </section>
+
+            <!-- SLIDE 8 -->
+            <section class="slide">
+                <h2>Mengapa Pakai “Ulangi 10 kali”?</h2>
+                <p><strong>Masalah utama:</strong> animasi tidak berhenti.</p>
+                <ul>
+                    <li><strong>“Selamanya”</strong> → sprite putar terus dan sulit dikontrol.</li>
+                    <li>Penonton bisa pusing atau merasa animasi “rusak”.</li>
+                </ul>
+
+                <p><strong>Dengan “ulangi 10 kali”:</strong></p>
+                <ul>
+                    <li>Sprite hanya berputar 10 × 15° = 150°.</li>
+                    <li>Setelah itu, kode berhenti otomatis dan kamu bisa lanjut ke gerakan berikutnya.</li>
+                </ul>
+
+                <p class="note">
+                    Kalau kamu ingin sprite berputar lebih lama, kamu bisa menjelaskan:
+                    <em>“Saya mengganti angka 10 menjadi 20 supaya animasi lebih panjang, tapi tetap berhenti.”</em>
+                </p>
+            </section>
+
+            <!-- SLIDE 9 -->
+            <section class="slide">
+                <h2>Bug 3: Sprite Muncul di Tempat Aneh</h2>
+                <p class="subtitle">
+                    Kadang sprite tiba-tiba muncul di pojok, di atas, atau posisi yang kamu tidak rencanakan.
+                </p>
+
+                <div class="two-cols">
+                    <div class="card">
+                        <span class="label">Gejala</span>
+                        <ul>
+                            <li>Setiap klik bendera hijau, posisi sprite selalu berbeda.</li>
+                            <li>Animasi tidak mulai dari “tempat awal” yang kamu mau.</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <span class="label">Kode Perbaikan</span>
+                        <div class="code-block">
+                            [ketika bendera hijau diklik]
+                            [pergi ke x: 0 y: -100]
+                            [arah menghadap 90]
+                        </div>
+                    </div>
+                </div>
+
+                <p class="note">
+                    Blok <strong>“pergi ke x: … y: …”</strong> digunakan untuk
+                    <strong>mereset posisi</strong> sprite setiap kali animasi dimulai.
+                </p>
+            </section>
+
+            <!-- SLIDE 10 -->
+            <section class="slide">
+                <h2>Mengapa Reset Posisi & Arah?</h2>
+                <p><strong>Tanpa reset:</strong></p>
+                <ul>
+                    <li>Posisi sprite mengikuti posisi terakhir dari animasi sebelumnya.</li>
+                    <li>Proyekmu terasa <strong>tidak konsisten</strong>.</li>
+                </ul>
+
+                <p><strong>Dengan reset di awal:</strong></p>
+                <ul>
+                    <li>Setiap klik bendera hijau, animasi <strong>selalu mulai dari titik yang sama</strong>.</li>
+                    <li>Cerita lebih mudah dipahami, seperti film yang selalu mulai dari scene awal.</li>
+                </ul>
+
+                <p class="present-tip">
+                    Contoh kalimat:
+                    <em>“Saya menambahkan <strong>pergi ke x, y</strong> di awal supaya penonton tahu dari mana animasi
+                        saya dimulai.”</em>
+                </p>
+            </section>
+
+            <!-- SLIDE 11 – VERSI POPUP -->
+            <section class="slide">
+                <h2>Langkah-Langkah Debugging Animasi</h2>
+                <p class="subtitle">
+                    Bayangkan kamu mengikuti jalur ini dari kiri ke kanan. Klik salah satu <strong>LANGKAH</strong>
+                    untuk membuka penjelasan lengkapnya.
+                </p>
+
+                <!-- Alur dengan titik bergerak -->
+                <div class="debug-flow">
+                    <div class="debug-flow-title">Alur Debugging</div>
+                    <div class="debug-line">
+                        <div class="debug-dot"></div>
+                    </div>
+                    <div class="debug-nodes">
+                        <div class="debug-node">
+                            <div class="debug-node-circle">1</div>
+                            <label>Lihat</label>
+                        </div>
+                        <div class="debug-node">
+                            <div class="debug-node-circle">2</div>
+                            <label>Pilih Sprite</label>
+                        </div>
+                        <div class="debug-node">
+                            <div class="debug-node-circle">3</div>
+                            <label>Baca Script</label>
+                        </div>
+                        <div class="debug-node">
+                            <div class="debug-node-circle">4</div>
+                            <label>Tebak Blok</label>
+                        </div>
+                        <div class="debug-node">
+                            <div class="debug-node-circle">5</div>
+                            <label>Ubah Kecil</label>
+                        </div>
+                        <div class="debug-node">
+                            <div class="debug-node-circle">6</div>
+                            <label>Uji Lagi</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tombol langkah yang bisa diklik -->
+                <p style="font-size:13px; margin-bottom:4px;">
+                    Klik salah satu tombol di bawah untuk membaca penjelasan:
+                </p>
+                <div class="step-buttons">
+                    <button class="step-btn step-trigger" data-step="1">
+                        <span>LANGKAH 1</span>
+                        <small>Lihat apa yang aneh</small> 👀
+                    </button>
+
+                    <button class="step-btn step-trigger" data-step="2">
+                        <span>LANGKAH 2</span>
+                        <small>Pilih 1 sprite</small> 🐱
+                    </button>
+
+                    <button class="step-btn step-trigger" data-step="3">
+                        <span>LANGKAH 3</span>
+                        <small>Baca script</small> 📜
+                    </button>
+
+                    <button class="step-btn step-trigger" data-step="4">
+                        <span>LANGKAH 4</span>
+                        <small>Tebak 1 blok</small> 💡
+                    </button>
+
+                    <button class="step-btn step-trigger" data-step="5">
+                        <span>LANGKAH 5</span>
+                        <small>Ubah kecil saja</small> 🧱
+                    </button>
+
+                    <button class="step-btn step-trigger" data-step="6">
+                        <span>LANGKAH 6</span>
+                        <small>Uji lagi</small> ✅
+                    </button>
+                </div>
+
+                <p class="note">
+                    Kamu tidak perlu menghafal semua sekaligus. Cukup ingat bahwa debugging itu proses: <strong>lihat →
+                        pilih → baca → tebak → ubah kecil → uji lagi</strong>.
+                </p>
+
+                <p class="present-tip">
+                    Saat presentasi, kamu bisa bilang:
+                    <em>“Dalam proyek saya, saya mengikuti 6 langkah debugging ini. Waktu ada bug, saya ulangi lagi dari
+                        langkah 3 sampai animasi saya halus.”</em>
+                </p>
+
+                <!-- POPUP MODAL -->
+                <div class="debug-modal-backdrop" id="debugModal">
+                    <div class="debug-modal">
+                        <div class="debug-modal-header">
+                            <div class="debug-modal-title">
+                                <span id="modalEmoji">👀</span>
+                                <span id="modalTitle">Langkah 1 – Lihat Apa yang Aneh</span>
+                                <span class="debug-modal-badge">Debugging Step</span>
+                            </div>
+                            <button class="debug-modal-close" id="modalCloseBtn" aria-label="Tutup">
+                                ×
+                            </button>
+                        </div>
+                        <div class="debug-modal-body" id="modalBody">
+                            <!-- isi akan diisi lewat JS -->
+                        </div>
+                        <div class="debug-modal-footer" id="modalFooter">
+                            <!-- contoh kalimat akan diisi lewat JS -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- SLIDE 12 -->
+            <section class="slide">
+                <h2>Menuju Proyek Animasi Inovasi</h2>
+                <p class="subtitle">
+                    Setelah sesi debugging ini, kamu siap membuat animasi sendiri dan menjelaskannya dengan percaya
+                    diri.
+                </p>
+                <ul>
+                    <li>Gunakan teknik debugging ini saat ada bagian animasi yang tidak sesuai rencana.</li>
+                    <li>Simpan catatan bug dan cara kamu memperbaikinya.</li>
+                    <li>Latih menjelaskan <strong>“kode penting”</strong> yang kamu gunakan.</li>
+                </ul>
+
+                <p class="note">
+                    Contoh penutup presentasi:
+                    <br />
+                    <em>“Dalam proyek ini, saya menemukan beberapa bug. Dengan debugging, saya memperbaiki arah gerak,
+                        posisi awal, dan loop,
+                        sehingga animasi saya bisa berjalan dengan mulus.”</em>
+                </p>
+                <p class="present-tip">
+                    Ingat: proyek inovasi yang keren bukan hanya hasil akhirnya,
+                    tetapi juga <strong>cerita proses berpikirmu</strong> sebagai programmer muda. 💡
+                </p>
+            </section>
+
+            <!-- SLIDE 13 – Debugging Tracker -->
+            <section class="slide">
+                <h2>Debugging Progress Tracker</h2>
+                <p class="subtitle">
+                    Centang langkah-langkah debugging yang sudah kamu lakukan hari ini.
+                    Ini membantu kamu melihat progresmu sebagai <strong>Programmer Muda</strong>! ✨
+                </p>
+
+                <div class="tracker-card">
+                    <label class="tracker-item">
+                        <input type="checkbox" class="tracker-check" data-key="step1">
+                        <span>1. Aku sudah menjalankan animasi dan melihat apa yang aneh 👀</span>
+                    </label>
+
+                    <label class="tracker-item">
+                        <input type="checkbox" class="tracker-check" data-key="step2">
+                        <span>2. Aku memilih 1 sprite yang bermasalah 🐱</span>
+                    </label>
+
+                    <label class="tracker-item">
+                        <input type="checkbox" class="tracker-check" data-key="step3">
+                        <span>3. Aku membaca script dari atas ke bawah 📜</span>
+                    </label>
+
+                    <label class="tracker-item">
+                        <input type="checkbox" class="tracker-check" data-key="step4">
+                        <span>4. Aku menebak 1 blok yang mungkin salah 💡</span>
+                    </label>
+
+                    <label class="tracker-item">
+                        <input type="checkbox" class="tracker-check" data-key="step5">
+                        <span>5. Aku mencoba perubahan kecil saja 🧱</span>
+                    </label>
+
+                    <label class="tracker-item">
+                        <input type="checkbox" class="tracker-check" data-key="step6">
+                        <span>6. Aku menguji ulang animasi dan membandingkan hasilnya ✅</span>
+                    </label>
+                </div>
+
+                <p class="present-tip">
+                    Checklist ini bisa ditunjukkan saat presentasi proyekmu.
+                    <em>“Saya sudah mengikuti semua langkah debugging sebelum membuat animasi akhir.”</em>
+                </p>
+            </section>
+
+        </div>
+
+        <footer>
+            <div class="controls">
+                <button class="nav-btn" id="prevBtn">
+                    ⮜ Sebelumnya
+                </button>
+                <button class="nav-btn" id="nextBtn">
+                    Berikutnya ⮞
+                </button>
+            </div>
+            <div class="controls">
+                <div class="slide-indicator" id="slideIndicator">Slide 1 / 13</div>
+                <div class="dots" id="dots"></div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        /* ===== ACCESS CODE LOGIC ===== */
+
+        const ACCESS_CODE = "RGMDSUP25";
+        const gate = document.getElementById("accessGate");
+        const accessInput = document.getElementById("accessInput");
+        const accessBtn = document.getElementById("accessBtn");
+        const accessErr = document.getElementById("accessError");
+
+        function tryUnlock() {
+            const code = accessInput.value.trim().toUpperCase();
+
+            if (code === ACCESS_CODE) {
+                gate.style.display = "none";
+                localStorage.setItem("debug_access_granted", "yes");
+            } else {
+                accessErr.textContent = "Kode salah, coba lagi ya!";
+            }
+        }
+
+        accessBtn.addEventListener("click", tryUnlock);
+
+        // Enter key support
+        accessInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") tryUnlock();
+        });
+
+        // Auto-unlock if stored
+        if (localStorage.getItem("debug_access_granted") === "yes") {
+            gate.style.display = "none";
+        }
+
+        const slides = Array.from(document.querySelectorAll('.slide'));
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const slideIndicator = document.getElementById('slideIndicator');
+        const dotsContainer = document.getElementById('dots');
+
+        let current = 0;
+        const total = slides.length;
+
+        // Create dots
+        slides.forEach((_, i) => {
+            const d = document.createElement('div');
+            d.className = 'dot' + (i === 0 ? ' active' : '');
+            d.dataset.index = i;
+            d.addEventListener('click', () => goToSlide(i));
+            dotsContainer.appendChild(d);
+        });
+
+        /* ====== LOGIKA POPUP LANGKAH DEBUGGING (SLIDE 11) ====== */
+
+        const stepData = {
+            1: {
+                emoji: "👀",
+                title: "Langkah 1 – Lihat Apa yang Aneh",
+                body: `
+          <p>Jalankan animasi tanpa menyentuh kode dulu. Perhatikan:</p>
+          <ul>
+            <li>Apakah sprite tidak bergerak?</li>
+            <li>Apakah bergerak terlalu cepat atau terlalu lambat?</li>
+            <li>Apakah berputar terus?</li>
+            <li>Apakah muncul di posisi yang aneh?</li>
+          </ul>
+          <p>Tujuannya adalah <strong>menemukan gejala bug</strong>, bukan langsung mencari solusinya.</p>
+        `,
+                footer: `Tanya dirimu: <strong>“Bagian mana yang terasa tidak sesuai rencana?”</strong>`
+            },
+            2: {
+                emoji: "🐱",
+                title: "Langkah 2 – Pilih 1 Sprite Bermasalah",
+                body: `
+          <p>Jangan memperbaiki semua hal sekaligus. Fokus dulu pada <strong>satu sprite</strong> yang paling bermasalah.</p>
+          <p>Contoh:</p>
+          <ul>
+            <li>Kucing tidak bergerak, tapi latar belakang sudah benar.</li>
+            <li>Bola memantul terlalu cepat, tapi musiknya sudah oke.</li>
+          </ul>
+          <p>Dengan memilih satu sprite, kamu bisa debugging dengan lebih tenang dan terarah.</p>
+        `,
+                footer: `Tanya dirimu: <strong>“Sprite mana yang paling mengganggu animasi?”</strong>`
+            },
+            3: {
+                emoji: "📜",
+                title: "Langkah 3 – Baca Script dari Atas ke Bawah",
+                body: `
+          <p>Buka script sprite yang kamu pilih. Lihat blok dari event di paling atas sampai ke bawah.</p>
+          <p>Bayangkan: jika blok-blok ini dijalankan, <strong>apa yang terjadi duluan, lalu apa, dan seterusnya</strong>?</p>
+          <p>Periksa:</p>
+          <ul>
+            <li>Event awalnya apa? (bendera hijau, klik sprite, tombol panah?)</li>
+            <li>Ada blok untuk mengatur arah dan posisi di awal?</li>
+            <li>Ada loop “selamanya” yang mungkin membuat animasi tidak berhenti?</li>
+          </ul>
+        `,
+                footer: `Tanya dirimu: <strong>“Urutan bloknya sudah masuk akal belum?”</strong>`
+            },
+            4: {
+                emoji: "💡",
+                title: "Langkah 4 – Tebak 1 Blok yang Mungkin Salah",
+                body: `
+          <p>Sekarang, pilih <strong>satu blok</strong> yang menurutmu paling mencurigakan.</p>
+          <p>Contoh:</p>
+          <ul>
+            <li>Event-nya “ketika bendera hijau diklik”, padahal kamu ingin pakai tombol panah.</li>
+            <li>Loop-nya “selamanya” padahal seharusnya cuma beberapa kali.</li>
+            <li>Tidak ada blok “pergi ke x, y” di awal.</li>
+          </ul>
+          <p>Kamu tidak harus langsung benar. Yang penting, kamu <strong>punya dugaan</strong> dan berani mencoba.</p>
+        `,
+                footer: `Tanya dirimu: <strong>“Kalau aku ubah blok ini, bagian mana dari animasi yang mungkin berubah?”</strong>`
+            },
+            5: {
+                emoji: "🧱",
+                title: "Langkah 5 – Ubah Hal Kecil Saja",
+                body: `
+          <p>Lakukan perubahan kecil pada blok yang kamu curigai.</p>
+          <p>Contoh perubahan kecil:</p>
+          <ul>
+            <li>Mengganti “selamanya” menjadi “ulangi 10 kali”.</li>
+            <li>Menambah “arah menghadap 90” di awal script.</li>
+            <li>Menambah “pergi ke x: 0 y: -100” sebelum sprite bergerak.</li>
+          </ul>
+          <p>Perubahan kecil memudahkanmu melihat <strong>apakah perubahan itu benar-benar membantu</strong> atau tidak.</p>
+        `,
+                footer: `Tanya dirimu: <strong>“Perubahan kecil apa yang paling aman dicoba lebih dulu?”</strong>`
+            },
+            6: {
+                emoji: "✅",
+                title: "Langkah 6 – Uji Lagi & Bandingkan",
+                body: `
+          <p>Jalankan animasi lagi setelah mengubah kode.</p>
+          <p>Bandingkan:</p>
+          <ul>
+            <li>Apakah bug-nya membaik, hilang, atau tambah parah?</li>
+            <li>Jika masih aneh, kamu bisa kembali ke Langkah 3–5 dan mencoba ide lain.</li>
+          </ul>
+          <p>Inilah bagian penting dari pekerjaan programmer: <strong>mencoba, melihat hasil, lalu memperbaiki lagi</strong>.</p>
+        `,
+                footer: `Tanya dirimu: <strong>“Sekarang lebih baik, sama saja, atau malah lebih aneh?”</strong>`
+            }
+        };
+
+        const modalBackdrop = document.getElementById('debugModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBody = document.getElementById('modalBody');
+        const modalFooter = document.getElementById('modalFooter');
+        const modalEmoji = document.getElementById('modalEmoji');
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+
+        const stepTriggers = document.querySelectorAll('.step-trigger');
+
+        function openModal(step) {
+            const data = stepData[step];
+            if (!data) return;
+            modalTitle.textContent = data.title;
+            modalBody.innerHTML = data.body;
+            modalFooter.innerHTML = data.footer;
+            modalEmoji.textContent = data.emoji;
+            modalBackdrop.classList.add('open');
+        }
+
+        function closeModal() {
+            modalBackdrop.classList.remove('open');
+        }
+
+        stepTriggers.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const step = btn.getAttribute('data-step');
+                openModal(step);
+            });
+        });
+
+        modalCloseBtn.addEventListener('click', closeModal);
+        modalBackdrop.addEventListener('click', (e) => {
+            if (e.target === modalBackdrop) closeModal();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        /* ====== DEBUGGING CHECKLIST TRACKER ====== */
+
+        // Load saved checklist on page load
+        const trackerChecks = document.querySelectorAll(".tracker-check");
+
+        trackerChecks.forEach((checkbox) => {
+            const key = checkbox.dataset.key;
+
+            // restore state from localStorage
+            if (localStorage.getItem(key) === "true") {
+                checkbox.checked = true;
+            }
+
+            // save state on change
+            checkbox.addEventListener("change", () => {
+                localStorage.setItem(key, checkbox.checked);
+            });
+        });
+
+
+        function updateUI() {
+            // tutup popup kalau sedang terbuka saat pindah slide
+            if (typeof closeModal === "function") {
+                closeModal();
+            }
+
+            slides.forEach((s, i) => {
+                s.classList.toggle('active', i === current);
+            });
+
+            const dots = dotsContainer.querySelectorAll('.dot');
+            dots.forEach((d, i) => {
+                d.classList.toggle('active', i === current);
+            });
+
+            slideIndicator.textContent = `Slide ${current + 1} / ${total}`;
+            prevBtn.disabled = current === 0;
+            nextBtn.disabled = current === total - 1;
+        }
+
+        function goToSlide(index) {
+            if (index < 0 || index >= total) return;
+            current = index;
+            updateUI();
+        }
+
+        prevBtn.addEventListener('click', () => goToSlide(current - 1));
+        nextBtn.addEventListener('click', () => goToSlide(current + 1));
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+                goToSlide(current + 1);
+            } else if (e.key === 'ArrowLeft') {
+                goToSlide(current - 1);
+            }
+        });
+
+        updateUI();
+    </script>
+</body>
+
+</html>
