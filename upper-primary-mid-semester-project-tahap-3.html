@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Sesi 23 – Tahap 3: Pembuatan Kode Animasi di Scratch</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        :root {
+            /* Palette sunrise terang */
+            --bg: #fff7ed;
+            /* krem sunrise */
+            --bg-soft: #fffbeb;
+            /* kuning lembut */
+            --accent: #f59e0b;
+            /* amber */
+            --accent-soft: rgba(245, 158, 11, 0.1);
+            --accent-strong: #f97316;
+            /* orange sunrise */
+            --text-main: #111827;
+            /* abu gelap */
+            --text-soft: #4b5563;
+            /* abu sedang */
+            --card: #ffffff;
+            /* putih untuk kartu */
+            --danger: #ef4444;
+            --success: #16a34a;
+            --radius-xl: 24px;
+            --shadow-soft: 0 18px 45px rgba(248, 171, 74, 0.35);
+            --transition-fast: 0.2s ease-out;
+            --transition-med: 0.35s ease-out;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                sans-serif;
+            background:
+                radial-gradient(circle at top, #ffedd5 0, #fff7ed 45%, #fefce8 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .deck {
+            position: relative;
+            width: 100%;
+            max-width: 1120px;
+            background: linear-gradient(135deg, #fffdf5, #fffbeb 40%, #ffedd5 100%);
+            border-radius: 32px;
+            padding: 20px 20px 18px;
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+            border: 1px solid rgba(248, 187, 89, 0.5);
+        }
+
+        /* Floating shapes */
+        .floating-shape {
+            position: absolute;
+            border-radius: 999px;
+            filter: blur(28px);
+            opacity: 0.45;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .floating-shape.blue {
+            width: 260px;
+            height: 260px;
+            background: #facc15;
+            /* yellow */
+            top: -80px;
+            right: -60px;
+            animation: float1 14s infinite alternate ease-in-out;
+        }
+
+        .floating-shape.orange {
+            width: 200px;
+            height: 200px;
+            background: #fb923c;
+            /* orange */
+            bottom: -60px;
+            left: -40px;
+            animation: float2 18s infinite alternate ease-in-out;
+        }
+
+        @keyframes float1 {
+            0% {
+                transform: translate3d(0, 0, 0);
+            }
+
+            100% {
+                transform: translate3d(-40px, 35px, 0);
+            }
+        }
+
+        @keyframes float2 {
+            0% {
+                transform: translate3d(0, 0, 0);
+            }
+
+            100% {
+                transform: translate3d(50px, -25px, 0);
+            }
+        }
+
+        header.deck-header {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding: 4px 4px 10px;
+            border-bottom: 1px solid rgba(248, 187, 89, 0.8);
+            gap: 12px;
+        }
+
+        .title-block {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .title-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 252, 235, 0.95);
+            border-radius: 999px;
+            padding: 4px 10px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-soft);
+            border: 1px solid rgba(248, 187, 89, 0.8);
+        }
+
+        .title-pill-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 999px;
+            background: #22c55e;
+            box-shadow: 0 0 16px rgba(34, 197, 94, 0.9);
+        }
+
+        .main-title {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #1f2933;
+        }
+
+        .main-title span.badge {
+            font-size: 11px;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(234, 179, 8, 0.9);
+            color: #92400e;
+            background: rgba(254, 243, 199, 0.95);
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: var(--text-soft);
+        }
+
+        .meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+            font-size: 11px;
+            color: var(--text-soft);
+        }
+
+        .meta-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pill {
+            border-radius: 999px;
+            padding: 4px 8px;
+            background: rgba(255, 247, 237, 0.9);
+            border: 1px solid rgba(248, 187, 89, 0.8);
+        }
+
+        .progress-bar {
+            position: relative;
+            height: 4px;
+            border-radius: 999px;
+            background: rgba(254, 215, 170, 0.9);
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            position: absolute;
+            inset: 0;
+            width: 0%;
+            background: linear-gradient(90deg, #fbbf24, #f97316);
+            transition: width var(--transition-med);
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+            margin-top: 14px;
+            display: flex;
+            gap: 14px;
+            min-height: 420px;
+        }
+
+        .sidebar {
+            width: 230px;
+            background: radial-gradient(circle at top left, #fffbeb, #fefce8);
+            border-radius: var(--radius-xl);
+            padding: 14px 12px;
+            border: 1px solid rgba(248, 187, 89, 0.8);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sidebar-section-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-soft);
+        }
+
+        .slide-indicator {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--accent);
+            display: flex;
+            align-items: baseline;
+            gap: 3px;
+        }
+
+        .slide-indicator small {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-soft);
+        }
+
+        .sidebar-main {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .sidebar-text {
+            font-size: 12px;
+            color: var(--text-soft);
+            line-height: 1.5;
+        }
+
+        .sidebar-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 4px;
+        }
+
+        .sidebar-tag {
+            font-size: 10px;
+            padding: 3px 7px;
+            border-radius: 999px;
+            border: 1px solid rgba(248, 187, 89, 0.8);
+            color: var(--text-soft);
+            background: rgba(255, 251, 235, 0.9);
+        }
+
+        .sidebar-hint {
+            margin-top: auto;
+            font-size: 11px;
+            color: var(--text-soft);
+            border-top: 1px dashed rgba(248, 187, 89, 0.7);
+            padding-top: 6px;
+        }
+
+        .sidebar-hint span {
+            color: var(--accent-strong);
+            font-weight: 600;
+        }
+
+        .slides-wrapper {
+            flex: 1;
+            background: radial-gradient(circle at top, #fff7ed, #fffbeb 55%, #fefce8);
+            border-radius: var(--radius-xl);
+            border: 1px solid rgba(248, 187, 89, 0.7);
+            padding: 16px 18px 14px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            display: none;
+            opacity: 0;
+            transform: translateX(10px) translateY(4px);
+            transition: opacity var(--transition-med), transform var(--transition-med);
+            position: absolute;
+            inset: 16px 18px 52px 18px;
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            display: block;
+            opacity: 1;
+            transform: translateX(0) translateY(0);
+        }
+
+        .slide h2 {
+            font-size: 20px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #1f2933;
+        }
+
+        .slide h2 .emoji {
+            font-size: 22px;
+        }
+
+        .slide .subtitle-slide {
+            font-size: 13px;
+            color: var(--text-soft);
+            margin-bottom: 14px;
+        }
+
+        .pill-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .pill-chip {
+            font-size: 11px;
+            padding: 4px 9px;
+            border-radius: 999px;
+            background: rgba(255, 251, 235, 0.95);
+            border: 1px solid rgba(248, 187, 89, 0.8);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--text-soft);
+        }
+
+        .pill-chip span.dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: var(--accent);
+        }
+
+        .slide section {
+            margin-bottom: 14px;
+        }
+
+        .slide section h3 {
+            font-size: 15px;
+            margin-bottom: 4px;
+            color: #1f2937;
+        }
+
+        .slide p {
+            font-size: 13px;
+            color: var(--text-soft);
+            line-height: 1.6;
+        }
+
+        .list {
+            margin-top: 4px;
+            padding-left: 18px;
+            font-size: 13px;
+            color: var(--text-soft);
+        }
+
+        .list li {
+            margin-bottom: 4px;
+        }
+
+        .card {
+            border-radius: 16px;
+            border: 1px solid rgba(248, 187, 89, 0.8);
+            padding: 10px 12px;
+            background: var(--card);
+            margin-top: 4px;
+            box-shadow: 0 8px 18px rgba(248, 171, 74, 0.18);
+        }
+
+        .two-cols {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+            gap: 10px;
+        }
+
+        .mini-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .mini-table th,
+        .mini-table td {
+            border: 1px solid rgba(248, 187, 89, 0.8);
+            padding: 4px 6px;
+            text-align: left;
+        }
+
+        .mini-table th {
+            background: #fef3c7;
+            font-weight: 600;
+            color: #92400e;
+        }
+
+        .badge-soft {
+            display: inline-flex;
+            font-size: 11px;
+            padding: 3px 7px;
+            border-radius: 999px;
+            background: rgba(254, 243, 199, 0.95);
+            color: #92400e;
+            border: 1px solid rgba(248, 187, 89, 0.9);
+        }
+
+        .checklist {
+            list-style: none;
+            margin-top: 6px;
+        }
+
+        .checklist li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: var(--text-soft);
+        }
+
+        .checklist input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            border: 1px solid rgba(248, 187, 89, 0.9);
+            background: transparent;
+            accent-color: var(--accent);
+        }
+
+        .quiz-wrapper {
+            display: grid;
+            grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+            gap: 12px;
+        }
+
+        .quiz-question {
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px dashed rgba(248, 187, 89, 0.8);
+        }
+
+        .quiz-question:last-child {
+            border-bottom: none;
+        }
+
+        .quiz-question-title {
+            font-size: 13px;
+            margin-bottom: 6px;
+            color: #1f2937;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .quiz-option {
+            font-size: 12px;
+            padding: 5px 7px;
+            border-radius: 999px;
+            border: 1px solid rgba(248, 187, 89, 0.9);
+            cursor: pointer;
+            background: rgba(255, 251, 235, 0.95);
+            transition: background var(--transition-fast), border-color var(--transition-fast),
+                transform 0.08s ease-out;
+            color: var(--text-soft);
+        }
+
+        .quiz-option:hover {
+            transform: translateY(-1px);
+            border-color: rgba(234, 179, 8, 1);
+            background: #fef3c7;
+        }
+
+        .quiz-option.correct {
+            border-color: rgba(22, 163, 74, 0.95);
+            background: rgba(187, 247, 208, 0.9);
+            color: #166534;
+        }
+
+        .quiz-option.wrong {
+            border-color: rgba(239, 68, 68, 0.95);
+            background: rgba(254, 202, 202, 0.9);
+            color: #b91c1c;
+        }
+
+        .quiz-feedback {
+            font-size: 12px;
+            margin-top: 4px;
+            color: var(--text-soft);
+        }
+
+        .footer-nav {
+            position: absolute;
+            inset-inline: 18px;
+            bottom: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 2;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            border-radius: 999px;
+            border: 1px solid rgba(248, 187, 89, 0.9);
+            background: rgba(255, 251, 235, 0.98);
+            padding: 6px 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: background var(--transition-fast), transform 0.1s ease-out,
+                box-shadow 0.1s ease-out, border-color 0.1s ease-out;
+        }
+
+        .btn span.icon {
+            font-size: 14px;
+        }
+
+        .btn.primary {
+            border-color: rgba(234, 179, 8, 1);
+            background: linear-gradient(135deg, #fde68a, #fbbf24);
+            color: #78350f;
+            font-weight: 600;
+            box-shadow: 0 12px 22px rgba(248, 187, 89, 0.75);
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 24px rgba(248, 171, 74, 0.6);
+            background: #fffbeb;
+        }
+
+        .btn.primary:hover {
+            box-shadow: 0 16px 30px rgba(248, 187, 89, 0.9);
+        }
+
+        .slide-dots {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 10px;
+            color: var(--text-soft);
+        }
+
+        .slide-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 999px;
+            border: 1px solid rgba(248, 187, 89, 0.9);
+            cursor: pointer;
+            opacity: 0.6;
+            transition: background var(--transition-fast), opacity var(--transition-fast),
+                transform 0.1s ease-out, border-color var(--transition-fast);
+            background: rgba(255, 251, 235, 0.9);
+        }
+
+        .slide-dot.active {
+            background: var(--accent-strong);
+            border-color: var(--accent-strong);
+            opacity: 1;
+            transform: scale(1.2);
+        }
+
+        .slide-counter-text {
+            font-size: 11px;
+            color: var(--text-soft);
+        }
+
+        @media (max-width: 900px) {
+            .content {
+                flex-direction: column;
+                min-height: 0;
+            }
+
+            .sidebar {
+                width: 100%;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 6px 12px;
+                align-items: center;
+            }
+
+            .sidebar-main {
+                font-size: 13px;
+            }
+
+            .sidebar-hint {
+                margin-top: 0;
+                border-top: none;
+            }
+
+            .slides-wrapper {
+                min-height: 420px;
+            }
+
+            .slide {
+                inset: 12px 10px 60px 10px;
+            }
+
+            .quiz-wrapper {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="deck" data-total-slides="10">
+        <div class="floating-shape blue"></div>
+        <div class="floating-shape orange"></div>
+
+        <header class="deck-header">
+            <div class="title-block">
+                <div class="title-pill">
+                    <span class="title-pill-dot"></span>
+                    Sesi 23 • Upper Primary (4–6 SD)
+                </div>
+                <div class="main-title">
+                    Tahap 3: Kode Animasi
+                    <span class="badge">Scratch Project</span>
+                </div>
+                <p class="subtitle">
+                    Siswa mulai membuat <strong>cerita bergerak</strong> di Scratch menggunakan sprite, backdrop,
+                    dialog, dan kostum yang sudah disiapkan.
+                </p>
+            </div>
+            <div class="meta">
+                <div class="meta-row">
+                    <span>Mode</span>
+                    <span class="pill">Interactive Slides • HTML</span>
+                </div>
+                <div class="meta-row">
+                    <span>Durasi</span>
+                    <span class="pill">± 60–90 menit</span>
+                </div>
+                <div class="meta-row" style="width: 180px;">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="content">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div>
+                    <div class="sidebar-section-title">Slide Saat Ini</div>
+                    <div class="slide-indicator">
+                        <span id="sidebarSlideNumber">1</span><small>/ 10</small>
+                    </div>
+                </div>
+                <div class="sidebar-main" id="sidebarMain">
+                    Pengantar Tahap 3
+                </div>
+                <p class="sidebar-text" id="sidebarText">
+                    Menghubungkan Tahap 2 (aset animasi) dengan Tahap 3 (pembuatan kode animasi di Scratch).
+                </p>
+                <div class="sidebar-tags">
+                    <span class="sidebar-tag">Tahap 3</span>
+                    <span class="sidebar-tag">Kode Animasi</span>
+                    <span class="sidebar-tag">Scratch</span>
+                </div>
+                <p class="sidebar-hint">
+                    Arahkan dengan <span>←</span> dan <span>→</span> di keyboard, atau gunakan tombol <span>Next</span>
+                    &amp; <span>Prev</span>.
+                </p>
+            </aside>
+
+            <!-- Slides -->
+            <main class="slides-wrapper">
+                <!-- Slide 1: Pengantar Tahap 3 -->
+                <article class="slide active" data-side-main="Pengantar Tahap 3"
+                    data-side-text="Mengingat Tahap 2 dan memahami tujuan Tahap 3.">
+                    <h2><span class="emoji">🎬</span> Selamat Datang di Tahap 3: Pembuatan Kode Animasi</h2>
+                    <p class="subtitle-slide">
+                        Di Tahap 3, kamu mulai membuat <strong>cerita bergerak</strong> di Scratch dengan menggunakan
+                        semua aset yang sudah kamu siapkan.
+                    </p>
+
+                    <section class="two-cols">
+                        <div>
+                            <h3>Mengingat Tahap 2</h3>
+                            <ul class="list">
+                                <li>Kamu sudah menyiapkan <strong>sprite</strong> dan <strong>backdrop</strong> yang
+                                    dibutuhkan.</li>
+                                <li>Kamu sudah merencanakan <strong>kostum</strong> dan <strong>dialog penting</strong>
+                                    tiap scene.</li>
+                                <li>Kamu sudah menentukan <strong>posisi awal sprite</strong> dan elemen visual
+                                    pendukung.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>Fokus Tahap 3</h3>
+                            <div class="card">
+                                <ul class="list">
+                                    <li>Membuat animasi sesuai storyboard.</li>
+                                    <li>Mengatur perpindahan antar scene (event/broadcast).</li>
+                                    <li>Menambahkan dialog, gerakan, dan efek kecil.</li>
+                                    <li>Menguji animasi dan melakukan perbaikan (debugging).</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section>
+                        <p class="badge-soft">
+                            Ingat: Tahap 3 adalah saat di mana <strong>ceritamu benar-benar hidup</strong> di Scratch.
+                        </p>
+                    </section>
+                </article>
+
+                <!-- Slide 2: 4 Tahap Proyek -->
+                <article class="slide" data-side-main="4 Tahap Proyek Animasi"
+                    data-side-text="Menempatkan Tahap 3 di dalam keseluruhan perjalanan proyek animasi.">
+                    <h2><span class="emoji">🧭</span> Empat Tahap Proyek Animasi</h2>
+                    <p class="subtitle-slide">
+                        Proyek animasimu terdiri dari <strong>4 tahap utama</strong>. Sekarang kamu berada di
+                        <strong>Tahap 3</strong>.
+                    </p>
+
+                    <section class="card">
+                        <table class="mini-table">
+                            <thead>
+                                <tr>
+                                    <th>Tahap</th>
+                                    <th>Nama Tahap</th>
+                                    <th>Fokus Utama</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Perencanaan Cerita & Storyboard</td>
+                                    <td>Menentukan tema, deskripsi singkat, pesan keuangan, dan alur 4–5 scene.</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Pengumpulan & Penataan Aset Animasi</td>
+                                    <td>Menyiapkan sprite, backdrop, kostum, dialog, dan posisi awal.</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>Pembuatan Kode Animasi di Scratch</td>
+                                    <td>Menghidupkan cerita dengan blok kode, animasi, dan perpindahan scene.</td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>Finalisasi & Presentasi Proyek</td>
+                                    <td>Merapikan animasi dan mempresentasikannya kepada teman-teman.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <section>
+                        <p style="font-size:13px;color:var(--text-soft);margin-top:6px;">
+                            Worksheet yang kamu gunakan hari ini adalah <strong>“Tahap 3: Pembuatan Kode Animasi di
+                                Scratch”</strong>.
+                        </p>
+                    </section>
+                </article>
+
+                <!-- Slide 3: Daftar Blok Kode Penting -->
+                <article class="slide" data-side-main="Blok Kode Penting"
+                    data-side-text="Mengenali dan mencatat blok-blok Scratch yang digunakan dalam animasi.">
+                    <h2><span class="emoji">🧱</span> Daftar Blok Kode Penting</h2>
+                    <p class="subtitle-slide">
+                        Di worksheet Tahap 3, kamu diminta menuliskan <strong>blok-blok Scratch</strong> yang kamu
+                        gunakan dan menjelaskan fungsinya.
+                    </p>
+
+                    <section class="two-cols">
+                        <div>
+                            <h3>Cara Mengisi Bagian “Daftar Blok Kode Penting”</h3>
+                            <ul class="list">
+                                <li>Lihat blok yang kamu pakai di Scratch (misalnya di sprite utama).</li>
+                                <li>Tuliskan nama blok di kolom <strong>“Blok Kode yang Digunakan”</strong>.</li>
+                                <li>Di kolom <strong>“Fungsinya”</strong>, jelaskan secara singkat apa yang dilakukan
+                                    blok tersebut.</li>
+                            </ul>
+                            <p style="font-size:12px;color:var(--text-soft);margin-top:4px;">
+                                Contoh: <em>when green flag clicked → Memulai animasi saat bendera hijau ditekan.</em>
+                            </p>
+                        </div>
+                        <div>
+                            <h3>Contoh Isi Tabel</h3>
+                            <div class="card">
+                                <table class="mini-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Blok Kode</th>
+                                            <th>Fungsi Singkat</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>when green flag clicked</td>
+                                            <td>Memulai animasi</td>
+                                        </tr>
+                                        <tr>
+                                            <td>switch backdrop to [kantin]</td>
+                                            <td>Mengganti latar menjadi kantin</td>
+                                        </tr>
+                                        <tr>
+                                            <td>say “Hari ini aku dapat uang jajan.”</td>
+                                            <td>Menampilkan dialog tokoh utama</td>
+                                        </tr>
+                                        <tr>
+                                            <td>broadcast [Scene 2]</td>
+                                            <td>Memberi tahu sprite bahwa cerita pindah ke Scene 2</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <p style="font-size:12px;color:var(--text-soft);margin-top:4px;">
+                                    Siswa tetap wajib menulis blok yang benar-benar mereka gunakan sendiri.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+                </article>
+
+                <!-- Slide 4: Penjelasan Alur Cerita & Animasi -->
+                <article class="slide" data-side-main="Alur Cerita & Animasi"
+                    data-side-text="Menuliskan bagaimana cerita berjalan dari awal sampai akhir.">
+                    <h2><span class="emoji">📖</span> Menjelaskan Alur Cerita dan Animasi</h2>
+                    <p class="subtitle-slide">
+                        Di worksheet, kamu diminta menjelaskan <strong>alur animasi</strong> dengan kalimat sederhana.
+                    </p>
+
+                    <section class="two-cols">
+                        <div>
+                            <h3>Panduan Pengisian</h3>
+                            <p>
+                                Gunakan kalimat bantu yang sudah disiapkan di worksheet, misalnya:
+                            </p>
+                            <ul class="list">
+                                <li><em>“Ketika bendera hijau diklik, …”</em></li>
+                                <li><em>“Scene 1: …”</em></li>
+                                <li><em>“Saat berpindah ke Scene 2, sprite akan …”</em></li>
+                                <li><em>“Jika tokoh sedang bingung, maka …”</em></li>
+                                <li><em>“Scene 4–5: …”</em></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>Contoh Alur Singkat</h3>
+                            <div class="card">
+                                <p style="font-size:13px;">
+                                    <strong>Contoh (boleh dimodifikasi siswa):</strong>
+                                </p>
+                                <ul class="list">
+                                    <li>Ketika bendera hijau diklik, Rara muncul di kamar dan memperkenalkan uang
+                                        jajannya.</li>
+                                    <li>Scene 1: Orang tua memberi uang jajan kepada Rara.</li>
+                                    <li>Saat berpindah ke Scene 2, backdrop berubah ke kantin sekolah dan Rara melihat
+                                        banyak jajanan.</li>
+                                    <li>Jika Rara bingung memilih, dia berpikir dan melihat papan harga.</li>
+                                    <li>Scene 4–5: Rara memutuskan membeli secukupnya dan menabung sisa uang jajannya.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+                </article>
+
+                <!-- Slide 5: Mengatur Perpindahan Scene -->
+                <article class="slide" data-side-main="Perpindahan Scene"
+                    data-side-text="Menggunakan event/broadcast untuk mengatur alur dari Scene 1–5.">
+                    <h2><span class="emoji">🔀</span> Mengatur Perpindahan Scene</h2>
+                    <p class="subtitle-slide">
+                        Animasi yang rapi biasanya menggunakan <strong>event</strong> atau <strong>broadcast</strong>
+                        untuk pindah scene.
+                    </p>
+
+                    <section class="two-cols">
+                        <div>
+                            <h3>Ide Penggunaan Broadcast</h3>
+                            <ul class="list">
+                                <li>Setelah dialog Scene 1 selesai, kirim <em>broadcast [Scene 2]</em>.</li>
+                                <li>Di sprite lain, gunakan <em>when I receive [Scene 2]</em> untuk mengatur
+                                    gerakan/kemunculan.</li>
+                                <li>Ulangi pola ini untuk Scene 3, 4, dan 5.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>Contoh Rangkaian Sederhana</h3>
+                            <div class="card">
+                                <ul class="list">
+                                    <li><strong>Scene 1:</strong> when green flag clicked → tampilkan Rara → dialog →
+                                        broadcast [Scene 2]</li>
+                                    <li><strong>Scene 2:</strong> when I receive [Scene 2] → ganti backdrop ke kantin →
+                                        tampilkan penjual</li>
+                                    <li><strong>Scene 3–4:</strong> broadcast lagi untuk melanjutkan cerita sampai
+                                        solusi.</li>
+                                </ul>
+                                <p style="font-size:12px;color:var(--text-soft);margin-top:4px;">
+                                    Bagian ini bisa dijelaskan guru sambil live demo di Scratch.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+                </article>
+
+                <!-- Slide 6: Screenshot Kode Animasi -->
+                <article class="slide" data-side-main="Screenshot Kode"
+                    data-side-text="Mengambil gambar blok kode yang sudah dibuat sebagai bukti kerja.">
+                    <h2><span class="emoji">📸</span> Screenshot Kode Animasi</h2>
+                    <p class="subtitle-slide">
+                        Di worksheet, kamu diminta menempelkan <strong>minimal 3 screenshot</strong> blok kode
+                        animasimu.
+                    </p>
+
+                    <section class="two-cols">
+                        <div>
+                            <h3>Screenshot Apa Saja?</h3>
+                            <ul class="list">
+                                <li>Satu screenshot untuk <strong>Scene 1</strong> (awal cerita).</li>
+                                <li>Satu screenshot untuk <strong>perpindahan scene</strong> (broadcast/event).</li>
+                                <li>Satu screenshot untuk <strong>scene lain</strong> yang menurutmu penting.</li>
+                            </ul>
+                            <p style="font-size:12px;color:var(--text-soft);margin-top:4px;">
+                                Pastikan blok-blok kodenya terlihat jelas dan tidak terpotong.
+                            </p>
+                        </div>
+                        <div>
+                            <h3>Tips Praktis</h3>
+                            <div class="card">
+                                <ul class="list">
+                                    <li>Rapikan posisi blok sebelum screenshot.</li>
+                                    <li>Perbesar tampilan jika perlu agar tulisan terbaca.</li>
+                                    <li>Simbol warna setiap kategori blok (Motion, Looks, Events, dsb.) dapat membantu
+                                        guru membaca dengan cepat.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+                </article>
+
+                <!-- Slide 7: Debugging Report -->
+                <article class="slide" data-side-main="Debugging Report"
+                    data-side-text="Mendokumentasikan error, penyebab, dan perbaikan yang dilakukan.">
+                    <h2><span class="emoji">🛠️</span> Debugging Report – Laporan Perbaikan Error</h2>
+                    <p class="subtitle-slide">
+                        Bagian <strong>Debugging Report</strong> di worksheet membantu kamu belajar dari kesalahan yang
+                        terjadi saat membuat animasi.
+                    </p>
+
+                    <section class="two-cols">
+                        <div>
+                            <h3>Cara Mengisi Debugging Report</h3>
+                            <ul class="list">
+                                <li>Di kolom <strong>“Masalah/Error”</strong>, tuliskan apa yang tidak berjalan
+                                    (misalnya: sprite tidak muncul).</li>
+                                <li>Di kolom <strong>“Penyebab”</strong>, tuliskan dugaan penyebabnya.</li>
+                                <li>Di kolom <strong>“Perbaikan”</strong>, jelaskan apa yang kamu lakukan untuk
+                                    memperbaiki.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>Contoh Isi Tabel</h3>
+                            <div class="card">
+                                <table class="mini-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Masalah/Error</th>
+                                            <th>Penyebab</th>
+                                            <th>Perbaikan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Sprite tidak muncul di Scene 2</td>
+                                            <td>Lupa menambah blok <em>show</em></td>
+                                            <td>Menambahkan blok <em>show</em> saat berpindah ke Scene 2</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Dialog terlalu cepat hilang</td>
+                                            <td>Waktu <em>say for</em> terlalu pendek</td>
+                                            <td>Mengganti durasi menjadi 3 detik</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <p style="font-size:12px;color:var(--text-soft);margin-top:4px;">
+                                    Siswa diharapkan menulis error nyata yang mereka alami, bukan hanya menyalin contoh.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+                </article>
+
+                <!-- Slide 8: Checklist Tahap 3 -->
+                <article class="slide" data-side-main="Checklist Tahap 3"
+                    data-side-text="Mengecek apakah semua tugas Tahap 3 sudah diselesaikan.">
+                    <h2><span class="emoji">✅</span> Checklist Kesiapan Tahap 3</h2>
+                    <p class="subtitle-slide">
+                        Gunakan checklist ini untuk memastikan pekerjaan Tahap 3 sudah lengkap sebelum lanjut ke Tahap
+                        4.
+                    </p>
+
+                    <section class="card">
+                        <h3>Sudahkah Kamu…?</h3>
+                        <ul class="checklist">
+                            <li><input type="checkbox" /> Scene 1–2 sudah berjalan.</li>
+                            <li><input type="checkbox" /> Blok event untuk berpindah scene berfungsi.</li>
+                            <li><input type="checkbox" /> Sprite muncul/hilang sesuai storyboard.</li>
+                            <li><input type="checkbox" /> Dialog muncul sesuai rencana.</li>
+                            <li><input type="checkbox" /> Gerakan sprite tidak bertabrakan.</li>
+                            <li><input type="checkbox" /> Sudah melakukan testing seluruh scene.</li>
+                            <li><input type="checkbox" /> Sudah memperbaiki error (debugging).</li>
+                            <li><input type="checkbox" /> Screenshot kode sudah ditempel di worksheet.</li>
+                            <li><input type="checkbox" /> Worksheet Tahap 3 siap dikumpulkan.</li>
+                        </ul>
+                    </section>
+                </article>
+
+                <!-- Slide 9: Refleksi Singkat -->
+                <article class="slide" data-side-main="Refleksi Tahap 3"
+                    data-side-text="Mengajak siswa merenungkan kesulitan, pembelajaran baru, dan manfaat storyboard.">
+                    <h2><span class="emoji">📝</span> Refleksi Singkat Tahap 3</h2>
+                    <p class="subtitle-slide">
+                        Di bagian akhir worksheet, kamu diminta menjawab beberapa pertanyaan refleksi.
+                    </p>
+
+                    <section class="two-cols">
+                        <div>
+                            <h3>Pertanyaan Refleksi</h3>
+                            <ul class="list">
+                                <li>Bagian mana yang paling sulit saat membuat animasi?</li>
+                                <li>Apa hal baru yang kamu pelajari hari ini?</li>
+                                <li>Apakah storyboard membantumu saat coding scene?</li>
+                            </ul>
+                            <p style="font-size:12px;color:var(--text-soft);margin-top:4px;">
+                                Jawablah dengan jujur, tidak perlu terlalu panjang. Yang penting <strong>sesuai
+                                    pengalamanmu sendiri</strong>.
+                            </p>
+                        </div>
+                        <div>
+                            <h3>Manfaat untuk Siswa</h3>
+                            <div class="card">
+                                <ul class="list">
+                                    <li>Belajar mengenali bagian yang sudah baik dan yang perlu diperbaiki.</li>
+                                    <li>Menyadari bahwa error adalah bagian normal dari belajar coding.</li>
+                                    <li>Menghubungkan antara <strong>rencana (storyboard)</strong> dan <strong>hasil
+                                            (animasi)</strong>.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+                </article>
+
+                <!-- Slide 10: Mini Quiz Tahap 3 -->
+                <article class="slide" data-side-main="Mini Quiz Tahap 3"
+                    data-side-text="Kuis singkat untuk mengecek pemahaman tentang kode animasi, event, dan debugging.">
+                    <h2><span class="emoji">❓</span> Mini Quiz – Pembuatan Kode Animasi</h2>
+                    <p class="subtitle-slide">
+                        Klik salah satu jawaban. Warna hijau berarti benar, warna merah berarti kurang tepat.
+                    </p>
+
+                    <section class="quiz-wrapper">
+                        <div>
+                            <div class="quiz-question">
+                                <div class="quiz-question-title">
+                                    1. Tujuan utama Tahap 3 dalam proyek animasi adalah…
+                                </div>
+                                <div class="quiz-options">
+                                    <div class="quiz-option" data-correct="true">
+                                        Membuat animasi cerita di Scratch menggunakan kode sesuai storyboard
+                                    </div>
+                                    <div class="quiz-option" data-correct="false">
+                                        Hanya memilih warna backdrop tanpa membuat kode
+                                    </div>
+                                    <div class="quiz-option" data-correct="false">
+                                        Menghapus semua sprite dari proyek
+                                    </div>
+                                    <div class="quiz-option" data-correct="false">
+                                        Menggambar ulang semua aset dari awal
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="quiz-question">
+                                <div class="quiz-question-title">
+                                    2. Fungsi blok <em>“when green flag clicked”</em> adalah…
+                                </div>
+                                <div class="quiz-options">
+                                    <div class="quiz-option" data-correct="true">
+                                        Memulai kode saat bendera hijau ditekan
+                                    </div>
+                                    <div class="quiz-option" data-correct="false">
+                                        Menghapus semua kode di sprite
+                                    </div>
+                                    <div class="quiz-option" data-correct="false">
+                                        Mengganti warna komputer menjadi hijau
+                                    </div>
+                                    <div class="quiz-option" data-correct="false">
+                                        Menghentikan semua suara selamanya
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="quiz-question">
+                                <div class="quiz-question-title">
+                                    3. Mengapa kita menulis <strong>Debugging Report</strong> di worksheet?
+                                </div>
+                                <div class="quiz-options">
+                                    <div class="quiz-option" data-correct="true">
+                                        Agar kita ingat masalah yang terjadi dan bagaimana cara memperbaikinya
+                                    </div>
+                                    <div class="quiz-option" data-correct="false">
+                                        Agar kita bisa mengabaikan semua error
+                                    </div>
+                                    <div class="quiz-option" data-correct="false">
+                                        Agar animasi berjalan tanpa sprite
+                                    </div>
+                                    <div class="quiz-option" data-correct="false">
+                                        Agar kita tidak perlu menguji animasi lagi
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="quiz-question">
+                                <div class="quiz-question-title">
+                                    4. Apa yang sebaiknya kamu lakukan jika dialog tidak muncul saat seharusnya?
+                                </div>
+                                <div class="quiz-options">
+                                    <div class="quiz-option" data-correct="true">
+                                        Mengecek kembali blok dan memperbaikinya di Debugging Report
+                                    </div>
+                                    <div class="quiz-option" data-correct="false">
+                                        Langsung menghapus semua dialog dari proyek
+                                    </div>
+                                    <div class="quiz-option" data-correct="false">
+                                        Menyalakan dan mematikan komputer terus-menerus
+                                    </div>
+                                    <div class="quiz-option" data-correct="false">
+                                        Mengganti storyboard tanpa alasan
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="quiz-question">
+                                <div class="quiz-question-title">
+                                    5. Manakah pernyataan yang benar tentang testing animasi?
+                                </div>
+                                <div class="quiz-options">
+                                    <div class="quiz-option" data-correct="true">
+                                        Animasi sebaiknya diuji beberapa kali untuk memastikan semua scene berjalan
+                                        dengan baik
+                                    </div>
+                                    <div class="quiz-option" data-correct="false">
+                                        Animasi tidak perlu diuji kalau menurut kita sudah bagus
+                                    </div>
+                                    <div class="quiz-option" data-correct="false">
+                                        Testing hanya dilakukan jika guru meminta
+                                    </div>
+                                    <div class="quiz-option" data-correct="false">
+                                        Testing hanya melihat warna backdrop, bukan gerakan
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p class="quiz-feedback">
+                                Guru dapat menambah atau mengganti pertanyaan agar lebih sesuai dengan aktivitas coding
+                                di kelas.
+                            </p>
+                        </div>
+                    </section>
+                </article>
+
+                <!-- Footer nav -->
+                <div class="footer-nav">
+                    <div class="slide-dots" id="slideDots"></div>
+                    <div class="slide-counter-text" id="slideCounterText">Slide 1 dari 10</div>
+                    <div class="nav-buttons">
+                        <button class="btn" type="button" data-nav="prev">
+                            <span class="icon">←</span> Prev
+                        </button>
+                        <button class="btn primary" type="button" data-nav="next">
+                            Next <span class="icon">→</span>
+                        </button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const slides = Array.from(document.querySelectorAll(".slide"));
+            const totalSlides = slides.length;
+            let currentSlide = 0;
+
+            const sidebarNumber = document.getElementById("sidebarSlideNumber");
+            const sidebarMain = document.getElementById("sidebarMain");
+            const sidebarText = document.getElementById("sidebarText");
+            const progressFill = document.getElementById("progressFill");
+            const slideDotsContainer = document.getElementById("slideDots");
+            const slideCounterText = document.getElementById("slideCounterText");
+            const prevBtn = document.querySelector('button[data-nav="prev"]');
+            const nextBtn = document.querySelector('button[data-nav="next"]');
+
+            // Create dots
+            const dots = slides.map((_, idx) => {
+                const dot = document.createElement("div");
+                dot.className = "slide-dot" + (idx === 0 ? " active" : "");
+                dot.dataset.index = String(idx);
+                slideDotsContainer.appendChild(dot);
+                return dot;
+            });
+
+            function updateSidebar(idx) {
+                const slide = slides[idx];
+                const main = slide.getAttribute("data-side-main") || "";
+                const text = slide.getAttribute("data-side-text") || "";
+                sidebarNumber.textContent = String(idx + 1);
+                sidebarMain.textContent = main;
+                sidebarText.textContent = text;
+                slideCounterText.textContent = `Slide ${idx + 1} dari ${totalSlides}`;
+            }
+
+            function updateProgress(idx) {
+                const progress = ((idx + 1) / totalSlides) * 100;
+                progressFill.style.width = progress + "%";
+            }
+
+            function updateDots(idx) {
+                dots.forEach((dot, i) => {
+                    if (i === idx) {
+                        dot.classList.add("active");
+                    } else {
+                        dot.classList.remove("active");
+                    }
+                });
+            }
+
+            function showSlide(idx) {
+                if (idx < 0 || idx >= totalSlides) return;
+                slides[currentSlide].classList.remove("active");
+                slides[idx].classList.add("active");
+                currentSlide = idx;
+                updateSidebar(idx);
+                updateProgress(idx);
+                updateDots(idx);
+            }
+
+            // Initial
+            updateSidebar(0);
+            updateProgress(0);
+
+            // Navigation buttons
+            prevBtn.addEventListener("click", () => {
+                const target = currentSlide - 1;
+                if (target >= 0) {
+                    showSlide(target);
+                }
+            });
+
+            nextBtn.addEventListener("click", () => {
+                const target = currentSlide + 1;
+                if (target < totalSlides) {
+                    showSlide(target);
+                }
+            });
+
+            // Keyboard navigation
+            window.addEventListener("keydown", (e) => {
+                if (e.key === "ArrowLeft") {
+                    const target = currentSlide - 1;
+                    if (target >= 0) showSlide(target);
+                } else if (e.key === "ArrowRight") {
+                    const target = currentSlide + 1;
+                    if (target < totalSlides) showSlide(target);
+                }
+            });
+
+            // Dot navigation
+            dots.forEach((dot) => {
+                dot.addEventListener("click", () => {
+                    const idx = Number(dot.dataset.index || "0");
+                    showSlide(idx);
+                });
+            });
+
+            // Quiz interaction
+            const quizOptions = Array.from(document.querySelectorAll(".quiz-option"));
+            quizOptions.forEach((option) => {
+                option.addEventListener("click", () => {
+                    const question = option.closest(".quiz-question");
+                    if (!question) return;
+                    const siblings = Array.from(
+                        question.querySelectorAll(".quiz-option")
+                    );
+                    siblings.forEach((s) => {
+                        s.classList.remove("correct", "wrong");
+                    });
+                    const isCorrect = option.dataset.correct === "true";
+                    option.classList.add(isCorrect ? "correct" : "wrong");
+                });
+            });
+        })();
+    </script>
+</body>
+
+</html>
