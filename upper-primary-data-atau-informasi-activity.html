@@ -1,0 +1,752 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Data atau Informasi? (Interaktif)</title>
+    <style>
+        :root {
+            --bg1: #7c3aed;
+            /* ungu */
+            --bg2: #06b6d4;
+            /* cyan */
+            --bg3: #f59e0b;
+            /* amber */
+            --card: #ffffff;
+            --ink: #0f172a;
+            --muted: #475569;
+            --good: #22c55e;
+            --bad: #ef4444;
+            --data: #3b82f6;
+            /* biru */
+            --info: #f97316;
+            /* oranye */
+            --shadow: 0 16px 40px rgba(15, 23, 42, 0.18);
+            --radius: 22px;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+            color: var(--ink);
+            min-height: 100vh;
+            background: radial-gradient(1200px 700px at 15% 15%, rgba(255, 255, 255, .25), transparent 60%),
+                linear-gradient(135deg, var(--bg1), var(--bg2) 55%, var(--bg3));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+        }
+
+        .wrap {
+            width: min(980px, 100%);
+            display: grid;
+            gap: 14px;
+        }
+
+        .topbar {
+            display: flex;
+            gap: 12px;
+            align-items: stretch;
+            flex-wrap: wrap;
+        }
+
+        .pill {
+            background: rgba(255, 255, 255, .18);
+            border: 1px solid rgba(255, 255, 255, .25);
+            color: #fff;
+            padding: 10px 12px;
+            border-radius: 999px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, .08);
+        }
+
+        .pill b {
+            font-weight: 800
+        }
+
+        .kbd {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .22);
+            border: 1px solid rgba(255, 255, 255, .28);
+            color: #fff;
+            white-space: nowrap;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 1px solid rgba(15, 23, 42, .08);
+        }
+
+        .header {
+            padding: 18px 18px 12px;
+            background: linear-gradient(90deg, rgba(59, 130, 246, .14), rgba(249, 115, 22, .14));
+            border-bottom: 1px solid rgba(15, 23, 42, .08);
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .title {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 8px 12px;
+            border-radius: 999px;
+            color: #fff;
+            font-weight: 800;
+            letter-spacing: .2px;
+            box-shadow: 0 10px 18px rgba(0, 0, 0, .12);
+            user-select: none;
+        }
+
+        .badge.data {
+            background: linear-gradient(135deg, var(--data), #60a5fa);
+        }
+
+        .badge.info {
+            background: linear-gradient(135deg, var(--info), #fb923c);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(20px, 2.4vw, 28px);
+            line-height: 1.15;
+        }
+
+        .sub {
+            margin: 3px 0 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .body {
+            padding: 18px;
+            display: grid;
+            gap: 14px;
+        }
+
+        .qbox {
+            border-radius: 18px;
+            padding: 18px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, .9), rgba(255, 255, 255, 1));
+            border: 1px solid rgba(15, 23, 42, .10);
+            position: relative;
+        }
+
+        .qmeta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .progress {
+            flex: 1;
+            min-width: 220px;
+            height: 10px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, .08);
+            overflow: hidden;
+        }
+
+        .bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #22c55e, #a3e635);
+            border-radius: 999px;
+            transition: width .35s ease;
+        }
+
+        .counter {
+            font-weight: 800;
+            color: rgba(15, 23, 42, .75);
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .question {
+            font-size: clamp(20px, 2.6vw, 34px);
+            line-height: 1.2;
+            font-weight: 900;
+            letter-spacing: .2px;
+            margin: 0;
+            white-space: pre-line;
+        }
+
+        .hint {
+            margin-top: 10px;
+            color: var(--muted);
+            font-size: 14px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        button {
+            appearance: none;
+            border: none;
+            cursor: pointer;
+            border-radius: 18px;
+            padding: 14px 14px;
+            font-weight: 900;
+            font-size: 18px;
+            box-shadow: 0 14px 26px rgba(0, 0, 0, .14);
+            transition: transform .08s ease, filter .12s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            user-select: none;
+        }
+
+        button:active {
+            transform: translateY(1px) scale(.99);
+        }
+
+        button:disabled {
+            opacity: .55;
+            cursor: not-allowed;
+            filter: saturate(.6);
+        }
+
+        .btn-data {
+            background: linear-gradient(135deg, var(--data), #93c5fd);
+            color: #fff;
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, var(--info), #fdba74);
+            color: #fff;
+        }
+
+        .footer {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            padding: 0 18px 18px;
+        }
+
+        .mini {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .chip {
+            background: rgba(15, 23, 42, .06);
+            border: 1px solid rgba(15, 23, 42, .08);
+            color: rgba(15, 23, 42, .82);
+            padding: 10px 12px;
+            border-radius: 999px;
+            font-weight: 800;
+            font-size: 13px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .msg {
+            padding: 12px 14px;
+            border-radius: 16px;
+            border: 1px solid rgba(15, 23, 42, .10);
+            background: rgba(15, 23, 42, .03);
+            color: rgba(15, 23, 42, .85);
+            font-weight: 800;
+            min-height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .msg.good {
+            background: rgba(34, 197, 94, .12);
+            border-color: rgba(34, 197, 94, .28);
+        }
+
+        .msg.bad {
+            background: rgba(239, 68, 68, .10);
+            border-color: rgba(239, 68, 68, .25);
+        }
+
+        .rightBtns {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .ghost {
+            box-shadow: none;
+            background: rgba(255, 255, 255, .18);
+            border: 1px solid rgba(255, 255, 255, .25);
+            color: #fff;
+            border-radius: 999px;
+            padding: 10px 12px;
+            font-weight: 900;
+            font-size: 14px;
+            backdrop-filter: blur(8px);
+        }
+
+        .modalBackdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, .55);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            z-index: 50;
+        }
+
+        .modal {
+            width: min(820px, 100%);
+            background: #fff;
+            border-radius: 22px;
+            box-shadow: 0 28px 70px rgba(0, 0, 0, .35);
+            overflow: hidden;
+            border: 1px solid rgba(15, 23, 42, .12);
+        }
+
+        .modalHead {
+            padding: 16px 18px;
+            background: linear-gradient(90deg, rgba(59, 130, 246, .14), rgba(249, 115, 22, .14));
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .modalHead h2 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 900;
+        }
+
+        .modalBody {
+            padding: 16px 18px 18px;
+            display: grid;
+            gap: 10px;
+            color: rgba(15, 23, 42, .86);
+        }
+
+        .modalBody ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .modalBody li {
+            margin: 6px 0;
+        }
+
+        .closeBtn {
+            border: none;
+            border-radius: 999px;
+            padding: 10px 12px;
+            font-weight: 900;
+            cursor: pointer;
+            background: rgba(15, 23, 42, .08);
+        }
+
+        @media (max-width: 640px) {
+            .actions {
+                grid-template-columns: 1fr;
+            }
+
+            button {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="topbar">
+            <div class="pill">
+                <span><b>Aktivitas</b>: “Data atau Informasi?”</span>
+            </div>
+            <div class="pill">
+                <span>⌨️ Pintasan:</span>
+                <span class="kbd">D = DATA</span>
+                <span class="kbd">I = INFORMASI</span>
+                <span class="kbd">N = Next</span>
+                <span class="kbd">R = Reset</span>
+                <span class="kbd">H = Help</span>
+            </div>
+        </div>
+
+        <div class="card" role="application" aria-label="Kuis Data atau Informasi">
+            <div class="header">
+                <div class="title">
+                    <span class="badge data">DATA</span>
+                    <span class="badge info">INFORMASI</span>
+                    <div>
+                        <h1>Data atau Informasi?</h1>
+                        <div class="sub">Angkat 1 jari untuk DATA, 2 jari untuk INFORMASI — lalu kita cek bareng di
+                            layar</div>
+                    </div>
+                </div>
+                <div class="rightBtns">
+                    <button class="ghost" id="btnHelpTop" type="button">❓ Bantuan (H)</button>
+                    <button class="ghost" id="btnResetTop" type="button">🔄 Ulang (R)</button>
+                </div>
+            </div>
+
+            <div class="body">
+                <div class="qbox">
+                    <div class="qmeta">
+                        <div class="progress" aria-label="progress">
+                            <div class="bar" id="bar"></div>
+                        </div>
+                        <div class="counter" id="counter">Soal 1/10</div>
+                    </div>
+
+                    <p class="question" id="question">Memuat soal…</p>
+
+                    <div class="hint" id="hint">
+                        💡 Petunjuk: <span class="chip"><span>DATA</span> = angka/daftar/catatan</span>
+                        <span class="chip"><span>INFORMASI</span> = kesimpulan/arti dari data</span>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="btn-data" id="btnData" type="button" aria-label="Pilih Data">
+                        ☝️ Pilih DATA <span class="kbd">D</span>
+                    </button>
+                    <button class="btn-info" id="btnInfo" type="button" aria-label="Pilih Informasi">
+                        ✌️ Pilih INFORMASI <span class="kbd">I</span>
+                    </button>
+                </div>
+
+                <div class="msg" id="msg" aria-live="polite">
+                    <span>Siap? Pilih jawabanmu! 🎯</span>
+                    <span id="scoreChip" class="chip">Skor: 0</span>
+                </div>
+            </div>
+
+            <div class="footer">
+                <div class="mini">
+                    <span class="chip" id="streakChip">🔥 Streak: 0</span>
+                </div>
+                <div class="mini">
+                    <button class="ghost" id="btnPrev" type="button">⬅️ Back</button>
+                    <button class="ghost" id="btnNext" type="button">➡️ Next (N)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help / Teacher Notes Modal -->
+    <div class="modalBackdrop" id="modalBackdrop" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-label="Bantuan">
+            <div class="modalHead">
+                <h2>❓ Bantuan</h2>
+                <button class="closeBtn" id="btnCloseModal" type="button">Tutup</button>
+            </div>
+            <div class="modalBody">
+                <div class="chip">🎯 Target: Bedakan <b>DATA</b> vs <b>INFORMASI</b></div>
+                <ul>
+                    <li><b>DATA</b> biasanya berupa angka, daftar, catatan mentah.</li>
+                    <li><b>INFORMASI</b> biasanya berupa kesimpulan / makna dari data.</li>
+                    <li>Setelah memilih, jelaskan alasannya secara singkat.</li>
+                </ul>
+                <div class="chip">⌨️ Pintasan: D / I untuk jawab, N lanjut, R ulang, H bantuan</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================
+        // Data soal (student-friendly)
+        // ==========================
+        const questions = [
+            // Icebreaker-style (agar nyambung ke sesi 25 pembuka semester)
+            {
+                text: `Kelas 4 : 10 siswa
+                       Kelas 5 : 12 siswa
+                       Kelas 6 : 8 siswa`,
+                answer: "DATA",
+                explain: "Ini daftar angka mentah. Belum ada kesimpulan."
+            },
+            {
+                text: "Sebagian besar siswa di kelas ini suka coding.",
+                answer: "INFORMASI",
+                explain: "Ini sudah kesimpulan (makna) dari data tentang minat coding."
+            },
+            {
+                text: "Jumlah siswa yang pernah bikin game = 9 orang.",
+                answer: "DATA",
+                explain: "Ini angka hasil hitungan (fakta mentah)."
+            },
+            {
+                text: "Siswa yang paling banyak adalah kelas 5.",
+                answer: "INFORMASI",
+                explain: "Ini kesimpulan setelah membandingkan data jumlah siswa."
+            },
+
+            // Scratch / pengalaman semester 1
+            {
+                text: "Skor game: 120, 90, 150.",
+                answer: "DATA",
+                explain: "Ini daftar skor (angka mentah), belum bercerita siapa tertinggi."
+            },
+            {
+                text: "Skor tertinggi adalah 150.",
+                answer: "INFORMASI",
+                explain: "Ini sudah hasil olahan dari data skor."
+            },
+            {
+                text: "Daftar buku yang dipinjam hari ini: IPA, Matematika, IPA, Bahasa.",
+                answer: "DATA",
+                explain: "Ini daftar catatan mentah."
+            },
+            {
+                text: "Buku IPA adalah yang paling sering dipinjam hari ini.",
+                answer: "INFORMASI",
+                explain: "Ini kesimpulan dari daftar buku yang dipinjam."
+            },
+
+            // Kehidupan sehari-hari
+            {
+                text: `Waktu tidur teman-teman: 20.30, 21.00, 21.00, 22.00.`,
+                answer: "DATA",
+                explain: "Ini catatan waktu (data mentah)."
+            },
+            {
+                text: "Rata-rata waktu tidur teman-teman sekitar jam 21.00.",
+                answer: "INFORMASI",
+                explain: "Ini hasil olahan data (rata-rata) yang punya makna."
+            }
+        ];
+
+        // ==========================
+        // State
+        // ==========================
+        let idx = 0;
+        let score = 0;
+        let streak = 0;
+        let answered = false;
+        let lastAnswer = null;
+        let startTime = Date.now();
+        let timerId = null;
+
+        // ==========================
+        // Elements
+        // ==========================
+        const elQ = document.getElementById("question");
+        const elCounter = document.getElementById("counter");
+        const elBar = document.getElementById("bar");
+        const elMsg = document.getElementById("msg");
+        const elScoreChip = document.getElementById("scoreChip");
+        const elStreakChip = document.getElementById("streakChip");
+        const elTimeChip = document.getElementById("timeChip");
+        const btnData = document.getElementById("btnData");
+        const btnInfo = document.getElementById("btnInfo");
+        const btnNext = document.getElementById("btnNext");
+        const btnPrev = document.getElementById("btnPrev");
+        const btnResetTop = document.getElementById("btnResetTop");
+
+        const modalBackdrop = document.getElementById("modalBackdrop");
+        const btnHelpTop = document.getElementById("btnHelpTop");
+        const btnCloseModal = document.getElementById("btnCloseModal");
+
+        // ==========================
+        // Helpers
+        // ==========================
+        function formatTime(ms) {
+            const total = Math.floor(ms / 1000);
+            const m = Math.floor(total / 60);
+            const s = String(total % 60).padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        function setMessage(type, leftText, rightHtml) {
+            elMsg.classList.remove("good", "bad");
+            if (type) elMsg.classList.add(type);
+            elMsg.innerHTML = `<span>${leftText}</span><span id="scoreChip" class="chip">${rightHtml}</span>`;
+        }
+
+        function updateChips() {
+            elStreakChip.textContent = `🔥 Streak: ${streak}`;
+            // score chip is re-rendered in setMessage; keep the "source of truth" in score var
+        }
+
+        function updateProgress() {
+            elCounter.textContent = `Soal ${idx + 1}/${questions.length}`;
+            const pct = ((idx) / (questions.length)) * 100;
+            elBar.style.width = `${pct}%`;
+        }
+
+        function render() {
+            const q = questions[idx];
+            elQ.textContent = q.text;
+
+            answered = false;
+            lastAnswer = null;
+
+            btnData.disabled = false;
+            btnInfo.disabled = false;
+
+            updateProgress();
+            updateChips();
+
+            // neutral message
+            elMsg.classList.remove("good", "bad");
+            elMsg.innerHTML = `<span>Siap? Pilih jawabanmu! 🎯</span><span class="chip">Skor: ${score}</span>`;
+
+            // enable prev/next
+            btnPrev.disabled = (idx === 0);
+            btnNext.disabled = false;
+        }
+
+        function finishIfLast() {
+            const isLast = idx === questions.length - 1;
+            if (isLast && answered) {
+                elBar.style.width = "100%";
+                const text = `Selesai! 🎉 Skormu ${score}/${questions.length}.`;
+                // Add teacher prompt
+                elMsg.classList.remove("bad");
+                elMsg.classList.add("good");
+                elMsg.innerHTML =
+                    `<span>${text} <br><span style="font-weight:800;color:rgba(15,23,42,.78)"></span></span>
+           <span class="chip">Skor: ${score}</span>`;
+            }
+        }
+
+        function answer(choice) {
+            if (answered) return;
+            answered = true;
+            lastAnswer = choice;
+
+            const q = questions[idx];
+            const correct = (choice === q.answer);
+
+            btnData.disabled = true;
+            btnInfo.disabled = true;
+
+            if (correct) {
+                score += 1;
+                streak += 1;
+                elMsg.classList.add("good");
+                elMsg.classList.remove("bad");
+                elMsg.innerHTML =
+                    `<span>✅ Benar! Ini <b>${q.answer}</b>. <span style="color:rgba(15,23,42,.72)">(${q.explain})</span></span>
+           <span class="chip">Skor: ${score}</span>`;
+            } else {
+                streak = 0;
+                elMsg.classList.add("bad");
+                elMsg.classList.remove("good");
+                elMsg.innerHTML =
+                    `<span>❌ Hampir! Jawaban yang tepat: <b>${q.answer}</b>. <span style="color:rgba(15,23,42,.72)">(${q.explain})</span></span>
+           <span class="chip">Skor: ${score}</span>`;
+            }
+
+            elStreakChip.textContent = `🔥 Streak: ${streak}`;
+            finishIfLast();
+        }
+
+        function next() {
+            if (idx < questions.length - 1) {
+                idx += 1;
+                render();
+            } else {
+                // If last and not answered, nudge students to answer first
+                if (!answered) {
+                    elMsg.classList.add("bad");
+                    elMsg.innerHTML = `<span>🔔 Jawab dulu ya, baru selesai! Pilih DATA atau INFORMASI.</span><span class="chip">Skor: ${score}</span>`;
+                }
+            }
+        }
+
+        function prev() {
+            if (idx > 0) {
+                idx -= 1;
+                render();
+            }
+        }
+
+        function resetAll() {
+            idx = 0;
+            score = 0;
+            streak = 0;
+            answered = false;
+            lastAnswer = null;
+            startTime = Date.now();
+            render();
+        }
+
+        function openHelp() {
+            modalBackdrop.style.display = "flex";
+            modalBackdrop.setAttribute("aria-hidden", "false");
+        }
+        function closeHelp() {
+            modalBackdrop.style.display = "none";
+            modalBackdrop.setAttribute("aria-hidden", "true");
+        }
+
+        // ==========================
+        // Events
+        // ==========================
+        btnData.addEventListener("click", () => answer("DATA"));
+        btnInfo.addEventListener("click", () => answer("INFORMASI"));
+        btnNext.addEventListener("click", () => next());
+        btnPrev.addEventListener("click", () => prev());
+        btnResetTop.addEventListener("click", () => resetAll());
+        btnHelpTop.addEventListener("click", () => openHelp());
+        btnCloseModal.addEventListener("click", () => closeHelp());
+        modalBackdrop.addEventListener("click", (e) => {
+            if (e.target === modalBackdrop) closeHelp();
+        });
+
+        document.addEventListener("keydown", (e) => {
+            const key = e.key.toLowerCase();
+            if (key === "d") answer("DATA");
+            if (key === "i") answer("INFORMASI");
+            if (key === "n") next();
+            if (key === "arrowright") next();
+            if (key === "arrowleft") prev();
+            if (key === "r") resetAll();
+            if (key === "h") openHelp();
+            if (key === "escape") closeHelp();
+        });
+
+        // Init
+        render();
+        startTimer();
+    </script>
+</body>
+
+</html>
