@@ -1,0 +1,1412 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Upper Primary Sesi 25 — Mengenal Dunia Data</title>
+    <style>
+        :root {
+            --bg1: #7c3aed;
+            --bg2: #06b6d4;
+            --bg3: #f59e0b;
+            --card: #ffffff;
+            --ink: #0f172a;
+            --muted: #475569;
+            --data: #3b82f6;
+            --info: #f97316;
+            --good: #22c55e;
+            --bad: #ef4444;
+            --shadow: 0 18px 48px rgba(15, 23, 42, 0.18);
+            --radius: 22px;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", sans-serif;
+            color: var(--ink);
+            min-height: 100vh;
+            background:
+                radial-gradient(1200px 700px at 10% 10%, rgba(255, 255, 255, .26), transparent 60%),
+                radial-gradient(900px 600px at 90% 0%, rgba(255, 255, 255, .18), transparent 60%),
+                linear-gradient(135deg, var(--bg1), var(--bg2) 55%, var(--bg3));
+            overflow: hidden;
+        }
+
+        .deck {
+            width: min(1040px, 96vw);
+            margin: 0 auto;
+            padding: 18px 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .topbar {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            padding: 0 8px;
+        }
+
+        .pill {
+            background: rgba(255, 255, 255, .18);
+            border: 1px solid rgba(255, 255, 255, .25);
+            color: #fff;
+            padding: 10px 12px;
+            border-radius: 999px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, .08);
+            user-select: none;
+        }
+
+        .kbd {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .22);
+            border: 1px solid rgba(255, 255, 255, .28);
+            color: #fff;
+            white-space: nowrap;
+        }
+
+        .stage {
+            flex: 1;
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+            padding: 0 8px 8px;
+        }
+
+        .slide {
+            width: 100%;
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(15, 23, 42, .10);
+            overflow: hidden;
+            display: none;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        .head {
+            padding: 16px 18px 12px;
+            background: linear-gradient(90deg, rgba(59, 130, 246, .14), rgba(249, 115, 22, .14));
+            border-bottom: 1px solid rgba(15, 23, 42, .10);
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .hgroup {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 8px 12px;
+            border-radius: 999px;
+            color: #fff;
+            font-weight: 900;
+            letter-spacing: .2px;
+            box-shadow: 0 10px 18px rgba(0, 0, 0, .12);
+            user-select: none;
+        }
+
+        .badge.data {
+            background: linear-gradient(135deg, var(--data), #93c5fd);
+        }
+
+        .badge.info {
+            background: linear-gradient(135deg, var(--info), #fdba74);
+        }
+
+        .badge.cta {
+            background: linear-gradient(135deg, #22c55e, #a3e635);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(22px, 2.4vw, 30px);
+            line-height: 1.15;
+            letter-spacing: .2px;
+        }
+
+        .sub {
+            margin: 4px 0 0;
+            color: var(--muted);
+            font-size: 14px;
+            max-width: 78ch;
+        }
+
+        .content {
+            padding: 18px;
+            display: grid;
+            gap: 14px;
+        }
+
+        .grid2 {
+            display: grid;
+            grid-template-columns: 1.2fr .8fr;
+            gap: 14px;
+        }
+
+        .grid3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+        }
+
+        @media (max-width: 860px) {
+            .grid2 {
+                grid-template-columns: 1fr;
+            }
+
+            .grid3 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            border-radius: 18px;
+            padding: 14px;
+            border: 1px solid rgba(15, 23, 42, .10);
+            background: rgba(15, 23, 42, .03);
+        }
+
+        .card.white {
+            background: #fff;
+        }
+
+        .big {
+            font-size: clamp(22px, 2.8vw, 36px);
+            font-weight: 950;
+            line-height: 1.1;
+            margin: 0;
+        }
+
+        .note {
+            margin: 8px 0 0;
+            color: rgba(15, 23, 42, .76);
+            font-size: 14px;
+            line-height: 1.45;
+        }
+
+        .chips {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .chip {
+            background: rgba(15, 23, 42, .06);
+            border: 1px solid rgba(15, 23, 42, .10);
+            color: rgba(15, 23, 42, .84);
+            padding: 10px 12px;
+            border-radius: 999px;
+            font-weight: 850;
+            font-size: 13px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            user-select: none;
+        }
+
+        .chip.data {
+            border-color: rgba(59, 130, 246, .30);
+            background: rgba(59, 130, 246, .10);
+        }
+
+        .chip.info {
+            border-color: rgba(249, 115, 22, .30);
+            background: rgba(249, 115, 22, .10);
+        }
+
+        .chip.good {
+            border-color: rgba(34, 197, 94, .30);
+            background: rgba(34, 197, 94, .10);
+        }
+
+        .chip.bad {
+            border-color: rgba(239, 68, 68, .28);
+            background: rgba(239, 68, 68, .10);
+        }
+
+        .btnRow {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            appearance: none;
+            border: none;
+            cursor: pointer;
+            border-radius: 16px;
+            padding: 12px 14px;
+            font-weight: 950;
+            font-size: 15px;
+            box-shadow: 0 14px 26px rgba(0, 0, 0, .14);
+            transition: transform .08s ease, filter .12s ease;
+            user-select: none;
+        }
+
+        button:active {
+            transform: translateY(1px) scale(.99);
+        }
+
+        .btnBlue {
+            background: linear-gradient(135deg, var(--data), #93c5fd);
+            color: #fff;
+        }
+
+        .btnOrange {
+            background: linear-gradient(135deg, var(--info), #fdba74);
+            color: #fff;
+        }
+
+        .btnGreen {
+            background: linear-gradient(135deg, #22c55e, #a3e635);
+            color: #fff;
+        }
+
+        .btnGhost {
+            box-shadow: none;
+            background: rgba(255, 255, 255, .18);
+            border: 1px solid rgba(255, 255, 255, .25);
+            color: #fff;
+            backdrop-filter: blur(8px);
+            padding: 10px 12px;
+            border-radius: 999px;
+            font-weight: 900;
+            font-size: 14px;
+        }
+
+        .reveal {
+            display: none;
+            margin-top: 10px;
+            padding: 12px 12px;
+            border-radius: 16px;
+            background: #fff;
+            border: 1px solid rgba(15, 23, 42, .10);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            overflow: hidden;
+            border-radius: 16px;
+            border: 1px solid rgba(15, 23, 42, .10);
+            background: #fff;
+        }
+
+        .table th,
+        .table td {
+            padding: 12px 12px;
+            border-bottom: 1px solid rgba(15, 23, 42, .08);
+            vertical-align: top;
+            font-size: 14px;
+        }
+
+        .table th {
+            text-align: left;
+            font-weight: 950;
+            background: rgba(15, 23, 42, .03);
+        }
+
+        .table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-weight: 950;
+            font-size: 12px;
+            border: 1px solid rgba(15, 23, 42, .10);
+            background: rgba(15, 23, 42, .03);
+            margin-right: 6px;
+        }
+
+        .tag.data {
+            border-color: rgba(59, 130, 246, .25);
+            background: rgba(59, 130, 246, .10);
+        }
+
+        .tag.info {
+            border-color: rgba(249, 115, 22, .25);
+            background: rgba(249, 115, 22, .10);
+        }
+
+        .miniQ {
+            border-radius: 18px;
+            padding: 14px;
+            border: 1px solid rgba(15, 23, 42, .10);
+            background: linear-gradient(180deg, rgba(255, 255, 255, .92), rgba(255, 255, 255, 1));
+        }
+
+        .miniQ h3 {
+            margin: 0 0 8px;
+            font-size: 16px;
+            font-weight: 950;
+        }
+
+        .miniQ p {
+            margin: 0;
+            color: rgba(15, 23, 42, .82);
+            font-weight: 750;
+            line-height: 1.4;
+        }
+
+        .feedback {
+            margin-top: 10px;
+            padding: 10px 12px;
+            border-radius: 14px;
+            border: 1px solid rgba(15, 23, 42, .10);
+            background: rgba(15, 23, 42, .03);
+            font-weight: 850;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .feedback.good {
+            background: rgba(34, 197, 94, .12);
+            border-color: rgba(34, 197, 94, .28);
+        }
+
+        .feedback.bad {
+            background: rgba(239, 68, 68, .10);
+            border-color: rgba(239, 68, 68, .25);
+        }
+
+        .choices {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .classifyWrap {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        @media (max-width: 860px) {
+            .classifyWrap {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .bin {
+            background: #fff;
+            border-radius: 18px;
+            border: 2px dashed rgba(15, 23, 42, .18);
+            padding: 12px;
+            min-height: 140px;
+        }
+
+        .binTitle {
+            font-weight: 950;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .cards {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .item {
+            border-radius: 999px;
+            padding: 10px 12px;
+            border: 1px solid rgba(15, 23, 42, .12);
+            background: rgba(15, 23, 42, .03);
+            font-weight: 900;
+            cursor: pointer;
+            user-select: none;
+            transition: transform .08s ease, filter .12s ease;
+        }
+
+        .item:active {
+            transform: translateY(1px) scale(.99);
+        }
+
+        .item.done {
+            opacity: .55;
+            cursor: default;
+            filter: saturate(.6);
+        }
+
+        .legend {
+            color: rgba(15, 23, 42, .72);
+            font-size: 13px;
+        }
+
+        .nav {
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 8px;
+            flex-wrap: wrap;
+        }
+
+        .navLeft {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .progress {
+            width: min(420px, 90vw);
+            height: 10px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .22);
+            border: 1px solid rgba(255, 255, 255, .28);
+            overflow: hidden;
+            backdrop-filter: blur(8px);
+        }
+
+        .bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #22c55e, #a3e635);
+            border-radius: 999px;
+            transition: width .35s ease;
+        }
+
+        .count {
+            color: #fff;
+            font-weight: 950;
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        .access-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .access-box {
+            background: #ffffff;
+            padding: 24px 28px;
+            border-radius: 16px;
+            width: min(360px, 90%);
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, .25);
+        }
+
+        .access-box h2 {
+            margin: 0 0 6px;
+        }
+
+        .access-box p {
+            margin: 0 0 14px;
+            color: #475569;
+        }
+
+        .access-box input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 10px;
+            border: 1px solid #cbd5f5;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .access-box button {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 10px;
+            border: none;
+            background: #22c55e;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        #accessError {
+            display: none;
+            margin-top: 10px;
+            color: #ef4444;
+            font-weight: 600;
+        }
+
+        #accessInput {
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="accessGate" class="access-overlay">
+        <div class="access-box">
+            <h2>🔒 Access Code Required</h2>
+            <p>Masukkan kode yang dibagikan guru pengajar untuk membuka materi</p>
+
+            <input id="accessInput" type="text" autocomplete="off" />
+
+            <button onclick="checkAccess()">Masuk</button>
+            <div id="accessError">Kode salah, coba lagi.</div>
+        </div>
+    </div>
+
+    <div class="deck">
+        <div class="topbar">
+            <div class="pill">📘 <b>Upper Primary — Sesi 25</b> • Mengenal Dunia Data</div>
+            <div class="pill">
+                ⌨️
+                <span class="kbd">←/→</span>
+                <span class="kbd">Space</span>
+                <span class="kbd">Esc</span>
+                <span style="opacity:.95">untuk pindah slide</span>
+            </div>
+        </div>
+
+        <div class="stage">
+            <!-- SLIDE 1 -->
+            <section class="slide active" data-title="Judul">
+                <div class="head">
+                    <div class="hgroup">
+                        <span class="badge cta">START</span>
+                        <div>
+                            <h1>Mengenal Dunia Data ✨</h1>
+                            <div class="sub">Hari ini kita belajar: <b>Data</b>, <b>Informasi</b>, dan <b>Jenis Data</b>
+                                — pakai contoh yang dekat dengan hidup kalian.</div>
+                        </div>
+                    </div>
+                    <div class="chips">
+                        <span class="chip data">DATA = fakta mentah</span>
+                        <span class="chip info">INFORMASI = data yang sudah “bercerita”</span>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="grid2">
+                        <div class="card white">
+                            <p class="big">Siap jadi <span style="color:var(--data)">Detektif Data</span>? 🕵️‍♀️🕵️‍♂️
+                            </p>
+                            <p class="note">Data itu ada di sekitar kita: di sekolah, di rumah, saat bermain, bahkan
+                                saat bikin proyek Scratch.</p>
+                            <div class="btnRow">
+                                <button class="btnGreen" data-next>Mulai ▶</button>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="chips">
+                                <span class="chip">🎯 Target hari ini:</span>
+                                <p style="color:rgb(247, 249, 248);">__</p>
+                                <span class="chip">Bedakan data vs informasi</span>
+                                <span class="chip">Kenal jenis data</span>
+                            </div>
+                            <p class="note" style="margin-top:10px">
+                                Kita fokus memahami materi.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 2 -->
+            <section class="slide" data-title="Semester 2">
+                <div class="head">
+                    <div class="hgroup">
+                        <span class="badge cta">SEMESTER 2</span>
+                        <div>
+                            <h1>Welcome back! 🎉</h1>
+                            <div class="sub">Kita lanjut semester 2. Materi baru… tapi masih nyambung sama yang kalian
+                                sudah bisa.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="grid2">
+                        <div class="card white">
+                            <p class="big">Kilas balik cepat ⏪</p>
+                            <div class="chips" style="margin-top:10px">
+                                <span class="chip">💻 Perangkat digital & aman</span>
+                                <span class="chip">🧠 Pola, urutan, dekomposisi</span>
+                                <span class="chip">🐞 Problem solving & debugging</span>
+                                <span class="chip">🎮 Proyek Scratch & upload</span>
+                            </div>
+                            <p class="note" style="margin-top:12px">
+                                Sekarang kita akan belajar hal penting yang sering dipakai di sekolah dan di game:
+                                <b>DATA</b>.
+                            </p>
+                        </div>
+                        <div class="card">
+                            <p class="note"><b>Interaktif (klik):</b> Apa yang paling kamu ingat dari semester 1?</p>
+                            <p></p>
+                            <div class="btnRow">
+                                <button class="btnBlue" data-reveal="#r2a">Bikin animasi</button>
+                                <button class="btnGreen" data-reveal="#r2c">Debugging</button>
+                            </div>
+                            <div id="r2a" class="reveal">🎬 Keren! Di animasi, kalian pakai data seperti <b>urutan
+                                    adegan</b> dan <b>dialog</b>.</div>
+                            <div id="r2b" class="reveal">🎮 Mantap! Di game, kalian pakai data seperti <b>skor</b>,
+                                <b>level</b>, dan <b>waktu</b>.
+                            </div>
+                            <div id="r2c" class="reveal">🐞 Hebat! Saat debugging, kalian cek “petunjuk” dari data (apa
+                                yang terjadi, kapan, dan kenapa).</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 3 -->
+            <section class="slide" data-title="Data di sekitar kita">
+                <div class="head">
+                    <div class="hgroup">
+                        <span class="badge cta">KONTEKS</span>
+                        <div>
+                            <h1>Data itu ada di sekitar kita</h1>
+                            <div class="sub">Contoh sederhana: papan pengumuman sekolah dan daftar kehadiran.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="grid2">
+                        <div class="card white">
+                            <p class="big">Contoh: Daftar Kehadiran</p>
+                            <p class="note">
+                                Daftar kehadiran itu <b>data</b> karena masih mentah (belum bercerita). Kalau kita olah,
+                                baru jadi <b>informasi</b>.
+                            </p>
+                            <p></p>
+                            <table class="table" aria-label="contoh kehadiran">
+                                <tr>
+                                    <th>Nama</th>
+                                    <th>Hadir?</th>
+                                </tr>
+                                <tr>
+                                    <td>Rani</td>
+                                    <td>✅</td>
+                                </tr>
+                                <tr>
+                                    <td>Bagas</td>
+                                    <td>✅</td>
+                                </tr>
+                                <tr>
+                                    <td>Dita</td>
+                                    <td>❌</td>
+                                </tr>
+                                <tr>
+                                    <td>Faris</td>
+                                    <td>✅</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="card">
+                            <div class="miniQ" id="q3">
+                                <h3>Mini cek cepat 👀</h3>
+                                <p>Kalau dari tabel itu kita bilang: <b>“Hari ini 3 siswa hadir.”</b> Itu termasuk apa?
+                                </p>
+                                <div class="choices">
+                                    <button class="btnBlue" data-mcq="#q3" data-answer="DATA">DATA</button>
+                                    <button class="btnOrange" data-mcq="#q3" data-answer="INFORMASI">INFORMASI</button>
+                                </div>
+                                <div class="feedback" data-feedback>
+                                    <span>Jawab dulu ya 🙂</span><span class="chip">Hint: “sudah bercerita?”</span>
+                                </div>
+                            </div>
+                            <p class="note" style="margin-top:10px">
+                                Petunjuk: kalau sudah berupa <b>kesimpulan</b> (hasil hitung/olah), biasanya itu
+                                <b>informasi</b>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 4 -->
+            <section class="slide" data-title="Definisi Data">
+                <div class="head">
+                    <div class="hgroup">
+                        <span class="badge data">DATA</span>
+                        <div>
+                            <h1>Apa itu Data?</h1>
+                            <div class="sub">Data = kumpulan fakta/keterangan (bisa kata, simbol, angka, gambar) yang
+                                masih mentah.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="grid2">
+                        <div class="card white">
+                            <p class="big">Data itu seperti “bahan mentah”</p>
+                            <p class="note">Kalau cuma bahan mentah, kita belum tahu cerita lengkapnya.</p>
+                            <div class="chips" style="margin-top:10px">
+                                <span class="chip data">Angka</span>
+                                <span class="chip data">Daftar</span>
+                                <span class="chip data">Catatan</span>
+                                <span class="chip data">Gambar + nilai</span>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <p class="note"><b>Interaktif (klik untuk lihat contoh):</b></p>
+                            <div class="btnRow">
+                                <button class="btnBlue" data-reveal="#r4a">Di rumah</button>
+                                <button class="btnBlue" data-reveal="#r4b">Di sekolah</button>
+                                <button class="btnBlue" data-reveal="#r4c">Saat bermain</button>
+                            </div>
+                            <div id="r4a" class="reveal">🏠 Data di rumah: <b>waktu bangun</b>, <b>jumlah gelas</b>,
+                                <b>jenis sarapan</b>.
+                            </div>
+                            <div id="r4b" class="reveal">🏫 Data di sekolah: <b>jumlah hadir</b>, <b>nilai ulangan</b>,
+                                <b>buku yang dipinjam</b>.
+                            </div>
+                            <div id="r4c" class="reveal">🎮 Data saat bermain: <b>skor</b>, <b>waktu bermain</b>,
+                                <b>level</b>, <b>karakter</b>.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 5 -->
+            <section class="slide" data-title="Definisi Informasi">
+                <div class="head">
+                    <div class="hgroup">
+                        <span class="badge info">INFORMASI</span>
+                        <div>
+                            <h1>Apa itu Informasi?</h1>
+                            <div class="sub">Informasi = data yang sudah diolah, jadi punya arti, dan bisa dipakai untuk
+                                mengambil keputusan.</div>
+                        </div>
+                    </div>
+                    <div class="chips">
+                        <span class="chip info">Informasi membantu kita memilih</span>
+                        <span class="chip info">Informasi membantu kita menjelaskan</span>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="grid2">
+                        <div class="card white">
+                            <p class="big">Data → Informasi = “jadi ngerti!” 💡</p>
+                            <p class="note">Kita olah data supaya jadi informasi yang berguna untuk keputusan (misalnya
+                                memilih yang paling disukai).</p>
+                            <table class="table" aria-label="data vs info ringkas">
+                                <tr>
+                                    <th>Data (mentah)</th>
+                                    <th>Informasi (berarti)</th>
+                                </tr>
+                                <tr>
+                                    <td><span class="tag data">Daftar buah</span> apel, pisang, jeruk, mangga</td>
+                                    <td><span class="tag info">Jus campur</span> rasanya manis, warnanya oranye, cocok
+                                        saat panas</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="card">
+                            <div class="miniQ" id="q5">
+                                <h3>Mini latihan: ubah jadi informasi ✍️</h3>
+                                <p><b>Data:</b> 4 teman suka biru, 3 suka merah, 3 suka hijau. <br>Informasi yang tepat
+                                    adalah…</p>
+                                <div class="choices">
+                                    <button class="btnOrange" data-mcq="#q5" data-answer="A">“Biru paling banyak
+                                        dipilih.”</button>
+                                    <button class="btnBlue" data-mcq="#q5" data-answer="B">“Ada 10 teman di
+                                        kelas.”</button>
+                                    <button class="btnBlue" data-mcq="#q5" data-answer="C">“Biru itu warna yang
+                                        indah.”</button>
+                                </div>
+                                <div class="feedback" data-feedback>
+                                    <span>Hint: pilih yang benar-benar berasal dari data.</span><span
+                                        class="chip">🎯</span>
+                                </div>
+                            </div>
+                            <p class="note" style="margin-top:10px">Kunci: informasi harus <b>nyambung</b> dengan data
+                                yang ada.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 6 -->
+            <section class="slide" data-title="Data vs Informasi (tabel)">
+                <div class="head">
+                    <div class="hgroup">
+                        <span class="badge data">DATA</span>
+                        <span class="badge info">INFORMASI</span>
+                        <div>
+                            <h1>Bedanya Data dan Informasi</h1>
+                            <div class="sub">Data = fakta mentah. Informasi = hasil olah data yang punya arti.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content">
+                    <table class="table" aria-label="tabel konsep">
+                        <tr>
+                            <th>Aspek</th>
+                            <th>Data</th>
+                            <th>Informasi</th>
+                        </tr>
+                        <tr>
+                            <td><b>Pengertian</b></td>
+                            <td>Fakta mentah yang belum diolah</td>
+                            <td>Hasil pengolahan data yang punya arti dan bisa digunakan</td>
+                        </tr>
+                        <tr>
+                            <td><b>Contoh</b></td>
+                            <td>Daftar buah: apel, pisang, jeruk, mangga</td>
+                            <td>Jus buah campur: rasa manis, warna oranye, cocok saat panas</td>
+                        </tr>
+                        <tr>
+                            <td><b>Sifat</b></td>
+                            <td>Terpisah-pisah, belum bermakna</td>
+                            <td>Terpadu, bermakna, bisa dijelaskan</td>
+                        </tr>
+                    </table>
+
+                    <div class="card">
+                        <p class="note"><b>Interaktif:</b> klik untuk “cek diri”</p>
+                        <div class="btnRow">
+                            <button class="btnBlue" data-reveal="#r6a">Kalau masih daftar/angka → ?</button>
+                            <button class="btnOrange" data-reveal="#r6b">Kalau sudah kesimpulan → ?</button>
+                        </div>
+                        <div id="r6a" class="reveal">✅ Biasanya itu <b>DATA</b> (mentah).</div>
+                        <div id="r6b" class="reveal">✅ Biasanya itu <b>INFORMASI</b> (berarti).</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 7 -->
+            <section class="slide" data-title="Analogi Puzzle">
+                <div class="head">
+                    <div class="hgroup">
+                        <span class="badge cta">ANALOGI</span>
+                        <div>
+                            <h1>Data itu seperti Potongan Puzzle 🧩</h1>
+                            <div class="sub">Kalau baru 1 potong, kita belum tahu gambarnya. Kalau disusun, baru
+                                kelihatan!</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="grid2">
+                        <div class="card white">
+                            <p class="big">“Oh… ternyata gambar kucing!” 🐱</p>
+                            <p class="note">
+                                Sama seperti data: kalau kita kumpulkan & susun, kita bisa melihat pola dan membuat
+                                kesimpulan.
+                            </p>
+                            <div class="chips" style="margin-top:10px">
+                                <span class="chip">1) Kumpulkan</span>
+                                <span class="chip">2) Kelompokkan</span>
+                                <span class="chip">3) Hitung & bandingkan</span>
+                                <span class="chip">4) Simpulkan</span>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="miniQ" id="q7">
+                                <h3>Mini cek: langkah yang benar ✅</h3>
+                                <p>Kalau kamu tanya 10 teman tentang warna favorit, setelah itu apa?</p>
+                                <div class="choices">
+                                    <button class="btnGreen" data-mcq="#q7" data-answer="A">Kelompokkan datanya</button>
+                                    <button class="btnBlue" data-mcq="#q7" data-answer="B">Langsung simpulkan tanpa
+                                        lihat data</button>
+                                </div>
+                                <div class="feedback" data-feedback>
+                                    <span>Hint: data perlu dirapikan dulu.</span><span class="chip">🧩</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 8 -->
+            <section class="slide" data-title="Jenis Data (overview)">
+                <div class="head">
+                    <div class="hgroup">
+                        <span class="badge cta">JENIS DATA</span>
+                        <div>
+                            <h1>Data itu ada beberapa jenis</h1>
+                            <div class="sub">Kita akan pakai 2 cara mengelompokkan: <b>berdasarkan sifat</b> &
+                                <b>berdasarkan cara mendapatkannya</b>.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="grid3">
+                        <div class="card white">
+                            <p class="big" style="font-size:26px">Berdasarkan sifat</p>
+                            <div class="chips" style="margin-top:10px">
+                                <span class="chip">📝 Kualitatif = cerita/kategori</span>
+                                <span class="chip">🔢 Kuantitatif = angka</span>
+                            </div>
+                        </div>
+                        <div class="card white">
+                            <p class="big" style="font-size:26px">Berdasarkan cara dapat</p>
+                            <div class="chips" style="margin-top:10px">
+                                <span class="chip">👀 Primer = kita kumpulkan langsung</span>
+                                <span class="chip">📚 Sekunder = dari sumber/catatan</span>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <p class="note"><b>Interaktif:</b> Klik pertanyaan ini, jawab di kelas (lisan).</p>
+                            <div class="btnRow">
+                                <button class="btnGreen" data-reveal="#r8a">Lebih sering ketemu data angka atau
+                                    cerita?</button>
+                            </div>
+                            <div id="r8a" class="reveal">
+                                Tidak ada yang salah 😊 Yang penting kamu bisa kasih contoh.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 9 -->
+            <section class="slide" data-title="Kualitatif vs Kuantitatif">
+                <div class="head">
+                    <div class="hgroup">
+                        <span class="badge cta">SIFAT DATA</span>
+                        <div>
+                            <h1>Kualitatif vs Kuantitatif</h1>
+                            <div class="sub">Pertanyaan mudahnya: ini lebih cocok disebut <b>cerita</b> atau
+                                <b>angka</b>?
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chips">
+                        <span class="chip">📝 Kualitatif = deskripsi/kategori</span>
+                        <span class="chip">🔢 Kuantitatif = bisa dihitung</span>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="classifyWrap">
+                        <div class="card white">
+                            <h3 style="margin:0 0 8px;font-weight:950">Kartu contoh (klik untuk pilih)</h3>
+                            <div class="cards" id="cardsQQ">
+                                <div class="item" data-kind="KUALITATIF">Warna favorit: biru</div>
+                                <div class="item" data-kind="KUANTITATIF">Skor game: 120</div>
+                                <div class="item" data-kind="KUALITATIF">Hobi: membaca</div>
+                                <div class="item" data-kind="KUANTITATIF">Jumlah siswa hadir: 28</div>
+                                <div class="item" data-kind="KUALITATIF">Karakter dipilih: kucing</div>
+                                <div class="item" data-kind="KUANTITATIF">Waktu bermain: 30 menit</div>
+                            </div>
+                            <p class="legend" style="margin-top:10px">Cara main: klik kartu → lalu klik tombol
+                                “Kualitatif” atau “Kuantitatif”.</p>
+                        </div>
+                        <div class="card">
+                            <div class="miniQ" id="qqPanel">
+                                <h3>Pilih kategorinya 🎯</h3>
+                                <p id="qqSelected">Klik salah satu kartu dulu.</p>
+                                <div class="choices">
+                                    <button class="btnOrange" id="btnKual">📝 Kualitatif (cerita)</button>
+                                    <button class="btnBlue" id="btnKuan">🔢 Kuantitatif (angka)</button>
+                                </div>
+                                <div class="feedback" id="qqFeedback">
+                                    <span>Tip: kalau bisa dihitung → kuantitatif.</span><span class="chip">✅</span>
+                                </div>
+                            </div>
+                            <div class="chips" style="margin-top:10px">
+                                <span class="chip good" id="qqScore">Skor: 0</span>
+                                <span class="chip" id="qqLeft">Sisa: 6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 10 -->
+            <section class="slide" data-title="Primer vs Sekunder">
+                <div class="head">
+                    <div class="hgroup">
+                        <span class="badge cta">CARA DAPAT</span>
+                        <div>
+                            <h1>Primer vs Sekunder</h1>
+                            <div class="sub">Pertanyaan mudahnya: data ini kamu kumpulkan <b>langsung</b>, atau dari
+                                <b>sistem/catatan</b>?
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chips">
+                        <span class="chip">👀 Primer = wawancara/observasi langsung</span>
+                        <span class="chip">📚 Sekunder = buku/sistem/catatan</span>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="grid2">
+                        <div class="card white">
+                            <p class="big" style="font-size:28px">Contoh dari Scratch 🎮</p>
+                            <table class="table" aria-label="primer sekunder scratch">
+                                <tr>
+                                    <th>Jenis</th>
+                                    <th>Contoh</th>
+                                </tr>
+                                <tr>
+                                    <td><span class="tag data">Primer</span></td>
+                                    <td>Skor pemain yang kamu dapat <b>saat bermain</b> (misal score=120)</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="tag info">Sekunder</span></td>
+                                    <td>Jumlah <b>views/loves/remix</b> di halaman proyek (data dari sistem Scratch)
+                                    </td>
+                                </tr>
+                            </table>
+                            <p class="note" style="margin-top:10px">Ini selaras dengan modul: skor (primer) dan
+                                views/loves/remix (sekunder).</p>
+                        </div>
+
+                        <div class="card">
+                            <div class="miniQ" id="q10">
+                                <h3>Cerita Bu Rani 📚</h3>
+                                <p>
+                                    Bu Rani ingin tahu kebiasaan membaca murid. Ia punya 2 cara:<br>
+                                    (1) Cek catatan perpustakaan<br>
+                                    (2) Tanya langsung murid
+                                </p>
+                                <p class="note" style="margin-top:8px"><b>Pertanyaan:</b> Data dari catatan perpustakaan
+                                    itu primer atau sekunder?</p>
+                                <div class="choices">
+                                    <button class="btnBlue" data-mcq="#q10" data-answer="SEKUNDER">Sekunder</button>
+                                    <button class="btnOrange" data-mcq="#q10" data-answer="PRIMER">Primer</button>
+                                </div>
+                                <div class="feedback" data-feedback>
+                                    <span>Hint: catatan = dari sumber yang sudah ada.</span><span class="chip">📚</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <p class="note"><b>Interaktif kilat:</b> klik untuk lihat jawaban kedua pertanyaan</p>
+                        <div class="btnRow">
+                            <button class="btnGreen" data-reveal="#r10a">Kalau “tanya langsung murid” termasuk?</button>
+                        </div>
+                        <div id="r10a" class="reveal">✅ Itu <b>Primer</b> karena dikumpulkan langsung dari murid.</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 11 -->
+            <section class="slide" data-title="Ringkasan">
+                <div class="head">
+                    <div class="hgroup">
+                        <span class="badge cta">SUMMARY</span>
+                        <div>
+                            <h1>Ringkasan Sesi 25</h1>
+                            <div class="sub">Kita rapikan pemahaman sebelum lanjut ke aktivitas terpisah & sesi
+                                berikutnya.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="grid2">
+                        <div class="card white">
+                            <p class="big">Yang harus kamu ingat ✅</p>
+                            <div class="chips" style="margin-top:10px">
+                                <span class="chip data">Data = fakta mentah (angka/daftar/catatan)</span>
+                                <span class="chip info">Informasi = data yang diolah (punya arti)</span>
+                                <span class="chip">📝 Kualitatif = cerita/kategori</span>
+                                <span class="chip">🔢 Kuantitatif = angka</span>
+                                <span class="chip">👀 Primer = kumpulkan langsung</span>
+                                <span class="chip">📚 Sekunder = dari sumber/catatan</span>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="miniQ" id="q11">
+                                <h3>1 menit terakhir: benar/salah ⚡</h3>
+                                <p><b>Pernyataan:</b> “Skor tertinggi adalah 150” itu data.</p>
+                                <div class="choices">
+                                    <button class="btnOrange" data-mcq="#q11" data-answer="SALAH">Salah</button>
+                                    <button class="btnBlue" data-mcq="#q11" data-answer="BENAR">Benar</button>
+                                </div>
+                                <div class="feedback" data-feedback>
+                                    <span>Hint: itu sudah kesimpulan.</span><span class="chip">💡</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <p class="note">
+                            Setelah ini kamu bisa buka <b>aktivitas kuis terpisah</b> (yang kamu sudah siapkan) untuk
+                            latihan lebih banyak contoh “Data atau Informasi?”.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 12 -->
+            <section class="slide" data-title="Next session">
+                <div class="head">
+                    <div class="hgroup">
+                        <span class="badge cta">NEXT</span>
+                        <div>
+                            <h1>Di Sesi 26 kita jadi Detektif Data 🔍</h1>
+                            <div class="sub">Kita akan mengumpulkan data sendiri, mengelompokkan, membandingkan, lalu
+                                menyimpulkan.</div>
+                        </div>
+                    </div>
+                    <div class="chips">
+                        <span class="chip">Contoh: warna favorit</span>
+                        <span class="chip">Contoh: kebiasaan membaca</span>
+                        <span class="chip">Contoh: waktu bermain</span>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="card white">
+                        <p class="big">Pertanyaan pemantik 🎤</p>
+                        <p class="note">
+                            “Kalau kamu jadi peneliti kecil, data apa yang ingin kamu kumpulkan?”<br>
+                            Pilih yang dekat dengan hidupmu: di rumah, sekolah, atau saat bermain.
+                        </p>
+                        <div class="btnRow">
+                            <button class="btnGreen" data-reveal="#r12a">Lihat contoh jawaban</button>
+                        </div>
+                        <div id="r12a" class="reveal">
+                            Contoh: “Aku mau kumpulkan data <b>waktu tidur</b> teman-teman selama 1 minggu, lalu cari
+                            tahu siapa yang tidur paling awal.”
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="nav">
+            <div class="navLeft">
+                <div class="progress" aria-label="progress">
+                    <div class="bar" id="bar"></div>
+                </div>
+                <div class="count" id="count">Slide 1/12</div>
+            </div>
+            <div class="btnRow">
+                <button class="btnGhost" id="btnPrev">⬅️ Prev</button>
+                <button class="btnGhost" id="btnNext">Next ➡️</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ACCESS_CODE = "RGMDSUP25";
+
+        function checkAccess() {
+            const input = document.getElementById("accessInput").value.trim().toUpperCase();
+            if (input === ACCESS_CODE) {
+                document.getElementById("accessGate").style.display = "none";
+                localStorage.setItem("RGMDSUP25_access", "true");
+            } else {
+                document.getElementById("accessError").style.display = "block";
+            }
+        }
+
+        // Auto lock on load
+        window.addEventListener("load", () => {
+            if (localStorage.getItem("RGMDSUP25_access") !== "true") {
+                document.getElementById("accessGate").style.display = "flex";
+            }
+        });
+
+        // ===== Slides navigation =====
+        const slides = Array.from(document.querySelectorAll('.slide'));
+        let sIdx = 0;
+
+        const bar = document.getElementById('bar');
+        const count = document.getElementById('count');
+        const btnPrev = document.getElementById('btnPrev');
+        const btnNext = document.getElementById('btnNext');
+
+        function showSlide(i) {
+            sIdx = Math.max(0, Math.min(slides.length - 1, i));
+            slides.forEach((s, idx) => s.classList.toggle('active', idx === sIdx));
+            const pct = (sIdx / (slides.length - 1)) * 100;
+            bar.style.width = `${isFinite(pct) ? pct : 0}%`;
+            count.textContent = `Slide ${sIdx + 1}/${slides.length}`;
+            btnPrev.disabled = (sIdx === 0);
+            btnNext.disabled = (sIdx === slides.length - 1);
+            // collapse reveals when switching
+            document.querySelectorAll('.reveal').forEach(r => r.style.display = 'none');
+        }
+
+        btnPrev.addEventListener('click', () => showSlide(sIdx - 1));
+        btnNext.addEventListener('click', () => showSlide(sIdx + 1));
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') { showSlide(sIdx + 1); }
+            if (e.key === 'ArrowLeft') { showSlide(sIdx - 1); }
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.reveal').forEach(r => r.style.display = 'none');
+            }
+        });
+
+        // data-next buttons
+        document.querySelectorAll('[data-next]').forEach(btn => {
+            btn.addEventListener('click', () => showSlide(sIdx + 1));
+        });
+
+        // reveal toggles
+        document.querySelectorAll('[data-reveal]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const target = document.querySelector(btn.getAttribute('data-reveal'));
+                if (!target) return;
+                target.style.display = (target.style.display === 'block') ? 'none' : 'block';
+            });
+        });
+
+        // ===== Mini MCQ engine (in-slide) =====
+        // Usage: button with data-mcq="#id" and data-answer="..."
+        // The slide's correct answer is encoded per question block in data-correct attribute, or via special mapping below.
+        const mcqCorrect = {
+            // slide 3
+            "q3": "INFORMASI",
+            // slide 5
+            "q5": "A",
+            // slide 7
+            "q7": "A",
+            // slide 10
+            "q10": "SEKUNDER",
+            // slide 11
+            "q11": "SALAH"
+        };
+
+        function setFb(box, ok, text) {
+            const fb = box.querySelector('[data-feedback]');
+            if (!fb) return;
+            fb.classList.remove('good', 'bad');
+            fb.classList.add(ok ? 'good' : 'bad');
+            fb.innerHTML = `<span>${text}</span><span class="chip ${ok ? 'good' : 'bad'}">${ok ? '✅' : '❌'}</span>`;
+        }
+
+        document.querySelectorAll('[data-mcq]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const sel = btn.getAttribute('data-mcq');
+                const box = document.querySelector(sel);
+                if (!box) return;
+
+                const id = box.id;
+                const correct = mcqCorrect[id];
+                const picked = btn.getAttribute('data-answer');
+                const ok = (picked === correct);
+
+                // Friendly feedback aligned to module language
+                let text = "";
+                if (id === "q3") {
+                    text = ok
+                        ? "Benar! Itu INFORMASI karena sudah hasil olah (kita menghitung jumlah siswa hadir)."
+                        : "Coba lagi 🙂 Itu INFORMASI karena sudah berupa kesimpulan dari data hadir.";
+                } else if (id === "q5") {
+                    text = ok
+                        ? "Mantap! Itu informasi yang benar karena langsung berasal dari data."
+                        : "Belum tepat 🙂 Pilih kalimat yang benar-benar berasal dari data (bukan tebak-tebakan).";
+                } else if (id === "q7") {
+                    text = ok
+                        ? "Betul! Setelah kumpulkan data, kita rapikan dulu: kelompokkan."
+                        : "Belum 🙂 Data perlu dirapikan dulu sebelum simpulkan.";
+                } else if (id === "q10") {
+                    text = ok
+                        ? "Benar! Catatan perpustakaan itu SEKUNDER (sudah ada dari sumber/catatan)."
+                        : "Hampir! Catatan itu SEKUNDER. Kalau tanya langsung murid = PRIMER.";
+                } else if (id === "q11") {
+                    text = ok
+                        ? "Benar! Itu SALAH. “Skor tertinggi 150” adalah INFORMASI (kesimpulan)."
+                        : "Coba lagi 🙂 Itu sebenarnya INFORMASI (sudah kesimpulan).";
+                } else {
+                    text = ok ? "Benar!" : "Belum tepat 🙂";
+                }
+
+                setFb(box, ok, text);
+            });
+        });
+
+        // ===== Kualitatif vs Kuantitatif classifier (Slide 9) =====
+        const qqCards = document.getElementById('cardsQQ');
+        const qqSelected = document.getElementById('qqSelected');
+        const qqFeedback = document.getElementById('qqFeedback');
+        const qqScore = document.getElementById('qqScore');
+        const qqLeft = document.getElementById('qqLeft');
+        const btnKual = document.getElementById('btnKual');
+        const btnKuan = document.getElementById('btnKuan');
+
+        let currentItem = null;
+        let qqDone = 0;
+        let qqPoint = 0;
+
+        function updateQQ() {
+            qqScore.textContent = `Skor: ${qqPoint}`;
+            qqLeft.textContent = `Sisa: ${Math.max(0, 6 - qqDone)}`;
+        }
+        updateQQ();
+
+        qqCards?.addEventListener('click', (e) => {
+            const el = e.target.closest('.item');
+            if (!el || el.classList.contains('done')) return;
+            currentItem = el;
+            qqSelected.textContent = `Kartu dipilih: "${el.textContent}"`;
+            qqFeedback.classList.remove('good', 'bad');
+            qqFeedback.innerHTML = `<span>Pilih kategorinya ya 🙂</span><span class="chip">📝/🔢</span>`;
+        });
+
+        function answerQQ(choice) {
+            if (!currentItem) {
+                qqFeedback.classList.remove('good', 'bad');
+                qqFeedback.innerHTML = `<span>Klik kartu dulu ya 🙂</span><span class="chip">👆</span>`;
+                return;
+            }
+            const correct = currentItem.getAttribute('data-kind'); // KUALITATIF / KUANTITATIF
+            const ok = (choice === correct);
+
+            if (ok) {
+                qqPoint += 1;
+                qqFeedback.classList.remove('bad');
+                qqFeedback.classList.add('good');
+                qqFeedback.innerHTML = `<span>✅ Benar! Ini ${correct === 'KUALITATIF' ? 'Kualitatif (cerita/kategori)' : 'Kuantitatif (angka)'}.</span><span class="chip good">+1</span>`;
+            } else {
+                qqFeedback.classList.remove('good');
+                qqFeedback.classList.add('bad');
+                qqFeedback.innerHTML = `<span>❌ Hampir! Yang tepat: ${correct === 'KUALITATIF' ? 'Kualitatif (cerita)' : 'Kuantitatif (angka)'}.</span><span class="chip bad">0</span>`;
+            }
+
+            currentItem.classList.add('done');
+            currentItem = null;
+            qqDone += 1;
+            qqSelected.textContent = qqDone >= 6 ? "Semua kartu selesai! 🎉" : "Klik kartu berikutnya.";
+            updateQQ();
+        }
+
+        btnKual?.addEventListener('click', () => answerQQ('KUALITATIF'));
+        btnKuan?.addEventListener('click', () => answerQQ('KUANTITATIF'));
+
+        // init
+        showSlide(0);
+    </script>
+</body>
+
+</html>
