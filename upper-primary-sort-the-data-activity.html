@@ -1,0 +1,819 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Sort the Data! — Interaktif (Kualitatif/Kuantitatif & Primer/Sekunder)</title>
+    <style>
+        :root {
+            --bg1: #7c3aed;
+            --bg2: #06b6d4;
+            --bg3: #f59e0b;
+            --card: #ffffff;
+            --ink: #0f172a;
+            --muted: #475569;
+            --blue: #3b82f6;
+            --orange: #f97316;
+            --green: #22c55e;
+            --red: #ef4444;
+            --shadow: 0 18px 48px rgba(15, 23, 42, 0.18);
+            --radius: 22px;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", sans-serif;
+            color: var(--ink);
+            min-height: 100vh;
+            background:
+                radial-gradient(1200px 700px at 10% 10%, rgba(255, 255, 255, .26), transparent 60%),
+                radial-gradient(900px 600px at 90% 0%, rgba(255, 255, 255, .18), transparent 60%),
+                linear-gradient(135deg, var(--bg1), var(--bg2) 55%, var(--bg3));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 18px;
+        }
+
+        .wrap {
+            width: min(1100px, 100%);
+            display: grid;
+            gap: 12px;
+        }
+
+        .topbar {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            padding: 0 6px;
+        }
+
+        .pill {
+            background: rgba(255, 255, 255, .18);
+            border: 1px solid rgba(255, 255, 255, .25);
+            color: #fff;
+            padding: 10px 12px;
+            border-radius: 999px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, .08);
+            user-select: none;
+        }
+
+        .kbd {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .22);
+            border: 1px solid rgba(255, 255, 255, .28);
+            color: #fff;
+            white-space: nowrap;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 1px solid rgba(15, 23, 42, .10);
+        }
+
+        .head {
+            padding: 16px 18px 12px;
+            background: linear-gradient(90deg, rgba(59, 130, 246, .14), rgba(249, 115, 22, .14));
+            border-bottom: 1px solid rgba(15, 23, 42, .10);
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(20px, 2.4vw, 28px);
+            line-height: 1.15;
+            letter-spacing: .2px;
+        }
+
+        .sub {
+            margin: 4px 0 0;
+            color: var(--muted);
+            font-size: 14px;
+            max-width: 90ch;
+        }
+
+        .chips {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .chip {
+            background: rgba(15, 23, 42, .06);
+            border: 1px solid rgba(15, 23, 42, .10);
+            color: rgba(15, 23, 42, .84);
+            padding: 10px 12px;
+            border-radius: 999px;
+            font-weight: 900;
+            font-size: 13px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            user-select: none;
+        }
+
+        .chip.good {
+            border-color: rgba(34, 197, 94, .30);
+            background: rgba(34, 197, 94, .10);
+        }
+
+        .chip.bad {
+            border-color: rgba(239, 68, 68, .28);
+            background: rgba(239, 68, 68, .10);
+        }
+
+        /* body layout: row1 activity, row2 summary */
+        .body {
+            padding: 18px;
+            display: grid;
+            gap: 14px;
+        }
+
+        .grid2 {
+            display: grid;
+            grid-template-columns: 1.1fr .9fr;
+            gap: 14px;
+        }
+
+        @media (max-width: 920px) {
+            .grid2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            border-radius: 18px;
+            border: 1px solid rgba(15, 23, 42, .10);
+            background: rgba(15, 23, 42, .03);
+            padding: 14px;
+        }
+
+        .panel.white {
+            background: #fff;
+        }
+
+        .panel h2 {
+            margin: 0 0 8px;
+            font-size: 16px;
+            font-weight: 950;
+        }
+
+        .panel p {
+            margin: 0;
+            color: rgba(15, 23, 42, .80);
+            font-weight: 750;
+            line-height: 1.45;
+            font-size: 14px;
+        }
+
+        .cards {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .dataCard {
+            border-radius: 999px;
+            padding: 10px 12px;
+            border: 1px solid rgba(15, 23, 42, .12);
+            background: rgba(15, 23, 42, .03);
+            font-weight: 950;
+            cursor: pointer;
+            user-select: none;
+            transition: transform .08s ease, filter .12s ease, box-shadow .12s ease;
+            box-shadow: 0 10px 18px rgba(0, 0, 0, .08);
+        }
+
+        .dataCard:hover {
+            filter: brightness(1.03);
+        }
+
+        .dataCard:active {
+            transform: translateY(1px) scale(.99);
+        }
+
+        .dataCard.selected {
+            outline: 4px solid rgba(34, 197, 94, .35);
+            background: rgba(34, 197, 94, .12);
+            border-color: rgba(34, 197, 94, .30);
+        }
+
+        .dataCard.done {
+            opacity: .55;
+            cursor: default;
+            filter: saturate(.6);
+            outline: none;
+            box-shadow: none;
+        }
+
+        .choiceGroup {
+            display: grid;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        @media (max-width: 520px) {
+            .row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        button {
+            appearance: none;
+            border: none;
+            cursor: pointer;
+            border-radius: 16px;
+            padding: 12px 14px;
+            font-weight: 950;
+            font-size: 15px;
+            box-shadow: 0 14px 26px rgba(0, 0, 0, .14);
+            transition: transform .08s ease, filter .12s ease;
+            user-select: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        button:active {
+            transform: translateY(1px) scale(.99);
+        }
+
+        button:disabled {
+            opacity: .55;
+            cursor: not-allowed;
+            filter: saturate(.6);
+        }
+
+        .btnBlue {
+            background: linear-gradient(135deg, var(--blue), #93c5fd);
+            color: #fff;
+        }
+
+        .btnOrange {
+            background: linear-gradient(135deg, var(--orange), #fdba74);
+            color: #fff;
+        }
+
+        .btnGreen {
+            background: linear-gradient(135deg, var(--green), #a3e635);
+            color: #fff;
+        }
+
+        .btnRed {
+            background: linear-gradient(135deg, var(--red), #fb7185);
+            color: #fff;
+        }
+
+        .btnGhost {
+            box-shadow: none;
+            background: rgba(255, 255, 255, .18);
+            border: 1px solid rgba(255, 255, 255, .25);
+            color: #fff;
+            backdrop-filter: blur(8px);
+            padding: 10px 12px;
+            border-radius: 999px;
+            font-weight: 900;
+            font-size: 14px;
+        }
+
+        .selectedBox {
+            border-radius: 18px;
+            border: 1px solid rgba(15, 23, 42, .10);
+            background: #fff;
+            padding: 14px;
+        }
+
+        .selectedTitle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+
+        .bigSel {
+            font-size: 18px;
+            font-weight: 1000;
+            letter-spacing: .2px;
+        }
+
+        .legend {
+            color: rgba(15, 23, 42, .72);
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+        .feedback {
+            margin-top: 10px;
+            padding: 10px 12px;
+            border-radius: 14px;
+            border: 1px solid rgba(15, 23, 42, .10);
+            background: rgba(15, 23, 42, .03);
+            font-weight: 900;
+            min-height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .feedback.good {
+            background: rgba(34, 197, 94, .12);
+            border-color: rgba(34, 197, 94, .28);
+        }
+
+        .feedback.bad {
+            background: rgba(239, 68, 68, .10);
+            border-color: rgba(239, 68, 68, .25);
+        }
+
+        .foot {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding: 0 6px;
+        }
+
+        /* ===== bottom summary box ===== */
+        .summaryBox {
+            border-radius: 18px;
+            border: 1px solid rgba(15, 23, 42, .10);
+            background: linear-gradient(135deg, rgba(59, 130, 246, .10), rgba(249, 115, 22, .10));
+            padding: 14px;
+        }
+
+        .summaryTitle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .summaryTitle b {
+            font-size: 16px;
+            letter-spacing: .2px;
+        }
+
+        .summaryGrid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        @media (max-width: 980px) {
+            .summaryGrid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 520px) {
+            .summaryGrid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .miniCard {
+            border-radius: 16px;
+            background: rgba(255, 255, 255, .78);
+            border: 1px solid rgba(15, 23, 42, .10);
+            padding: 12px;
+        }
+
+        .miniCard .label {
+            font-weight: 1000;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .miniCard .desc {
+            font-size: 13px;
+            color: rgba(15, 23, 42, .78);
+            line-height: 1.35;
+            font-weight: 800;
+        }
+
+        .miniCard .ex {
+            margin-top: 8px;
+            font-size: 12px;
+            color: rgba(15, 23, 42, .70);
+            font-weight: 800;
+        }
+
+        .hintLine {
+            margin-top: 10px;
+            font-size: 13px;
+            color: rgba(15, 23, 42, .75);
+            font-weight: 900;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="topbar">
+            <div class="pill">🧩 <b>Sort the Data!</b> • 8 kartu • campur 2 dimensi</div>
+            <div class="pill">
+                ⌨️ Pintasan:
+                <span class="kbd">1</span> Kualitatif
+                <span class="kbd">2</span> Kuantitatif
+                <span class="kbd">3</span> Primer
+                <span class="kbd">4</span> Sekunder
+                <span class="kbd">R</span> Reset
+            </div>
+        </div>
+
+        <div class="card" role="application" aria-label="Sort the Data interaktif">
+            <div class="head">
+                <div>
+                    <h1>Sort the Data! 🧠✨</h1>
+                    <div class="sub">
+                        Pilih 1 kartu, lalu jawab <b>2 pertanyaan</b>:<br>
+                        (1) Ini <b>Kualitatif</b> (kategori/teks) atau <b>Kuantitatif</b> (angka)?<br>
+                        (2) Ini <b>Primer</b> (kita kumpulkan langsung) atau <b>Sekunder</b> (dari catatan/sistem)?<br>
+                        <br><b>Target kelas:</b> total kartu yang benar akan seimbang — 4 kualitatif, 4 kuantitatif, 4
+                        primer, 4 sekunder.
+                    </div>
+
+                </div>
+                <div class="chips">
+                    <span class="chip" id="chipProgress">Selesai: 0/8</span>
+                    <span class="chip good" id="chipScore">Skor: 0</span>
+                </div>
+            </div>
+
+            <div class="body">
+                <!-- ROW 1: activity -->
+                <div class="grid2">
+                    <!-- Left -->
+                    <div class="panel white">
+                        <h2>1) Pilih kartu data (klik)</h2>
+                        <p>Setelah memilih, tentukan kategorinya di panel kanan.</p>
+
+                        <div class="cards" id="cards">
+                            <!-- Kualitatif + Primer (2) -->
+                            <div class="dataCard" data-id="c1">“Warna favorit Nana adalah merah”</div>
+                            <div class="dataCard" data-id="c2">“Hobi dia membaca buku komik”</div>
+
+                            <!-- Kualitatif + Sekunder (2) -->
+                            <div class="dataCard" data-id="c3">“Komentar ‘keren!’ di proyek Scratch”</div>
+                            <div class="dataCard" data-id="c4">“Bapak kantin melaporkan menu kantin terlaris adalah
+                                bakso”</div>
+
+                            <!-- Kuantitatif + Primer (2) -->
+                            <div class="dataCard" data-id="c5">“Skor game Fandi adalah 120”</div>
+                            <div class="dataCard" data-id="c6">“Jumlah siswa hadir hari ini adalah 19 siswa”</div>
+
+                            <!-- Kuantitatif + Sekunder (2) -->
+                            <div class="dataCard" data-id="c7">“Skor tertinggi dari leaderboard game</div>
+                            <div class="dataCard" data-id="c8">“Nilai ulangan Matematika dari rapor”</div>
+                        </div>
+                    </div>
+
+                    <!-- Right -->
+                    <div class="panel">
+                        <div class="selectedBox">
+                            <div class="selectedTitle">
+                                <div class="bigSel" id="selText">Klik salah satu kartu dulu 👆</div>
+                                <button class="btnGreen" id="btnSubmit" type="button" disabled>✅ Cek & Kunci</button>
+                            </div>
+
+                            <div class="choiceGroup">
+                                <div class="row">
+                                    <button class="btnOrange" id="btnKual" type="button">📝 Kualitatif
+                                        (cerita/kategori)</button>
+                                    <button class="btnBlue" id="btnKuan" type="button">🔢 Kuantitatif (angka)</button>
+                                </div>
+                                <div class="row">
+                                    <button class="btnGreen" id="btnPrim" type="button">👀 Primer (kita
+                                        kumpulkan)</button>
+                                    <button class="btnRed" id="btnSek" type="button">📚 Sekunder (dari
+                                        catatan/sistem)</button>
+                                </div>
+                            </div>
+
+                            <div class="feedback" id="feedback">
+                                <span>Pilih 2 kategori dulu ya 🙂</span>
+                                <span class="chip">Hint: pilih 1 dari atas + 1 dari bawah</span>
+                            </div>
+                        </div>
+
+                        <div class="panel white" style="margin-top:12px">
+                            <h2>2) Hasil klasifikasi (otomatis)</h2>
+                            <p>Setelah kamu klik “Cek & Kunci”, kartu akan terkunci dan masuk daftar hasil.</p>
+                            <div id="results" class="legend" style="margin-top:10px">Belum ada hasil.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ROW 2: summary bottom -->
+                <div class="summaryBox" aria-label="Ringkasan jenis data">
+                    <div class="summaryTitle">
+                        <b>📌 Summary Jenis Data (Biar gak lupa!)</b>
+                        <span class="chip" style="margin:0">Langkah: Pilih kartu → Tentukan Kualitatif/Kuantitatif →
+                            Tentukan Primer/Sekunder</span>
+                    </div>
+
+                    <div class="summaryGrid">
+                        <div class="miniCard">
+                            <div class="label">📝 Kualitatif</div>
+                            <div class="desc">Data berupa <b>kategori / kata / jenis</b> (bukan angka).</div>
+                            <div class="ex">Contoh: warna, hobi, komentar.</div>
+                        </div>
+
+                        <div class="miniCard">
+                            <div class="label">🔢 Kuantitatif</div>
+                            <div class="desc">Data berupa <b>angka / jumlah / skor</b>.</div>
+                            <div class="ex">Contoh: 120, 15, jumlah siswa.</div>
+                        </div>
+
+                        <div class="miniCard">
+                            <div class="label">👀 Primer</div>
+                            <div class="desc">Data yang <b>kita kumpulkan langsung</b> (tanya/hitung sendiri).</div>
+                            <div class="ex">Contoh: tanya teman, hitung hadir.</div>
+                        </div>
+
+                        <div class="miniCard">
+                            <div class="label">📚 Sekunder</div>
+                            <div class="desc">Data dari <b>catatan / sistem / laporan</b> yang sudah ada.</div>
+                            <div class="ex">Contoh: rapor, leaderboard, laporan kantin.</div>
+                        </div>
+                    </div>
+
+                    <div class="hintLine">✅ Tips: kalau bingung “primer atau sekunder?”, tanyakan: <i>“Aku ambil datanya
+                            sendiri atau dari catatan yang sudah ada?”</i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const key = {
+            c1: {
+                text: "“Warna favorit Nana adalah merah”",
+                qq: "KUALITATIF", ps: "PRIMER",
+                explainQQ: "Warna = kategori/cerita → kualitatif.",
+                explainPS: "Tanya langsung ke teman → primer."
+            },
+
+            c2: {
+                text: "“Hobi dia membaca buku komik”",
+                qq: "KUALITATIF", ps: "PRIMER",
+                explainQQ: "Hobi = kategori/cerita → kualitatif.",
+                explainPS: "Tanya langsung ke teman → primer."
+            },
+
+            c3: {
+                text: "“Komentar ‘keren!’ di proyek Scratch”",
+                qq: "KUALITATIF", ps: "SEKUNDER",
+                explainQQ: "Komentar = teks/kategori → kualitatif.",
+                explainPS: "Diambil dari halaman proyek Scratch → sekunder."
+            },
+
+            c4: {
+                text: "“Bapak kanti melaporkan menu kantin terlaris adalah bakso”",
+                qq: "KUALITATIF", ps: "SEKUNDER",
+                explainQQ: "Nama menu = kategori → kualitatif.",
+                explainPS: "Dari laporan kantin → sekunder."
+            },
+
+            c5: {
+                text: "“Skor game Fandi adalah 120”",
+                qq: "KUANTITATIF", ps: "PRIMER",
+                explainQQ: "Ada angka → kuantitatif.",
+                explainPS: "Tanya langsung ke teman → primer."
+            },
+
+            c6: {
+                text: "“Jumlah siswa hadir hari ini adalah 19 siswa”",
+                qq: "KUANTITATIF", ps: "PRIMER",
+                explainQQ: "Ada angka/jumlah → kuantitatif.",
+                explainPS: "Dihitung langsung di kelas → primer."
+            },
+
+            c7: {
+                text: "“Skor tertinggi dari leaderboard game”",
+                qq: "KUANTITATIF", ps: "SEKUNDER",
+                explainQQ: "Ada angka (skor) → kuantitatif.",
+                explainPS: "Diambil dari leaderboard → sekunder."
+            },
+
+            c8: {
+                text: "“Nilai ulangan Matematika dari rapor”",
+                qq: "KUANTITATIF", ps: "SEKUNDER",
+                explainQQ: "Nilai berupa angka → kuantitatif.",
+                explainPS: "Dari rapor sekolah → sekunder."
+            }
+        };
+
+        const TOTAL = Object.keys(key).length;
+
+        let selectedId = null;
+        let pickQQ = null;
+        let pickPS = null;
+        let locked = new Set();
+        let score = 0;
+
+        const elCards = document.getElementById("cards");
+        const elSelText = document.getElementById("selText");
+        const elBtnSubmit = document.getElementById("btnSubmit");
+        const elFeedback = document.getElementById("feedback");
+        const elResults = document.getElementById("results");
+        const elChipProgress = document.getElementById("chipProgress");
+        const elChipScore = document.getElementById("chipScore");
+
+        const btnKual = document.getElementById("btnKual");
+        const btnKuan = document.getElementById("btnKuan");
+        const btnPrim = document.getElementById("btnPrim");
+        const btnSek = document.getElementById("btnSek");
+        const btnReset = document.getElementById("btnReset");
+
+        function setFeedback(type, text, right) {
+            elFeedback.classList.remove("good", "bad");
+            if (type) elFeedback.classList.add(type);
+            elFeedback.innerHTML = `<span>${text}</span><span class="chip ${type === 'good' ? 'good' : (type === 'bad' ? 'bad' : '')}">${right || ""}</span>`;
+        }
+
+        function updateTop() {
+            elChipProgress.textContent = `Selesai: ${locked.size}/${TOTAL}`;
+            elChipScore.textContent = `Skor: ${score}`;
+        }
+
+        function clearPicks() {
+            pickQQ = null;
+            pickPS = null;
+            btnKual.style.filter = "";
+            btnKuan.style.filter = "";
+            btnPrim.style.filter = "";
+            btnSek.style.filter = "";
+            elBtnSubmit.disabled = true;
+            setFeedback(null, "Pilih 2 kategori dulu ya 🙂", "Hint: pilih 1 atas + 1 bawah");
+        }
+
+        function selectCard(id) {
+            if (locked.has(id)) return;
+
+            selectedId = id;
+
+            document.querySelectorAll(".dataCard").forEach(c => c.classList.remove("selected"));
+            const node = document.querySelector(`.dataCard[data-id="${id}"]`);
+            if (!node) return;
+            node.classList.add("selected");
+
+            elSelText.textContent = `Kartu dipilih: ${key[id].text}`;
+            clearPicks();
+        }
+
+        function pick(type) {
+            if (!selectedId) {
+                setFeedback("bad", "Klik kartu dulu ya 🙂", "👆");
+                return;
+            }
+
+            if (type === "KUALITATIF" || type === "KUANTITATIF") {
+                pickQQ = type;
+                btnKual.style.filter = (type === "KUANTITATIF") ? "brightness(.50)" : "";
+                btnKuan.style.filter = (type === "KUALITATIF") ? "brightness(.50)" : "";
+            } else {
+                pickPS = type;
+                btnPrim.style.filter = (type === "SEKUNDER") ? "brightness(.50)" : "";
+                btnSek.style.filter = (type === "PRIMER") ? "brightness(.50)" : "";
+            }
+
+            if (pickQQ && pickPS) {
+                elBtnSubmit.disabled = false;
+                setFeedback(null, "Siap! Klik “Cek & Kunci” ya.", "✅");
+            }
+        }
+
+        function submit() {
+            if (!selectedId || !pickQQ || !pickPS) return;
+
+            const ans = key[selectedId];
+            const okQQ = (pickQQ === ans.qq);
+            const okPS = (pickPS === ans.ps);
+
+            const cardNode = document.querySelector(`.dataCard[data-id="${selectedId}"]`);
+            if (cardNode) cardNode.classList.remove("selected");
+
+            const gained = (okQQ ? 1 : 0) + (okPS ? 1 : 0);
+            score += gained;
+
+            locked.add(selectedId);
+            if (cardNode) cardNode.classList.add("done");
+
+            const line = document.createElement("div");
+            line.style.margin = "8px 0";
+            line.innerHTML =
+                `<b>${ans.text}</b><br>
+         • Kual/Kuan: <b>${okQQ ? "✅" : "❌"} ${ans.qq}</b> — ${ans.explainQQ}<br>
+         • Primer/Sekunder: <b>${okPS ? "✅" : "❌"} ${ans.ps}</b> — ${ans.explainPS}<br>
+         <span style="opacity:.8">Poin: +${gained}</span>`;
+
+            if (elResults.textContent.trim() === "Belum ada hasil.") elResults.textContent = "";
+            elResults.appendChild(line);
+
+            if (okQQ && okPS) {
+                setFeedback("good", "Mantap! Dua-duanya benar 🎉", `+${gained}`);
+            } else {
+                setFeedback("bad", "Hampir! Cek lagi penjelasannya ya 🙂", `+${gained}`);
+            }
+
+            updateTop();
+
+            selectedId = null;
+            pickQQ = null;
+            pickPS = null;
+            elSelText.textContent = locked.size === TOTAL ? "Selesai! Semua kartu sudah diklasifikasikan 🎉" : "Pilih kartu berikutnya 👈";
+            elBtnSubmit.disabled = true;
+
+            if (locked.size === TOTAL) {
+                const end = document.createElement("div");
+                end.style.marginTop = "12px";
+                end.innerHTML = `<hr style="border:none;border-top:1px solid rgba(15,23,42,.12);margin:12px 0">
+          <b>Kesimpulan:</b> Kualitatif = kategori/teks, Kuantitatif = angka. <br>
+          <b>Catatan:</b> Primer = kumpulkan langsung. Sekunder = dari catatan/sistem.`;
+                elResults.appendChild(end);
+            }
+        }
+
+        function resetAll() {
+            selectedId = null;
+            pickQQ = null;
+            pickPS = null;
+            locked = new Set();
+            score = 0;
+
+            document.querySelectorAll(".dataCard").forEach(c => {
+                c.classList.remove("selected", "done");
+            });
+            elSelText.textContent = "Klik salah satu kartu dulu 👆";
+            elResults.textContent = "Belum ada hasil.";
+            updateTop();
+            clearPicks();
+        }
+
+        elCards.addEventListener("click", (e) => {
+            const card = e.target.closest(".dataCard");
+            if (!card) return;
+            const id = card.getAttribute("data-id");
+            selectCard(id);
+        });
+
+        btnKual.addEventListener("click", () => pick("KUALITATIF"));
+        btnKuan.addEventListener("click", () => pick("KUANTITATIF"));
+        btnPrim.addEventListener("click", () => pick("PRIMER"));
+        btnSek.addEventListener("click", () => pick("SEKUNDER"));
+        elBtnSubmit.addEventListener("click", () => submit());
+        btnReset.addEventListener("click", () => resetAll());
+
+        document.addEventListener("keydown", (e) => {
+            const k = e.key.toLowerCase();
+            if (k === "1") pick("KUALITATIF");
+            if (k === "2") pick("KUANTITATIF");
+            if (k === "3") pick("PRIMER");
+            if (k === "4") pick("SEKUNDER");
+            if (k === "enter") submit();
+            if (k === "r") resetAll();
+        });
+
+        updateTop();
+        clearPicks();
+    </script>
+</body>
+
+</html>
