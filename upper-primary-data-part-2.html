@@ -1,0 +1,702 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Upper Primary – Dari Data ke Informasi</title>
+
+    <style>
+        :root {
+            --bg1: #7c3aed;
+            --bg2: #06b6d4;
+            --bg3: #f59e0b;
+            --card: #ffffff;
+            --ink: #0f172a;
+            --muted: #475569;
+            --accent: #22c55e;
+            --warn: #f97316;
+            --radius: 22px;
+            --shadow: 0 18px 48px rgba(15, 23, 42, .18);
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+            min-height: 100vh;
+            background:
+                radial-gradient(1200px 700px at 10% 10%, rgba(255, 255, 255, .25), transparent 60%),
+                radial-gradient(900px 600px at 90% 0%, rgba(255, 255, 255, .18), transparent 60%),
+                linear-gradient(135deg, var(--bg1), var(--bg2) 55%, var(--bg3));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            color: var(--ink);
+        }
+
+        /* ===== ACCESS GATE ===== */
+        #accessGate {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, .85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        #accessGate .box {
+            background: #fff;
+            padding: 26px 28px;
+            border-radius: 18px;
+            width: min(360px, 90%);
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        #accessGate input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 10px;
+            border: 1px solid #cbd5f5;
+            text-align: center;
+            margin: 12px 0;
+            text-transform: uppercase;
+        }
+
+        #accessGate button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            background: var(--accent);
+            color: #fff;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        #accessError {
+            display: none;
+            margin-top: 8px;
+            color: #ef4444;
+            font-weight: 700;
+        }
+
+        /* ===== SLIDE DECK ===== */
+        .deck {
+            width: min(1100px, 100%);
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 18px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .pill {
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-weight: 800;
+            font-size: 14px;
+            background: #eef2ff;
+        }
+
+        .progress {
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        .slide {
+            display: none;
+            padding: 30px 34px;
+        }
+
+        .slide.active {
+            display: block
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: #fde68a;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 32px
+        }
+
+        h2 {
+            margin: 0 0 12px;
+            font-size: 26px
+        }
+
+        p {
+            font-size: 18px;
+            color: var(--muted)
+        }
+
+        .big {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--ink)
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+            margin-top: 16px;
+        }
+
+        .card {
+            padding: 16px;
+            border-radius: 16px;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            background: #eef2ff
+        }
+
+        .summary {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 16px;
+            padding: 18px;
+            margin-top: 18px;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 18px;
+            background: #f1f5f9;
+        }
+
+        button {
+            padding: 10px 16px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .btn {
+            background: var(--accent);
+            color: #fff
+        }
+
+        .btnGhost {
+            background: #e5e7eb
+        }
+
+        /* ====================== */
+        .recall-card.active {
+            background: #dcfce7;
+            border-color: #86efac;
+        }
+
+        #recallText {
+            white-space: pre-line;
+        }
+
+        .context-card.active {
+            background: #ecfeff;
+            border-color: #67e8f9;
+        }
+
+        .step-card.active {
+            background: #dcfce7;
+            border-color: #86efac;
+        }
+
+        #stepText {
+            white-space: normal;
+            line-height: 1.5;
+            font-size: 18px;
+            color: var(--ink);
+        }
+
+        #stepText b {
+            color: var(--ink);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ACCESS GATE -->
+    <div id="accessGate">
+        <div class="box">
+            <h2>🔒 Access Code</h2>
+            <p>Masukkan kode untuk membuka materi</p>
+            <input id="accessInput" placeholder="" oninput="this.value=this.value.toUpperCase()" />
+            <button onclick="checkAccess()">Masuk</button>
+            <div id="accessError">Kode salah</div>
+        </div>
+    </div>
+
+    <div class="deck">
+
+        <div class="topbar">
+            <div class="pill">📊 Dari Data ke Informasi</div>
+            <div class="progress" id="progress"></div>
+        </div>
+
+        <!-- SLIDE 1 -->
+        <div class="slide active">
+            <span class="badge">WELCOME BACK</span>
+            <h1>Dari Data Menjadi Informasi</h1>
+            <p class="big">Kita lanjutkan perjalanan dari sesi sebelumnya 🚀</p>
+        </div>
+
+        <!-- SLIDE 2 -->
+        <div class="slide">
+            <span class="badge">RECALL</span>
+            <h2>Masih Ingat Jenis Data?</h2>
+            <p class="big">Klik kartunya untuk melihat penjelasan 👇</p>
+
+            <div class="cards">
+                <div class="card recall-card" data-type="kual">
+                    📝 Kualitatif
+                </div>
+                <div class="card recall-card" data-type="kuan">
+                    🔢 Kuantitatif
+                </div>
+                <div class="card recall-card" data-type="primer">
+                    👀 Primer
+                </div>
+                <div class="card recall-card" data-type="sekunder">
+                    📚 Sekunder
+                </div>
+            </div>
+
+            <!-- Explanation box -->
+            <div id="recallExplain" class="summary" style="display:none">
+                <p id="recallText"></p>
+            </div>
+        </div>
+
+
+        <!-- SLIDE 3 -->
+        <div class="slide">
+            <span class="badge">REVIEW</span>
+            <h2>Satu Data Bisa Punya 2 Jenis</h2>
+
+            <p class="big">
+                Satu data bisa kita lihat dari <b>2 sisi</b>:
+            </p>
+
+            <div class="summary">
+                <p>
+                    <b>Contoh:</b> Jumlah siswa di kelas
+                </p>
+                <ul>
+                    <li>
+                        🔢 <b>Kuantitatif</b> → karena berbentuk <b>angka</b>
+                    </li>
+                    <li>
+                        👀 <b>Primer</b> → karena kita <b>menghitung langsung</b> di kelas
+                    </li>
+                </ul>
+            </div>
+
+            <p style="margin-top:14px">
+                👉 Jadi, satu data <b>tidak harus memilih satu jenis saja</b>.
+            </p>
+        </div>
+
+        <!-- SLIDE 4 -->
+        <div class="slide">
+            <h2>Data Ada di Sekitar Kita</h2>
+            <p class="big">Klik salah satu tempat di bawah ini 👇</p>
+
+            <div class="cards">
+                <div class="card context-card" data-context="rumah">
+                    🏠 Di Rumah
+                    <br><small>kegiatan sehari-hari</small>
+                </div>
+                <div class="card context-card" data-context="sekolah">
+                    🏫 Di Sekolah
+                    <br><small>belajar & aktivitas kelas</small>
+                </div>
+                <div class="card context-card" data-context="bermain">
+                    🎮 Saat Bermain
+                    <br><small>game & permainan</small>
+                </div>
+            </div>
+
+            <!-- Explanation box -->
+            <div id="contextExplain" class="summary" style="display:none">
+                <p id="contextText"></p>
+            </div>
+        </div>
+
+        <!-- SLIDE 5 -->
+        <div class="slide">
+            <span class="badge">IMPORTANT</span>
+            <h2>Data Itu Masih Mentah</h2>
+
+            <p class="big">Data = bahan mentah (belum jadi cerita).</p>
+
+            <div class="summary">
+                <p><b>Contoh data mentah:</b></p>
+                <p>8, 5, 3</p>
+
+                <p style="margin-top:10px"><b>Kita belum tahu artinya</b> kalau cuma lihat angka.</p>
+
+                <p style="margin-top:10px">
+                    Kalau kita olah, baru jadi <b>informasi</b>:
+                    <br>“Yang paling banyak adalah 8.”
+                </p>
+            </div>
+
+            <p style="margin-top:14px">
+                👉 Jadi, <b>data perlu diolah</b> supaya kita bisa paham maksudnya.
+            </p>
+        </div>
+
+
+        <!-- SLIDE 6 -->
+        <div class="slide">
+            <span class="badge">PROCESS</span>
+            <h2>Bagaimana Data Jadi Informasi?</h2>
+            <p class="big">Klik langkahnya satu per satu 👇</p>
+
+            <div class="cards" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));">
+                <div class="card step-card" data-step="1">1) 📥 Kumpulkan</div>
+                <div class="card step-card" data-step="2">2) 🧺 Kelompokkan</div>
+                <div class="card step-card" data-step="3">3) 🔢 Hitung</div>
+                <div class="card step-card" data-step="4">4) ✅ Simpulkan</div>
+            </div>
+
+            <div id="stepExplain" class="summary" style="display:none">
+                <p id="stepText"></p>
+            </div>
+        </div>
+
+        <!-- SLIDE 7 (LATIHAN) -->
+        <div class="slide">
+            <span class="badge">LATIHAN</span>
+            <h2>Latihan 4 Langkah: Dari Data ke Informasi</h2>
+            <p class="big">Klik langkahnya berurutan ya 👇</p>
+
+            <div class="summary">
+                <p><b>Mini Kasus:</b> Guru tanya 8 siswa: “Kamu bangun jam berapa pagi ini?”</p>
+                <p style="margin:8px 0"><b>Jawaban siswa:</b> 05.30, 06.00, 05.30, 06.30, 06.00, 05.00, 06.00, 05.30</p>
+                <p style="margin:8px 0; color:var(--muted)"><b>Catatan:</b> Ini data <b>kuantitatif</b> (angka waktu)
+                    dan <b>primer</b> (ditanya langsung).</p>
+            </div>
+
+            <div class="cards" style="grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); margin-top:14px">
+                <div class="card practice-step" data-pstep="1">1) 📥 Kumpulkan</div>
+                <div class="card practice-step" data-pstep="2">2) 🧺 Kelompokkan</div>
+                <div class="card practice-step" data-pstep="3">3) 🔢 Hitung</div>
+                <div class="card practice-step" data-pstep="4">4) ✅ Simpulkan</div>
+            </div>
+
+            <div id="practiceBox" class="summary" style="display:none; margin-top:14px">
+                <p id="practiceText"></p>
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap">
+                <button class="btnGhost" type="button" id="practiceReset">🔄 Reset</button>
+                <div class="pill" style="background:#eef2ff">Target: selesaikan sampai “Simpulkan” ✅</div>
+            </div>
+        </div>
+
+
+
+        <!-- SLIDE 8 -->
+        <div class="slide">
+            <span class="badge">WHY</span>
+            <h2>Kenapa Kesimpulan Itu Penting?</h2>
+
+            <p class="big">
+                Kesimpulan membantu kita <b>mengerti arti data</b>.
+            </p>
+
+            <div class="summary">
+                <ul>
+                    <li>
+                        🧠 <b>Membantu memahami kondisi</b><br>
+                        Kita jadi tahu <b>apa yang sedang terjadi</b>.
+                        <br>
+                        <small>Contoh: “Sebagian besar siswa bangun jam 05.30–06.00.”</small>
+                    </li>
+
+                    <li style="margin-top:10px">
+                        🎯 <b>Membantu mengambil keputusan</b><br>
+                        Kita bisa menentukan <b>apa yang sebaiknya dilakukan</b>.
+                        <br>
+                        <small>Contoh: “Sekolah bisa mulai pelajaran lebih pagi.”</small>
+                    </li>
+                </ul>
+            </div>
+
+            <p style="margin-top:14px">
+                👉 Tanpa kesimpulan, data hanya <b>angka dan daftar</b> saja.
+            </p>
+        </div>
+
+
+        <!-- SLIDE 9 -->
+        <div class="slide">
+            <span class="badge">SUMMARY</span>
+            <h2>Apa yang Kita Pelajari Hari Ini?</h2>
+
+            <div class="summary">
+                <ul>
+                    <li>
+                        🌍 <b>Data ada di sekitar kita</b><br>
+                        Data bisa kita temukan di rumah, di sekolah, dan saat bermain.
+                    </li>
+
+                    <li style="margin-top:10px">
+                        🔄 <b>Data bisa diolah</b><br>
+                        Data dikumpulkan, dikelompokkan, dan dihitung supaya lebih rapi.
+                    </li>
+
+                    <li style="margin-top:10px">
+                        🧠 <b>Data menjadi informasi</b><br>
+                        Setelah diolah, data bisa diceritakan dalam bentuk kesimpulan.
+                    </li>
+                </ul>
+            </div>
+
+            <p class="big" style="margin-top:14px">
+                👉 Sekarang kamu tahu cara <b>mengubah data menjadi informasi</b> 🎉
+            </p>
+        </div>
+
+
+        <!-- SLIDE 13 -->
+        <div class="slide">
+            <span class="badge">NEXT</span>
+            <h2>Siap Jadi Detektif Data? 🕵️‍♀️</h2>
+            <p class="big">Lanjut ke aktivitas berikutnya!</p>
+        </div>
+
+        <div class="nav">
+            <button class="btnGhost" onclick="prev()">⬅️</button>
+            <button class="btn" onclick="next()">➡️</button>
+        </div>
+
+    </div>
+
+    <script>
+        /* ACCESS */
+        const ACCESS_CODE = "RGMDSUP25";
+        function checkAccess() {
+            const v = document.getElementById("accessInput").value.trim().toUpperCase();
+            if (v === ACCESS_CODE) {
+                document.getElementById("accessGate").style.display = "none";
+            } else {
+                document.getElementById("accessError").style.display = "block";
+            }
+        }
+
+        /* SLIDES */
+        const slides = [...document.querySelectorAll(".slide")];
+        let idx = 0;
+        function render() {
+            slides.forEach(s => s.classList.remove("active"));
+            slides[idx].classList.add("active");
+            document.getElementById("progress").textContent =
+                `Slide ${idx + 1} / ${slides.length}`;
+        }
+
+        const recallExplain = {
+            kual: "📝 Data kualitatif adalah data berupa CERITA atau KATEGORI.\n\nContoh:\n• Warna favorit teman\n• Hobi yang disukai\n\nBiasanya TIDAK menggunakan angka.",
+            kuan: "🔢 Data kuantitatif adalah data berupa ANGKA.\n\nContoh:\n• Jumlah siswa di kelas\n• Skor permainan\n\nData ini bisa DIHITUNG.",
+            primer: "👀 Data primer adalah data yang KITA KUMPULKAN SENDIRI.\n\nContoh:\n• Tanya langsung ke teman\n• Menghitung sendiri di kelas.",
+            sekunder: "📚 Data sekunder adalah data yang SUDAH ADA.\n\nContoh:\n• Data di buku\n• Catatan sekolah\n• Data di sistem."
+        };
+
+        const recallCards = document.querySelectorAll(".recall-card");
+        const recallBox = document.getElementById("recallExplain");
+        const recallText = document.getElementById("recallText");
+
+        recallCards.forEach(card => {
+            card.addEventListener("click", () => {
+                const type = card.dataset.type;
+
+                recallCards.forEach(c => c.classList.remove("active"));
+                card.classList.add("active");
+
+                recallText.textContent = recallExplain[type];
+                recallBox.style.display = "block";
+            });
+        });
+
+        const contextExplain = {
+            rumah: `
+    🏠 <b>Data di Rumah</b><br><br>
+    Di rumah, kita sering menemukan data tanpa sadar.<br><br>
+    <b>Contoh:</b><br>
+    • Jumlah anggota keluarga<br>
+    • Waktu bangun tidur<br>
+    • Jenis makanan saat sarapan<br><br>
+    Semua ini bisa kita amati dan catat sendiri.
+  `,
+            sekolah: `
+    🏫 <b>Data di Sekolah</b><br><br>
+    Data di sekolah membantu kegiatan belajar.<br><br>
+    <b>Contoh:</b><br>
+    • Jumlah siswa hadir<br>
+    • Nilai ulangan<br>
+    • Buku yang dipinjam di perpustakaan
+  `,
+            bermain: `
+    🎮 <b>Data Saat Bermain</b><br><br>
+    Saat bermain, kita juga menghasilkan data.<br><br>
+    <b>Contoh:</b><br>
+    • Skor permainan<br>
+    • Level yang dicapai<br>
+    • Waktu bermain
+  `
+        };
+
+
+        const contextCards = document.querySelectorAll(".context-card");
+        const contextBox = document.getElementById("contextExplain");
+        const contextText = document.getElementById("contextText");
+
+        contextCards.forEach(card => {
+            card.addEventListener("click", () => {
+                const key = card.dataset.context;
+
+                contextCards.forEach(c => c.classList.remove("active"));
+                card.classList.add("active");
+
+                contextText.innerHTML = contextExplain[key];
+                contextBox.style.display = "block";
+            });
+        });
+
+        const stepExplain = {
+            1: `
+    <b>📥 Kumpulkan</b><br>
+    Kita ambil data dulu.<br><br>
+    <b>Contoh:</b> Tanya hobi teman: game / membaca / olahraga.
+  `,
+            2: `
+    <b>🧺 Kelompokkan</b><br>
+    Data yang sama kita kumpulkan jadi satu kelompok.<br><br>
+    <b>Contoh:</b> Semua yang jawab “game” jadi satu kelompok.
+  `,
+            3: `
+    <b>🔢 Hitung</b><br>
+    Kita hitung jumlah tiap kelompok.<br><br>
+    <b>Contoh:</b> Game = 8 orang, Membaca = 5 orang.
+  `,
+            4: `
+    <b>✅ Simpulkan</b><br>
+    Kita buat kalimat yang menjelaskan arti data.<br><br>
+    <b>Contoh:</b> “Yang paling banyak dipilih adalah game.”
+  `
+        };
+
+        const stepCards = document.querySelectorAll(".step-card");
+        const stepBox = document.getElementById("stepExplain");
+        const stepText = document.getElementById("stepText");
+
+        stepCards.forEach(card => {
+            card.addEventListener("click", () => {
+                const s = card.dataset.step;
+
+                stepCards.forEach(c => c.classList.remove("active"));
+                card.classList.add("active");
+
+                stepText.innerHTML = stepExplain[s];
+                stepBox.style.display = "block";
+            });
+        });
+
+        const practiceSteps = {
+            1: `
+    <b>📥 Kumpulkan</b><br>
+    Kita sudah mengumpulkan data dari 8 siswa.<br><br>
+    <b>Data mentah:</b><br>
+    05.30, 06.00, 05.30, 06.30, 06.00, 05.00, 06.00, 05.30
+  `,
+            2: `
+    <b>🧺 Kelompokkan</b><br>
+    Kita kelompokkan jam yang sama jadi satu kelompok.<br><br>
+    <b>Kelompok:</b><br>
+    • 05.00 → (05.00)<br>
+    • 05.30 → (05.30, 05.30, 05.30)<br>
+    • 06.00 → (06.00, 06.00, 06.00)<br>
+    • 06.30 → (06.30)
+  `,
+            3: `
+    <b>🔢 Hitung</b><br>
+    Sekarang kita hitung jumlah tiap kelompok.<br><br>
+    <b>Hasil hitung:</b><br>
+    • 05.00 = 1 siswa<br>
+    • 05.30 = 3 siswa<br>
+    • 06.00 = 3 siswa<br>
+    • 06.30 = 1 siswa
+  `,
+            4: `
+    <b>✅ Simpulkan</b><br>
+    Kita ubah hasil hitung menjadi informasi (cerita yang jelas).<br><br>
+    <b>Kesimpulan:</b><br>
+    “Jam bangun yang paling sering muncul adalah <b>05.30</b> dan <b>06.00</b> (masing-masing 3 siswa).”
+  `
+        };
+
+        const pCards = document.querySelectorAll(".practice-step");
+        const pBox = document.getElementById("practiceBox");
+        const pText = document.getElementById("practiceText");
+        const pReset = document.getElementById("practiceReset");
+
+        pCards.forEach(card => {
+            card.addEventListener("click", () => {
+                const s = card.dataset.pstep;
+
+                pCards.forEach(c => c.classList.remove("active"));
+                card.classList.add("active");
+
+                pText.innerHTML = practiceSteps[s];
+                pBox.style.display = "block";
+            });
+        });
+
+        pReset.addEventListener("click", () => {
+            pCards.forEach(c => c.classList.remove("active"));
+            pBox.style.display = "none";
+            pText.innerHTML = "";
+        });
+
+
+
+        function next() { if (idx < slides.length - 1) { idx++; render() } }
+        function prev() { if (idx > 0) { idx--; render() } }
+        render();
+    </script>
+
+</body>
+
+</html>
