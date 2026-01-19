@@ -1,0 +1,1123 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Sesi 27 • Mengenal Variabel (Scratch) • SD 4–6</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Smooth slide feel */
+        .slide {
+            display: none;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        .kbd {
+            border: 1px solid rgba(255, 255, 255, .25);
+            padding: .15rem .45rem;
+            border-radius: .5rem;
+            background: rgba(255, 255, 255, .08);
+        }
+
+        .card {
+            background: rgba(255, 255, 255, .08);
+            border: 1px solid rgba(255, 255, 255, .14);
+            border-radius: 1.25rem;
+        }
+
+        .btn {
+            border-radius: 9999px;
+            padding: .6rem 1rem;
+            font-weight: 700;
+        }
+
+        .btn-primary {
+            background: #facc15;
+            color: #0f172a;
+        }
+
+        .btn-ghost {
+            background: rgba(255, 255, 255, .10);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, .18);
+        }
+
+        .pill {
+            border: 1px solid rgba(255, 255, 255, .18);
+            background: rgba(255, 255, 255, .08);
+            border-radius: 9999px;
+            padding: .25rem .6rem;
+        }
+
+        .toast {
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 18px;
+            z-index: 50;
+        }
+
+        .toast>div {
+            background: rgba(2, 6, 23, .92);
+            border: 1px solid rgba(255, 255, 255, .18);
+            color: white;
+            padding: .75rem 1rem;
+            border-radius: 9999px;
+        }
+
+        .note {
+            display: none;
+        }
+
+        .note.show {
+            display: block;
+        }
+
+        .shake {
+            animation: shake .25s ease-in-out 0s 2;
+        }
+
+        @keyframes shake {
+            0% {
+                transform: translateX(0)
+            }
+
+            25% {
+                transform: translateX(-6px)
+            }
+
+            50% {
+                transform: translateX(6px)
+            }
+
+            75% {
+                transform: translateX(-4px)
+            }
+
+            100% {
+                transform: translateX(0)
+            }
+        }
+
+        /* progress bar */
+        .bar {
+            height: 8px;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, .14);
+            overflow: hidden;
+        }
+
+        .bar>div {
+            height: 100%;
+            width: 0%;
+            background: #22c55e;
+            border-radius: 9999px;
+            transition: width .25s ease;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-950 text-white min-h-screen">
+    <!-- Access Gate -->
+    <div id="accessGate" class="fixed inset-0 z-[100] grid place-items-center bg-slate-950">
+        <div class="card p-6 w-[92vw] max-w-md text-center">
+            <div class="text-2xl font-extrabold">Masukkan Kode Akses</div>
+            <p class="mt-2 text-white/70 text-sm">
+                Kode dibagikan oleh guru.
+            </p>
+
+            <input id="accessInput" type="text" placeholder="KODE AKSES"
+                class="mt-4 w-full rounded-xl bg-slate-900 border border-white/20 px-4 py-3 text-center text-lg font-bold tracking-widest outline-none"
+                autocomplete="off" />
+
+            <button id="accessBtn" class="btn btn-primary w-full mt-4">
+                Buka Slide
+            </button>
+
+            <div id="accessError" class="mt-3 text-sm text-red-300 hidden">
+                Kode salah. Coba lagi.
+            </div>
+        </div>
+
+        <script>
+            (() => {
+                const ACCESS_CODE = "RGMDSUP25";
+                const STORAGE_KEY = "rgmds_access_ok";
+
+                const gate = document.getElementById("accessGate");
+                const input = document.getElementById("accessInput");
+                const btn = document.getElementById("accessBtn");
+                const err = document.getElementById("accessError");
+
+                // Auto uppercase saat mengetik
+                input.addEventListener("input", () => {
+                    input.value = input.value.toUpperCase();
+                });
+
+                function unlock() {
+                    gate.classList.add("hidden");
+                    localStorage.setItem(STORAGE_KEY, "1");
+                }
+
+                function shake(el) {
+                    el.classList.add("shake");
+                    setTimeout(() => el.classList.remove("shake"), 400);
+                }
+
+                btn.addEventListener("click", () => {
+                    if (input.value.trim() === ACCESS_CODE) {
+                        unlock();
+                    } else {
+                        err.classList.remove("hidden");
+                        shake(gate.querySelector(".card"));
+                    }
+                });
+
+                input.addEventListener("keydown", (e) => {
+                    if (e.key === "Enter") btn.click();
+                });
+
+                // Auto-unlock kalau sudah pernah masuk
+                if (localStorage.getItem(STORAGE_KEY) === "1") {
+                    unlock();
+                }
+            })();
+        </script>
+
+    </div>
+
+
+    <!-- Top Bar -->
+    <header class="sticky top-0 z-40 bg-slate-950/75 backdrop-blur border-b border-white/10">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-3">
+            <div class="flex items-center gap-2">
+                <div
+                    class="w-10 h-10 rounded-2xl bg-white/10 border border-white/10 grid place-items-center font-black">
+                    27</div>
+                <div>
+                    <div class="font-extrabold leading-tight">Mengenal Variabel (Scratch)</div>
+                    <div class="text-xs text-white/70">SD Kelas 4–6 • Interaktif Slides</div>
+                </div>
+            </div>
+
+            <div class="ml-auto flex items-center gap-2">
+                <span class="hidden sm:inline text-xs text-white/70">Navigasi:</span>
+                <span class="text-xs pill"><span class="kbd">←</span> <span class="kbd">→</span></span>
+            </div>
+        </div>
+        <div class="max-w-6xl mx-auto px-4 pb-3">
+            <div class="flex items-center gap-3">
+                <div class="bar flex-1">
+                    <div id="progressFill"></div>
+                </div>
+                <div class="text-xs text-white/70"><span id="counter">1</span>/<span id="total">1</span></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Slides -->
+    <main class="max-w-6xl mx-auto px-4 py-6">
+        <!-- Slide 1: Title -->
+        <section class="slide active" data-title="Pembuka">
+            <div class="grid md:grid-cols-2 gap-6 items-stretch">
+                <div class="card p-6">
+                    <div class="flex gap-2 flex-wrap">
+                        <span class="pill text-xs">Sesi 27</span>
+                        <span class="pill text-xs">Scratch</span>
+                        <span class="pill text-xs">Variabel</span>
+                        <span class="pill text-xs">Skor • Nama • Benar/Salah</span>
+                    </div>
+                    <h1 class="mt-4 text-3xl md:text-4xl font-extrabold leading-tight">
+                        Variabel itu <span class="text-yellow-300">Kotak Ajaib</span> di dalam Game 🎮✨
+                    </h1>
+                    <p class="mt-3 text-white/80 text-lg">
+                        Hari ini kita akan belajar cara menyimpan dan mengubah data (misalnya skor) agar game menjadi
+                        lebih hidup.
+                    </p>
+
+                    <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div class="card p-4">
+                            <div class="text-sm font-bold">Tujuan 1</div>
+                            <div class="text-sm text-white/80 mt-1">Tahu apa itu variabel.</div>
+                        </div>
+                        <div class="card p-4">
+                            <div class="text-sm font-bold">Tujuan 2</div>
+                            <div class="text-sm text-white/80 mt-1">Kenal jenis variabel.</div>
+                        </div>
+                        <div class="card p-4">
+                            <div class="text-sm font-bold">Tujuan 3</div>
+                            <div class="text-sm text-white/80 mt-1">Bikin skor berubah.</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex flex-wrap gap-2">
+                        <button class="btn btn-primary" data-next>Mulai ▶</button>
+                        <button class="btn btn-ghost" data-jump="6">Langsung ke Praktik 🧩</button>
+                    </div>
+
+                    <div class="note mt-5 card p-4 text-sm text-white/85">
+                        <div class="font-bold mb-1">Catatan Guru</div>
+                        Pastikan semua siswa sudah membuka Scratch dan bisa melihat tab <b>Variables</b>. Jika ada yang
+                        belum, bantu 1–2 siswa dulu agar tidak tertinggal.
+                    </div>
+                </div>
+
+                <div class="card p-6">
+                    <div class="text-sm font-bold">Aturan Main Kelas</div>
+                    <ul class="mt-3 space-y-2 text-white/85">
+                        <li>✅ Angkat tangan kalau mau bertanya.</li>
+                        <li>✅ Coba dulu, kalau error baru panggil guru.</li>
+                        <li>✅ Saat teman presentasi, kita fokus.</li>
+                    </ul>
+
+                    <div class="mt-6 card p-5">
+                        <div class="font-bold">Apa yang Dibutuhkan</div>
+                        <ul class="mt-2 text-sm text-white/85 space-y-1">
+                            <li>• Laptop/PC (atau tablet) + Scratch</li>
+                            <li>• Mouse (kalau ada, lebih enak)</li>
+                            <li>• Semangat main dan coba-coba 😄</li>
+                        </ul>
+                    </div>
+
+                    <div class="note mt-5 card p-4 text-sm text-white/85">
+                        <div class="font-bold mb-1">Catatan Guru</div>
+                        Jika kelas ramai, pakai “mode 3-2-1”: 3 detik diam, 2 tepuk, 1 fokus.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 2: Ice Breaking -->
+        <section class="slide" data-title="Ice Breaking">
+            <div class="card p-6">
+                <div class="flex items-start gap-3 flex-wrap">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-yellow-300 text-slate-900 grid place-items-center font-black text-xl">
+                        🎯</div>
+                    <div class="flex-1">
+                        <h2 class="text-2xl font-extrabold">Ice Breaking: “Kotak Rahasia”</h2>
+                        <p class="mt-2 text-white/80">
+                            Jawab cepat! Pilih mana yang biasanya ada di game.
+                        </p>
+                    </div>
+                    <div class="ml-auto flex gap-2">
+                        <button class="btn btn-ghost text-sm" id="iceReset">Reset</button>
+                        <button class="btn btn-primary text-sm" data-next>Lanjut ▶</button>
+                    </div>
+                </div>
+
+                <div class="mt-6 grid md:grid-cols-3 gap-4">
+                    <div class="card p-5">
+                        <div class="font-bold">Pertanyaan 1</div>
+                        <div class="mt-2 text-white/85">“Skor pemain” itu data apa?</div>
+                        <div class="mt-3 flex flex-col gap-2">
+                            <button class="btn btn-ghost text-left ice" data-q="1" data-a="angka">Angka 🔢</button>
+                            <button class="btn btn-ghost text-left ice" data-q="1" data-a="teks">Teks ✍️</button>
+                            <button class="btn btn-ghost text-left ice" data-q="1" data-a="logika">Benar/Salah
+                                ✅❌</button>
+                        </div>
+                        <div class="mt-3 text-sm" id="iceAns1"></div>
+                    </div>
+
+                    <div class="card p-5">
+                        <div class="font-bold">Pertanyaan 2</div>
+                        <div class="mt-2 text-white/85">“Nama pemain” itu data apa?</div>
+                        <div class="mt-3 flex flex-col gap-2">
+                            <button class="btn btn-ghost text-left ice" data-q="2" data-a="angka">Angka 🔢</button>
+                            <button class="btn btn-ghost text-left ice" data-q="2" data-a="teks">Teks ✍️</button>
+                            <button class="btn btn-ghost text-left ice" data-q="2" data-a="logika">Benar/Salah
+                                ✅❌</button>
+                        </div>
+                        <div class="mt-3 text-sm" id="iceAns2"></div>
+                    </div>
+
+                    <div class="card p-5">
+                        <div class="font-bold">Pertanyaan 3</div>
+                        <div class="mt-2 text-white/85">“Apakah tombol ditekan?” itu data apa?</div>
+                        <div class="mt-3 flex flex-col gap-2">
+                            <button class="btn btn-ghost text-left ice" data-q="3" data-a="angka">Angka 🔢</button>
+                            <button class="btn btn-ghost text-left ice" data-q="3" data-a="teks">Teks ✍️</button>
+                            <button class="btn btn-ghost text-left ice" data-q="3" data-a="logika">Benar/Salah
+                                ✅❌</button>
+                        </div>
+                        <div class="mt-3 text-sm" id="iceAns3"></div>
+                    </div>
+                </div>
+
+                <div class="mt-6 card p-5">
+                    <div class="font-bold">Kesimpulan Ice Breaking</div>
+                    <p class="mt-2 text-white/80">
+                        Kalau di game ada data yang perlu <b>diingat</b> dan bisa <b>berubah</b>, kita butuh
+                        <b>variabel</b>.
+                    </p>
+                </div>
+
+                <div class="note mt-5 card p-4 text-sm text-white/85">
+                    <div class="font-bold mb-1">Catatan Guru</div>
+                    Gunakan ice breaking ini untuk “cek pemahaman awal” tanpa terasa seperti tes. Ajak siswa menyebut
+                    contoh lain: nyawa, level, waktu.
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: Concept -->
+        <section class="slide" data-title="Apa Itu Variabel?">
+            <div class="card p-6">
+                <div class="flex items-start gap-3">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-white/10 border border-white/10 grid place-items-center font-black text-xl">
+                        📦</div>
+                    <div class="flex-1">
+                        <h2 class="text-2xl font-extrabold">Apa Itu Variabel?</h2>
+                        <p class="mt-2 text-white/80 text-lg">
+                            Variabel itu seperti <b>kotak ajaib</b> yang diberi nama, lalu kita isi dengan data
+                            (angka/kata/benar-salah).
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mt-6 grid md:grid-cols-3 gap-4">
+                    <div class="card p-5">
+                        <div class="font-bold">Contoh Nama Kotak</div>
+                        <div class="mt-2 text-white/80 text-sm">Score, Waktu, NamaPemain, Nyawa</div>
+                        <div class="mt-4 text-sm">
+                            <span class="pill">Kotak bernama:</span>
+                            <span class="pill ml-2">Score</span>
+                        </div>
+                    </div>
+                    <div class="card p-5">
+                        <div class="font-bold">Isi Kotak Bisa Berubah</div>
+                        <div class="mt-2 text-white/80 text-sm">Score awal 0 → lalu 1 → 2 → 3 …</div>
+                        <div class="mt-4 flex gap-2 flex-wrap text-sm">
+                            <span class="pill">0</span><span class="pill">1</span><span class="pill">2</span><span
+                                class="pill">3</span>
+                        </div>
+                    </div>
+                    <div class="card p-5">
+                        <div class="font-bold">Kenapa Penting?</div>
+                        <div class="mt-2 text-white/80 text-sm">Tanpa variabel, game jadi “statis”. Dengan variabel,
+                            game bisa merespons aksi pemain.</div>
+                        <div class="mt-4 text-sm pill">Game jadi interaktif 🎮</div>
+                    </div>
+                </div>
+
+
+
+                <div class="note mt-5 card p-4 text-sm text-white/85">
+                    <div class="font-bold mb-1">Catatan Guru</div>
+                    Kalau siswa bingung, gunakan kalimat: “Variabel itu tempat menyimpan informasi yang bisa berubah
+                    saat game berjalan.”
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 4: Types -->
+        <section class="slide" data-title="Jenis Variabel">
+            <div class="card p-6">
+                <h2 class="text-2xl font-extrabold">Jenis Variabel di Scratch</h2>
+                <p class="mt-2 text-white/80">Ada 3 “kantong” data: angka, teks, dan logika.</p>
+
+                <div class="mt-6 grid md:grid-cols-3 gap-4">
+                    <div class="card p-5">
+                        <div class="text-lg font-extrabold">Angka 🔢</div>
+                        <p class="mt-2 text-white/80 text-sm">Untuk data yang bisa dihitung / dibandingkan.</p>
+                        <div class="mt-3 text-sm">
+                            <div class="pill inline-block">Contoh: skor, koin, waktu</div>
+                        </div>
+                    </div>
+                    <div class="card p-5">
+                        <div class="text-lg font-extrabold">Teks ✍️</div>
+                        <p class="mt-2 text-white/80 text-sm">Untuk kata atau kalimat.</p>
+                        <div class="mt-3 text-sm">
+                            <div class="pill inline-block">Contoh: nama pemain, pesan “Selamat!”</div>
+                        </div>
+                    </div>
+                    <div class="card p-5">
+                        <div class="text-lg font-extrabold">Logika ✅❌</div>
+                        <p class="mt-2 text-white/80 text-sm">Untuk jawaban benar/salah (ya/tidak).</p>
+                        <div class="mt-3 text-sm">
+                            <div class="pill inline-block">Contoh: tombol ditekan? musuh terlihat?</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mini game classify -->
+                <div class="mt-6 card p-5">
+                    <div class="flex items-center gap-2">
+                        <div class="font-bold">Mini Game: Klasifikasikan!</div>
+                        <div class="ml-auto text-xs text-white/70">Klik jawaban</div>
+                    </div>
+                    <div class="mt-4 grid md:grid-cols-2 gap-4">
+                        <div class="card p-4">
+                            <div class="text-sm font-bold">1) “Nyawa”</div>
+                            <div class="mt-2 flex flex-wrap gap-2">
+                                <button class="btn btn-ghost text-sm classify" data-id="c1"
+                                    data-pick="angka">Angka</button>
+                                <button class="btn btn-ghost text-sm classify" data-id="c1"
+                                    data-pick="teks">Teks</button>
+                                <button class="btn btn-ghost text-sm classify" data-id="c1"
+                                    data-pick="logika">Logika</button>
+                            </div>
+                            <div class="mt-2 text-sm" id="c1"></div>
+                        </div>
+                        <div class="card p-4">
+                            <div class="text-sm font-bold">2) “Pesan: Kamu Menang!”</div>
+                            <div class="mt-2 flex flex-wrap gap-2">
+                                <button class="btn btn-ghost text-sm classify" data-id="c2"
+                                    data-pick="angka">Angka</button>
+                                <button class="btn btn-ghost text-sm classify" data-id="c2"
+                                    data-pick="teks">Teks</button>
+                                <button class="btn btn-ghost text-sm classify" data-id="c2"
+                                    data-pick="logika">Logika</button>
+                            </div>
+                            <div class="mt-2 text-sm" id="c2"></div>
+                        </div>
+                        <div class="card p-4">
+                            <div class="text-sm font-bold">3) “Apakah Level 5?”</div>
+                            <div class="mt-2 flex flex-wrap gap-2">
+                                <button class="btn btn-ghost text-sm classify" data-id="c3"
+                                    data-pick="angka">Angka</button>
+                                <button class="btn btn-ghost text-sm classify" data-id="c3"
+                                    data-pick="teks">Teks</button>
+                                <button class="btn btn-ghost text-sm classify" data-id="c3"
+                                    data-pick="logika">Logika</button>
+                            </div>
+                            <div class="mt-2 text-sm" id="c3"></div>
+                        </div>
+                        <div class="card p-4">
+                            <div class="text-sm font-bold">4) “Waktu (detik)”</div>
+                            <div class="mt-2 flex flex-wrap gap-2">
+                                <button class="btn btn-ghost text-sm classify" data-id="c4"
+                                    data-pick="angka">Angka</button>
+                                <button class="btn btn-ghost text-sm classify" data-id="c4"
+                                    data-pick="teks">Teks</button>
+                                <button class="btn btn-ghost text-sm classify" data-id="c4"
+                                    data-pick="logika">Logika</button>
+                            </div>
+                            <div class="mt-2 text-sm" id="c4"></div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="note mt-5 card p-4 text-sm text-white/85">
+                    <div class="font-bold mb-1">Catatan Guru</div>
+                    Kunci mini game: Nyawa=angka, Pesan=teks, Apakah Level 5?=logika, Waktu=angka. Tekankan: “logika itu
+                    jawabannya ya/tidak.”
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 5: Where is Variables in Scratch -->
+        <section class="slide" data-title="Letak Variabel di Scratch">
+            <div class="card p-6">
+                <h2 class="text-2xl font-extrabold">Di Mana Menu Variabel?</h2>
+                <p class="mt-2 text-white/80">Cari kategori <b>Variables</b> (warna oranye).</p>
+
+                <div class="mt-6 grid md:grid-cols-2 gap-4">
+                    <div class="card p-5">
+                        <div class="font-bold">Langkah Cepat</div>
+                        <ol class="mt-3 text-white/85 space-y-2 list-decimal list-inside">
+                            <li>Buka proyek Scratch.</li>
+                            <li>Klik kategori <b>Variables</b>.</li>
+                            <li>Klik <b>Make a Variable</b>.</li>
+                            <li>Beri nama: <b>Score</b>.</li>
+                        </ol>
+                        <div class="mt-4 text-sm text-white/70">
+                            Tips: tulis nama variabel singkat dan jelas (Score, Time, Nyawa).
+                        </div>
+                    </div>
+
+                    <div class="card p-5">
+                        <div class="font-bold">For all sprites vs For this sprite only</div>
+                        <div class="mt-2 text-white/80 text-sm">
+                            Saat membuat variabel, kita bisa pilih:
+                        </div>
+                        <div class="mt-4 grid gap-3">
+                            <div class="card p-4">
+                                <div class="font-bold">For all sprites</div>
+                                <div class="text-sm text-white/80 mt-1">Dipakai semua sprite. Cocok untuk <b>skor
+                                        umum</b> atau <b>waktu</b>.</div>
+                            </div>
+                            <div class="card p-4">
+                                <div class="font-bold">For this sprite only</div>
+                                <div class="text-sm text-white/80 mt-1">Hanya untuk 1 sprite. Cocok untuk <b>nyawa
+                                        karakter</b> tertentu.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="note mt-5 card p-4 text-sm text-white/85">
+                    <div class="font-bold mb-1">Catatan Guru</div>
+                    Kalau proyek multiplayer/dua karakter, tunjukkan contoh “nyawa tiap karakter” pakai “for this sprite
+                    only”.
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 6: Blocks -->
+        <section class="slide" data-title="Blok Variabel Penting">
+            <div class="card p-6">
+                <h2 class="text-2xl font-extrabold">Blok Variabel yang Sering Dipakai</h2>
+                <p class="mt-2 text-white/80">Ini blok yang kita pakai hari ini: <b>set</b>, <b>change</b>,
+                    <b>show/hide</b>.
+                </p>
+
+                <div class="mt-6 grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="card p-5">
+                        <div class="font-extrabold">Make a Variable</div>
+                        <p class="mt-2 text-sm text-white/80">Buat variabel baru dan kasih nama.</p>
+                        <div class="mt-3 pill inline-block text-sm">Buat “Score”</div>
+                    </div>
+                    <div class="card p-5">
+                        <div class="font-extrabold">set [Score] to [0]</div>
+                        <p class="mt-2 text-sm text-white/80">Kasih nilai awal atau ganti nilainya.</p>
+                        <div class="mt-3 pill inline-block text-sm">Score = 0</div>
+                    </div>
+                    <div class="card p-5">
+                        <div class="font-extrabold">change [Score] by [1]</div>
+                        <p class="mt-2 text-sm text-white/80">Tambah/kurangi nilai.</p>
+                        <div class="mt-3 pill inline-block text-sm">Score + 1</div>
+                    </div>
+                    <div class="card p-5">
+                        <div class="font-extrabold">show / hide variable</div>
+                        <p class="mt-2 text-sm text-white/80">Tampilkan/sembunyikan di layar.</p>
+                        <div class="mt-3 pill inline-block text-sm">Tampil di stage</div>
+                    </div>
+                </div>
+
+                <div class="mt-6 card p-5">
+                    <div class="font-bold">Quick Check</div>
+                    <div class="mt-2 text-white/80 text-sm">Klik jawaban yang benar:</div>
+                    <div class="mt-3 flex flex-wrap gap-2">
+                        <button class="btn btn-ghost qc" data-correct="0">Blok <b>set</b> dipakai untuk menambah
+                            skor.</button>
+                        <button class="btn btn-ghost qc" data-correct="1">Blok <b>change</b> dipakai untuk
+                            menambah/kurangi skor.</button>
+                        <button class="btn btn-ghost qc" data-correct="0">Blok <b>hide</b> menambah nilai
+                            variabel.</button>
+                    </div>
+                    <div class="mt-3 text-sm" id="qcOut"></div>
+                </div>
+
+                <div class="note mt-5 card p-4 text-sm text-white/85">
+                    <div class="font-bold mb-1">Catatan Guru</div>
+                    Pastikan siswa tahu bedanya “set” (mengatur nilai jadi X) dan “change” (menambah/kurangi dari nilai
+                    sekarang).
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 7: Guided Build -->
+        <section class="slide" data-title="Praktik Terbimbing">
+            <div class="card p-6">
+                <div class="flex items-start gap-3 flex-wrap">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-green-500/20 border border-green-400/30 grid place-items-center font-black text-xl">
+                        🧩</div>
+                    <div class="flex-1">
+                        <h2 class="text-2xl font-extrabold">Praktik Terbimbing: Skor Bertambah!</h2>
+                        <p class="mt-2 text-white/80">
+                            Target: Saat sprite menyentuh objek, <b>Score bertambah</b> dan muncul di layar.
+                        </p>
+                    </div>
+                    <div class="ml-auto flex gap-2">
+                        <button class="btn btn-ghost text-sm" id="stepsReset">Reset Checklist</button>
+                        <button class="btn btn-primary text-sm" data-next>Selesai, Lanjut ▶</button>
+                    </div>
+                </div>
+
+                <div class="mt-6 grid md:grid-cols-2 gap-4">
+                    <div class="card p-5">
+                        <div class="font-bold">Checklist Langkah</div>
+                        <div class="mt-3 space-y-2" id="checklist">
+                            <!-- injected -->
+                        </div>
+                        <div class="mt-4 text-sm text-white/70">
+                            Tips: kalau belum jalan, cek urutan blok dan event (mis. <b>when green flag clicked</b>).
+                        </div>
+                    </div>
+
+                    <div class="card p-5">
+                        <div class="font-bold">Contoh Logika (Versi Sederhana)</div>
+                        <div class="mt-3 card p-4 font-mono text-sm leading-relaxed">
+                            <img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/9b8e955b-accd-46c2-9a31-71f49948eb72.png"
+                                alt="Contoh Blok Skor Scratch" width="60%" />
+                        </div>
+
+                        <div class="mt-4 card p-4">
+                            <div class="font-bold">Tantangan Cepat (Opsional)</div>
+                            <ul class="mt-2 text-sm text-white/85 space-y-1">
+                                <li>• Ubah skor bertambah <b>+2</b></li>
+                                <li>• Ubah nilai wait atau hapus bloknya, perhatikan apa perbedaannya</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="note mt-5 card p-4 text-sm text-white/85">
+                    <div class="font-bold mb-1">Catatan Guru</div>
+                    Kalau banyak siswa stuck: minta mereka cek 3 hal: (1) variabel dibuat? (2) set Score to 0 ada di
+                    awal? (3) kondisi touching benar sprite-nya?
+                </div>
+            </div>
+
+            <script>
+                document.addEventListener("DOMContentLoaded", () => {
+                    const checklistItems = [
+                        "Buat variabel <b>Score</b> di menu Variables.",
+                        "Tambahkan <b>when green flag clicked</b>.",
+                        "Atur nilai awal: <b>set Score to 0</b>.",
+                        "Tampilkan skor: <b>show variable Score</b>.",
+                        "Buat logika sentuh: <b>forever</b> + <b>if touching (Objek)</b>.",
+                        "Saat menyentuh objek: <b>change Score by 1</b>.",
+                        "Agar tidak nambah terus: sembunyikan/pindahkan objek setelah kena sentuh."
+                    ];
+
+                    const checklistWrap = document.getElementById("checklist");
+                    if (!checklistWrap) {
+                        console.error("Elemen #checklist tidak ditemukan. Cek apakah id-nya benar dan script dijalankan setelah HTML.");
+                        return;
+                    }
+
+                    function renderChecklist() {
+                        checklistWrap.innerHTML = "";
+                        checklistItems.forEach((txt, i) => {
+                            const id = "step" + i;
+
+                            const row = document.createElement("label");
+                            row.className = "flex items-start gap-3 card p-3 cursor-pointer";
+
+                            row.innerHTML = `
+        <input type="checkbox" class="mt-1" id="${id}">
+        <div class="text-sm text-white/85">${txt}</div>
+      `;
+
+                            checklistWrap.appendChild(row);
+                        });
+                    }
+
+                    renderChecklist();
+                });
+            </script>
+
+        </section>
+
+        <!-- Slide 8: Debugging Mini -->
+        <section class="slide" data-title="Debug Cepat">
+            <div class="card p-6">
+                <h2 class="text-2xl font-extrabold">Debug Cepat: Kenapa Skor Tidak Berubah?</h2>
+                <p class="mt-2 text-white/80">Pilih masalahnya, lalu lihat solusinya.</p>
+
+                <div class="mt-6 grid lg:grid-cols-3 gap-4">
+                    <div class="card p-5">
+                        <div class="font-bold">Masalah A</div>
+                        <div class="mt-2 text-white/85">Skor tidak muncul di layar.</div>
+                        <button class="btn btn-ghost text-sm mt-3" data-reveal="dbgA">Lihat Solusi</button>
+                        <div id="dbgA" class="hidden mt-3 text-sm text-white/80">
+                            Pastikan ada blok <b>show variable Score</b>. Atau cek centang variabel di panel Variables.
+                        </div>
+                    </div>
+
+                    <div class="card p-5">
+                        <div class="font-bold">Masalah B</div>
+                        <div class="mt-2 text-white/85">Skor selalu balik ke 0 terus.</div>
+                        <button class="btn btn-ghost text-sm mt-3" data-reveal="dbgB">Lihat Solusi</button>
+                        <div id="dbgB" class="hidden mt-3 text-sm text-white/80">
+                            Jangan taruh <b>set Score to 0</b> di dalam <b>forever</b>. Taruh hanya di awal (saat green
+                            flag).
+                        </div>
+                    </div>
+
+                    <div class="card p-5">
+                        <div class="font-bold">Masalah C</div>
+                        <div class="mt-2 text-white/85">Tidak pernah “touching”.</div>
+                        <button class="btn btn-ghost text-sm mt-3" data-reveal="dbgC">Lihat Solusi</button>
+                        <div id="dbgC" class="hidden mt-3 text-sm text-white/80">
+                            Pastikan yang disentuh itu sprite yang benar (dropdown touching). Coba perbesar sprite atau
+                            dekatkan posisi.
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="note mt-5 card p-4 text-sm text-white/85">
+                    <div class="font-bold mb-1">Catatan Guru</div>
+                    Dorong siswa menyebutkan “gejala” dan “dugaan penyebab” sebelum memberi jawaban. Itu latihan problem
+                    solving.
+                </div>
+            </div>
+
+            <script>
+                document.addEventListener("DOMContentLoaded", () => {
+                    document.querySelectorAll("[data-reveal]").forEach(btn => {
+                        btn.addEventListener("click", () => {
+                            const id = btn.dataset.reveal;
+                            const el = document.getElementById(id);
+                            if (!el) {
+                                console.error("Target reveal tidak ketemu:", id);
+                                return;
+                            }
+                            el.classList.toggle("hidden");
+                        });
+                    });
+                });
+            </script>
+
+        </section>
+
+
+
+        <!-- Slide 10: Closing -->
+        <section class="slide" data-title="Penutup">
+            <div class="card p-6">
+                <h2 class="text-2xl font-extrabold">Penutup & Refleksi</h2>
+                <div class="mt-4 grid md:grid-cols-2 gap-4">
+                    <div class="card p-5">
+                        <div class="font-bold">Hari ini kita belajar:</div>
+                        <ul class="mt-3 space-y-2 text-white/85">
+                            <li>• Variabel = wadah data yang bisa berubah.</li>
+                            <li>• Jenis variabel: angka, teks, logika.</li>
+                            <li>• Blok penting: set, change, show/hide.</li>
+                        </ul>
+                    </div>
+                    <div class="card p-5">
+                        <div class="font-bold">Refleksi (jawab lisan)</div>
+                        <div class="mt-3 grid gap-2">
+                            <button class="btn btn-ghost text-left ref">1) Variabel apa yang kamu pakai hari
+                                ini?</button>
+                            <button class="btn btn-ghost text-left ref">2) Kapan kamu pakai “set Score to 0”?</button>
+                            <button class="btn btn-ghost text-left ref">3) Kapan kamu pakai “change Score by
+                                1”?</button>
+                        </div>
+                        <div class="mt-3 text-sm text-white/70">Klik pertanyaan untuk mengingatkan siswa menjawab.</div>
+                    </div>
+                </div>
+
+                <div class="mt-6 card p-5">
+                    <div class="font-bold">Tugas Ringan (Opsional)</div>
+                    <p class="mt-2 text-white/80">
+                        Tambahkan 1 fitur: <b>nyawa berkurang</b> atau <b>waktu mundur</b> memakai variabel.
+                    </p>
+                </div>
+
+
+                <div class="note mt-5 card p-4 text-sm text-white/85">
+                    <div class="font-bold mb-1">Catatan Guru</div>
+                    Jika ada waktu, minta 2–3 siswa menunjukkan stage mereka: “Skor berubah di layar.” Beri apresiasi
+                    singkat.
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Nav -->
+    <footer class="sticky bottom-0 z-40 bg-slate-950/80 backdrop-blur border-t border-white/10">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-2">
+            <button class="btn btn-ghost" data-prev>⬅ Prev</button>
+            <button class="btn btn-primary" data-next>Next ➜</button>
+
+        </div>
+    </footer>
+
+    <!-- Help Modal -->
+    <div id="helpModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/60" data-close="help"></div>
+        <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[92vw] max-w-xl card p-6">
+            <div class="flex items-center gap-2">
+                <div class="font-extrabold text-lg">Bantuan</div>
+                <div class="ml-auto">
+                    <button class="btn btn-ghost text-xs" data-close="help">Tutup</button>
+                </div>
+            </div>
+            <div class="mt-4 text-sm text-white/80 space-y-2">
+                <div><span class="kbd">→</span> Slide berikutnya</div>
+                <div><span class="kbd">←</span> Slide sebelumnya</div>
+                <div><span class="kbd">T</span> Buka daftar slide</div>
+                <div><span class="kbd">N</span> Toggle catatan guru</div>
+                <div><span class="kbd">H</span> Buka bantuan</div>
+            </div>
+            <div class="mt-4 text-xs text-white/60">
+                Tips: gunakan tombol “Daftar Slide” untuk lompat cepat.
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast hidden" id="toast">
+        <div id="toastText">Hello</div>
+    </div>
+
+    <script>
+        // ---------- Core Slide Engine ----------
+        const slides = Array.from(document.querySelectorAll(".slide"));
+        const totalEl = document.getElementById("total");
+        const counterEl = document.getElementById("counter");
+        const progressFill = document.getElementById("progressFill");
+        totalEl.textContent = slides.length;
+
+        let idx = 0;
+        let notesOn = false;
+
+        function showSlide(i) {
+            idx = Math.max(0, Math.min(slides.length - 1, i));
+            slides.forEach((s, k) => s.classList.toggle("active", k === idx));
+            counterEl.textContent = (idx + 1);
+            progressFill.style.width = (((idx + 1) / slides.length) * 100).toFixed(2) + "%";
+            // show/hide notes
+            document.querySelectorAll(".note").forEach(n => n.classList.toggle("show", notesOn));
+            // close modals
+            hideModal("helpModal");
+            hideModal("tocModal");
+            // scroll top of main
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        function next() { showSlide(idx + 1); }
+        function prev() { showSlide(idx - 1); }
+
+        document.querySelectorAll("[data-next]").forEach(b => b.addEventListener("click", next));
+        document.querySelectorAll("[data-prev]").forEach(b => b.addEventListener("click", prev));
+        document.querySelectorAll("[data-jump]").forEach(b => b.addEventListener("click", (e) => showSlide(parseInt(e.currentTarget.dataset.jump, 10) - 1)));
+
+        // Keyboard
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "ArrowRight") next();
+            if (e.key === "ArrowLeft") prev();
+            if (e.key.toLowerCase() === "h") showModal("helpModal");
+            if (e.key.toLowerCase() === "t") showModal("tocModal");
+            if (e.key.toLowerCase() === "n") toggleNotes();
+            if (e.key === "Escape") { hideModal("helpModal"); hideModal("tocModal"); }
+        });
+
+
+
+
+        // ---------- Slide Interactions ----------
+        // Ice breaking
+        const iceCorrect = { 1: "angka", 2: "teks", 3: "logika" };
+        document.querySelectorAll(".ice").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const q = btn.dataset.q;
+                const a = btn.dataset.a;
+                const out = document.getElementById("iceAns" + q);
+                const ok = (a === iceCorrect[q]);
+                out.innerHTML = ok
+                    ? `<span class="text-green-300 font-bold">Benar!</span> Ini cocok sebagai <b>${a}</b>.`
+                    : `<span class="text-red-300 font-bold">Belum tepat.</span> Coba pikir lagi.`;
+                if (!ok) { out.classList.add("shake"); setTimeout(() => out.classList.remove("shake"), 400); }
+            });
+        });
+        document.getElementById("iceReset").addEventListener("click", () => {
+            [1, 2, 3].forEach(i => document.getElementById("iceAns" + i).innerHTML = "");
+            toast("Ice breaking direset.");
+        });
+
+        // Classify mini game
+        const classifyKey = { c1: "angka", c2: "teks", c3: "logika", c4: "angka" };
+        document.querySelectorAll(".classify").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const id = btn.dataset.id;
+                const pick = btn.dataset.pick;
+                const out = document.getElementById(id);
+                const ok = pick === classifyKey[id];
+                out.innerHTML = ok
+                    ? `<span class="text-green-300 font-bold">Benar!</span> Itu variabel <b>${pick}</b>.`
+                    : `<span class="text-red-300 font-bold">Belum tepat.</span> Coba lagi ya.`;
+                if (!ok) { out.classList.add("shake"); setTimeout(() => out.classList.remove("shake"), 400); }
+            });
+        });
+
+        // Quick check slide 6
+        document.querySelectorAll(".qc").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const ok = btn.dataset.correct === "1";
+                const out = document.getElementById("qcOut");
+                out.innerHTML = ok
+                    ? `<span class="text-green-300 font-bold">Benar!</span> “change” itu untuk menambah/kurangi nilai.`
+                    : `<span class="text-red-300 font-bold">Belum tepat.</span> Ingat: “set” mengatur jadi nilai tertentu, “change” menambah/kurangi.`;
+                if (!ok) { out.classList.add("shake"); setTimeout(() => out.classList.remove("shake"), 400); }
+            });
+        });
+
+        // Guided build checklist
+        const checklistItems = [
+            "Buat variabel <b>Score</b> di menu Variables.",
+            "Tambahkan <b>when green flag clicked</b>.",
+            "Atur nilai awal: <b>set Score to 0</b>.",
+            "Tampilkan skor: <b>show variable Score</b>.",
+            "Buat logika sentuh: <b>forever</b> + <b>if touching (Objek)</b>.",
+            "Saat menyentuh objek: <b>change Score by 1</b>.",
+            "Agar tidak nambah terus: sembunyikan/pindahkan objek setelah kena sentuh."
+        ];
+        const checklistWrap = document.getElementById("checklist");
+
+        function renderChecklist(reset = false) {
+            checklistWrap.innerHTML = "";
+            checklistItems.forEach((txt, i) => {
+                const id = "step" + i;
+                const row = document.createElement("label");
+                row.className = "flex items-start gap-3 card p-3 cursor-pointer";
+                row.innerHTML = `
+          <input type="checkbox" class="mt-1" id="${id}" ${reset ? "" : (localStorage.getItem(id) === "1" ? "checked" : "")} />
+          <div class="text-sm text-white/85">${txt}</div>
+        `;
+                checklistWrap.appendChild(row);
+                const cb = row.querySelector("input");
+                cb.addEventListener("change", () => {
+                    localStorage.setItem(id, cb.checked ? "1" : "0");
+                });
+            });
+        }
+        renderChecklist(false);
+        document.getElementById("stepsReset").addEventListener("click", () => {
+            checklistItems.forEach((_, i) => localStorage.removeItem("step" + i));
+            renderChecklist(true);
+            toast("Checklist direset.");
+        });
+
+        // Debug reveal
+        document.querySelectorAll("[data-reveal]").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const id = btn.dataset.reveal;
+                const el = document.getElementById(id);
+                el.classList.toggle("hidden");
+            });
+        });
+
+        // Quiz
+        const quiz = [
+            {
+                q: "1) Variabel itu seperti…",
+                a: 0,
+                opts: ["Kotak untuk menyimpan data", "Tombol untuk menggambar", "Suara di game"]
+            },
+            {
+                q: "2) Variabel bisa berubah nilainya saat…",
+                a: 1,
+                opts: ["Laptop dimatikan", "Ada aksi di game (mis. menyentuh objek)", "Kita ganti warna background"]
+            },
+            {
+                q: "3) Contoh variabel angka adalah…",
+                a: 2,
+                opts: ["Nama pemain", "Pesan: 'Selamat!'", "Skor / koin / waktu"]
+            },
+            {
+                q: "4) Contoh variabel teks adalah…",
+                a: 0,
+                opts: ["Nama pemain", "Jumlah koin", "Apakah tombol ditekan?"]
+            },
+            {
+                q: "5) Contoh variabel logika adalah…",
+                a: 1,
+                opts: ["Skor 10", "Apakah musuh terlihat?", "Nama karakter"]
+            },
+            {
+                q: "6) Blok yang dipakai untuk memberi nilai awal Score adalah…",
+                a: 0,
+                opts: ["set Score to 0", "change Score by 1", "hide variable Score"]
+            },
+            {
+                q: "7) Blok yang dipakai untuk menambah skor setiap kena objek adalah…",
+                a: 2,
+                opts: ["show variable Score", "set Score to 0", "change Score by 1"]
+            },
+            {
+                q: "8) Kalau Score selalu kembali 0 terus, kemungkinan karena…",
+                a: 1,
+                opts: ["Show variable belum ada", "set Score to 0 diletakkan di dalam forever", "Sprite terlalu kecil"]
+            }
+        ];
+
+        const quizWrap = document.getElementById("quizWrap");
+        const quizScore = document.getElementById("quizScore");
+        const quizFeedback = document.getElementById("quizFeedback");
+
+        const quizState = {}; // index -> choice
+        function renderQuiz() {
+            quizWrap.innerHTML = "";
+            quiz.forEach((item, i) => {
+                const card = document.createElement("div");
+                card.className = "card p-5";
+                card.innerHTML = `
+          <div class="font-bold">${item.q}</div>
+          <div class="mt-3 grid sm:grid-cols-3 gap-2" id="q_${i}"></div>
+          <div class="mt-2 text-sm" id="qout_${i}"></div>
+        `;
+                quizWrap.appendChild(card);
+
+                const opts = card.querySelector("#q_" + i);
+                item.opts.forEach((opt, j) => {
+                    const b = document.createElement("button");
+                    b.className = "btn btn-ghost text-sm text-left";
+                    b.innerHTML = opt;
+                    b.addEventListener("click", () => {
+                        quizState[i] = j;
+                        // visual update
+                        Array.from(opts.children).forEach((x, k) => {
+                            x.classList.toggle("ring-2", k === j);
+                            x.classList.toggle("ring-yellow-300", k === j);
+                        });
+                        document.getElementById("qout_" + i).innerHTML = `<span class="text-white/70">Pilihan tersimpan.</span>`;
+                    });
+                    opts.appendChild(b);
+                });
+            });
+        }
+        renderQuiz();
+
+        function resetQuiz() {
+            Object.keys(quizState).forEach(k => delete quizState[k]);
+            renderQuiz();
+            quizScore.textContent = "Belum dicek.";
+            quizFeedback.textContent = "";
+            toast("Quiz direset.");
+        }
+        document.getElementById("quizReset").addEventListener("click", resetQuiz);
+
+        document.getElementById("quizCheck").addEventListener("click", () => {
+            let correct = 0;
+            quiz.forEach((item, i) => {
+                const picked = quizState[i];
+                const out = document.getElementById("qout_" + i);
+                if (picked === undefined) {
+                    out.innerHTML = `<span class="text-red-300 font-bold">Belum dijawab.</span>`;
+                    return;
+                }
+                if (picked === item.a) {
+                    correct++;
+                    out.innerHTML = `<span class="text-green-300 font-bold">Benar ✅</span>`;
+                } else {
+                    out.innerHTML = `<span class="text-red-300 font-bold">Salah ❌</span> Jawaban benar: <b>${item.opts[item.a]}</b>`;
+                }
+            });
+            const score = `${correct}/${quiz.length}`;
+            quizScore.textContent = "Skor: " + score;
+
+            if (correct === quiz.length) {
+                quizFeedback.innerHTML = `<span class="text-green-300 font-bold">Hebat!</span> Kamu sudah paham variabel.`;
+            } else if (correct >= Math.ceil(quiz.length * 0.75)) {
+                quizFeedback.innerHTML = `<span class="text-green-300 font-bold">Bagus!</span> Tinggal sedikit lagi. Coba ulang bagian yang masih salah.`;
+            } else {
+                quizFeedback.innerHTML = `<span class="text-yellow-300 font-bold">Ayo latihan lagi.</span> Fokus di: set vs change, dan jenis variabel.`;
+            }
+            toast("Skor quiz sudah dihitung.");
+        });
+
+        // Reflections
+        document.querySelectorAll(".ref").forEach(btn => {
+            btn.addEventListener("click", () => toast("Ajak 2–3 siswa menjawab lisan 👍"));
+        });
+
+        // Init
+        showSlide(0);
+    </script>
+</body>
+
+</html>
