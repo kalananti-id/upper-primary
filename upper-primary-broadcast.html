@@ -1,0 +1,1807 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scratch Broadcast)</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <script src="https://kit.fontawesome.com/6b2a2a8a5c.js" crossorigin="anonymous"></script>
+
+    <style>
+        :root {
+            --bg1: #fff7ed;
+            /* peach */
+            --bg2: #f0f9ff;
+            /* sky */
+            --bg3: #fdf2f8;
+            /* pink */
+            --ink: #0f172a;
+            /* slate-900 */
+            --muted: #475569;
+            /* slate-600 */
+            --card: #ffffff;
+            --line: #e2e8f0;
+
+            --events: #f7c948;
+            /* Scratch events-ish */
+            --events-dark: #d6a91b;
+            --accent: #fb7185;
+            /* coral */
+            --accent2: #60a5fa;
+            /* blue */
+            --good: #22c55e;
+            --bad: #ef4444;
+            --warn: #f59e0b;
+        }
+
+        * {
+            font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        }
+
+        body {
+            background: radial-gradient(1200px 600px at 15% 10%, var(--bg2) 0%, transparent 60%),
+                radial-gradient(900px 500px at 80% 20%, var(--bg3) 0%, transparent 55%),
+                radial-gradient(900px 500px at 40% 90%, var(--bg1) 0%, transparent 55%),
+                #ffffff;
+            color: var(--ink);
+            overflow-x: hidden;
+        }
+
+        /* Slide system */
+        .slide {
+            display: none;
+        }
+
+        .slide.active {
+            display: block;
+            animation: pop .25s ease-out;
+        }
+
+        @keyframes pop {
+            from {
+                transform: translateY(8px);
+                opacity: .0
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1
+            }
+        }
+
+        /* Card */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, .08);
+        }
+
+        /* Scratch-like blocks */
+        .sb {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            padding: .55rem .8rem;
+            border-radius: 14px;
+            color: #111827;
+            font-weight: 800;
+            letter-spacing: .1px;
+            box-shadow: 0 6px 0 rgba(0, 0, 0, .08);
+            user-select: none;
+        }
+
+        .sb-hat {
+            border-top-left-radius: 22px;
+            border-top-right-radius: 22px;
+        }
+
+        .sb-events {
+            background: var(--events);
+        }
+
+        .sb-slot {
+            background: rgba(255, 255, 255, .75);
+            border: 2px solid rgba(0, 0, 0, .12);
+            padding: .15rem .55rem;
+            border-radius: 999px;
+            font-weight: 900;
+        }
+
+        .pill {
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            padding: .35rem .65rem;
+            background: #fff;
+            font-weight: 700;
+            color: var(--muted);
+        }
+
+        /* Buttons */
+        .btn {
+            border-radius: 18px;
+            padding: .75rem 1rem;
+            font-weight: 800;
+            border: 1px solid var(--line);
+            background: #fff;
+            transition: .15s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 18px rgba(15, 23, 42, .08);
+        }
+
+        .btn:active {
+            transform: translateY(0px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #fb7185, #f97316);
+            color: #fff;
+            border-color: transparent;
+        }
+
+        .btn-ghost {
+            background: rgba(255, 255, 255, .65);
+            backdrop-filter: blur(8px);
+        }
+
+        .btn:disabled {
+            opacity: .45;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Choice options */
+        .choice {
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            padding: 1rem;
+            background: #fff;
+            transition: .12s ease;
+            cursor: pointer;
+        }
+
+        .choice:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 16px rgba(15, 23, 42, .06);
+        }
+
+        .choice.correct {
+            border-color: rgba(34, 197, 94, .55);
+            background: rgba(34, 197, 94, .08);
+        }
+
+        .choice.wrong {
+            border-color: rgba(239, 68, 68, .55);
+            background: rgba(239, 68, 68, .08);
+        }
+
+        /* Checkbox rows */
+        .tick {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: .85rem 1rem;
+            background: #fff;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .tick input {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Progress */
+        .progress-wrap {
+            height: 10px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, .08);
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 10px;
+            width: 0%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #60a5fa, #fb7185);
+            transition: width .2s ease;
+        }
+
+        /* Small helper */
+        .muted {
+            color: var(--muted);
+        }
+
+        .kbadge {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            padding: .35rem .65rem;
+            border-radius: 999px;
+            background: rgba(96, 165, 250, .12);
+            border: 1px solid rgba(96, 165, 250, .25);
+            font-weight: 800;
+        }
+
+        /* Fun floating shapes */
+        .shape {
+            position: fixed;
+            z-index: -1;
+            opacity: .22;
+            filter: blur(.0px);
+            border-radius: 999px;
+            animation: floaty 8s ease-in-out infinite;
+        }
+
+        @keyframes floaty {
+
+            0%,
+            100% {
+                transform: translateY(0)
+            }
+
+            50% {
+                transform: translateY(-10px)
+            }
+        }
+
+        .shape.s1 {
+            width: 220px;
+            height: 220px;
+            left: -60px;
+            top: 80px;
+            background: #60a5fa;
+        }
+
+        .shape.s2 {
+            width: 180px;
+            height: 180px;
+            right: -70px;
+            top: 140px;
+            background: #fb7185;
+            animation-duration: 10s;
+        }
+
+        .shape.s3 {
+            width: 260px;
+            height: 260px;
+            left: 20%;
+            bottom: -120px;
+            background: #f59e0b;
+            animation-duration: 12s;
+        }
+
+        .shape.s4 {
+            width: 140px;
+            height: 140px;
+            right: 20%;
+            bottom: 120px;
+            background: #22c55e;
+            animation-duration: 9s;
+        }
+
+        /* Responsive container */
+        .wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Slide title */
+        .h-title {
+            font-size: clamp(28px, 3vw, 40px);
+            font-weight: 900;
+            line-height: 1.05;
+        }
+
+        /* Footer nav */
+        .nav {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, .7);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(226, 232, 240, .9);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            padding: .6rem 1rem;
+            box-shadow: 0 14px 26px rgba(15, 23, 42, .12);
+            display: none;
+            z-index: 50;
+            font-weight: 800;
+        }
+
+        /* Accessibility focus */
+        button:focus,
+        .choice:focus,
+        textarea:focus,
+        input:focus {
+            outline: 3px solid rgba(96, 165, 250, .35);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ACCESS POPUP -->
+<div id="accessOverlay" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40">
+  <div class="bg-white rounded-3xl p-8 w-[92%] max-w-xl shadow-xl border border-slate-200">
+    <h2 class="text-3xl font-extrabold mb-2">Masukkan Kode Kelas 🔐</h2>
+    <p class="text-slate-600 mb-5">Ketik dulu ya sebelum mulai belajar 😊</p>
+
+    <input id="accessCode" type="text" placeholder="Ketik kode di sini"
+      class="w-full text-center text-2xl font-black tracking-widest border border-slate-300 rounded-2xl p-4 focus:outline-none focus:ring-4 focus:ring-orange-200"
+      autocomplete="off"
+      oninput="this.value = this.value.toUpperCase()"
+    />
+
+    <div id="accessMsg" class="text-sm text-slate-500 mt-3">Kode dari guru</div>
+
+    <button class="mt-5 w-full rounded-2xl py-3 font-black bg-orange-400 hover:bg-orange-500 text-white"
+      onclick="checkAccessCode()">
+      Mulai Belajar 🚀
+    </button>
+  </div>
+</div>
+
+<script>
+  const ACCESS_CODE = "RGMDSUP25";
+
+  function checkAccessCode(){
+    const input = document.getElementById('accessCode');
+    const msg = document.getElementById('accessMsg');
+    const overlay = document.getElementById('accessOverlay');
+
+    const val = (input.value || '').trim().toUpperCase();
+
+    if(val === ACCESS_CODE){
+      msg.textContent = "✅ Kode benar! Selamat belajar 🎉";
+      msg.className = "text-sm mt-3 font-bold text-green-700";
+      setTimeout(() => overlay.style.display = 'none', 500);
+    } else {
+      msg.textContent = "❌ Kode belum tepat. Coba cek lagi ya 🙂";
+      msg.className = "text-sm mt-3 font-bold text-red-600";
+      input.focus();
+      input.select();
+    }
+  }
+
+  // langsung fokus saat halaman dibuka
+  window.addEventListener('load', () => {
+    const input = document.getElementById('accessCode');
+    if(input) input.focus();
+  });
+</script>
+
+
+    
+
+    <div class="shape s1"></div>
+    <div class="shape s2"></div>
+    <div class="shape s3"></div>
+    <div class="shape s4"></div>
+
+    <div id="toast" class="toast"></div>
+
+    <div class="wrap pb-28">
+        <!-- TOP BAR -->
+        <div class="flex items-center justify-between gap-3 mb-6">
+            <div class="flex items-center gap-3">
+                <div
+                    class="w-12 h-12 rounded-2xl bg-white border border-slate-200 shadow flex items-center justify-center">
+                    <i class="fa-solid fa-bullhorn text-xl" style="color:#fb7185"></i>
+                </div>
+                <div>
+                    <div class="font-black text-lg">Scratch Broadcast</div>
+                    <div class="text-sm muted">Upper Primary</div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <span class="kbadge"><i class="fa-solid fa-keyboard"></i> Panah ← → / Spasi</span>
+                <span class="pill" id="slideCounter">Slide 1/22</span>
+            </div>
+        </div>
+
+        <!-- PROGRESS -->
+        <div class="progress-wrap mb-6">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        
+
+        <!-- SLIDES -->
+        <main id="slides">
+
+            <!-- 1 -->
+            <section class="slide active" data-title="Cover">
+                <div class="card p-8 md:p-10">
+                    <div class="grid md:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <div
+                                class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-rose-50 border border-rose-100 font-extrabold text-rose-700 mb-4">
+                                <i class="fa-solid fa-sparkles"></i> Satu pesan, banyak aksi!
+                            </div>
+                            <h1 class="h-title mb-4">Mengatur Alur Program dengan <span
+                                    style="color:#fb7185">Broadcast</span> 🚀</h1>
+                            <p class="text-lg muted mb-6">
+                                Pernah lihat <b>banyak sprite</b> bergerak bareng?
+                                Nah, hari ini kita belajar trik supaya rapi dan gampang!
+                            </p>
+
+                            <div class="flex flex-wrap gap-3">
+                                <button class="btn btn-primary" onclick="nextSlide()">Mulai!</button>
+                                <button class="btn btn-ghost" onclick="jumpTo(14)">
+                                    Langsung ke Praktik <i class="fa-solid fa-arrow-right ml-1"></i>
+                                </button>
+                            </div>
+
+                            <div class="mt-6 flex flex-wrap gap-2">
+                                <span class="pill"><i class="fa-solid fa-bullhorn mr-1"></i> broadcast</span>
+                                <span class="pill"><i class="fa-solid fa-ear-listen mr-1"></i> when I receive</span>
+                                <span class="pill"><i class="fa-solid fa-route mr-1"></i> alur program</span>
+                            </div>
+                        </div>
+
+                        <div class="relative">
+                            <div class="card p-6 border-slate-200 bg-white">
+                                <div class="font-black text-lg mb-3">Pengumuman 📢</div>
+                                <div class="grid gap-3">
+                                    <div class="flex items-center justify-between gap-3">
+                                        <div class="sb sb-events sb-hat">
+                                            <i class="fa-solid fa-flag"></i> when green flag clicked
+                                        </div>
+                                        <i class="fa-solid fa-arrow-right text-slate-400"></i>
+                                        <div class="sb sb-events">
+                                            broadcast <span class="sb-slot">Mulai</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center justify-between gap-3">
+                                        <div class="sb sb-events sb-hat">
+                                            when I receive <span class="sb-slot">Mulai</span>
+                                        </div>
+                                        <i class="fa-solid fa-arrow-right text-slate-400"></i>
+                                        <div
+                                            class="inline-flex items-center gap-2 px-4 py-3 rounded-2xl bg-sky-50 border border-sky-100 font-extrabold">
+                                            <i class="fa-solid fa-person-running" style="color:#60a5fa"></i>
+                                            Sprite bergerak!
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 text-sm muted">
+                                    Broadcast itu seperti: “Hei semua, ayo mulai!”
+                                </div>
+                            </div>
+
+                            <div
+                                class="absolute -right-2 -bottom-2 w-24 h-24 rounded-3xl bg-rose-100 border border-rose-200 flex items-center justify-center shadow">
+                                <i class="fa-solid fa-face-smile-beam text-3xl" style="color:#fb7185"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2 -->
+            <section class="slide" data-title="Tujuan Belajar">
+                <div class="card p-8 md:p-10">
+                    <h2 class="h-title mb-2">Tujuan Belajar 🎯</h2>
+                    <p class="muted mb-6">Setelah ini, kamu bisa:</p>
+
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="card p-6 border-slate-200">
+                            <div class="text-2xl mb-2">📢</div>
+                            <div class="font-black text-lg mb-1">Tahu arti broadcast</div>
+                            <div class="muted">Broadcast itu pesan/pengumuman.</div>
+                        </div>
+                        <div class="card p-6 border-slate-200">
+                            <div class="text-2xl mb-2">👂</div>
+                            <div class="font-black text-lg mb-1">Bisa menerima pesan</div>
+                            <div class="muted">Pakai <b>when I receive</b>.</div>
+                        </div>
+                        <div class="card p-6 border-slate-200">
+                            <div class="text-2xl mb-2">🗺️</div>
+                            <div class="font-black text-lg mb-1">Bikin alur rapi</div>
+                            <div class="muted">Supaya game mudah diatur.</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 card p-6 border-slate-200">
+                        <div class="font-black mb-3">Interaktif: cek dulu</div>
+                        <div class="grid md:grid-cols-2 gap-3">
+                            <label class="tick">
+                                <input type="checkbox" id="g1" onchange="saveChecks()" />
+                                <span>Pernah lihat banyak sprite bergerak bareng?</span>
+                            </label>
+                            <label class="tick">
+                                <input type="checkbox" id="g2" onchange="saveChecks()" />
+                                <span>Penasaran “kok bisa barengan”?</span>
+                            </label>
+                        </div>
+                        <div class="mt-3 text-sm muted" id="checksInfo">Centang kalau iya 🙂</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3 -->
+            <section class="slide" data-title="Masalah Nyata">
+                <div class="card p-8 md:p-10">
+                    <h2 class="h-title mb-3">Masalahnya: Kok Bisa Bareng? 🤔</h2>
+                    <p class="text-lg muted mb-6">
+                        Bayangin kamu klik <b>bendera hijau</b>… tapi <b>3 sprite</b> langsung bergerak.
+                        Kalau tanpa broadcast, kita harus bikin kode <b>di setiap sprite</b> satu-satu.
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <!-- WITHOUT BROADCAST -->
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">Tanpa broadcast… (copy-paste di tiap sprite) 😵‍💫</div>
+
+                            <div class="grid gap-4">
+                                <div class="card p-4 border-slate-200 bg-white">
+                                    <div class="text-sm font-black mb-2">Sprite A</div>
+                                    <div class="space-y-2">
+                                        <div class="sb sb-events sb-hat">when green flag clicked</div>
+                                        <div class="sb sb-motion">move <span class="sb-slot">10</span> steps</div>
+                                    </div>
+                                </div>
+
+                                <div class="card p-4 border-slate-200 bg-white">
+                                    <div class="text-sm font-black mb-2">Sprite B</div>
+                                    <div class="space-y-2">
+                                        <div class="sb sb-events sb-hat">when green flag clicked</div>
+                                        <div class="sb sb-motion">move <span class="sb-slot">10</span> steps</div>
+                                    </div>
+                                </div>
+
+                                <div class="card p-4 border-slate-200 bg-white">
+                                    <div class="text-sm font-black mb-2">Sprite C</div>
+                                    <div class="space-y-2">
+                                        <div class="sb sb-events sb-hat">when green flag clicked</div>
+                                        <div class="sb sb-motion">move <span class="sb-slot">10</span> steps</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 text-sm muted">
+                                ❗ Lama karena harus ulang di 3 sprite.
+                                ❗ Rawan salah: lupa 1 sprite, angka beda, atau urutannya beda.
+                            </div>
+                        </div>
+
+                        <!-- WITH BROADCAST -->
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">Dengan broadcast ✅ (lebih rapi)</div>
+
+                            <div class="grid gap-4">
+                                <div class="card p-4 border-slate-200 bg-white">
+                                    <div class="text-sm font-black mb-2">Sprite A (pengirim)</div>
+                                    <div class="space-y-2">
+                                        <div class="sb sb-events sb-hat">when green flag clicked</div>
+                                        <div class="sb sb-events">broadcast <span class="sb-slot">Mulai</span></div>
+                                    </div>
+                                </div>
+
+                                <div class="card p-4 border-slate-200 bg-white">
+                                    <div class="text-sm font-black mb-2">Sprite B (penerima)</div>
+                                    <div class="space-y-2">
+                                        <div class="sb sb-events sb-hat">when I receive <span
+                                                class="sb-slot">Mulai</span></div>
+                                        <div class="sb sb-motion">move <span class="sb-slot">10</span> steps</div>
+                                    </div>
+                                </div>
+
+                                <div class="card p-4 border-slate-200 bg-white">
+                                    <div class="text-sm font-black mb-2">Sprite C (penerima)</div>
+                                    <div class="space-y-2">
+                                        <div class="sb sb-events sb-hat">when I receive <span
+                                                class="sb-slot">Mulai</span></div>
+                                        <div class="sb sb-motion">move <span class="sb-slot">10</span> steps</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 text-sm muted">
+                                ✅ Lebih jelas: 1 pesan dipakai bareng-bareng.
+                                ✅ Lebih aman: kecil kemungkinan ada sprite yang “ketinggalan”.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- INTERACTIVE -->
+                    <div class="mt-8 card p-6 border-slate-200">
+                        <div class="font-black mb-2">Interaktif: pilih alasan yang paling pas</div>
+                        <div class="grid md:grid-cols-2 gap-3">
+                            <button class="choice text-left"
+                                onclick="toast('Betul! Kalau 3 sprite, kita harus ulang kodenya di tiap sprite 😵‍💫')">
+                                Tanpa broadcast, kita harus bikin script bendera hijau di setiap sprite. Itu lama.
+                            </button>
+                            <button class="choice text-left"
+                                onclick="toast('Yes! Ini juga penting ✅ Broadcast bikin lebih rapi dan mengurangi salah/lupa!')">
+                                Selain lama, tanpa broadcast rawan salah: ada sprite yang lupa dikasih kode atau beda
+                                langkah.
+                            </button>
+                        </div>
+                        <p class="muted text-sm mt-3">
+                            Catatan: Broadcast bukan bikin semua otomatis — tapi bikin alur jadi lebih rapi dan
+                            konsisten.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- 4 -->
+            <section class="slide" data-title="Apa itu Broadcast">
+                <div class="card p-8 md:p-10">
+                    <h2 class="h-title mb-3">Broadcast itu Apa? 📢</h2>
+                    <p class="text-lg muted mb-6">
+                        Broadcast itu seperti <b>pengumuman</b>.
+                        Satu sprite bisa bilang: “Hei semua, lakukan ini!”
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-6 items-center">
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">Ilustrasi “pengumuman”</div>
+                            <div class="flex items-center gap-4">
+                                <div
+                                    class="w-14 h-14 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center">
+                                    <i class="fa-solid fa-bullhorn text-2xl" style="color:#fb7185"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="font-extrabold">Pesan dikirim</div>
+                                    <div class="muted">Misalnya pesan: <span class="pill">Mulai</span></div>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex items-center justify-between">
+                                <div class="sb sb-events">broadcast <span class="sb-slot">Mulai</span></div>
+                                <i class="fa-solid fa-wind text-slate-400"></i>
+                                <span class="pill"><i class="fa-solid fa-users mr-1"></i> semua sprite</span>
+                            </div>
+                        </div>
+
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-2">Hal penting!</div>
+                            <div class="text-lg">
+                                Broadcast <b>bukan sulap</b> ✨
+                            </div>
+                            <div class="muted mt-2">
+                                Broadcast baru “terlihat” hasilnya kalau ada sprite yang <b>mendengar</b> dan
+                                <b>bereaksi</b>.
+                            </div>
+                            <div class="mt-4 p-4 rounded-2xl bg-amber-50 border border-amber-100">
+                                <div class="font-extrabold" style="color:#b45309">
+                                    Kalau tidak ada yang mendengar, tidak terjadi apa-apa.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5 -->
+            <section class="slide" data-title="Analogi">
+                <div class="card p-8 md:p-10">
+                    <h2 class="h-title mb-3">Analogi: Di Sekolah 🏫</h2>
+                    <p class="text-lg muted mb-6">Guru bilang: “ISTIRAHAT!” → semua murid bergerak.</p>
+
+                    <div class="grid md:grid-cols-2 gap-6 items-center">
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">Versi Scratch</div>
+                            <div class="space-y-3">
+                                <div class="sb sb-events sb-hat"><i class="fa-solid fa-flag"></i> when green flag
+                                    clicked</div>
+                                <div class="sb sb-events">broadcast <span class="sb-slot">Istirahat</span></div>
+                                <div class="sb sb-events sb-hat">when I receive <span class="sb-slot">Istirahat</span>
+                                </div>
+                                <div class="pill">Murid/sprite jalan</div>
+                            </div>
+                        </div>
+
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">Interaktif: pilih yang benar</div>
+                            <div class="space-y-3">
+                                <button class="choice text-left"
+                                    onclick="mcq(this,false,'Jawaban ini kurang pas. Broadcast itu pengumuman.')">
+                                    Broadcast = pesan rahasia cuma untuk 1 orang
+                                </button>
+                                <button class="choice text-left"
+                                    onclick="mcq(this,true,'Yes! Broadcast itu pengumuman ke banyak sprite.')">
+                                    Broadcast = pengumuman ke banyak sprite
+                                </button>
+                            </div>
+                            <div class="mt-3 text-sm muted" id="mcq5msg">Klik salah satu 🙂</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6 -->
+            <section class="slide" data-title="Blok Penting">
+                <div class="card p-8 md:p-10">
+                    <h2 class="h-title mb-3">2 Blok yang Wajib Kenal 🧱</h2>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">1) Kirim pesan</div>
+                            <div class="sb sb-events mb-3">broadcast <span class="sb-slot">Pesan</span></div>
+                            <div class="muted">Ini seperti: “Hei semuanya, dengar ya!”</div>
+                        </div>
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">2) Terima pesan</div>
+                            <div class="sb sb-events sb-hat mb-3">when I receive <span class="sb-slot">Pesan</span>
+                            </div>
+                            <div class="muted">Ini seperti: “Oke, aku dengar. Aku lakukan!”</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 p-6 rounded-3xl bg-sky-50 border border-sky-100">
+                        <div class="font-black mb-2">⚠️ Ingat ya!</div>
+                        <div class="text-lg">
+                            Broadcast itu harus punya <b>penerima</b>. Kalau tidak, tidak ada aksi.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7 -->
+            <section class="slide" data-title="Quiz Konsep">
+                <div class="card p-8 md:p-10">
+                    <h2 class="h-title mb-3">Mini Quiz 🧠</h2>
+                    <p class="text-lg muted mb-6">Broadcast akan bekerja kalau…</p>
+
+                    <div class="grid gap-3" role="group" aria-label="Quiz 1" data-mcq="q1">
+                        <div class="choice" tabindex="0" data-correct="false"
+                            data-msg="Bukan. Pesan panjang tidak membuatnya bekerja.">
+                            <span class="opt">( )</span> Pesannya panjang banget
+                        </div>
+
+                        <div class="choice" tabindex="0" data-correct="true"
+                            data-msg="Benar! Harus ada sprite yang menerima pesannya.">
+                            <span class="opt">( )</span> Ada sprite yang menerima pesan
+                        </div>
+
+                        <div class="choice" tabindex="0" data-correct="false"
+                            data-msg="Bukan. Yang penting ada penerima pesannya.">
+                            <span class="opt">( )</span> Broadcast diketik berkali-kali
+                        </div>
+                    </div>
+
+                    <div class="mt-3 text-sm muted" id="mcq-q1-msg">Klik jawabanmu 🙂</div>
+
+                    <div class="mt-3">
+                        <button class="btn btn-ghost" onclick="resetMCQ('q1')">Ulangi Quiz</button>
+                    </div>
+                </div>
+                <script>function wireMCQ() {
+                        document.querySelectorAll('[data-mcq]').forEach(group => {
+                            const qid = group.getAttribute('data-mcq');
+                            const msgEl = document.getElementById(`mcq-${qid}-msg`);
+
+                            group.querySelectorAll('.choice').forEach(choice => {
+                                choice.addEventListener('click', () => pickMCQ(qid, choice));
+                                choice.addEventListener('keydown', (e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        pickMCQ(qid, choice);
+                                    }
+                                });
+                            });
+
+                            // init message
+                            if (msgEl) msgEl.textContent = "Klik jawabanmu 🙂";
+                        });
+                    }
+
+                    function pickMCQ(qid, chosen) {
+                        const group = document.querySelector(`[data-mcq="${qid}"]`);
+                        if (!group) return;
+
+                        const msgEl = document.getElementById(`mcq-${qid}-msg`);
+                        const alreadyLocked = group.getAttribute('data-locked') === 'true';
+                        if (alreadyLocked) return; // kalau mau boleh ganti jadi false biar bisa klik ulang
+
+                        // reset semua opsi jadi ( )
+                        group.querySelectorAll('.choice').forEach(el => {
+                            el.classList.remove('ring-2', 'ring-green-400', 'ring-orange-300');
+                            const opt = el.querySelector('.opt');
+                            if (opt) opt.textContent = '( )';
+                        });
+
+                        // tandai pilihan jadi (x)
+                        const opt = chosen.querySelector('.opt');
+                        if (opt) opt.textContent = '(x)';
+
+                        const correct = chosen.getAttribute('data-correct') === 'true';
+                        const msg = chosen.getAttribute('data-msg') || '';
+
+                        // feedback + highlight
+                        if (correct) {
+                            chosen.classList.add('ring-2', 'ring-green-400');
+                            if (msgEl) {
+                                msgEl.textContent = "✅ " + msg;
+                                msgEl.className = "mt-3 text-sm font-bold text-green-700";
+                            }
+                        } else {
+                            chosen.classList.add('ring-2', 'ring-orange-300');
+                            if (msgEl) {
+                                msgEl.textContent = "⚠️ " + msg;
+                                msgEl.className = "mt-3 text-sm font-bold text-orange-700";
+                            }
+                        }
+
+                        // lock setelah pilih sekali (biar tidak spam klik)
+                        group.setAttribute('data-locked', 'true');
+                    }
+
+                    function resetMCQ(qid) {
+                        const group = document.querySelector(`[data-mcq="${qid}"]`);
+                        const msgEl = document.getElementById(`mcq-${qid}-msg`);
+                        if (!group) return;
+
+                        group.setAttribute('data-locked', 'false');
+                        group.querySelectorAll('.choice').forEach(el => {
+                            el.classList.remove('ring-2', 'ring-green-400', 'ring-orange-300');
+                            const opt = el.querySelector('.opt');
+                            if (opt) opt.textContent = '( )';
+                        });
+
+                        if (msgEl) {
+                            msgEl.textContent = "Klik jawabanmu 🙂";
+                            msgEl.className = "mt-3 text-sm muted";
+                        }
+                    }
+
+                    // panggil sekali saat halaman siap
+                    document.addEventListener('DOMContentLoaded', wireMCQ);
+                </script>
+            </section>
+
+            <!-- 8 -->
+            <section class="slide" data-title="Urutan Alur">
+                <div class="card p-8 md:p-10">
+                    <h2 class="h-title mb-3">Urutan Broadcast (Biar Rapi) 🧩</h2>
+                    <p class="text-lg muted mb-6">Ayo susun urutannya dari awal sampai akhir.</p>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">Klik berurutan (1 → 4)</div>
+
+                            <!-- ✅ penting: kasih id -->
+                            <div class="grid gap-3" id="orderChoices">
+                                <button class="choice text-left" onclick="orderPick(this,'event')">
+                                    <span class="opt">( )</span> Event terjadi (misal bendera hijau / tombol ditekan)
+                                </button>
+
+                                <button class="choice text-left" onclick="orderPick(this,'broadcast')">
+                                    <span class="opt">( )</span> Broadcast dikirim
+                                </button>
+
+                                <button class="choice text-left" onclick="orderPick(this,'receive')">
+                                    <span class="opt">( )</span> Pesan diterima (when I receive)
+                                </button>
+
+                                <button class="choice text-left" onclick="orderPick(this,'react')">
+                                    <span class="opt">( )</span> Sprite bereaksi (gerak / bicara / suara)
+                                </button>
+                            </div>
+
+                            <div class="mt-3 flex gap-2">
+                                <button class="btn btn-ghost" onclick="orderReset()">Reset</button>
+                                <button class="btn" onclick="orderCheck()">Cek Urutan</button>
+                            </div>
+
+                            <div class="mt-2 text-sm muted" id="orderMsg">Klik 4 pilihan sesuai urutan 🙂</div>
+                        </div>
+
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">Urutan yang kamu pilih</div>
+                            <ol class="list-decimal pl-6 space-y-2" id="orderList">
+                                <li class="muted">Belum ada pilihan</li>
+                            </ol>
+
+                            <div class="mt-5 p-4 rounded-2xl bg-rose-50 border border-rose-100">
+                                <div class="font-extrabold">Tips:</div>
+                                <div class="muted">Kalau urutan salah, game bisa terasa “aneh”.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <script>
+                // ✅ simpan urutan pilihan siswa (pakai key yang jelas)
+                let orderSelected = [];
+                const orderAnswer = ['event', 'broadcast', 'receive', 'react'];
+
+                const labelMap = {
+                    event: "Event terjadi (bendera hijau / tombol ditekan)",
+                    broadcast: "Broadcast dikirim",
+                    receive: "Pesan diterima (when I receive)",
+                    react: "Sprite bereaksi (gerak / bicara / suara)"
+                };
+
+                function renderOrderList() {
+                    const list = document.getElementById('orderList');
+                    if (!list) return;
+
+                    if (orderSelected.length === 0) {
+                        list.innerHTML = `<li class="muted">Belum ada pilihan</li>`;
+                        return;
+                    }
+                    list.innerHTML = orderSelected.map(k => `<li>${labelMap[k]}</li>`).join('');
+                }
+
+                function orderPick(btn, key) {
+                    const msg = document.getElementById('orderMsg');
+
+                    if (orderSelected.includes(key)) {
+                        msg.textContent = "Yang itu sudah kamu pilih 🙂 pilih yang lain ya.";
+                        msg.className = "mt-2 text-sm font-bold text-orange-700";
+                        return;
+                    }
+
+                    if (orderSelected.length >= 4) {
+                        msg.textContent = "Urutanmu sudah lengkap. Klik 'Cek Urutan' ya ✅";
+                        msg.className = "mt-2 text-sm font-bold text-slate-700";
+                        return;
+                    }
+
+                    orderSelected.push(key);
+
+                    // tanda nomor di tombol
+                    const opt = btn.querySelector('.opt');
+                    if (opt) opt.textContent = `( ${orderSelected.length} )`;
+
+                    // highlight pilihan
+                    btn.classList.add('ring-2', 'ring-orange-200');
+
+                    renderOrderList();
+
+                    if (orderSelected.length < 4) {
+                        msg.textContent = `Mantap! Sekarang pilih nomor ${orderSelected.length + 1} 🙂`;
+                        msg.className = "mt-2 text-sm font-bold text-slate-700";
+                    } else {
+                        msg.textContent = "Urutanmu sudah lengkap. Klik 'Cek Urutan' ya ✅";
+                        msg.className = "mt-2 text-sm font-bold text-slate-700";
+                    }
+                }
+
+                function orderReset() {
+                    orderSelected = [];
+
+                    // reset tombol-tombol
+                    document.querySelectorAll('#orderChoices .choice').forEach(btn => {
+                        btn.classList.remove('ring-2', 'ring-orange-200', 'ring-green-300', 'ring-red-200');
+                        const opt = btn.querySelector('.opt');
+                        if (opt) opt.textContent = '( )';
+                    });
+
+                    renderOrderList();
+
+                    const msg = document.getElementById('orderMsg');
+                    msg.textContent = "Klik 4 pilihan sesuai urutan 🙂";
+                    msg.className = "mt-2 text-sm muted";
+                }
+
+                function orderCheck() {
+                    const msg = document.getElementById('orderMsg');
+
+                    if (orderSelected.length < 4) {
+                        msg.textContent = "Belum lengkap. Pilih sampai 4 dulu ya 🙂";
+                        msg.className = "mt-2 text-sm font-bold text-orange-700";
+                        return;
+                    }
+
+                    const correct = orderSelected.join('|') === orderAnswer.join('|');
+
+                    // bersihin highlight benar/salah
+                    document.querySelectorAll('#orderChoices .choice').forEach(btn => {
+                        btn.classList.remove('ring-green-300', 'ring-red-200');
+                    });
+
+                    // highlight berdasarkan posisi
+                    orderSelected.forEach((key, idx) => {
+                        const btns = document.querySelectorAll('#orderChoices .choice');
+                        const btn = btns[idx] ? btns[idx] : null; // posisi klik tidak selalu sama, jadi tidak pakai index DOM
+                        // kita cari berdasarkan nomor yang sudah ditempel (opt)
+                        const found = Array.from(btns).find(b => (b.querySelector('.opt')?.textContent || '').includes(`${idx + 1}`));
+                        const targetBtn = found || btn;
+                        if (!targetBtn) return;
+
+                        if (key === orderAnswer[idx]) {
+                            targetBtn.classList.add('ring-2', 'ring-green-300');
+                        } else {
+                            targetBtn.classList.add('ring-2', 'ring-red-200');
+                        }
+                    });
+
+                    if (correct) {
+                        msg.textContent = "✅ Benar! Urutannya rapi banget. Game jadi enak dimainkan!";
+                        msg.className = "mt-2 text-sm font-bold text-green-700";
+                    } else {
+                        msg.textContent = "⚠️ Masih ada yang ketukar. Klik Reset lalu susun lagi ya!";
+                        msg.className = "mt-2 text-sm font-bold text-orange-700";
+                    }
+                }
+            </script>
+
+
+            <!-- 9 -->
+            <section class="slide" data-title="Kenapa Penting">
+                <div class="card p-8 md:p-10">
+                    <h2 class="h-title mb-3">Kenapa Broadcast Itu Berguna? ✅</h2>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3"><i class="fa-solid fa-triangle-exclamation mr-2"
+                                    style="color:#f59e0b"></i> Tanpa broadcast</div>
+                            <ul class="list-disc pl-5 space-y-2 muted">
+                                <li>Setiap sprite kerja sendiri</li>
+                                <li>Kode jadi panjang</li>
+                                <li>Susah ngatur “mulai / menang / kalah”</li>
+                            </ul>
+                        </div>
+
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3"><i class="fa-solid fa-circle-check mr-2"
+                                    style="color:#22c55e"></i> Dengan broadcast</div>
+                            <ul class="list-disc pl-5 space-y-2 muted">
+                                <li>Satu pesan bisa memicu banyak aksi</li>
+                                <li>Alur lebih rapi</li>
+                                <li>Gampang ditambah level atau efek</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 card p-6 border-slate-200">
+                        <div class="font-black mb-2">Interaktif: klik yang paling kamu suka</div>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="btn" onclick="toast('Yes! Alur rapi itu bikin coding lebih enak ✅')">Alur
+                                rapi</button>
+                            <button class="btn" onclick="toast('Betul! Kode pendek itu asyik 😄')">Kode lebih
+                                pendek</button>
+                            <button class="btn" onclick="toast('Mantap! Mudah dikembangkan = game makin seru!')">Mudah
+                                tambah level</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 10 -->
+            <section class="slide" data-title="Kapan Dipakai">
+                <div class="card p-8 md:p-10">
+                    <h2 class="h-title mb-3">Kapan Kita Pakai Broadcast? 🎮</h2>
+                    <p class="text-lg muted mb-6">Centang yang cocok!</p>
+
+                    <div class="grid md:grid-cols-2 gap-3">
+                        <label class="tick">
+                            <input type="checkbox" class="whenuse" value="Cerita dialog (A bicara → B balas)" />
+                            <span>Cerita dialog (A bicara → B balas)</span>
+                        </label>
+                        <label class="tick">
+                            <input type="checkbox" class="whenuse" value="Game: skor sudah cukup → menang" />
+                            <span>Game: skor sudah cukup → menang</span>
+                        </label>
+                        <label class="tick">
+                            <input type="checkbox" class="whenuse" value="Banyak sprite start bareng" />
+                            <span>Banyak sprite start bareng</span>
+                        </label>
+                        <label class="tick">
+                            <input type="checkbox" class="whenuse" value="Ganti level / ganti latar" />
+                            <span>Ganti level / ganti latar</span>
+                        </label>
+                    </div>
+
+                    <div class="mt-4 flex gap-2">
+                        <button class="btn btn-primary" onclick="showUse()">Lihat pilihanku</button>
+                        <button class="btn" onclick="clearUse()">Reset</button>
+                    </div>
+
+                    <div class="mt-3 card p-6 border-slate-200">
+                        <div class="font-black mb-2">Kamu memilih:</div>
+                        <div class="muted" id="useOut">Belum ada.</div>
+                    </div>
+                </div>
+                <script>
+                    function escapeHTML(str) {
+                        return String(str)
+                            .replaceAll('&', '&amp;')
+                            .replaceAll('<', '&lt;')
+                            .replaceAll('>', '&gt;')
+                            .replaceAll('"', '&quot;')
+                            .replaceAll("'", "&#039;");
+                    }
+
+                    function showUse() {
+                        const out = document.getElementById('useOut');
+                        const checked = Array.from(document.querySelectorAll('.whenuse:checked'))
+                            .map(cb => cb.value);
+
+                        if (!out) return;
+
+                        if (checked.length === 0) {
+                            out.innerHTML = `<span class="muted">Belum ada. Coba centang 1 ya 🙂</span>`;
+                            return;
+                        }
+
+                        out.innerHTML = `
+      <ul class="list-disc pl-6 space-y-1">
+        ${checked.map(x => `<li>${escapeHTML(x)}</li>`).join('')}
+      </ul>
+    `;
+                    }
+
+                    function clearUse() {
+                        document.querySelectorAll('.whenuse').forEach(cb => cb.checked = false);
+                        const out = document.getElementById('useOut');
+                        if (out) out.innerHTML = `<span class="muted">Belum ada.</span>`;
+                    }
+
+                    // BONUS (biar makin interaktif): setiap kali centang berubah, output auto update
+                    document.addEventListener('change', (e) => {
+                        if (e.target.classList && e.target.classList.contains('whenuse')) {
+                            showUse();
+                        }
+                    });
+                </script>
+            </section>
+
+            <!-- 11 -->
+            <section class="slide" data-title="Broadcast = Alur">
+                <div class="card p-8 md:p-10">
+                    <h2 class="h-title mb-3">Broadcast Itu Mengatur Alur 🗺️</h2>
+                    <p class="text-lg muted mb-6">
+                        Program itu punya <b>jalan cerita</b>. Broadcast membantu supaya “jalan ceritanya” rapi.
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-6 items-center">
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">Ilustrasi “peta alur”</div>
+                            <div class="space-y-3">
+                                <div class="pill"><b>Mulai</b> → broadcast “Mulai”</div>
+                                <div class="pill"><b>Main</b> → skor bertambah</div>
+                                <div class="pill"><b>Skor = 10</b> → broadcast “Menang”</div>
+                                <div class="pill"><b>Akhir</b> → tampil pesan menang</div>
+                            </div>
+                        </div>
+
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">Interaktif: pilih yang benar</div>
+                            <div class="space-y-3">
+                                <div class="choice"
+                                    onclick="mcq(this,true,'Betul! Broadcast bikin urutan kejadian jadi rapi.')">
+                                    (x) Broadcast membantu mengatur urutan kejadian
+                                </div>
+                                <div class="choice"
+                                    onclick="mcq(this,false,'Bukan ya. Broadcast bukan cuma hiasan, tapi pengatur alur.')">
+                                    ( ) Broadcast cuma untuk hiasan
+                                </div>
+                            </div>
+                            <div class="mt-3 text-sm muted" id="mcq11msg">Klik jawaban 🙂</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 12 -->
+            <section class="slide" data-title="Contoh Game">
+                <div class="card p-8 md:p-10">
+                    <h2 class="h-title mb-3">Contoh di Game: Skor 10 = Menang 🏆</h2>
+                    <p class="text-lg muted mb-6">Kalau skor sudah 10, kita kirim pesan “Menang”.</p>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">Pengirim pesan</div>
+                            <div class="space-y-3">
+                                <div class="sb sb-events sb-hat">when green flag clicked</div>
+                                <div class="pill">main game… skor naik</div>
+                                <div class="pill"><b>jika</b> skor = 10 →</div>
+                                <div class="sb sb-events">broadcast <span class="sb-slot">Menang</span></div>
+                            </div>
+                        </div>
+
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">Penerima pesan</div>
+                            <div class="space-y-3">
+                                <div class="sb sb-events sb-hat">when I receive <span class="sb-slot">Menang</span>
+                                </div>
+                                <div class="pill">mainkan suara “win” 🎵</div>
+                                <div class="pill">ganti kostum 😺</div>
+                                <div class="pill">tampil tulisan “Kamu Menang!” 🎉</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 p-6 rounded-3xl bg-green-50 border border-green-100">
+                        <div class="font-black" style="color:#166534">
+                            Intinya: broadcast = “tanda” untuk memulai aksi baru.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 13 -->
+            <section class="slide" data-title="Tebak Hasil">
+                <div class="card p-8 md:p-10">
+                    <h2 class="h-title mb-3">Tebak Hasilnya! 🔮</h2>
+                    <p class="text-lg muted mb-6">
+                        Sprite A kirim broadcast “Mulai”. Sprite B menerima “Mulai”. Sprite C tidak menerima apa-apa.
+                        <br /><b>Sprite mana yang bergerak?</b>
+                    </p>
+
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="card p-6 border-slate-200 text-center">
+                            <div class="text-4xl mb-2">🅰️</div>
+                            <div class="font-black mb-1">Sprite A</div>
+                            <button class="btn w-full mt-3"
+                                onclick="toast('Sprite A mungkin tetap bergerak kalau ada kodenya. Tapi broadcastnya untuk memberi sinyal!')">Klik</button>
+                        </div>
+                        <div class="card p-6 border-slate-200 text-center">
+                            <div class="text-4xl mb-2">🅱️</div>
+                            <div class="font-black mb-1">Sprite B</div>
+                            <button class="btn btn-primary w-full mt-3"
+                                onclick="toast('Benar! Sprite B bergerak karena menerima pesan “Mulai”. ✅')">Jawaban
+                                utama</button>
+                        </div>
+                        <div class="card p-6 border-slate-200 text-center">
+                            <div class="text-4xl mb-2">🅲</div>
+                            <div class="font-black mb-1">Sprite C</div>
+                            <button class="btn w-full mt-3"
+                                onclick="toast('Tidak. Sprite C tidak menerima pesan, jadi tidak ikut bereaksi.')">Klik</button>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 muted">
+                        Catatan: sprite hanya bereaksi kalau ada <b>kode penerima</b> untuk pesan itu.
+                    </div>
+                </div>
+
+                <script>
+                    function toast(message) {
+                        // hapus toast lama kalau ada
+                        const old = document.getElementById('toastBox');
+                        if (old) old.remove();
+
+                        // buat elemen toast
+                        const box = document.createElement('div');
+                        box.id = 'toastBox';
+                        box.innerHTML = message;
+
+                        // styling ringan & ramah anak
+                        box.style.position = 'fixed';
+                        box.style.bottom = '24px';
+                        box.style.left = '50%';
+                        box.style.transform = 'translateX(-50%)';
+                        box.style.background = '#FEF3C7';       // kuning muda
+                        box.style.border = '2px solid #F59E0B'; // kuning
+                        box.style.color = '#92400E';
+                        box.style.padding = '14px 18px';
+                        box.style.borderRadius = '16px';
+                        box.style.fontWeight = 'bold';
+                        box.style.maxWidth = '90%';
+                        box.style.textAlign = 'center';
+                        box.style.zIndex = '9999';
+                        box.style.boxShadow = '0 8px 20px rgba(0,0,0,0.15)';
+
+                        document.body.appendChild(box);
+
+                        // hilang otomatis
+                        setTimeout(() => {
+                            box.style.opacity = '0';
+                            box.style.transition = 'opacity 0.3s ease';
+                        }, 1800);
+
+                        setTimeout(() => {
+                            box.remove();
+                        }, 2200);
+                    }
+                </script>
+
+            </section>
+
+            <!-- 14 -->
+            <section class="slide" data-title="Praktik">
+                <div class="card p-8 md:p-10">
+                    <h2 class="h-title mb-3">Sekarang Praktik! 💻</h2>
+                    <p class="text-lg muted mb-6">Buat proyek dengan 2 sprite. Satu kirim pesan, satu menerima.</p>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">Langkah cepat</div>
+                            <ol class="list-decimal pl-6 space-y-2">
+                                <li>Buat 2 sprite (bebas)</li>
+                                <li>Sprite 1: bicara lalu <b>broadcast</b></li>
+                                <li>Sprite 2: <b>when I receive</b> lalu bergerak</li>
+                            </ol>
+
+                            <div class="mt-4 p-4 rounded-2xl bg-sky-50 border border-sky-100">
+                                <div class="font-extrabold">Contoh pesan:</div>
+                                <div class="mt-2 flex flex-wrap gap-2">
+                                    <span class="pill">Mulai</span>
+                                    <span class="pill">Balasan</span>
+                                    <span class="pill">Menang</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">Interaktif: checklist progress</div>
+                            <div class="grid gap-3">
+                                <label class="tick">
+                                    <input type="checkbox" class="practice" value="Aku sudah buat broadcast"
+                                        onchange="updatePractice()" />
+                                    <span>Aku sudah buat <b>broadcast</b></span>
+                                </label>
+                                <label class="tick">
+                                    <input type="checkbox" class="practice" value="Aku sudah buat receiver"
+                                        onchange="updatePractice()" />
+                                    <span>Aku sudah buat <b>when I receive</b></span>
+                                </label>
+                                <label class="tick">
+                                    <input type="checkbox" class="practice" value="Namanya sama"
+                                        onchange="updatePractice()" />
+                                    <span>Nama pesannya <b>sama persis</b></span>
+                                </label>
+                                <label class="tick">
+                                    <input type="checkbox" class="practice" value="Sprite bereaksi"
+                                        onchange="updatePractice()" />
+                                    <span>Sprite penerima <b>bereaksi</b> (gerak/bicara)</span>
+                                </label>
+                            </div>
+
+                            <div class="mt-4 p-4 rounded-2xl bg-green-50 border border-green-100">
+                                <div class="font-black" style="color:#166534">Status:</div>
+                                <div class="muted" id="practiceStatus">Ayo centang progresmu 🙂</div>
+                            </div>
+
+                            <div class="mt-3 flex gap-2">
+                                <button class="btn" onclick="resetPractice()">Reset</button>
+                                <button class="btn btn-primary"
+                                    onclick="toast('Mantap! Kalau ada yang belum jalan, nanti kita debug bareng 😄')">Siap
+                                    lanjut</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 15 -->
+            <section class="slide" data-title="Nggak Jalan?">
+                <div class="card p-8 md:p-10">
+                    <h2 class="h-title mb-3">“Kok Nggak Jalan Ya?” 🤔</h2>
+                    <p class="text-lg muted mb-6">
+                        Tenang… ini sering banget terjadi.
+                        Biasanya ada hal kecil yang kelewat.
+                    </p>
+
+                    <div class="card p-6 border-slate-200">
+                        <div class="font-black mb-3">Interaktif: kamu pernah?</div>
+                        <div class="flex flex-wrap gap-3">
+                            <button class="btn btn-primary" onclick="poll15('pernah')">Pernah 😅</button>
+                            <button class="btn" onclick="poll15('belum')">Belum</button>
+                        </div>
+                        <div class="mt-3 muted" id="poll15out">Klik salah satu.</div>
+                    </div>
+
+                    <div class="mt-6 p-6 rounded-3xl bg-amber-50 border border-amber-100">
+                        <div class="font-black" style="color:#b45309">
+                            Kita akan belajar 4 kesalahan paling sering, biar cepat beres!
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 16 -->
+            <section class="slide" data-title="Mistake 1">
+                <div class="card p-8 md:p-10">
+                    <h2 class="h-title mb-3">Mistake #1: Tidak Ada Penerima 👂</h2>
+                    <p class="text-lg muted mb-6">
+                        Ada broadcast… tapi tidak ada <b>when I receive</b>.
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">Yang terjadi</div>
+                            <div class="space-y-3">
+                                <div class="sb sb-events">broadcast <span class="sb-slot">Mulai</span></div>
+                                <div class="pill"><i class="fa-solid fa-ear-deaf mr-2"></i> Tidak ada yang mendengar
+                                </div>
+                                <div class="pill"><i class="fa-solid fa-circle-xmark mr-2" style="color:#ef4444"></i>
+                                    Tidak ada aksi</div>
+                            </div>
+                        </div>
+
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">Interaktif: akibatnya apa?</div>
+                            <div class="space-y-3">
+                                <div class="choice"
+                                    onclick="mcq(this,false,'Tidak harus error. Biasanya hanya tidak terjadi apa-apa.')">
+                                    ( ) Muncul error merah
+                                </div>
+                                <div class="choice"
+                                    onclick="mcq(this,true,'Benar! Kalau tidak ada receiver, ya tidak ada aksi.')">
+                                    (x) Tidak terjadi apa-apa
+                                </div>
+                            </div>
+                            <div class="mt-3 text-sm muted" id="mcq16msg">Klik jawaban 🙂</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 17 -->
+            <section class="slide" data-title="Mistake 2">
+                <div class="card p-8 md:p-10">
+                    <h2 class="h-title mb-3">Mistake #2: Nama Pesannya Beda 🧾</h2>
+                    <p class="text-lg muted mb-6">
+                        “Mulai” beda dengan “mulai” atau “Start”.
+                        Nama pesan harus <b>sama persis</b>.
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">Contoh salah</div>
+                            <div class="space-y-3">
+                                <div class="sb sb-events">broadcast <span class="sb-slot">Mulai</span></div>
+                                <div class="sb sb-events sb-hat">when I receive <span class="sb-slot">mulai</span></div>
+                                <div class="pill"><i class="fa-solid fa-circle-xmark mr-2" style="color:#ef4444"></i>
+                                    Tidak nyambung</div>
+                            </div>
+                        </div>
+
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">Interaktif: mana yang pasti jalan?</div>
+                            <div class="space-y-3">
+                                <div class="choice" onclick="mcq(this,true,'Yes! Pesannya sama persis ✅')">
+                                    (x) broadcast “GameMulai” → receive “GameMulai”
+                                </div>
+                                <div class="choice" onclick="mcq(this,false,'Belum tentu. “Mulai” dan “mulai” beda.')">
+                                    ( ) broadcast “Mulai” → receive “mulai”
+                                </div>
+                            </div>
+                            <div class="mt-3 text-sm muted" id="mcq17msg">Klik jawaban 🙂</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 18 -->
+            <section class="slide" data-title="Mistake 3">
+                <div class="card p-8 md:p-10">
+                    <h2 class="h-title mb-3">Mistake #3: Broadcast Tidak Pernah Dikirim 🧷</h2>
+                    <p class="text-lg muted mb-6">
+                        Broadcast-nya ada, tapi tidak pernah kepanggil karena tidak masuk event.
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">Contoh masalah</div>
+                            <div class="pill mb-3">Broadcast ada… tapi tidak ada bendera hijau / tombol / sentuh</div>
+                            <div class="sb sb-events">broadcast <span class="sb-slot">Mulai</span></div>
+                            <div class="muted mt-3">Kalau tidak dipicu, pesannya tidak pernah terkirim.</div>
+                        </div>
+
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">Interaktif: checklist cepat</div>
+                            <div class="grid gap-3">
+                                <label class="tick"><input type="checkbox" class="dbg3" value="Ada event" /> <span>Ada
+                                        event (bendera hijau / tombol)</span></label>
+                                <label class="tick"><input type="checkbox" class="dbg3" value="Event terjadi" />
+                                    <span>Event benar-benar terjadi</span></label>
+                                <label class="tick"><input type="checkbox" class="dbg3"
+                                        value="Broadcast di dalam event" /> <span>Broadcast ada di dalam
+                                        event</span></label>
+                            </div>
+                            <div class="mt-3 flex gap-2">
+                                <button class="btn btn-primary" onclick="dbg3Check()">Cek</button>
+                                <button class="btn" onclick="dbg3Reset()">Reset</button>
+                            </div>
+                            <div class="mt-3 text-sm muted" id="dbg3out">Centang lalu klik Cek 🙂</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 19 -->
+            <section class="slide" data-title="Mistake 4">
+                <div class="card p-8 md:p-10">
+                    <h2 class="h-title mb-3">Mistake #4: Broadcast Bukan Aksi 🪄</h2>
+                    <p class="text-lg muted mb-6">
+                        Broadcast hanya <b>memberi pesan</b>. Sprite tetap perlu kode aksi: gerak, bicara, suara, dll.
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-6 items-center">
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">Contoh benar ✅</div>
+                            <div class="space-y-3">
+                                <div class="sb sb-events sb-hat">when I receive <span class="sb-slot">Mulai</span></div>
+                                <div class="pill">gerak 10 langkah</div>
+                                <div class="pill">say “Ayo!”</div>
+                            </div>
+                        </div>
+
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">Interaktif: lengkapi kalimat</div>
+                            <div class="p-4 rounded-2xl bg-sky-50 border border-sky-100">
+                                Broadcast itu memberi <b id="blank1">_____</b>, bukan melakukan <b
+                                    id="blank2">_____</b>.
+                            </div>
+
+                            <div class="mt-3 flex flex-wrap gap-2">
+                                <button class="btn" onclick="fillBlanks('pesan','aksi')">pesan / aksi</button>
+                                <button class="btn" onclick="fillBlanks('warna','musik')">warna / musik</button>
+                                <button class="btn" onclick="fillBlanks('angka','foto')">angka / foto</button>
+                            </div>
+
+                            <div class="mt-3 text-sm muted" id="blankMsg">Klik salah satu 😄</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 20 -->
+            <section class="slide" data-title="Checklist Debug">
+                <div class="card p-8 md:p-10">
+                    <h2 class="h-title mb-3">Checklist Debug: Broadcast Tidak Jalan 🔍</h2>
+                    <p class="text-lg muted mb-6">Kalau macet, cek ini satu-satu.</p>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">Centang yang sudah benar</div>
+                            <div class="grid gap-3">
+                                <label class="tick"><input type="checkbox" class="dbg" value="Pesan pernah dikirim" />
+                                    <span>Pesan pernah dikirim</span></label>
+                                <label class="tick"><input type="checkbox" class="dbg" value="Ada receiver" /> <span>Ada
+                                        <b>when I receive</b></span></label>
+                                <label class="tick"><input type="checkbox" class="dbg" value="Nama pesan sama" />
+                                    <span>Nama pesan sama persis</span></label>
+                                <label class="tick"><input type="checkbox" class="dbg" value="Receiver punya aksi" />
+                                    <span>Receiver punya aksi (gerak/bicara)</span></label>
+                            </div>
+
+                            <div class="mt-3 flex gap-3">
+                                <button class="btn" onclick="showDebugResult()">Cek Hasil</button>
+                                <button class="btn btn-ghost" onclick="resetDebug()">Ulangi</button>
+                            </div>
+                        </div>
+
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">Hasil Debug</div>
+                            <div id="debugResult" class="text-lg muted">
+                                Centang dulu checklist di sebelah kiri 👈
+                            </div>
+
+                            <div class="mt-4">
+                                <img src="https://cdn-icons-png.flaticon.com/512/4338/4338295.png"
+                                    alt="debug illustration" class="w-48 mx-auto" />
+                                <p class="text-center text-sm muted mt-2">
+                                    Debug itu bukan salah, tapi belajar 🔧
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 21 -->
+            <section class="slide" data-title="Refleksi">
+                <div class="card p-10 text-center">
+                    <h2 class="h-title mb-4">Apa yang Kamu Pelajari Hari Ini? 🤔</h2>
+
+                    <div class="grid md:grid-cols-3 gap-6 mt-8">
+                        <div class="card p-6">
+                            <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png"
+                                class="w-20 mx-auto mb-3" />
+                            <p><b>Broadcast</b> itu apa?</p>
+                        </div>
+                        <div class="card p-6">
+                            <img src="https://cdn-icons-png.flaticon.com/512/2991/2991150.png"
+                                class="w-20 mx-auto mb-3" />
+                            <p>Kenapa harus ada <b>receiver</b>?</p>
+                        </div>
+                        <div class="card p-6">
+                            <img src="https://cdn-icons-png.flaticon.com/512/2991/2991153.png"
+                                class="w-20 mx-auto mb-3" />
+                            <p>Broadcast membantu bagian apa?</p>
+                        </div>
+                    </div>
+
+                    <p class="mt-6 muted">
+                        Jawab lisan atau tulis 1 kalimat ✍️
+                    </p>
+                </div>
+            </section>
+
+            <!-- 22 -->
+            <section class="slide" data-title="Penutup">
+                <div class="card p-10 text-center">
+                    <h2 class="h-title mb-4">Kalau Kita Tahu Jalurnya,<br>Kita Tidak Tersesat 🗺️</h2>
+
+                    <div class="grid md:grid-cols-3 gap-6 mt-8">
+                        <div class="card p-6">
+                            <img src="https://cdn-icons-png.flaticon.com/512/1828/1828817.png"
+                                class="w-16 mx-auto mb-2" />
+                            <p><b>Broadcast</b> = pesan</p>
+                        </div>
+                        <div class="card p-6">
+                            <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png"
+                                class="w-16 mx-auto mb-2" />
+                            <p>Satu pesan → banyak aksi</p>
+                        </div>
+                        <div class="card p-6">
+                            <img src="https://cdn-icons-png.flaticon.com/512/1828/1828899.png"
+                                class="w-16 mx-auto mb-2" />
+                            <p>Program jadi rapi</p>
+                        </div>
+                    </div>
+
+                    <p class="mt-8 text-lg font-bold">
+                        🎉 Keren! Kamu sudah bisa pakai broadcast!
+                    </p>
+                </div>
+            </section>
+
+    </div>
+    </main>
+
+    <!-- SCRIPT -->
+    <script>
+        const slides = Array.from(document.querySelectorAll('.slide'));
+        let currentSlide = 0;
+
+        function isTypingTarget(el) {
+            if (!el) return false;
+            const tag = el.tagName?.toLowerCase();
+
+            // hanya blok navigasi kalau benar-benar sedang mengetik
+            if (tag === 'textarea' || tag === 'select' || el.isContentEditable) return true;
+
+            if (tag === 'input') {
+                const type = (el.getAttribute('type') || '').toLowerCase();
+                // input teks yang biasanya dipakai untuk mengetik
+                const typingTypes = ['text', 'search', 'email', 'url', 'tel', 'password', 'number'];
+                return typingTypes.includes(type);
+            }
+
+            return false;
+        }
+
+
+        function updateUI() {
+            const counter = document.getElementById('slideCounter');
+            if (counter) counter.textContent = `Slide ${currentSlide + 1}/${slides.length}`;
+
+            const bar = document.getElementById('progressBar');
+            if (bar) {
+                const pct = ((currentSlide) / (slides.length - 1)) * 100;
+                bar.style.width = `${Math.max(0, Math.min(100, pct))}%`;
+            }
+
+            document.addEventListener('click', (e) => {
+                // kalau klik kosong (bukan input/textarea), fokuskan body supaya panah selalu responsif
+                const tag = e.target?.tagName?.toLowerCase();
+                if (tag !== 'input' && tag !== 'textarea' && tag !== 'select') {
+                    document.body.focus?.();
+                }
+            });
+
+        }
+
+        function focusFirstInSlide() {
+            const active = slides[currentSlide];
+            if (!active) return;
+
+            // cari elemen yang bisa difokus (button/choice/input)
+            const focusable = active.querySelector(
+                'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+            );
+            if (focusable) focusable.focus({ preventScroll: true });
+        }
+
+        function showSlide(index) {
+            slides.forEach(s => s.classList.remove('active'));
+            slides[index].classList.add('active');
+            updateUI();
+            focusFirstInSlide();
+        }
+
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+        }
+
+        // ✅ ini yang bikin tombol "Langsung ke Praktik" jalan
+        // slideNumber = nomor slide manusia (1..22), bukan index array
+        function jumpTo(slideNumber) {
+            const targetIndex = Math.max(0, Math.min(slides.length - 1, (slideNumber - 1)));
+            currentSlide = targetIndex;
+            showSlide(currentSlide);
+        }
+
+        // ✅ keyboard navigation: ← → / Spasi
+        document.addEventListener('keydown', (e) => {
+            if (isTypingTarget(document.activeElement)) return;
+
+            // spasi biar nyaman untuk next
+            if (e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+                return;
+            }
+
+            if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+                nextSlide();
+                return;
+            }
+            if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                prevSlide();
+                return;
+            }
+            if (e.key === 'Home') {
+                currentSlide = 0;
+                showSlide(currentSlide);
+                return;
+            }
+            if (e.key === 'End') {
+                currentSlide = slides.length - 1;
+                showSlide(currentSlide);
+                return;
+            }
+        });
+
+        // bikin .choice yang tabindex=0 bisa dipilih pakai Enter
+        document.addEventListener('keydown', (e) => {
+            const el = document.activeElement;
+            if (!el) return;
+            if (el.classList?.contains('choice') && (e.key === 'Enter' || e.key === ' ')) {
+                e.preventDefault();
+                el.click();
+            }
+        });
+
+        // init
+        updateUI();
+    </script>
+
+
+</body>
+
+</html>
