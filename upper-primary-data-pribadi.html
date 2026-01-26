@@ -1,0 +1,2191 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>5.1 Data Pribadi di Dunia Digital (Slides 1–5)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --bg1: #FFF7E6;
+            /* creamy */
+            --bg2: #F3F8FF;
+            /* light blue */
+            --card: #FFFFFF;
+            --ink: #0F172A;
+            --muted: #475569;
+            --accent: #FB923C;
+            /* orange */
+            --accent2: #38BDF8;
+            /* sky */
+            --good: #22C55E;
+            --warn: #F59E0B;
+            --bad: #EF4444;
+        }
+
+        body {
+            margin: 0;
+            background: radial-gradient(1200px 600px at 10% 10%, var(--bg2), transparent 60%),
+                radial-gradient(900px 500px at 90% 20%, #FFF0D6, transparent 55%),
+                linear-gradient(180deg, var(--bg1), #FFFFFF);
+            color: var(--ink);
+            overflow: hidden;
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+        }
+
+        .slide {
+            display: none;
+            height: 100vh;
+            padding: 48px 28px 86px;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        .wrap {
+            max-width: 1080px;
+            margin: 0 auto;
+            height: 100%;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            border-radius: 28px;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+        }
+
+        .h-title {
+            font-weight: 900;
+            letter-spacing: -0.02em;
+        }
+
+        .muted {
+            color: var(--muted);
+        }
+
+        .btn {
+            padding: 12px 18px;
+            border-radius: 18px;
+            font-weight: 800;
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 10px 18px rgba(251, 146, 60, 0.28);
+            transition: transform .12s ease, filter .12s ease;
+            user-select: none;
+        }
+
+        .btn:hover {
+            filter: brightness(0.98);
+            transform: translateY(-1px);
+        }
+
+        .btn-ghost {
+            padding: 12px 18px;
+            border-radius: 18px;
+            font-weight: 800;
+            background: rgba(15, 23, 42, 0.06);
+            color: var(--ink);
+            border: 1px solid rgba(15, 23, 42, 0.10);
+            user-select: none;
+        }
+
+        .choice {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(15, 23, 42, 0.10);
+            border-radius: 18px;
+            padding: 14px 14px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform .12s ease, box-shadow .12s ease;
+            outline: none;
+        }
+
+        .choice:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 16px rgba(15, 23, 42, 0.08);
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: .45rem;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-weight: 800;
+            border: 1px solid rgba(15, 23, 42, 0.10);
+            background: rgba(255, 255, 255, 0.75);
+        }
+
+        .nav {
+            position: fixed;
+            bottom: 18px;
+            left: 18px;
+            right: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            z-index: 50;
+        }
+
+        .progressWrap {
+            flex: 1;
+            height: 12px;
+            background: rgba(15, 23, 42, 0.08);
+            border-radius: 999px;
+            overflow: hidden;
+            border: 1px solid rgba(15, 23, 42, 0.08);
+        }
+
+        .progressBar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent2), var(--accent));
+            border-radius: 999px;
+            transition: width .25s ease;
+        }
+
+        .mini {
+            font-size: 13px;
+            color: var(--muted);
+            font-weight: 700;
+        }
+
+        /* simple illustrations */
+        .illu {
+            border-radius: 24px;
+            border: 1px solid rgba(15, 23, 42, 0.10);
+            background: linear-gradient(180deg, rgba(56, 189, 248, 0.14), rgba(251, 146, 60, 0.12));
+        }
+
+        .bigEmoji {
+            font-size: 64px;
+            line-height: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ACCESS CODE OVERLAY -->
+<div id="accessOverlay" style="
+  position:fixed;
+  inset:0;
+  background:rgba(255,247,230,.95);
+  backdrop-filter: blur(6px);
+  z-index:99999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+">
+  <div style="
+    background:white;
+    border-radius:24px;
+    padding:32px;
+    max-width:420px;
+    width:90%;
+    box-shadow:0 20px 40px rgba(0,0,0,.15);
+    text-align:center;
+  ">
+    <div style="font-size:48px;">🔐</div>
+    <h2 style="font-weight:900;font-size:24px;margin-top:12px;">
+      Masukkan Kode Akses
+    </h2>
+    <p style="color:#475569;margin:12px 0 20px;">
+      Kode dari gurumu ya 🙂
+    </p>
+
+    <input
+      id="accessInput"
+      type="text"
+      style="
+        width:100%;
+        padding:14px 16px;
+        font-size:18px;
+        font-weight:900;
+        text-align:center;
+        border-radius:16px;
+        border:2px solid #FB923C;
+        outline:none;
+        letter-spacing:2px;
+      "
+      autocomplete="off"
+    />
+
+    <button
+      onclick="checkAccess()"
+      style="
+        margin-top:16px;
+        width:100%;
+        padding:14px;
+        border-radius:16px;
+        background:#FB923C;
+        color:white;
+        font-weight:900;
+        font-size:18px;
+      "
+    >
+      Masuk ▶
+    </button>
+
+    <div id="accessMsg" style="margin-top:12px;color:#DC2626;font-weight:800;"></div>
+  </div>
+</div>
+
+
+<script>
+  const ACCESS_CODE = "RGMDSUP25";
+
+  const accessInput = document.getElementById("accessInput");
+  const accessMsg = document.getElementById("accessMsg");
+  const overlay = document.getElementById("accessOverlay");
+
+  // otomatis UPPERCASE
+  accessInput.addEventListener("input", () => {
+    accessInput.value = accessInput.value.toUpperCase();
+  });
+
+  // tekan ENTER bisa submit
+  accessInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      checkAccess();
+    }
+  });
+
+  function checkAccess() {
+    if (accessInput.value.trim() === ACCESS_CODE) {
+      overlay.style.display = "none";
+      accessMsg.textContent = "";
+      // fokus ke slide pertama
+      setTimeout(() => {
+        document.body.focus();
+      }, 100);
+    } else {
+      accessMsg.textContent = "❌ Kode salah. Coba lagi ya.";
+      accessInput.value = "";
+      accessInput.focus();
+    }
+  }
+</script>
+
+
+    <!-- Toast (feedback kecil) -->
+    <div id="toastBox" class="hidden"></div>
+
+    <!-- Slides -->
+    <main>
+        <div class="wrap">
+
+            <!-- Slide 1 -->
+            <section class="slide active" data-title="Cover">
+                <div class="card h-full p-8 md:p-12 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <span class="pill">📘 Sesi 5.1</span>
+                            <span class="pill">🔐 Aman di Dunia Digital</span>
+                        </div>
+
+                        <h1 class="h-title text-4xl md:text-6xl mt-6">
+                            Data Pribadi di Dunia Digital
+                        </h1>
+                        <p class="text-lg md:text-xl muted mt-4 max-w-3xl">
+                            Hari ini kita belajar: data apa yang boleh dibagi, dan data apa yang harus dijaga.
+                        </p>
+
+                        <div class="mt-8 grid md:grid-cols-3 gap-4">
+                            <div class="card p-5">
+                                <div class="bigEmoji">🧠</div>
+                                <div class="font-black text-lg mt-2">Paham</div>
+                                <div class="muted">Apa itu data pribadi</div>
+                            </div>
+                            <div class="card p-5">
+                                <div class="bigEmoji">🛡️</div>
+                                <div class="font-black text-lg mt-2">Pilih</div>
+                                <div class="muted">Mana yang aman dibagikan</div>
+                            </div>
+                            <div class="card p-5">
+                                <div class="bigEmoji">✅</div>
+                                <div class="font-black text-lg mt-2">Kebiasaan</div>
+                                <div class="muted">Biar akun kita aman</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 mt-6">
+                        <div class="mini">
+                            Tips: kamu bisa pakai tombol panah ← → di keyboard untuk pindah slide.
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="btn-ghost" onclick="toast('Siap! Yuk mulai 🙂')">Aku siap!</button>
+                            <button class="btn" onclick="nextSlide()">Mulai ➜</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 2 -->
+            <section class="slide" data-title="Tujuan Belajar">
+                <div class="card h-full p-8 md:p-12">
+                    <h2 class="h-title text-3xl md:text-5xl mb-3">Tujuan Belajar 🎯</h2>
+                    <p class="text-lg muted mb-6">Setelah ini, kamu bisa…</p>
+
+                    <div class="grid md:grid-cols-2 gap-5">
+                        <div class="card p-6">
+                            <div class="font-black text-xl mb-2">1) Mengenal</div>
+                            <p class="muted">Apa itu <b>data pribadi</b> dan contohnya.</p>
+                            <label class="flex items-center gap-3 mt-4">
+                                <input type="checkbox" class="h-5 w-5" onchange="goalTick()" />
+                                <span class="font-bold">Aku mau coba paham</span>
+                            </label>
+                        </div>
+
+                        <div class="card p-6">
+                            <div class="font-black text-xl mb-2">2) Bisa Memilih</div>
+                            <p class="muted">Mana yang <b>boleh dibagi</b> dan mana yang <b>harus dijaga</b>.</p>
+                            <label class="flex items-center gap-3 mt-4">
+                                <input type="checkbox" class="h-5 w-5" onchange="goalTick()" />
+                                <span class="font-bold">Aku mau belajar pilih</span>
+                            </label>
+                        </div>
+
+                        <div class="card p-6">
+                            <div class="font-black text-xl mb-2">3) Tahu Akibatnya</div>
+                            <p class="muted">Kalau data bocor, apa yang bisa terjadi (versi anak SD, gak seram).</p>
+                            <label class="flex items-center gap-3 mt-4">
+                                <input type="checkbox" class="h-5 w-5" onchange="goalTick()" />
+                                <span class="font-bold">Aku mau lebih hati-hati</span>
+                            </label>
+                        </div>
+
+                        <div class="card p-6">
+                            <div class="font-black text-xl mb-2">4) Punya Kebiasaan Aman</div>
+                            <p class="muted">Tanya orang tua/guru kalau ragu.</p>
+                            <label class="flex items-center gap-3 mt-4">
+                                <input type="checkbox" class="h-5 w-5" onchange="goalTick()" />
+                                <span class="font-bold">Aku setuju!</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 card p-5 illu">
+                        <div class="flex items-center justify-between flex-wrap gap-3">
+                            <div class="font-black">Interaktif: cek targetmu</div>
+                            <div id="goalOut" class="mini">Centang dulu ya 🙂</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 3 -->
+            <section class="slide" data-title="Cerita Kotak Rahasia">
+                <div class="card h-full p-8 md:p-12">
+                    <h2 class="h-title text-3xl md:text-5xl mb-3">Cerita: Kotak Rahasia 📦</h2>
+                    <p class="text-lg muted mb-6">
+                        Bayangin kamu punya kotak rahasia. Di dalamnya ada foto, surat, atau barang penting.
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black text-xl mb-3">Kotak TANPA gembok</div>
+                            <div class="illu p-6 flex items-center justify-center">
+                                <div class="text-center">
+                                    <div class="bigEmoji">📦</div>
+                                    <div class="mt-2 font-black">Kebuka</div>
+                                    <div class="mini">siapa pun bisa lihat</div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 grid gap-3">
+                                <button class="choice text-left" onclick="toast('Iya… bisa dilihat orang lain 😬')">
+                                    Kalau tidak dikunci, orang lain bisa lihat isi kotaknya.
+                                </button>
+                                <button class="choice text-left" onclick="toast('Betul! Bisa hilang atau diambil 😵')">
+                                    Kalau tidak dikunci, barang penting bisa hilang.
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black text-xl mb-3">Kotak DENGAN gembok</div>
+                            <div class="illu p-6 flex items-center justify-center">
+                                <div class="text-center">
+                                    <div class="bigEmoji">🔒</div>
+                                    <div class="mt-2 font-black">Terkunci</div>
+                                    <div class="mini">lebih aman</div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
+                                <div class="font-black mb-2">Interaktif: pilih yang paling aman</div>
+                                <div class="grid gap-3">
+                                    <button class="choice text-left" onclick="toast('Sip! Dikunci itu lebih aman ✅')">
+                                        Kunci kotaknya dulu sebelum ditinggal.
+                                    </button>
+                                    <button class="choice text-left"
+                                        onclick="toast('Kurang aman. Kotaknya bisa dibuka orang lain 😅')">
+                                        Biarkan saja, toh cuma sebentar.
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 card p-5 border-slate-200">
+                        <div class="font-black mb-1">Jembatan ke digital</div>
+                        <p class="muted">
+                            Di dunia digital, “kotak rahasia” itu bisa jadi <b>akun</b> atau <b>form</b>.
+                            Jadi kita juga perlu “gembok” = <b>password</b> dan kebiasaan aman.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 4 -->
+            <section class="slide" data-title="Dunia Digital">
+                <div class="card h-full p-8 md:p-12">
+                    <h2 class="h-title text-3xl md:text-5xl mb-3">Kotak Rahasia di Dunia Digital 🌐</h2>
+                    <p class="text-lg muted mb-6">
+                        Saat kamu main game atau pakai aplikasi, kadang kamu diminta mengisi data.
+                    </p>
+
+                    <div class="grid md:grid-cols-3 gap-5">
+                        <div class="card p-6 text-center">
+                            <div class="bigEmoji">🎮</div>
+                            <div class="font-black mt-2">Game</div>
+                            <div class="mini">buat akun / nickname</div>
+                        </div>
+                        <div class="card p-6 text-center">
+                            <div class="bigEmoji">📝</div>
+                            <div class="font-black mt-2">Form</div>
+                            <div class="mini">isi nama, kelas, dll</div>
+                        </div>
+                        <div class="card p-6 text-center">
+                            <div class="bigEmoji">📱</div>
+                            <div class="font-black mt-2">Aplikasi</div>
+                            <div class="mini">login, foto, lokasi</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-7 card p-6 illu">
+                        <div class="font-black mb-2">Interaktif: kamu paling sering yang mana?</div>
+                        <div class="grid md:grid-cols-3 gap-3">
+                            <button class="choice" onclick="pickHabit('Game 🎮')">Game 🎮</button>
+                            <button class="choice" onclick="pickHabit('Form 📝')">Form 📝</button>
+                            <button class="choice" onclick="pickHabit('Aplikasi 📱')">Aplikasi 📱</button>
+                        </div>
+                        <div id="habitOut" class="mini mt-3">Klik salah satu 🙂</div>
+                    </div>
+
+                    <div class="mt-6 card p-5 border-slate-200">
+                        <div class="font-black">Tambahan penting</div>
+                        <p class="muted">
+                            Tidak semua yang bisa diisi itu harus diisi. Kalau ragu, <b>tanya orang tua/guru</b> dulu
+                            ya.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 5 -->
+            <section class="slide" data-title="Apa itu Data Pribadi">
+                <div class="card h-full p-8 md:p-12">
+                    <h2 class="h-title text-3xl md:text-5xl mb-3">Apa Itu Data Pribadi? 🧩</h2>
+                    <p class="text-lg muted mb-6">
+                        Data pribadi itu data tentang diri kita. Ada yang boleh dibagi, ada yang harus dijaga.
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black text-xl mb-3">Contoh data pribadi</div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="pill">👤 Nama lengkap</div>
+                                <div class="pill">🏠 Alamat rumah</div>
+                                <div class="pill">📞 Nomor HP</div>
+                                <div class="pill">🔑 Password</div>
+                                <div class="pill">📷 Foto wajah</div>
+                                <div class="pill">📍 Lokasi</div>
+                            </div>
+                        </div>
+
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black text-xl mb-3">Interaktif: isi cepat</div>
+                            <p class="muted mb-3">
+                                Kalau kamu buat akun game, biasanya diminta apa?
+                            </p>
+
+                            <input id="quickInput" type="text" placeholder="contoh: nickname, email, dll"
+                                class="w-full border border-slate-200 rounded-2xl p-4 font-bold" />
+
+                            <div class="mt-3 flex gap-2">
+                                <button class="btn" onclick="showQuickInput()">Kirim</button>
+                                <button class="btn-ghost" onclick="clearQuickInput()">Reset</button>
+                            </div>
+
+                            <div id="quickOut" class="mini mt-3">Ketik jawabanmu ya 🙂</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 card p-5 illu">
+                        <div class="font-black mb-1">Ingat!</div>
+                        <p class="muted">
+                            Password itu seperti kunci. <b>Jangan dibagi ke teman</b>. Kalau ragu, bilang ke guru/orang
+                            tua.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================== -->
+            <!-- SLIDES 6–10 (LANJUTAN) -->
+            <!-- Tempelkan bagian ini SETELAH slide 5 dan SEBELUM </div></main> -->
+            <!-- ===================== -->
+
+            <!-- Slide 6 -->
+            <section class="slide" data-title="Contoh Dekat Siswa">
+                <div class="card h-full p-8 md:p-12">
+                    <h2 class="h-title text-3xl md:text-5xl mb-3">Contoh yang Dekat dengan Kamu 🎒</h2>
+                    <p class="text-lg muted mb-6">
+                        Data pribadi sering muncul saat kamu <b>daftar game</b>, <b>isi form</b>, atau <b>login</b>.
+                        Yuk lihat contohnya!
+                    </p>
+
+                    <div class="grid md:grid-cols-3 gap-5">
+                        <div class="card p-6 border-slate-200">
+                            <div class="flex items-center justify-between">
+                                <div class="font-black text-xl">Game</div>
+                                <div class="text-3xl">🎮</div>
+                            </div>
+                            <div class="mt-3 illu p-4">
+                                <div class="font-black">Biasanya diminta:</div>
+                                <ul class="list-disc pl-6 muted mt-2 space-y-1">
+                                    <li>Nickname</li>
+                                    <li>Email (kadang)</li>
+                                    <li>Password</li>
+                                </ul>
+                            </div>
+                            <button class="btn w-full mt-4"
+                                onclick="toast('Game sering minta nickname & password. Password itu harus dijaga ya! 🔑')">
+                                Aku pernah!
+                            </button>
+                        </div>
+
+                        <div class="card p-6 border-slate-200">
+                            <div class="flex items-center justify-between">
+                                <div class="font-black text-xl">Form</div>
+                                <div class="text-3xl">📝</div>
+                            </div>
+                            <div class="mt-3 illu p-4">
+                                <div class="font-black">Biasanya diminta:</div>
+                                <ul class="list-disc pl-6 muted mt-2 space-y-1">
+                                    <li>Nama</li>
+                                    <li>Kelas</li>
+                                    <li>Sekolah</li>
+                                </ul>
+                            </div>
+                            <button class="btn w-full mt-4"
+                                onclick="toast('Form itu seperti lembar pendaftaran. Jangan asal isi alamat rumah ya 🙂')">
+                                Aku pernah!
+                            </button>
+                        </div>
+
+                        <div class="card p-6 border-slate-200">
+                            <div class="flex items-center justify-between">
+                                <div class="font-black text-xl">Aplikasi</div>
+                                <div class="text-3xl">📱</div>
+                            </div>
+                            <div class="mt-3 illu p-4">
+                                <div class="font-black">Kadang minta:</div>
+                                <ul class="list-disc pl-6 muted mt-2 space-y-1">
+                                    <li>Foto</li>
+                                    <li>Lokasi</li>
+                                    <li>Kamera</li>
+                                </ul>
+                            </div>
+                            <button class="btn w-full mt-4"
+                                onclick="toast('Aplikasi bisa minta kamera/lokasi. Kalau ragu, tanya orang tua/guru ✅')">
+                                Aku pernah!
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 card p-5 border-slate-200">
+                        <div class="font-black mb-1">Interaktif: cepat jawab</div>
+                        <p class="muted mb-3">Kamu paling sering pakai yang mana?</p>
+                        <div class="grid md:grid-cols-3 gap-3">
+                            <button class="choice" onclick="pickHabit('Game 🎮')">Game 🎮</button>
+                            <button class="choice" onclick="pickHabit('Form 📝')">Form 📝</button>
+                            <button class="choice" onclick="pickHabit('Aplikasi 📱')">Aplikasi 📱</button>
+                        </div>
+                        <div id="habitOut2" class="mini mt-3">Klik salah satu 🙂</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 7 -->
+            <section class="slide" data-title="Data Bukan Cuma Angka">
+                <div class="card h-full p-8 md:p-12">
+                    <h2 class="h-title text-3xl md:text-5xl mb-3">Data Itu Bukan Cuma Angka 😮</h2>
+                    <p class="text-lg muted mb-6">
+                        Data pribadi bukan cuma “nomor”. Foto dan lokasi juga termasuk.
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black text-xl mb-3">Ini juga data pribadi:</div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="pill">📷 Foto wajah</div>
+                                <div class="pill">🎤 Suara</div>
+                                <div class="pill">📍 Lokasi</div>
+                                <div class="pill">🏫 Nama sekolah</div>
+                                <div class="pill">📞 Nomor HP</div>
+                                <div class="pill">🔑 Password</div>
+                            </div>
+
+                            <div class="mt-5 illu p-5">
+                                <div class="font-black">Contoh mudah:</div>
+                                <div class="muted mt-1">Kalau kamu share “lokasi rumah”, orang lain bisa tahu kamu
+                                    tinggal di mana.</div>
+                            </div>
+                        </div>
+
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black text-xl mb-2">Interaktif: pilih yang termasuk data pribadi</div>
+                            <p class="muted mb-4">Klik kartu-kartu ini ya. (Boleh lebih dari 1)</p>
+
+                            <div class="grid gap-3" id="d7choices">
+                                <button class="choice text-left" data-pick="true" onclick="togglePick(this,'foto')">
+                                    📷 Foto wajah
+                                </button>
+                                <button class="choice text-left" data-pick="false" onclick="togglePick(this,'hobi')">
+                                    🎨 Hobi (misal: menggambar)
+                                </button>
+                                <button class="choice text-left" data-pick="true" onclick="togglePick(this,'lokasi')">
+                                    📍 Lokasi rumah/sekolah
+                                </button>
+                                <button class="choice text-left" data-pick="true" onclick="togglePick(this,'password')">
+                                    🔑 Password
+                                </button>
+                            </div>
+
+                            <div class="mt-4 card p-5 border-slate-200">
+                                <div class="font-black mb-1">Hasil pilihanmu:</div>
+                                <div id="pickOut" class="mini">Klik beberapa kartu 🙂</div>
+                                <div class="mt-3 flex gap-2">
+                                    <button class="btn" onclick="checkPick()">Cek</button>
+                                    <button class="btn-ghost" onclick="resetPick()">Reset</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 8 -->
+            <section class="slide" data-title="Pilah Data">
+                <div class="card h-full p-8 md:p-12">
+                    <h2 class="h-title text-3xl md:text-5xl mb-3">Ayo Pilah Data! 🟢🔴</h2>
+                    <p class="text-lg muted mb-6">
+                        Klik tiap kartu, lalu pilih: <b>Aman dibagi</b> atau <b>Jaga rapat</b>.
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">Pilih kartu (klik)</div>
+                            <div class="grid gap-3" id="cardPile">
+                                <button class="choice text-left"
+                                    onclick="selectCard(this,'Hobi: suka sepak bola','safe')">
+                                    🎾 Hobi: suka sepak bola
+                                </button>
+                                <button class="choice text-left"
+                                    onclick="selectCard(this,'Nama panggilan: Bimo','safe')">
+                                    🙂 Nama panggilan: Bimo
+                                </button>
+                                <button class="choice text-left" onclick="selectCard(this,'Alamat rumah','keep')">
+                                    🏠 Alamat rumah
+                                </button>
+                                <button class="choice text-left" onclick="selectCard(this,'Password akun','keep')">
+                                    🔑 Password akun
+                                </button>
+                                <button class="choice text-left" onclick="selectCard(this,'Nomor HP orang tua','keep')">
+                                    📞 Nomor HP orang tua
+                                </button>
+                                <button class="choice text-left" onclick="selectCard(this,'Foto wajah','keep')">
+                                    📷 Foto wajah
+                                </button>
+                            </div>
+
+                            <div class="mt-4 card p-5 illu">
+                                <div class="font-black mb-1">Kartu terpilih:</div>
+                                <div id="selectedCardOut" class="mini">Belum pilih kartu 🙂</div>
+                                <div class="mt-3 flex gap-2">
+                                    <button class="btn" onclick="markCard('safe')">Aman dibagi ✅</button>
+                                    <button class="btn-ghost" onclick="markCard('keep')">Jaga rapat 🔒</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">Hasilmu</div>
+
+                            <div class="grid gap-4">
+                                <div class="card p-5 border-slate-200">
+                                    <div class="font-black">Aman dibagi ✅</div>
+                                    <ul id="safeList" class="list-disc pl-6 muted mt-2 space-y-1">
+                                        <li class="muted">Belum ada</li>
+                                    </ul>
+                                </div>
+
+                                <div class="card p-5 border-slate-200">
+                                    <div class="font-black">Jaga rapat 🔒</div>
+                                    <ul id="keepList" class="list-disc pl-6 muted mt-2 space-y-1">
+                                        <li class="muted">Belum ada</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 flex gap-2">
+                                <button class="btn" onclick="checkSort()">Cek Jawaban</button>
+                                <button class="btn-ghost" onclick="resetSort()">Reset</button>
+                            </div>
+
+                            <div id="sortMsg" class="mini mt-3">Susun dulu ya 🙂</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 9 -->
+            <section class="slide" data-title="Kenapa Dijaga">
+                <div class="card h-full p-8 md:p-12">
+                    <h2 class="h-title text-3xl md:text-5xl mb-3">Kenapa Harus Dijaga? 🔑</h2>
+                    <p class="text-lg muted mb-6">
+                        Data pribadi itu seperti <b>kunci</b>. Kalau kuncinya dibagi sembarangan, bisa berbahaya.
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black text-xl mb-3">Analogi “Kunci Rumah”</div>
+                            <div class="illu p-6 text-center">
+                                <div class="bigEmoji">🏠🔑</div>
+                                <div class="font-black mt-2">Kunci itu penting!</div>
+                                <div class="mini">Password juga seperti kunci.</div>
+                            </div>
+
+                            <div class="mt-4 card p-5 border-slate-200">
+                                <div class="font-black mb-2">Interaktif: pilih akibatnya</div>
+                                <div class="grid gap-3">
+                                    <button class="choice text-left"
+                                        onclick="mcqSimple(this,false,'Hmm… bukan itu. Yang lebih mungkin adalah orang lain bisa masuk tanpa izin.')">
+                                        Akunnya jadi lebih cantik
+                                    </button>
+                                    <button class="choice text-left"
+                                        onclick="mcqSimple(this,true,'Benar! Orang lain bisa masuk akun kita 😬')">
+                                        Orang lain bisa masuk akun kita
+                                    </button>
+                                    <button class="choice text-left"
+                                        onclick="mcqSimple(this,false,'Bukan. Password tidak membuat internet jadi cepat 😄')">
+                                        Internet jadi lebih cepat
+                                    </button>
+                                </div>
+                                <div id="mcq9msg" class="mini mt-3">Klik salah satu 🙂</div>
+                            </div>
+                        </div>
+
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black text-xl mb-3">Contoh yang Relate</div>
+                            <div class="grid gap-3">
+                                <div class="card p-5 border-slate-200">
+                                    <div class="font-black">Kalau password dibagi…</div>
+                                    <div class="muted">Teman bisa masuk akunmu (meski niatnya bercanda).</div>
+                                </div>
+                                <div class="card p-5 border-slate-200">
+                                    <div class="font-black">Kalau alamat rumah dibagi…</div>
+                                    <div class="muted">Orang asing bisa tahu kamu tinggal di mana.</div>
+                                </div>
+                                <div class="card p-5 border-slate-200">
+                                    <div class="font-black">Kalau nomor HP orang tua dibagi…</div>
+                                    <div class="muted">Bisa ada telepon/WA dari orang yang tidak dikenal.</div>
+                                </div>
+                            </div>
+
+                            <button class="btn w-full mt-4"
+                                onclick="toast('Intinya: jangan asal bagi data penting ya ✅')">Aku paham!</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 10 -->
+            <section class="slide" data-title="Kapan Dipakai">
+                <div class="card h-full p-8 md:p-12">
+                    <h2 class="h-title text-3xl md:text-5xl mb-3">Kapan Kita Harus Hati-hati? 🛡️</h2>
+                    <p class="text-lg muted mb-6">Centang yang cocok!</p>
+
+                    <div class="grid md:grid-cols-2 gap-3">
+                        <label class="tick">
+                            <input type="checkbox" class="whenuse" value="Saat daftar game / login akun" />
+                            <span>Saat daftar game / login akun</span>
+                        </label>
+                        <label class="tick">
+                            <input type="checkbox" class="whenuse" value="Saat isi form lomba / pendaftaran" />
+                            <span>Saat isi form lomba / pendaftaran</span>
+                        </label>
+                        <label class="tick">
+                            <input type="checkbox" class="whenuse" value="Saat aplikasi minta kamera / lokasi" />
+                            <span>Saat aplikasi minta kamera / lokasi</span>
+                        </label>
+                        <label class="tick">
+                            <input type="checkbox" class="whenuse" value="Saat ada orang minta password" />
+                            <span>Saat ada orang minta password</span>
+                        </label>
+                    </div>
+
+                    <div class="mt-4 flex gap-2">
+                        <button class="btn" onclick="showUse2()">Lihat pilihanku</button>
+                        <button class="btn-ghost" onclick="clearUse2()">Reset</button>
+                    </div>
+
+                    <div class="mt-3 card p-6 border-slate-200">
+                        <div class="font-black mb-2">Kamu memilih:</div>
+                        <div class="muted" id="useOut2">Belum ada.</div>
+                    </div>
+
+                    <div class="mt-5 card p-5 illu">
+                        <div class="font-black mb-1">Pesan penting</div>
+                        <p class="muted">
+                            Kalau ragu, stop dulu dan <b>tanya orang tua/guru</b>. Lebih aman daripada menyesal 🙂
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 11 -->
+            <section class="slide" data-title="Kalau Data Bocor">
+                <div class="card h-full p-8 md:p-12">
+                    <h2 class="h-title text-3xl md:text-5xl mb-3">Kalau Data Bocor… Bisa Apa? 😬</h2>
+                    <p class="text-lg muted mb-6">
+                        “Bocor” artinya data kita tersebar tanpa izin. Ini contoh akibatnya (versi anak SD, tidak
+                        seram).
+                    </p>
+
+                    <div class="grid md:grid-cols-3 gap-5">
+                        <div class="card p-6 border-slate-200">
+                            <div class="text-5xl">📩</div>
+                            <div class="font-black text-xl mt-2">Ada pesan aneh</div>
+                            <div class="muted mt-1">Tiba-tiba ada yang chat padahal kamu tidak kenal.</div>
+                            <button class="btn w-full mt-4"
+                                onclick="toast('Kalau dapat pesan aneh, jangan balas. Bilang ke orang tua/guru ✅')">
+                                Kalau aku?
+                            </button>
+                        </div>
+
+                        <div class="card p-6 border-slate-200">
+                            <div class="text-5xl">🔓</div>
+                            <div class="font-black text-xl mt-2">Akun bisa diambil</div>
+                            <div class="muted mt-1">Kalau password bocor, orang lain bisa masuk akunmu.</div>
+                            <button class="btn w-full mt-4"
+                                onclick="toast('Password itu kunci. Jangan dibagi, ya! 🔑')">
+                                Oh no!
+                            </button>
+                        </div>
+
+                        <div class="card p-6 border-slate-200">
+                            <div class="text-5xl">😟</div>
+                            <div class="font-black text-xl mt-2">Kita jadi tidak nyaman</div>
+                            <div class="muted mt-1">Rasanya seperti ada yang mengintip tanpa izin.</div>
+                            <button class="btn w-full mt-4"
+                                onclick="toast('Betul. Data pribadi itu harus dijaga supaya kita merasa aman 🙂')">
+                                Iya…
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 card p-5 illu">
+                        <div class="font-black mb-1">Interaktif: pilih yang paling tepat</div>
+                        <p class="muted mb-3">Kalau ada orang asing minta data kamu, tindakan terbaik adalah…</p>
+                        <div class="grid md:grid-cols-3 gap-3">
+                            <button class="choice text-left"
+                                onclick="mcq11(this,false,'Bukan ya. Jangan asal kasih data pribadi.')">Langsung
+                                kasih saja</button>
+                            <button class="choice text-left"
+                                onclick="mcq11(this,true,'Benar! Stop dulu dan tanya orang tua/guru ✅')">Stop dan
+                                tanya orang tua/guru</button>
+                            <button class="choice text-left"
+                                onclick="mcq11(this,false,'Bukan. Kita perlu aman dulu sebelum ikut-ikutan.')">Ikut
+                                teman saja</button>
+                        </div>
+                        <div id="mcq11msg" class="mini mt-3">Klik jawabanmu 🙂</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 12 -->
+            <section class="slide" data-title="Contoh Kasus HP">
+                <div class="card h-full p-8 md:p-12">
+                    <h2 class="h-title text-3xl md:text-5xl mb-3">Contoh Kasus: Nomor HP 📞</h2>
+                    <p class="text-lg muted mb-6">
+                        Bayangin nomor HP orang tua kamu tersebar di grup yang tidak kamu kenal.
+                        <br><b>Apa yang bisa terjadi?</b>
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">Pilih kemungkinan (boleh 1)</div>
+                            <div class="grid gap-3" role="group" aria-label="MCQ Slide 12">
+                                <button class="choice text-left"
+                                    onclick="mcq12(this,false,'Tidak selalu. Lebih aman anggap itu berisiko.')">
+                                    Tidak terjadi apa-apa selamanya
+                                </button>
+                                <button class="choice text-left"
+                                    onclick="mcq12(this,true,'Benar. Bisa ada telepon/WA dari orang yang tidak dikenal.')">
+                                    Bisa ditelepon/di-WA orang asing
+                                </button>
+                                <button class="choice text-left"
+                                    onclick="mcq12(this,false,'Bukan. Nomor HP tidak bikin nilai naik 🙂')">
+                                    Nilai pelajaran jadi naik
+                                </button>
+                                <button class="choice text-left"
+                                    onclick="mcq12(this,false,'Bukan. Itu bukan fungsi nomor HP.')">
+                                    HP langsung jadi rusak
+                                </button>
+                            </div>
+                            <div id="mcq12msg" class="mini mt-3">Klik jawabanmu 🙂</div>
+                        </div>
+
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-2">Interaktif: kalimat aman</div>
+                            <p class="muted mb-3">Kalau kamu dapat chat aneh, kamu bisa bilang:</p>
+
+                            <div class="grid gap-3">
+                                <button class="choice text-left"
+                                    onclick="toast('Bagus! Bilang ke orang tua/guru itu paling aman ✅')">
+                                    “Aku tidak kenal. Aku tanya orang tua/guru dulu ya.”
+                                </button>
+                                <button class="choice text-left"
+                                    onclick="toast('Kurang aman. Jangan memberi data tambahan ya 🙂')">
+                                    “Oke, kamu siapa? Aku tinggal di…”
+                                </button>
+                            </div>
+
+                            <div class="mt-5 illu p-5">
+                                <div class="font-black">Ingat:</div>
+                                <div class="muted mt-1">Kalau ragu, <b>jangan balas</b>. Simpan bukti, lalu lapor orang
+                                    dewasa.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 13 -->
+            <section class="slide" data-title="Sulit Ditarik">
+                <div class="card h-full p-8 md:p-12">
+                    <h2 class="h-title text-3xl md:text-5xl mb-3">Data Digital Sulit Ditarik 😵‍💫</h2>
+                    <p class="text-lg muted mb-6">
+                        Kalau sudah terlanjur tersebar, data di internet sering <b>tidak mudah dihapus</b>.
+                        Makanya kita perlu mikir dulu sebelum membagikan.
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black text-xl mb-3">Ilustrasi sederhana</div>
+                            <div class="illu p-6 text-center">
+                                <div class="text-6xl">🖼️➡️🌐</div>
+                                <div class="font-black mt-3">Sekali tersebar…</div>
+                                <div class="mini">bisa tersimpan di banyak tempat</div>
+                            </div>
+
+                            <div class="mt-4 card p-5 border-slate-200">
+                                <div class="font-black mb-2">Interaktif: Setuju atau Tidak?</div>
+                                <div class="grid md:grid-cols-2 gap-3">
+                                    <button class="choice" onclick="agree13(true)">Setuju ✅</button>
+                                    <button class="choice" onclick="agree13(false)">Tidak ❓</button>
+                                </div>
+                                <div id="agree13msg" class="mini mt-3">Klik jawabanmu 🙂</div>
+                            </div>
+                        </div>
+
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black text-xl mb-2">Contoh yang relate</div>
+                            <div class="grid gap-3">
+                                <div class="card p-5 border-slate-200">
+                                    <div class="font-black">Foto</div>
+                                    <div class="muted">Kalau di-share, bisa di-screenshot orang lain.</div>
+                                </div>
+                                <div class="card p-5 border-slate-200">
+                                    <div class="font-black">Alamat</div>
+                                    <div class="muted">Kalau tersebar, orang bisa tahu kamu tinggal di mana.</div>
+                                </div>
+                                <div class="card p-5 border-slate-200">
+                                    <div class="font-black">Password</div>
+                                    <div class="muted">Kalau bocor, akun bisa diambil orang.</div>
+                                </div>
+                            </div>
+
+                            <button class="btn w-full mt-4"
+                                onclick="toast('Jadi, kita pikir dulu sebelum share ya 🙂')">Aku mengerti!</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 14 -->
+            <section class="slide" data-title="Kebiasaan Aman">
+                <div class="card h-full p-8 md:p-12">
+                    <h2 class="h-title text-3xl md:text-5xl mb-3">Kebiasaan Aman di Dunia Digital 🛡️</h2>
+                    <p class="text-lg muted mb-6">Centang kebiasaan yang mau kamu lakukan mulai hari ini!</p>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <label class="tick">
+                            <input type="checkbox" class="safehabit" value="Tanya orang tua/guru kalau ragu" />
+                            <span>Tanya orang tua/guru kalau ragu</span>
+                        </label>
+                        <label class="tick">
+                            <input type="checkbox" class="safehabit" value="Jangan bagi password ke siapa pun" />
+                            <span>Jangan bagi password ke siapa pun</span>
+                        </label>
+                        <label class="tick">
+                            <input type="checkbox" class="safehabit" value="Baca dulu sebelum isi form" />
+                            <span>Baca dulu sebelum isi form</span>
+                        </label>
+                        <label class="tick">
+                            <input type="checkbox" class="safehabit" value="Kalau ada chat aneh: jangan balas, lapor" />
+                            <span>Kalau ada chat aneh: jangan balas, lapor</span>
+                        </label>
+                        <label class="tick">
+                            <input type="checkbox" class="safehabit" value="Minta izin sebelum share foto teman" />
+                            <span>Minta izin sebelum share foto teman</span>
+                        </label>
+                        <label class="tick">
+                            <input type="checkbox" class="safehabit" value="Tidak asal klik tombol ‘Allow’" />
+                            <span>Tidak asal klik tombol ‘Allow’</span>
+                        </label>
+                    </div>
+
+                    <div class="mt-5 flex gap-2">
+                        <button class="btn" onclick="showHabits()">Lihat kebiasaanku</button>
+                        <button class="btn-ghost" onclick="resetHabits()">Reset</button>
+                    </div>
+
+                    <div class="mt-4 card p-6 border-slate-200">
+                        <div class="font-black mb-2">Kebiasaan pilihanmu:</div>
+                        <div id="habitOut3" class="muted">Belum ada.</div>
+                    </div>
+
+                    <div class="mt-5 illu p-5">
+                        <div class="font-black">Bonus kecil</div>
+                        <div class="muted mt-1">Kalau kamu punya 3 kebiasaan aman, itu sudah hebat! 🎉</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 15 -->
+            <section class="slide" data-title="Boleh atau Jangan">
+                <div class="card h-full p-8 md:p-12">
+                    <h2 class="h-title text-3xl md:text-5xl mb-3">Boleh atau Jangan? 🤔</h2>
+                    <p class="text-lg muted mb-6">
+                        Kamu jadi “penjaga data”. Pilih jawaban paling aman di tiap situasi.
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black text-xl mb-2">Situasi 1</div>
+                            <p class="muted mb-4">Teman bilang: “Pinjem passwordmu dong, aku cuma mau lihat skin kamu.”
+                            </p>
+
+                            <div class="grid gap-3" role="group" aria-label="Situasi 1">
+                                <button class="choice text-left"
+                                    onclick="scenario15('s1',this,true,'Benar! Password itu kunci. Jangan dibagi ya ✅')">
+                                    Tidak boleh. Password itu rahasia.
+                                </button>
+                                <button class="choice text-left"
+                                    onclick="scenario15('s1',this,false,'Kurang aman. Walau teman, password tetap tidak boleh dibagi 🙂')">
+                                    Boleh, karena dia temanku.
+                                </button>
+                                <button class="choice text-left"
+                                    onclick="scenario15('s1',this,false,'Kurang aman. Menipu juga tidak baik.')">
+                                    Kasih password palsu saja.
+                                </button>
+                            </div>
+
+                            <div id="s15s1msg" class="mini mt-3">Klik jawabanmu 🙂</div>
+                        </div>
+
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black text-xl mb-2">Situasi 2</div>
+                            <p class="muted mb-4">Game minta: “Tulis alamat rumahmu biar dapat hadiah.”</p>
+
+                            <div class="grid gap-3" role="group" aria-label="Situasi 2">
+                                <button class="choice text-left"
+                                    onclick="scenario15('s2',this,true,'Benar! Stop dulu dan tanya orang tua/guru ✅')">
+                                    Stop dulu. Tanya orang tua/guru.
+                                </button>
+                                <button class="choice text-left"
+                                    onclick="scenario15('s2',this,false,'Kurang aman. Jangan asal isi alamat rumah ya 🙂')">
+                                    Isi saja biar dapat hadiah.
+                                </button>
+                                <button class="choice text-left"
+                                    onclick="scenario15('s2',this,false,'Kurang aman. Tetap jangan kasih alamat. Lebih baik tanya orang dewasa.')">
+                                    Tulis alamat tetangga saja.
+                                </button>
+                            </div>
+
+                            <div id="s15s2msg" class="mini mt-3">Klik jawabanmu 🙂</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 card p-5 illu">
+                        <div class="font-black mb-1">Kesimpulan cepat</div>
+                        <p class="muted">
+                            Kalau ada yang minta data penting, pilihan paling aman adalah: <b>STOP → TANYA</b> ✅
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 16 -->
+            <section class="slide" data-title="Jembatan ke Coding">
+                <div class="card h-full p-8 md:p-12">
+                    <h2 class="h-title text-3xl md:text-5xl mb-3">Hubungannya ke Coding 💡</h2>
+                    <p class="text-lg muted mb-6">
+                        Karena data itu penting, aplikasi harus dibuat <b>aman</b>.
+                        Besok/lanjut sesi berikutnya kita akan bikin fitur yang menjaga data.
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black text-xl mb-2">Contoh fitur aman</div>
+                            <div class="grid gap-3">
+                                <div class="card p-5 border-slate-200">
+                                    <div class="font-black">🔐 Login</div>
+                                    <div class="muted">Masuk pakai username & password.</div>
+                                </div>
+                                <div class="card p-5 border-slate-200">
+                                    <div class="font-black">🙈 Password disembunyikan</div>
+                                    <div class="muted">Biar orang lain tidak bisa melihat.</div>
+                                </div>
+                                <div class="card p-5 border-slate-200">
+                                    <div class="font-black">✅ Izin (permission)</div>
+                                    <div class="muted">Aplikasi minta izin kamera/lokasi dulu.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black text-xl mb-2">Interaktif: pilih yang paling aman</div>
+                            <p class="muted mb-4">Saat bikin aplikasi, mana yang paling penting?</p>
+
+                            <div class="grid gap-3" role="group" aria-label="MCQ Slide 16">
+                                <button class="choice text-left"
+                                    onclick="mcq16(this,false,'Warna bagus, tapi keamanan tetap penting 🙂')">
+                                    Warnanya keren dulu
+                                </button>
+                                <button class="choice text-left"
+                                    onclick="mcq16(this,true,'Benar! Data aman itu penting banget ✅')">
+                                    Data pengguna harus aman
+                                </button>
+                                <button class="choice text-left"
+                                    onclick="mcq16(this,false,'Bukan. Ikon lucu tidak bikin data aman 😄')">
+                                    Ikonnya lucu dulu
+                                </button>
+                                <button class="choice text-left"
+                                    onclick="mcq16(this,false,'Bukan. Banyak tombol bisa bikin bingung.')">
+                                    Tombolnya banyak dulu
+                                </button>
+                            </div>
+
+                            <div id="mcq16msg" class="mini mt-3">Klik jawabanmu 🙂</div>
+
+                            <div class="mt-5 illu p-5">
+                                <div class="font-black">Ingat kalimat ini</div>
+                                <div class="muted mt-1">Aplikasi yang baik itu <b>berguna</b> dan <b>aman</b>.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 17 -->
+            <section class="slide" data-title="STOP–TANYA">
+                <div class="card h-full p-8 md:p-12">
+                    <h2 class="h-title text-3xl md:text-5xl mb-3">Mini Game: STOP → TANYA 🛑➡️❓</h2>
+                    <p class="text-lg muted mb-6">
+                        Kamu punya jurus aman. Kalau ada yang minta data penting, lakukan: <b>STOP → TANYA</b>.
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black text-xl mb-3">Situasi</div>
+                            <div class="illu p-6">
+                                <div class="font-black">Pop-up game:</div>
+                                <div class="muted mt-1">“Masukkan alamat rumah untuk dapat hadiah!”</div>
+                                <div class="mt-4 flex items-center gap-3">
+                                    <span class="pill">🎮 Game</span>
+                                    <span class="pill">🎁 Hadiah</span>
+                                    <span class="pill">🏠 Alamat</span>
+                                </div>
+                            </div>
+
+                            <div class="mt-5 font-black">Interaktif: klik langkahnya</div>
+                            <div class="grid md:grid-cols-2 gap-3 mt-3" id="stopAskChoices">
+                                <button class="choice text-left" onclick="stopAskPick(this,'stop')">🛑 STOP (jangan isi
+                                    dulu)</button>
+                                <button class="choice text-left" onclick="stopAskPick(this,'ask')">❓ TANYA (orang
+                                    tua/guru)</button>
+                                <button class="choice text-left" onclick="stopAskPick(this,'share')">📤 SHARE (isi
+                                    cepat)</button>
+                                <button class="choice text-left" onclick="stopAskPick(this,'ignore')">🙈 Abaikan
+                                    saja</button>
+                            </div>
+
+                            <div class="mt-3 flex gap-2">
+                                <button class="btn" onclick="stopAskCheck()">Cek</button>
+                                <button class="btn-ghost" onclick="stopAskReset()">Reset</button>
+                            </div>
+                            <div id="stopAskMsg" class="mini mt-3">Klik 2 langkah terbaik 🙂</div>
+                        </div>
+
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black text-xl mb-3">Pilihanmu</div>
+                            <ol id="stopAskList" class="list-decimal pl-6 space-y-2">
+                                <li class="muted">Belum ada pilihan</li>
+                            </ol>
+
+                            <div class="mt-5 illu p-5">
+                                <div class="font-black">Petunjuk</div>
+                                <div class="muted mt-1">Kalau ada data penting diminta, <b>jangan buru-buru</b>.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 18 -->
+            <section class="slide" data-title="Refleksi">
+                <div class="card h-full p-8 md:p-12">
+                    <h2 class="h-title text-3xl md:text-5xl mb-3">Refleksi ✍️</h2>
+                    <p class="text-lg muted mb-6">Lengkapi kalimat ini:</p>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black text-xl mb-2">Data pribadi itu seperti…</div>
+                            <div class="illu p-6 text-center">
+                                <div class="text-6xl">🔒</div>
+                                <div class="mini mt-2">contoh: kunci, kotak rahasia, barang berharga</div>
+                            </div>
+
+                            <div class="mt-4">
+                                <input id="refInput" type="text" placeholder="Tulis jawabanmu…"
+                                    class="w-full border border-slate-200 rounded-2xl p-4 font-bold" />
+                                <div class="mt-3 flex gap-2">
+                                    <button class="btn" onclick="saveReflection()">Kirim</button>
+                                    <button class="btn-ghost" onclick="resetReflection()">Reset</button>
+                                </div>
+                                <div id="refMsg" class="mini mt-3">Ketik 1 kalimat ya 🙂</div>
+                            </div>
+                        </div>
+
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black text-xl mb-2">Hasil refleksi</div>
+                            <div class="illu p-6">
+                                <div class="font-black">Jawabanmu:</div>
+                                <div id="refOut" class="muted mt-2">Belum ada.</div>
+                            </div>
+
+                            <div class="mt-5 card p-5 border-slate-200">
+                                <div class="font-black">Tambahan kecil</div>
+                                <div class="muted mt-1">Kalau kamu menulis “kunci”, itu tepat! Karena password juga
+                                    seperti kunci 🔑</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 19 -->
+            <section class="slide" data-title="Mini Quiz">
+                <div class="card h-full p-8 md:p-12">
+                    <h2 class="h-title text-3xl md:text-5xl mb-3">Mini Quiz 🧠</h2>
+                    <p class="text-lg muted mb-6">Jawab 5 soal cepat. Klik pilihanmu ya!</p>
+
+                    <div class="grid gap-6">
+                        <!-- Q1 -->
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">1) Mana yang termasuk data pribadi?</div>
+                            <div class="grid gap-2" role="group" aria-label="Quiz Q1">
+                                <button class="choice text-left"
+                                    onclick="quizPick('q1',this,false,'Hobi biasanya aman.')">Hobi:
+                                    menggambar</button>
+                                <button class="choice text-left"
+                                    onclick="quizPick('q1',this,true,'Benar! Password itu data penting 🔑')">( )
+                                    Password</button>
+                                <button class="choice text-left"
+                                    onclick="quizPick('q1',this,false,'Itu benda, bukan data pribadi.')">( )
+                                    Bola</button>
+                                <button class="choice text-left"
+                                    onclick="quizPick('q1',this,false,'Itu warna, bukan data pribadi.')">Warna
+                                    favorit</button>
+                            </div>
+                            <div id="quiz-q1" class="mini mt-2">Klik jawabanmu 🙂</div>
+                        </div>
+
+                        <!-- Q2 -->
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">2) Kalau ada orang minta password, kamu harus…</div>
+                            <div class="grid gap-2" role="group" aria-label="Quiz Q2">
+                                <button class="choice text-left"
+                                    onclick="quizPick('q2',this,true,'Benar! Password tidak boleh dibagi ✅')">Jangan
+                                    kasih</button>
+                                <button class="choice text-left"
+                                    onclick="quizPick('q2',this,false,'Tidak aman. Password tetap rahasia.')">Kasih
+                                    karena dia teman</button>
+                                <button class="choice text-left"
+                                    onclick="quizPick('q2',this,false,'Tidak aman. Jangan coba-coba.')">Kasih
+                                    setengah saja</button>
+                                <button class="choice text-left"
+                                    onclick="quizPick('q2',this,false,'Tidak aman. Tetap rahasia.')">Kasih
+                                    nanti-nanti</button>
+                            </div>
+                            <div id="quiz-q2" class="mini mt-2">Klik jawabanmu 🙂</div>
+                        </div>
+
+                        <!-- Q3 -->
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">3) Data digital yang sudah tersebar itu…</div>
+                            <div class="grid gap-2" role="group" aria-label="Quiz Q3">
+                                <button class="choice text-left"
+                                    onclick="quizPick('q3',this,true,'Benar! Tidak mudah dihapus 😵‍💫')">Sulit
+                                    ditarik lagi</button>
+                                <button class="choice text-left" onclick="quizPick('q3',this,false,'Tidak selalu.')">( )
+                                    Pasti hilang sendiri</button>
+                                <button class="choice text-left"
+                                    onclick="quizPick('q3',this,false,'Bukan. Bisa tersimpan lama.')">Hanya 1 menit
+                                    saja</button>
+                                <button class="choice text-left"
+                                    onclick="quizPick('q3',this,false,'Bukan. Orang bisa simpan/screenshot.')">Tidak
+                                    bisa disimpan orang</button>
+                            </div>
+                            <div id="quiz-q3" class="mini mt-2">Klik jawabanmu 🙂</div>
+                        </div>
+
+                        <!-- Q4 -->
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">4) Kalau game minta alamat rumah untuk hadiah…</div>
+                            <div class="grid gap-2" role="group" aria-label="Quiz Q4">
+                                <button class="choice text-left"
+                                    onclick="quizPick('q4',this,true,'Benar! STOP lalu TANYA orang dewasa ✅')">Stop
+                                    dan tanya orang tua/guru</button>
+                                <button class="choice text-left"
+                                    onclick="quizPick('q4',this,false,'Tidak aman. Jangan asal isi alamat.')">Isi
+                                    saja biar dapat hadiah</button>
+                                <button class="choice text-left"
+                                    onclick="quizPick('q4',this,false,'Tidak aman. Tetap jangan kasih alamat.')">Isi
+                                    alamat tetangga</button>
+                                <button class="choice text-left"
+                                    onclick="quizPick('q4',this,false,'Kurang tepat. Tetap tanya orang dewasa.')">( )
+                                    Tanya teman saja</button>
+                            </div>
+                            <div id="quiz-q4" class="mini mt-2">Klik jawabanmu 🙂</div>
+                        </div>
+
+                        <!-- Q5 -->
+                        <div class="card p-6 border-slate-200">
+                            <div class="font-black mb-3">5) Aplikasi yang baik itu…</div>
+                            <div class="grid gap-2" role="group" aria-label="Quiz Q5">
+                                <button class="choice text-left"
+                                    onclick="quizPick('q5',this,false,'Tidak cukup. Harus aman juga 🙂')">Cuma seru
+                                    saja</button>
+                                <button class="choice text-left"
+                                    onclick="quizPick('q5',this,true,'Benar! Berguna dan aman ✅')">Berguna dan
+                                    aman</button>
+                                <button class="choice text-left"
+                                    onclick="quizPick('q5',this,false,'Ikon bagus saja tidak cukup.')">Ikonnya
+                                    lucu</button>
+                                <button class="choice text-left"
+                                    onclick="quizPick('q5',this,false,'Tombol banyak tidak selalu bagus.')">( )
+                                    Tombolnya banyak</button>
+                            </div>
+                            <div id="quiz-q5" class="mini mt-2">Klik jawabanmu 🙂</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex gap-2">
+                        <button class="btn" onclick="quizScore()">Lihat Skor</button>
+                        <button class="btn-ghost" onclick="quizReset()">Reset Quiz</button>
+                    </div>
+
+                    <div id="quizScoreOut" class="mini mt-3">Skor akan muncul di sini 🙂</div>
+                </div>
+            </section>
+
+            <!-- Slide 20 -->
+            <section class="slide" data-title="Penutup">
+                <div class="card h-full p-8 md:p-12 flex flex-col justify-between">
+                    <div>
+                        <h2 class="h-title text-3xl md:text-6xl mb-3">Penutup 🎉</h2>
+                        <p class="text-lg md:text-xl muted mb-6">
+                            Hari ini kamu belajar: data pribadi itu penting, dan kita harus punya kebiasaan aman.
+                        </p>
+
+                        <div class="grid md:grid-cols-3 gap-5">
+                            <div class="card p-6 border-slate-200 text-center">
+                                <div class="text-5xl">🔐</div>
+                                <div class="font-black mt-2">Jaga data</div>
+                                <div class="mini">seperti kunci</div>
+                            </div>
+                            <div class="card p-6 border-slate-200 text-center">
+                                <div class="text-5xl">🛑➡️❓</div>
+                                <div class="font-black mt-2">STOP–TANYA</div>
+                                <div class="mini">kalau ragu</div>
+                            </div>
+                            <div class="card p-6 border-slate-200 text-center">
+                                <div class="text-5xl">✅</div>
+                                <div class="font-black mt-2">Aman itu keren</div>
+                                <div class="mini">buat semua</div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 illu p-6">
+                            <div class="font-black text-xl">Pesan terakhir</div>
+                            <div class="muted mt-1">
+                                “Di dunia digital, kita boleh berbagi. Tapi harus tahu batasnya.” 🛑
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 mt-6">
+                        <div class="mini">Klik Next untuk mengulang ke awal, atau gunakan tombol Home.</div>
+                        <div class="flex gap-2">
+                            <button class="btn-ghost" onclick="showSlide(0)">Ulang dari awal</button>
+                            <button class="btn" onclick="toast('Selesai! Good job! 🎉')">Selesai ✅</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            
+
+
+
+
+
+        </div>
+    </main>
+
+    <!-- Navigation bar -->
+    <div class="nav">
+        <div class="flex items-center gap-3">
+            <button class="btn-ghost" onclick="prevSlide()">⬅ Prev</button>
+            <button class="btn" onclick="nextSlide()">Next ➜</button>
+        </div>
+
+        <div class="progressWrap" aria-label="progress">
+            <div class="progressBar" id="progressBar"></div>
+        </div>
+
+        <div class="mini" id="slideCounter">Slide 1/5</div>
+    </div>
+
+    <script>
+        const slides = Array.from(document.querySelectorAll('.slide'));
+        let currentSlide = 0;
+
+        function showSlide(i) {
+            slides.forEach(s => s.classList.remove('active'));
+            slides[i].classList.add('active');
+            currentSlide = i;
+            updateUI();
+            focusFirstInSlide();
+        }
+
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) showSlide(currentSlide + 1);
+            else toast("Selesai.");
+        }
+        function prevSlide() {
+            if (currentSlide > 0) showSlide(currentSlide - 1);
+        }
+
+        function updateUI() {
+            const counter = document.getElementById('slideCounter');
+            if (counter) counter.textContent = `Slide ${currentSlide + 1}/${slides.length}`;
+            const bar = document.getElementById('progressBar');
+            if (bar) {
+                const pct = (currentSlide / (slides.length - 1)) * 100;
+                bar.style.width = `${Math.max(0, Math.min(100, pct))}%`;
+            }
+        }
+
+        function focusFirstInSlide() {
+            const active = slides[currentSlide];
+            const f =
+                active.querySelector('button.btn, button.choice, button.btn-ghost, input[type="checkbox"], [tabindex]:not([tabindex="-1"])')
+                || active.querySelector('input, textarea, select');
+            if (f) f.focus({ preventScroll: true });
+        }
+
+
+        // Keyboard nav (← →, Space)
+        function isTypingTarget(el) {
+            if (!el) return false;
+            const tag = el.tagName?.toLowerCase();
+            if (tag === 'textarea' || tag === 'select' || el.isContentEditable) return true;
+            if (tag === 'input') {
+                const type = (el.getAttribute('type') || '').toLowerCase();
+                const typingTypes = ['text', 'search', 'email', 'url', 'tel', 'password', 'number'];
+                return typingTypes.includes(type);
+            }
+            return false;
+        }
+
+        document.addEventListener('keydown', (e) => {
+            const typing = isTypingTarget(document.activeElement);
+
+            // Kalau lagi ngetik, tetap boleh navigasi pakai ALT + panah (biar cursor input tetap aman)
+            if (typing) {
+                if (e.altKey && (e.key === 'ArrowRight' || e.key === 'PageDown')) { nextSlide(); return; }
+                if (e.altKey && (e.key === 'ArrowLeft' || e.key === 'PageUp')) { prevSlide(); return; }
+                if (e.key === 'Escape') { document.activeElement.blur(); toast('Oke, keluar dari kolom ketik 🙂'); return; }
+                return;
+            }
+
+            if (e.key === 'ArrowRight' || e.key === 'PageDown') { nextSlide(); return; }
+            if (e.key === 'ArrowLeft' || e.key === 'PageUp') { prevSlide(); return; }
+
+            if (e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+                return;
+            }
+            if (e.key === 'Home') { showSlide(0); return; }
+            if (e.key === 'End') { showSlide(slides.length - 1); return; }
+        });
+
+
+        // Toast helper
+        function toast(message) {
+            let box = document.getElementById('toastBox');
+            if (!box) {
+                box = document.createElement('div');
+                box.id = 'toastBox';
+                document.body.appendChild(box);
+            }
+            box.className = '';
+            box.textContent = message;
+            box.style.position = 'fixed';
+            box.style.bottom = '92px';
+            box.style.left = '50%';
+            box.style.transform = 'translateX(-50%)';
+            box.style.background = '#FEF3C7';
+            box.style.border = '2px solid #F59E0B';
+            box.style.color = '#92400E';
+            box.style.padding = '12px 16px';
+            box.style.borderRadius = '16px';
+            box.style.fontWeight = '900';
+            box.style.zIndex = '9999';
+            box.style.maxWidth = '92%';
+            box.style.textAlign = 'center';
+            box.style.boxShadow = '0 12px 24px rgba(0,0,0,0.12)';
+            box.style.opacity = '1';
+
+            clearTimeout(window.__toastT1);
+            clearTimeout(window.__toastT2);
+
+            window.__toastT1 = setTimeout(() => { box.style.opacity = '0'; box.style.transition = 'opacity .25s ease'; }, 1700);
+            window.__toastT2 = setTimeout(() => { box.className = 'hidden'; }, 2100);
+        }
+
+        // Slide 2: goal tick
+        function goalTick() {
+            const checked = document.querySelectorAll('input[type="checkbox"]:checked').length;
+            const out = document.getElementById('goalOut');
+            if (!out) return;
+            if (checked === 0) out.textContent = "Centang dulu ya 🙂";
+            else out.textContent = `Mantap! Kamu centang ${checked} target ✅`;
+        }
+
+        // Slide 4: habit pick
+        function pickHabit(label) {
+            const out = document.getElementById('habitOut');
+            out.textContent = `Kamu pilih: ${label}. Nanti kita lihat data apa yang sering muncul di situ.`;
+            toast(`Oke! Kamu pilih ${label} 🙂`);
+        }
+
+        // Slide 5: input mini
+        function showQuickInput() {
+            const inp = document.getElementById('quickInput');
+            const out = document.getElementById('quickOut');
+            const val = (inp.value || '').trim();
+            if (!val) {
+                out.textContent = "Belum ada jawaban. Coba ketik 1 contoh ya 🙂";
+                return;
+            }
+            out.textContent = `Keren! Kamu tulis: "${val}". Nanti kita cek mana yang aman dibagikan.`;
+            toast("Sip! Disimpan dulu ya 🙂");
+        }
+        function clearQuickInput() {
+            const inp = document.getElementById('quickInput');
+            const out = document.getElementById('quickOut');
+            inp.value = '';
+            out.textContent = "Ketik jawabanmu ya 🙂";
+            inp.focus();
+        }
+        /* Slide 6: habit output kedua */
+        function pickHabit(label) {
+            const out1 = document.getElementById('habitOut');
+            if (out1) out1.textContent = `Kamu pilih: ${label}. Nanti kita cek data apa yang sering muncul di situ.`;
+            const out2 = document.getElementById('habitOut2');
+            if (out2) out2.textContent = `Kamu pilih: ${label}. Mantap! ✅`;
+            toast(`Oke! Kamu pilih ${label} 🙂`);
+        }
+
+        /* Slide 7: toggle pick */
+        const pickState = new Set();
+        function togglePick(btn, key) {
+            if (pickState.has(key)) {
+                pickState.delete(key);
+                btn.classList.remove('ring-2', 'ring-green-300');
+            } else {
+                pickState.add(key);
+                btn.classList.add('ring-2', 'ring-green-300');
+            }
+            const out = document.getElementById('pickOut');
+            if (out) {
+                out.textContent = pickState.size ? `Kamu pilih: ${Array.from(pickState).join(', ')}` : 'Klik beberapa kartu 🙂';
+            }
+        }
+
+        function checkPick() {
+            const out = document.getElementById('pickOut');
+            // yang benar: foto, lokasi, password (hobi = bukan data pribadi sensitif)
+            const correct = new Set(['foto', 'lokasi', 'password']);
+            const picked = new Set(pickState);
+
+            let ok = true;
+            // harus mengandung semua yang benar
+            for (const k of correct) if (!picked.has(k)) ok = false;
+            // dan tidak boleh pilih hobi sebagai data pribadi (untuk latihan ini)
+            if (picked.has('hobi')) ok = false;
+
+            if (ok) {
+                out.textContent = "✅ Bagus! Foto, lokasi, password itu data pribadi. Hobi biasanya aman.";
+                out.className = "mini mt-0 font-black text-green-700";
+                toast("Keren! Kamu paham bedanya ✅");
+            } else {
+                out.textContent = "⚠️ Masih ada yang keliru. Coba ingat: foto/lokasi/password itu penting.";
+                out.className = "mini mt-0 font-black text-orange-700";
+                toast("Coba lagi ya 🙂");
+            }
+        }
+
+        function resetPick() {
+            pickState.clear();
+            document.querySelectorAll('#d7choices .choice').forEach(b => {
+                b.classList.remove('ring-2', 'ring-green-300');
+            });
+            const out = document.getElementById('pickOut');
+            if (out) {
+                out.textContent = "Klik beberapa kartu 🙂";
+                out.className = "mini mt-0";
+            }
+        }
+
+        /* Slide 8: sort cards */
+        let selectedCard = null; // {text, correct}
+        const safePicked = [];
+        const keepPicked = [];
+
+        function selectCard(btn, text, correct) {
+            // reset highlight semua kartu
+            document.querySelectorAll('#cardPile .choice').forEach(b => b.classList.remove('ring-2', 'ring-sky-300'));
+            btn.classList.add('ring-2', 'ring-sky-300');
+            selectedCard = { btn, text, correct };
+            const out = document.getElementById('selectedCardOut');
+            if (out) out.textContent = text;
+        }
+
+        function renderSortLists() {
+            const safeList = document.getElementById('safeList');
+            const keepList = document.getElementById('keepList');
+
+            safeList.innerHTML = safePicked.length
+                ? safePicked.map(x => `<li>${escapeHTML(x)}</li>`).join('')
+                : `<li class="muted">Belum ada</li>`;
+
+            keepList.innerHTML = keepPicked.length
+                ? keepPicked.map(x => `<li>${escapeHTML(x)}</li>`).join('')
+                : `<li class="muted">Belum ada</li>`;
+        }
+
+        function markCard(bucket) {
+            const msg = document.getElementById('sortMsg');
+            if (!selectedCard) {
+                msg.textContent = "Pilih kartunya dulu ya 🙂";
+                msg.className = "mini mt-3 font-black text-orange-700";
+                return;
+            }
+
+            const text = selectedCard.text;
+
+            // jangan dobel
+            if (safePicked.includes(text) || keepPicked.includes(text)) {
+                msg.textContent = "Itu sudah kamu masukkan 🙂 pilih kartu lain ya.";
+                msg.className = "mini mt-3 font-black text-slate-700";
+                return;
+            }
+
+            if (bucket === 'safe') safePicked.push(text);
+            else keepPicked.push(text);
+
+            // nonaktifkan kartu yang sudah dipakai
+            selectedCard.btn.disabled = true;
+            selectedCard.btn.classList.add('opacity-50', 'cursor-not-allowed');
+
+            selectedCard = null;
+            const out = document.getElementById('selectedCardOut');
+            if (out) out.textContent = "Belum pilih kartu 🙂";
+
+            renderSortLists();
+            msg.textContent = "Oke! Pilih kartu lagi 🙂";
+            msg.className = "mini mt-3 text-slate-600";
+        }
+
+        function checkSort() {
+            const msg = document.getElementById('sortMsg');
+
+            // Kunci jawaban sesuai set correct di kartu
+            const safeAns = new Set(["🎾 Hobi: suka sepak bola", "🙂 Nama panggilan: Bimo"]);
+            const keepAns = new Set(["🏠 Alamat rumah", "🔑 Password akun", "📞 Nomor HP orang tua", "📷 Foto wajah"]);
+
+            const safeOk = safePicked.every(x => safeAns.has(x)) && safePicked.length === safeAns.size;
+            const keepOk = keepPicked.every(x => keepAns.has(x)) && keepPicked.length === keepAns.size;
+
+            if (safeOk && keepOk) {
+                msg.textContent = "✅ Mantap! Kamu bisa bedakan mana yang aman dan mana yang harus dijaga.";
+                msg.className = "mini mt-3 font-black text-green-700";
+                toast("Keren banget! ✅");
+            } else {
+                msg.textContent = "⚠️ Masih ada yang ketukar. Coba reset lalu susun lagi ya 🙂";
+                msg.className = "mini mt-3 font-black text-orange-700";
+                toast("Coba lagi ya 🙂");
+            }
+        }
+
+        function resetSort() {
+            // reset arrays
+            safePicked.length = 0;
+            keepPicked.length = 0;
+            selectedCard = null;
+
+            // reset kartu
+            document.querySelectorAll('#cardPile .choice').forEach(b => {
+                b.disabled = false;
+                b.classList.remove('opacity-50', 'cursor-not-allowed', 'ring-2', 'ring-sky-300');
+            });
+
+            const out = document.getElementById('selectedCardOut');
+            if (out) out.textContent = "Belum pilih kartu 🙂";
+            renderSortLists();
+
+            const msg = document.getElementById('sortMsg');
+            msg.textContent = "Susun dulu ya 🙂";
+            msg.className = "mini mt-3 text-slate-600";
+        }
+
+        /* Slide 9: simple MCQ (tanpa kunci terlihat) */
+        function mcqSimple(el, correct, message) {
+            // reset siblings
+            const wrap = el.parentElement;
+            if (wrap) {
+                Array.from(wrap.children).forEach(c => {
+                    c.classList.remove('ring-2', 'ring-green-300', 'ring-orange-300');
+                });
+            }
+            el.classList.add('ring-2', correct ? 'ring-green-300' : 'ring-orange-300');
+
+            const msg = document.getElementById('mcq9msg');
+            if (msg) {
+                msg.textContent = (correct ? "✅ " : "⚠️ ") + message;
+                msg.className = "mini mt-3 font-black " + (correct ? "text-green-700" : "text-orange-700");
+            }
+            toast(message);
+        }
+
+        /* Slide 10: checkbox output */
+        function showUse2() {
+            const out = document.getElementById('useOut2');
+            const checked = Array.from(document.querySelectorAll('.whenuse:checked')).map(cb => cb.value);
+            if (!out) return;
+
+            if (checked.length === 0) {
+                out.innerHTML = `<span class="muted">Belum ada. Coba centang 1 ya 🙂</span>`;
+                return;
+            }
+            out.innerHTML = `
+      <ul class="list-disc pl-6 space-y-1">
+        ${checked.map(x => `<li>${escapeHTML(x)}</li>`).join('')}
+      </ul>
+    `;
+            toast("Sip! Kamu sudah memilih 🙂");
+        }
+
+        function clearUse2() {
+            document.querySelectorAll('.whenuse').forEach(cb => cb.checked = false);
+            const out = document.getElementById('useOut2');
+            if (out) out.innerHTML = `<span class="muted">Belum ada.</span>`;
+        }
+
+        // helper (kalau belum ada di file)
+        function escapeHTML(str) {
+            return String(str)
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", "&#039;");
+        }
+
+        /* Slide 11: MCQ */
+        function mcq11(el, correct, message) {
+            const wrap = el.parentElement;
+            if (wrap) {
+                Array.from(wrap.children).forEach(c => {
+                    c.classList.remove('ring-2', 'ring-green-300', 'ring-orange-300');
+                });
+            }
+            el.classList.add('ring-2', correct ? 'ring-green-300' : 'ring-orange-300');
+
+            const msg = document.getElementById('mcq11msg');
+            if (msg) {
+                msg.textContent = (correct ? "✅ " : "⚠️ ") + message;
+                msg.className = "mini mt-3 font-black " + (correct ? "text-green-700" : "text-orange-700");
+            }
+            toast(message);
+        }
+
+        /* Slide 12: MCQ */
+        function mcq12(el, correct, message) {
+            const wrap = el.parentElement;
+            if (wrap) {
+                Array.from(wrap.children).forEach(c => {
+                    c.classList.remove('ring-2', 'ring-green-300', 'ring-orange-300');
+                });
+            }
+            el.classList.add('ring-2', correct ? 'ring-green-300' : 'ring-orange-300');
+
+            const msg = document.getElementById('mcq12msg');
+            if (msg) {
+                msg.textContent = (correct ? "✅ " : "⚠️ ") + message;
+                msg.className = "mini mt-3 font-black " + (correct ? "text-green-700" : "text-orange-700");
+            }
+            toast(message);
+        }
+
+        /* Slide 13: Agree / Not */
+        function agree13(isAgree) {
+            const msg = document.getElementById('agree13msg');
+            if (!msg) return;
+
+            if (isAgree) {
+                msg.textContent = "✅ Setuju! Karena bisa di-screenshot/di-save, jadi susah ditarik lagi.";
+                msg.className = "mini mt-3 font-black text-green-700";
+                toast("Betul! Makanya pikir dulu sebelum share 🙂");
+            } else {
+                msg.textContent = "⚠️ Coba pikir lagi. Data digital bisa tersimpan di banyak tempat.";
+                msg.className = "mini mt-3 font-black text-orange-700";
+                toast("Coba ingat: internet bisa menyimpan jejak ya 🙂");
+            }
+        }
+
+        /* Slide 14: checklist habits */
+        function showHabits() {
+            const out = document.getElementById('habitOut3');
+            const checked = Array.from(document.querySelectorAll('.safehabit:checked')).map(cb => cb.value);
+
+            if (!out) return;
+
+            if (checked.length === 0) {
+                out.innerHTML = `<span class="muted">Belum ada. Coba centang 1 ya 🙂</span>`;
+                return;
+            }
+
+            out.innerHTML = `
+      <ul class="list-disc pl-6 space-y-1">
+        ${checked.map(x => `<li>${escapeHTML(x)}</li>`).join('')}
+      </ul>
+      <div class="mini mt-3 font-black ${checked.length >= 3 ? 'text-green-700' : 'text-slate-700'}">
+        ${checked.length >= 3 ? '🎉 Mantap! Kamu sudah punya 3 kebiasaan aman.' : `Kamu memilih ${checked.length} kebiasaan.`}
+      </div>
+    `;
+            toast("Sip! Kebiasaan amanmu keren ✅");
+        }
+
+        function resetHabits() {
+            document.querySelectorAll('.safehabit').forEach(cb => cb.checked = false);
+            const out = document.getElementById('habitOut3');
+            if (out) out.innerHTML = `<span class="muted">Belum ada.</span>`;
+        }
+
+        /* Slide 15: scenario helper */
+        function scenario15(key, el, correct, message) {
+            // reset di grup situasi
+            const wrap = el.parentElement;
+            if (wrap) {
+                Array.from(wrap.children).forEach(c => {
+                    c.classList.remove('ring-2', 'ring-green-300', 'ring-orange-300');
+                });
+            }
+            el.classList.add('ring-2', correct ? 'ring-green-300' : 'ring-orange-300');
+
+            const msg = document.getElementById(key === 's1' ? 's15s1msg' : 's15s2msg');
+            if (msg) {
+                msg.textContent = (correct ? "✅ " : "⚠️ ") + message;
+                msg.className = "mini mt-3 font-black " + (correct ? "text-green-700" : "text-orange-700");
+            }
+            toast(message);
+        }
+
+        /* helper (kalau belum ada di file utama) */
+        function escapeHTML(str) {
+            return String(str)
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", "&#039;");
+        }
+
+        /* Slide 16: MCQ */
+        function mcq16(el, correct, message) {
+            const wrap = el.parentElement;
+            if (wrap) {
+                Array.from(wrap.children).forEach(c => {
+                    c.classList.remove('ring-2', 'ring-green-300', 'ring-orange-300');
+                });
+            }
+            el.classList.add('ring-2', correct ? 'ring-green-300' : 'ring-orange-300');
+
+            const msg = document.getElementById('mcq16msg');
+            if (msg) {
+                msg.textContent = (correct ? "✅ " : "⚠️ ") + message;
+                msg.className = "mini mt-3 font-black " + (correct ? "text-green-700" : "text-orange-700");
+            }
+            toast(message);
+        }
+
+        /* Slide 17: STOP–TANYA */
+        let stopAskSelected = [];
+        const stopAskAnswer = ['stop', 'ask'];
+
+        function stopAskPick(btn, key) {
+            const msg = document.getElementById('stopAskMsg');
+
+            if (stopAskSelected.includes(key)) {
+                msg.textContent = "Yang itu sudah kamu pilih 🙂 pilih yang lain ya.";
+                msg.className = "mini mt-3 font-black text-orange-700";
+                return;
+            }
+            if (stopAskSelected.length >= 2) {
+                msg.textContent = "Pilihanmu sudah 2. Klik Cek ya ✅";
+                msg.className = "mini mt-3 font-black text-slate-700";
+                return;
+            }
+
+            stopAskSelected.push(key);
+            btn.classList.add('ring-2', 'ring-sky-300');
+
+            renderStopAskList();
+
+            msg.textContent = stopAskSelected.length < 2 ? "Pilih 1 lagi 🙂" : "Pilihanmu sudah 2. Klik Cek ya ✅";
+            msg.className = "mini mt-3 font-black text-slate-700";
+        }
+
+        function renderStopAskList() {
+            const list = document.getElementById('stopAskList');
+            if (!list) return;
+
+            const labelMap = {
+                stop: "🛑 STOP (jangan isi dulu)",
+                ask: "❓ TANYA (orang tua/guru)",
+                share: "📤 SHARE (isi cepat)",
+                ignore: "🙈 Abaikan saja"
+            };
+
+            if (stopAskSelected.length === 0) {
+                list.innerHTML = `<li class="muted">Belum ada pilihan</li>`;
+                return;
+            }
+
+            list.innerHTML = stopAskSelected.map(k => `<li>${labelMap[k]}</li>`).join('');
+        }
+
+        function stopAskReset() {
+            stopAskSelected = [];
+            document.querySelectorAll('#stopAskChoices .choice').forEach(btn => {
+                btn.classList.remove('ring-2', 'ring-sky-300', 'ring-green-300', 'ring-orange-300');
+            });
+            renderStopAskList();
+
+            const msg = document.getElementById('stopAskMsg');
+            msg.textContent = "Klik 2 langkah terbaik 🙂";
+            msg.className = "mini mt-3";
+        }
+
+        function stopAskCheck() {
+            const msg = document.getElementById('stopAskMsg');
+
+            if (stopAskSelected.length < 2) {
+                msg.textContent = "Belum lengkap. Pilih 2 dulu ya 🙂";
+                msg.className = "mini mt-3 font-black text-orange-700";
+                return;
+            }
+
+            const correct = stopAskSelected.join('|') === stopAskAnswer.join('|');
+
+            // reset highlight
+            document.querySelectorAll('#stopAskChoices .choice').forEach(btn => {
+                btn.classList.remove('ring-green-300', 'ring-orange-300');
+            });
+
+            // highlight based on correctness of each pick
+            stopAskSelected.forEach((key, idx) => {
+                const btns = Array.from(document.querySelectorAll('#stopAskChoices .choice'));
+                const btn = btns.find(b => b.getAttribute('onclick')?.includes(`'${key}'`));
+                if (!btn) return;
+                if (key === stopAskAnswer[idx]) {
+                    btn.classList.add('ring-2', 'ring-green-300');
+                } else {
+                    btn.classList.add('ring-2', 'ring-orange-300');
+                }
+            });
+
+            if (correct) {
+                msg.textContent = "✅ Benar! Jurus aman: STOP lalu TANYA.";
+                msg.className = "mini mt-3 font-black text-green-700";
+                toast("Mantap! STOP → TANYA ✅");
+            } else {
+                msg.textContent = "⚠️ Masih ada yang ketukar. Reset lalu coba lagi ya 🙂";
+                msg.className = "mini mt-3 font-black text-orange-700";
+                toast("Coba lagi ya 🙂");
+            }
+        }
+
+        /* Slide 18: Reflection */
+        function saveReflection() {
+            const inp = document.getElementById('refInput');
+            const out = document.getElementById('refOut');
+            const msg = document.getElementById('refMsg');
+
+            const val = (inp.value || '').trim();
+            if (!val) {
+                msg.textContent = "Belum ada jawaban. Tulis 1 kalimat ya 🙂";
+                msg.className = "mini mt-3 font-black text-orange-700";
+                return;
+            }
+
+            out.textContent = val;
+            msg.textContent = "✅ Keren! Terima kasih sudah menulis.";
+            msg.className = "mini mt-3 font-black text-green-700";
+            toast("Refleksi tersimpan ✅");
+        }
+
+        function resetReflection() {
+            const inp = document.getElementById('refInput');
+            const out = document.getElementById('refOut');
+            const msg = document.getElementById('refMsg');
+            inp.value = '';
+            out.textContent = "Belum ada.";
+            msg.textContent = "Ketik 1 kalimat ya 🙂";
+            msg.className = "mini mt-3";
+            inp.focus();
+        }
+
+        /* Slide 19: Quiz score */
+        const quizAnswers = {
+            q1: true, // Password
+            q2: true, // Jangan kasih
+            q3: true, // Sulit ditarik
+            q4: true, // Stop dan tanya
+            q5: true  // Berguna dan aman
+        };
+        const quizState = {}; // {q1: true/false}
+
+        function quizPick(qid, el, correct, message) {
+            // reset siblings highlight
+            const wrap = el.parentElement;
+            if (wrap) {
+                Array.from(wrap.children).forEach(c => {
+                    c.classList.remove('ring-2', 'ring-green-300', 'ring-orange-300');
+                });
+            }
+            el.classList.add('ring-2', correct ? 'ring-green-300' : 'ring-orange-300');
+
+            quizState[qid] = correct;
+
+            const msg = document.getElementById(`quiz-${qid}`);
+            if (msg) {
+                msg.textContent = (correct ? "✅ " : "⚠️ ") + message;
+                msg.className = "mini mt-2 font-black " + (correct ? "text-green-700" : "text-orange-700");
+            }
+            toast(message);
+        }
+
+        function quizScore() {
+            let score = 0;
+            const total = Object.keys(quizAnswers).length;
+
+            for (const q of Object.keys(quizAnswers)) {
+                if (quizState[q] === true) score++;
+            }
+
+            const out = document.getElementById('quizScoreOut');
+            if (!out) return;
+
+            out.textContent = `Skor kamu: ${score}/${total} ✅`;
+            out.className = "mini mt-3 font-black " + (score >= 4 ? "text-green-700" : "text-orange-700");
+
+            toast(`Skor: ${score}/${total} 🎉`);
+        }
+
+        function quizReset() {
+            // reset state
+            for (const k in quizState) delete quizState[k];
+
+            // reset UI
+            document.querySelectorAll('[id^="quiz-q"] .choice').forEach(() => { });
+            // reset each question area
+            ['q1', 'q2', 'q3', 'q4', 'q5'].forEach(qid => {
+                const msg = document.getElementById(`quiz-${qid}`);
+                if (msg) {
+                    msg.textContent = "Klik jawabanmu 🙂";
+                    msg.className = "mini mt-2";
+                }
+                // clear highlights in that group
+                const group = msg?.previousElementSibling;
+                if (group) {
+                    Array.from(group.children).forEach(c => {
+                        c.classList.remove('ring-2', 'ring-green-300', 'ring-orange-300');
+                    });
+                }
+            });
+
+            const out = document.getElementById('quizScoreOut');
+            if (out) {
+                out.textContent = "Skor akan muncul di sini 🙂";
+                out.className = "mini mt-3";
+            }
+            toast("Quiz di-reset 🙂");
+        }
+
+
+
+        // init
+        updateUI();
+    </script>
+
+</body>
+
+</html>
