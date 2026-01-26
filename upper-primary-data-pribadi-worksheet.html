@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Worksheet Interaktif – Data Pribadi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: #FFF7ED;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, .08);
+        }
+
+        .choice {
+            border: 2px solid #FED7AA;
+            border-radius: 14px;
+            padding: 12px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .choice:hover {
+            background: #FFEDD5;
+        }
+
+        .good {
+            border-color: #86EFAC;
+            background: #ECFDF5;
+        }
+
+        .bad {
+            border-color: #FDBA74;
+            background: #FFF7ED;
+        }
+
+        @media print {
+            body {
+                background: white !important;
+            }
+
+            button {
+                display: none !important;
+            }
+
+            .card {
+                box-shadow: none !important;
+                border: 1px solid #e5e7eb;
+            }
+        }
+    </style>
+</head>
+
+<body class="p-6 md:p-10">
+
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <!-- HEADER -->
+        <div class="card p-6 text-center">
+            <h1 class="text-3xl font-black mb-2">Worksheet Interaktif 🔐</h1>
+            <p class="text-slate-600">Data Pribadi & Keamanan Digital</p>
+        </div>
+
+        <!-- IDENTITAS SISWA -->
+        <div class="card p-6">
+            <div class="grid md:grid-cols-2 gap-4 items-center">
+                <div>
+                    <label class="font-black block mb-1">Nama Siswa</label>
+                    <input id="studentName" type="text" placeholder="Tulis nama kamu di sini"
+                        class="w-full p-3 border rounded-xl font-bold" />
+                </div>
+                <div class="text-slate-600 text-sm">
+                    Pastikan nama diisi sebelum mencetak worksheet ya 🙂
+                </div>
+            </div>
+        </div>
+
+
+        <!-- BAGIAN 1 (VERSI LEBIH CHALLENGING - 6 ITEM) -->
+        <div class="card p-6">
+            <h2 class="text-2xl font-black mb-2">🟢 Aman atau Tidak Dibagikan?</h2>
+            <p class="mb-4 text-slate-600">
+                Pilih 1 jawaban tiap nomor. Tidak langsung diberi tahu benar/salah ya 😉
+            </p>
+
+            <div class="space-y-5" id="amanTidak">
+
+                <!-- 1 -->
+                <div class="q1" data-id="b1q1" data-ans="safe">
+                    <div class="font-bold mb-2">1) Hobi (misalnya: menggambar)</div>
+                    <div class="grid md:grid-cols-3 gap-3">
+                        <button class="choice" onclick="b1Pick(this,'b1q1','safe')">Aman dibagikan</button>
+                        <button class="choice" onclick="b1Pick(this,'b1q1','keep')">Harus dijaga</button>
+                        <button class="choice" onclick="b1Pick(this,'b1q1','ask')">TANYA dulu</button>
+                    </div>
+                    <div class="text-sm text-slate-500 mt-2">Petunjuk: hobi biasanya aman.</div>
+                </div>
+
+                <!-- 2 -->
+                <div class="q1" data-id="b1q2" data-ans="ask">
+                    <div class="font-bold mb-2">2) Foto wajah</div>
+                    <div class="grid md:grid-cols-3 gap-3">
+                        <button class="choice" onclick="b1Pick(this,'b1q2','safe')">Aman dibagikan</button>
+                        <button class="choice" onclick="b1Pick(this,'b1q2','keep')">Harus dijaga</button>
+                        <button class="choice" onclick="b1Pick(this,'b1q2','ask')">TANYA dulu</button>
+                    </div>
+                    <div class="text-sm text-slate-500 mt-2">Petunjuk: foto boleh saja, tapi izin dulu.</div>
+                </div>
+
+                <!-- 3 -->
+                <div class="q1" data-id="b1q3" data-ans="keep">
+                    <div class="font-bold mb-2">3) Alamat rumah</div>
+                    <div class="grid md:grid-cols-3 gap-3">
+                        <button class="choice" onclick="b1Pick(this,'b1q3','safe')">Aman dibagikan</button>
+                        <button class="choice" onclick="b1Pick(this,'b1q3','keep')">Harus dijaga</button>
+                        <button class="choice" onclick="b1Pick(this,'b1q3','ask')">TANYA dulu</button>
+                    </div>
+                    <div class="text-sm text-slate-500 mt-2">Petunjuk: alamat rumah itu sensitif.</div>
+                </div>
+
+                <!-- 4 -->
+                <div class="q1" data-id="b1q4" data-ans="keep">
+                    <div class="font-bold mb-2">4) Password akun</div>
+                    <div class="grid md:grid-cols-3 gap-3">
+                        <button class="choice" onclick="b1Pick(this,'b1q4','safe')">Aman dibagikan</button>
+                        <button class="choice" onclick="b1Pick(this,'b1q4','keep')">Harus dijaga</button>
+                        <button class="choice" onclick="b1Pick(this,'b1q4','ask')">TANYA dulu</button>
+                    </div>
+                    <div class="text-sm text-slate-500 mt-2">Petunjuk: password itu seperti kunci 🔑</div>
+                </div>
+
+                <!-- 5 (lebih menantang) -->
+                <div class="q1" data-id="b1q5" data-ans="ask">
+                    <div class="font-bold mb-2">5) Nama sekolah</div>
+                    <div class="grid md:grid-cols-3 gap-3">
+                        <button class="choice" onclick="b1Pick(this,'b1q5','safe')">Aman dibagikan</button>
+                        <button class="choice" onclick="b1Pick(this,'b1q5','keep')">Harus dijaga</button>
+                        <button class="choice" onclick="b1Pick(this,'b1q5','ask')">TANYA dulu</button>
+                    </div>
+                    <div class="text-sm text-slate-500 mt-2">Petunjuk: tergantung konteks. Lebih aman: tanya dulu.</div>
+                </div>
+
+                <!-- 6 (lebih menantang) -->
+                <div class="q1" data-id="b1q6" data-ans="ask">
+                    <div class="font-bold mb-2">6) Nama lengkap + kelas (contoh: Bimo, 5A)</div>
+                    <div class="grid md:grid-cols-3 gap-3">
+                        <button class="choice" onclick="b1Pick(this,'b1q6','safe')">Aman dibagikan</button>
+                        <button class="choice" onclick="b1Pick(this,'b1q6','keep')">Harus dijaga</button>
+                        <button class="choice" onclick="b1Pick(this,'b1q6','ask')">TANYA dulu</button>
+                    </div>
+                    <div class="text-sm text-slate-500 mt-2">Petunjuk: kalau diminta online, tanya orang dewasa dulu.
+                    </div>
+                </div>
+
+                <!-- 7 (SOAL JEBakan) -->
+                <div class="q1" data-id="b1q7" data-ans="ask">
+                    <div class="font-bold mb-2">7) Foto kelas untuk lomba sekolah (ada wajah teman-teman)</div>
+                    <div class="grid md:grid-cols-3 gap-3">
+                        <button class="choice" onclick="b1Pick(this,'b1q7','safe')">Aman dibagikan</button>
+                        <button class="choice" onclick="b1Pick(this,'b1q7','keep')">Harus dijaga</button>
+                        <button class="choice" onclick="b1Pick(this,'b1q7','ask')">TANYA dulu</button>
+                    </div>
+                    <div class="text-sm text-slate-500 mt-2">
+                        Petunjuk: ini untuk sekolah, tapi tetap harus izin guru/orang tua & teman ya.
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="mt-5 flex flex-col md:flex-row gap-2">
+                <button class="px-5 py-3 rounded-full font-black bg-orange-400 text-white hover:bg-orange-500"
+                    onclick="b1Check()">
+                    ✅ Cek Skor Bagian 1
+                </button>
+                <button class="px-5 py-3 rounded-full font-black bg-white border-2 border-orange-300 hover:bg-orange-50"
+                    onclick="b1Reset()">
+                    🔄 Reset Bagian 1
+                </button>
+            </div>
+
+            <div id="amanMsg" class="mt-4 font-bold text-slate-700">
+                Selesaikan dulu, lalu klik <b>Cek Skor</b> 🙂.
+            </div>
+
+            <div id="b1ScoreOut" class="mt-2 text-slate-600"></div>
+        </div>
+
+
+
+        <!-- BAGIAN 2 (VERSI LEBIH MENJEBak) -->
+        <div class="card p-6">
+            <h2 class="text-2xl font-black mb-2">🔵 Kalau Data Bocor…</h2>
+            <p class="mb-4 text-slate-600">
+                Pilih 1 jawaban tiap soal. Hati-hati, ada pilihan yang “hampir benar” 😉
+            </p>
+
+            <div class="space-y-6" id="b2Wrap">
+
+                <!-- Q1 -->
+                <div class="b2q" data-id="b2q1" data-ans="a">
+                    <div class="font-bold mb-2">1) Password bocor paling mungkin menyebabkan…</div>
+                    <div class="grid gap-3">
+                        <button class="choice" onclick="b2Pick(this,'b2q1','a')">(A) Orang lain bisa masuk akun dan
+                            mengubah sesuatu</button>
+                        <button class="choice" onclick="b2Pick(this,'b2q1','b')">(B) Orang lain tahu nama
+                            panggilanmu</button>
+                        <button class="choice" onclick="b2Pick(this,'b2q1','c')">(C) Orang lain bisa melihat skor game
+                            kamu saja</button>
+                        <button class="choice" onclick="b2Pick(this,'b2q1','d')">(D) Akun jadi otomatis lebih
+                            aman</button>
+                    </div>
+                    <div class="text-sm text-slate-500 mt-2">
+                        Petunjuk: password itu “kunci” untuk masuk.
+                    </div>
+                </div>
+
+                <!-- Q2 -->
+                <div class="b2q" data-id="b2q2" data-ans="b">
+                    <div class="font-bold mb-2">2) Nomor HP orang tua bocor paling mungkin menyebabkan…</div>
+                    <div class="grid gap-3">
+                        <button class="choice" onclick="b2Pick(this,'b2q2','a')">(A) Teman sekelas bisa tahu tanggal
+                            ulang tahunmu</button>
+                        <button class="choice" onclick="b2Pick(this,'b2q2','b')">(B) Ada telepon/WA dari nomor tidak
+                            dikenal</button>
+                        <button class="choice" onclick="b2Pick(this,'b2q2','c')">(C) Orang lain bisa melihat foto
+                            profilmu (kadang)</button>
+                        <button class="choice" onclick="b2Pick(this,'b2q2','d')">(D) HP langsung error dan tidak bisa
+                            dipakai</button>
+                    </div>
+                    <div class="text-sm text-slate-500 mt-2">
+                        Petunjuk: nomor HP dipakai untuk menghubungi.
+                    </div>
+                </div>
+
+                <!-- Q3 -->
+                <div class="b2q" data-id="b2q3" data-ans="c">
+                    <div class="font-bold mb-2">3) Foto wajah tersebar ke orang tak dikenal paling mungkin menyebabkan…
+                    </div>
+                    <div class="grid gap-3">
+                        <button class="choice" onclick="b2Pick(this,'b2q3','a')">(A) Orang lain jadi tahu kamu suka
+                            warna apa</button>
+                        <button class="choice" onclick="b2Pick(this,'b2q3','b')">(B) Orang lain jadi tahu kamu sekolah
+                            di mana (tidak selalu)</button>
+                        <button class="choice" onclick="b2Pick(this,'b2q3','c')">(C) Kita bisa merasa tidak nyaman,
+                            karena foto bisa disimpan/screenshot</button>
+                        <button class="choice" onclick="b2Pick(this,'b2q3','d')">(D) Foto otomatis hilang sendiri
+                            setelah 1 hari</button>
+                    </div>
+                    <div class="text-sm text-slate-500 mt-2">
+                        Petunjuk: yang tersebar bisa disimpan orang lain.
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="mt-5 flex flex-col md:flex-row gap-2">
+                <button class="px-5 py-3 rounded-full font-black bg-orange-400 text-white hover:bg-orange-500"
+                    onclick="b2Check()">
+                    ✅ Cek Skor Bagian 2
+                </button>
+                <button class="px-5 py-3 rounded-full font-black bg-white border-2 border-orange-300 hover:bg-orange-50"
+                    onclick="b2Reset()">
+                    🔄 Reset Bagian 2
+                </button>
+            </div>
+
+            <div id="b2Msg" class="mt-4 font-bold text-slate-700">Jawab semua dulu ya 🙂</div>
+            <div id="b2ScoreOut" class="mt-2 text-slate-600"></div>
+        </div>
+
+
+
+        <!-- BAGIAN 3 (VERSI LEBIH CHALLENGING) -->
+        <div class="card p-6">
+            <h2 class="text-2xl font-black mb-2">🔴 Studi Kasus (Level Up)</h2>
+            <p class="mb-4 text-slate-600">
+                Game meminta alamat rumah untuk hadiah. Pilih tindakan paling aman.
+                <br><span class="text-slate-500 text-sm">Hati-hati: ada jawaban yang “hampir benar” 😉</span>
+            </p>
+
+            <div class="space-y-5" id="caseWrap">
+                <!-- Step 1 -->
+                <div class="case" data-step="1" data-id="case1" data-ans="b">
+                    <div class="font-black mb-2">Langkah 1: Kamu akan…</div>
+                    <div class="grid gap-3">
+                        <button class="choice" onclick="casePick(this,'case1','a')">(A) Isi alamat rumah biar dapat
+                            hadiah</button>
+                        <button class="choice" onclick="casePick(this,'case1','b')">(B) STOP dulu (jangan isi) dan baca
+                            baik-baik</button>
+                        <button class="choice" onclick="casePick(this,'case1','c')">(C) Isi alamat palsu saja biar
+                            aman</button>
+                        <button class="choice" onclick="casePick(this,'case1','d')">(D) Tanya teman lalu ikut
+                            jawabannya</button>
+                    </div>
+                    <div class="text-sm text-slate-500 mt-2">Petunjuk: langkah aman biasanya tidak buru-buru.</div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="case" data-step="2" data-id="case2" data-ans="a">
+                    <div class="font-black mb-2">Langkah 2: Setelah STOP, kamu akan…</div>
+                    <div class="grid gap-3">
+                        <button class="choice" onclick="casePick(this,'case2','a')">(A) TANYA orang tua/guru
+                            dulu</button>
+                        <button class="choice" onclick="casePick(this,'case2','b')">(B) Share pop-up itu ke grup
+                            teman</button>
+                        <button class="choice" onclick="casePick(this,'case2','c')">(C) Klik “Allow” semua biar
+                            cepat</button>
+                        <button class="choice" onclick="casePick(this,'case2','d')">(D) Balas chatnya dengan nama
+                            lengkap</button>
+                    </div>
+                    <div class="text-sm text-slate-500 mt-2">Petunjuk: kalau ragu, minta bantuan orang dewasa ✅</div>
+                </div>
+            </div>
+
+            <div class="mt-5 flex flex-col md:flex-row gap-2">
+                <button class="px-5 py-3 rounded-full font-black bg-orange-400 text-white hover:bg-orange-500"
+                    onclick="caseCheck()">
+                    ✅ Cek Jawaban Studi Kasus
+                </button>
+                <button class="px-5 py-3 rounded-full font-black bg-white border-2 border-orange-300 hover:bg-orange-50"
+                    onclick="caseReset()">
+                    🔄 Reset Studi Kasus
+                </button>
+            </div>
+
+            <div id="caseMsg" class="mt-4 font-bold text-slate-700">Pilih dulu langkah 1 dan 2 🙂</div>
+        </div>
+
+        <!-- BAGIAN 4 (VERSI LEBIH CHALLENGING) -->
+        <div class="card p-6">
+            <h2 class="text-2xl font-black mb-2">🛑 STOP – ❓ TANYA (Tantangan Urutan)</h2>
+            <p class="mb-4 text-slate-600">
+                Susun langkahnya yang benar (klik berurutan). Target: <b>STOP → TANYA</b>.
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- choices -->
+                <div class="card p-5 border border-slate-200 rounded-2xl">
+                    <div class="font-black mb-3">Klik berurutan (1 → 3)</div>
+
+                    <div class="grid gap-3" id="stChoices">
+                        <button class="choice text-left" data-key="share" onclick="stPick(this)">📤 Share ke grup
+                            teman</button>
+                        <button class="choice text-left" data-key="stop" onclick="stPick(this)">🛑 STOP (jangan isi
+                            dulu)</button>
+                        <button class="choice text-left" data-key="ask" onclick="stPick(this)">❓ TANYA orang
+                            tua/guru</button>
+                        <button class="choice text-left" data-key="read" onclick="stPick(this)">👀 Baca dulu
+                            permintaannya</button>
+                    </div>
+
+                    <div class="mt-3 flex gap-2">
+                        <button class="btn" onclick="stReset()">Reset</button>
+                        <button class="btn btn-primary" onclick="stCheck()">Cek Urutan</button>
+                    </div>
+
+                    <div class="mt-2 text-sm text-slate-600" id="stMsg">Klik 3 langkah yang paling aman 🙂</div>
+                </div>
+
+                <!-- selected + keyword check -->
+                <div class="card p-5 border border-slate-200 rounded-2xl">
+                    <div class="font-black mb-2">Urutan pilihanmu</div>
+                    <ol class="list-decimal pl-6 space-y-2" id="stList">
+                        <li class="text-slate-400">Belum ada pilihan</li>
+                    </ol>
+
+                    <div class="mt-5">
+                        <div class="font-black mb-2">Isi kata kunci (biar ingat)</div>
+                        <div class="grid gap-3">
+                            <input id="kwStop" class="w-full p-3 border rounded-xl font-bold"
+                                placeholder="STOP artinya: ... (kata kunci: JANGAN / BERHENTI)" />
+                            <input id="kwAsk" class="w-full p-3 border rounded-xl font-bold"
+                                placeholder="TANYA artinya: ... (kata kunci: ORANG TUA / GURU)" />
+                        </div>
+
+                        <div class="mt-3 flex gap-2">
+                            <button class="btn btn-primary" onclick="kwCheck()">Cek Kata Kunci</button>
+                            <button class="btn" onclick="kwReset()">Reset</button>
+                        </div>
+
+                        <div class="mt-2 text-sm text-slate-600" id="kwMsg">Tulis singkat saja 🙂</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- PRINT -->
+        <div class="card p-6 text-center">
+            <button onclick="printWorksheet()"
+                class="px-6 py-3 rounded-full font-black bg-orange-400 text-white hover:bg-orange-500">
+                🖨️ Cetak Worksheet
+            </button>
+
+            <div id="printMsg" class="text-sm text-red-600 font-bold mt-3"></div>
+        </div>
+
+        <script>
+            function printWorksheet() {
+                const name = document.getElementById('studentName').value.trim();
+                const msg = document.getElementById('printMsg');
+
+                if (!name) {
+                    msg.textContent = "Nama belum diisi. Isi dulu ya 🙂";
+                    return;
+                }
+
+                msg.textContent = "";
+
+                // Tambah nama ke judul saat print
+                const header = document.querySelector('h1');
+                const nameTag = document.createElement('div');
+                nameTag.id = 'printName';
+                nameTag.style.marginTop = '8px';
+                nameTag.style.fontWeight = '700';
+                nameTag.textContent = `Nama: ${name}`;
+
+                if (!document.getElementById('printName')) {
+                    header.after(nameTag);
+                }
+
+                window.print();
+            }
+        </script>
+
+
+
+        <!-- PENUTUP -->
+        <div class="card p-6 text-center">
+            <div class="text-3xl mb-2">🎉</div>
+            <div class="font-black text-xl mb-2">Kamu sudah selesai!</div>
+            <p class="text-slate-600">
+                Ingat: di dunia digital, kita boleh berbagi, tapi harus tahu batasnya.
+            </p>
+        </div>
+
+    </div>
+
+    <script>
+        function pick(btn, correct) {
+            const group = btn.parentElement;
+            Array.from(group.children).forEach(b => {
+                b.classList.remove('good', 'bad');
+            });
+
+            if (correct) {
+                btn.classList.add('good');
+                toast('✅ Pilihanmu aman!');
+            } else {
+                btn.classList.add('bad');
+                toast('⚠️ Coba pikirkan lagi ya.');
+            }
+        }
+
+        // ===== BAGIAN 1 STATE =====
+        const b1State = {}; // contoh: { b1q1: 'safe', ... }
+
+        function b1Pick(btn, qid, val) {
+            b1State[qid] = val;
+
+            // highlight pilihan (netral: belum benar/salah)
+            const group = btn.parentElement;
+            Array.from(group.children).forEach(b => {
+                b.classList.remove('ring-2', 'ring-orange-300', 'bg-orange-50');
+            });
+            btn.classList.add('ring-2', 'ring-orange-300', 'bg-orange-50');
+
+            const msg = document.getElementById('amanMsg');
+            if (msg) msg.textContent = "Tersimpan ✅ Lanjut nomor berikutnya 🙂";
+        }
+
+        function b1Check() {
+            const qs = Array.from(document.querySelectorAll('#amanTidak .q1'));
+            const msg = document.getElementById('amanMsg');
+            const out = document.getElementById('b1ScoreOut');
+
+            // cek belum jawab
+            const missing = qs
+                .map(q => q.getAttribute('data-id'))
+                .filter(id => !b1State[id]);
+
+            if (missing.length) {
+                msg.textContent = "Masih ada yang belum dijawab. Lengkapi semua dulu ya 🙂";
+                msg.className = "mt-4 font-black text-orange-700";
+                if (out) out.textContent = "";
+                if (typeof toast === "function") toast("Masih ada yang kosong 🙂");
+                return;
+            }
+
+            // hitung skor + tampilkan benar/salah per nomor
+            let score = 0;
+
+            qs.forEach(q => {
+                const id = q.getAttribute('data-id');
+                const ans = q.getAttribute('data-ans');
+                const user = b1State[id];
+
+                // reset highlight jadi hijau/oranye setelah cek
+                const buttons = q.querySelectorAll('.choice');
+                buttons.forEach(b => {
+                    b.classList.remove('ring-green-300', 'ring-orange-300', 'bg-orange-50');
+                });
+
+                // tandai pilihan user
+                const pickedBtn = Array.from(buttons).find(b => b.getAttribute('onclick')?.includes(`'${id}'`) && b.getAttribute('onclick')?.includes(`'${user}'`));
+                if (pickedBtn) {
+                    if (user === ans) {
+                        score++;
+                        pickedBtn.classList.add('ring-2', 'ring-green-300');
+                    } else {
+                        pickedBtn.classList.add('ring-2', 'ring-orange-300');
+                    }
+                }
+            });
+
+            const total = qs.length;
+            msg.textContent = `Skor Bagian 1: ${score}/${total} ✅`;
+            msg.className = "mt-4 font-black text-slate-800";
+
+            if (out) {
+                if (score === total) {
+                    out.textContent = "🏆 Perfect! Kamu Penjaga Data Hebat!";
+                } else if (score >= 3) {
+                    out.textContent = "🌟 Keren! Tinggal sedikit lagi.";
+                } else {
+                    out.textContent = "💪 Gapapa! Ingat jurus aman: STOP → TANYA.";
+                }
+            }
+
+            if (typeof toast === "function") toast(`Skor: ${score}/${total}`);
+        }
+
+        function b1Reset() {
+            // hapus state
+            Object.keys(b1State).forEach(k => delete b1State[k]);
+
+            // bersihkan highlight
+            document.querySelectorAll('#amanTidak .choice').forEach(b => {
+                b.classList.remove('ring-2', 'ring-green-300', 'ring-orange-300', 'ring-orange-300', 'bg-orange-50');
+            });
+
+            const msg = document.getElementById('amanMsg');
+            msg.textContent = "Selesaikan dulu, lalu klik Cek Skor 🙂.";
+            msg.className = "mt-4 font-bold text-slate-700";
+
+            const out = document.getElementById('b1ScoreOut');
+            if (out) out.textContent = "";
+
+            if (typeof toast === "function") toast("Bagian 1 di-reset 🙂");
+        }
+
+        // ===== BAGIAN 2 STATE =====
+        const b2State = {}; // contoh: {b2q1:'a', b2q2:'b' }
+
+        function b2Pick(btn, qid, val) {
+            b2State[qid] = val;
+
+            // highlight pilihan (netral)
+            const group = btn.parentElement;
+            Array.from(group.children).forEach(b => {
+                b.classList.remove('ring-2', 'ring-orange-300', 'bg-orange-50');
+            });
+            btn.classList.add('ring-2', 'ring-orange-300', 'bg-orange-50');
+
+            const msg = document.getElementById('b2Msg');
+            if (msg) msg.textContent = "Tersimpan ✅ Lanjut soal berikutnya 🙂";
+        }
+
+        function b2Check() {
+            const qs = Array.from(document.querySelectorAll('#b2Wrap .b2q'));
+            const msg = document.getElementById('b2Msg');
+            const out = document.getElementById('b2ScoreOut');
+
+            const missing = qs
+                .map(q => q.getAttribute('data-id'))
+                .filter(id => !b2State[id]);
+
+            if (missing.length) {
+                msg.textContent = "Masih ada yang belum dijawab. Lengkapi semua dulu ya 🙂";
+                msg.className = "mt-4 font-black text-orange-700";
+                if (out) out.textContent = "";
+                if (typeof toast === "function") toast("Masih ada yang kosong 🙂");
+                return;
+            }
+
+            let score = 0;
+
+            qs.forEach(q => {
+                const id = q.getAttribute('data-id');
+                const ans = q.getAttribute('data-ans');
+                const user = b2State[id];
+
+                // bersihkan highlight, lalu beri hijau/oranye untuk pilihan user
+                const buttons = q.querySelectorAll('.choice');
+                buttons.forEach(b => {
+                    b.classList.remove('ring-2', 'ring-green-300', 'ring-orange-300', 'bg-orange-50');
+                });
+
+                // cari tombol yang dipilih
+                const pickedBtn = Array.from(buttons).find(b => b.getAttribute('onclick')?.includes(`'${id}'`) && b.getAttribute('onclick')?.includes(`'${user}'`));
+                if (pickedBtn) {
+                    if (user === ans) {
+                        score++;
+                        pickedBtn.classList.add('ring-2', 'ring-green-300');
+                    } else {
+                        pickedBtn.classList.add('ring-2', 'ring-orange-300');
+                    }
+                }
+            });
+
+            const total = qs.length;
+            msg.textContent = `Skor Bagian 2: ${score}/${total} ✅`;
+            msg.className = "mt-4 font-black text-slate-800";
+
+            if (out) {
+                if (score === total) {
+                    out.textContent = "🏆 Hebat! Kamu paham akibat data bocor.";
+                } else if (score >= Math.ceil(total * 0.7)) {
+                    out.textContent = "🌟 Bagus! Tinggal sedikit lagi.";
+                } else {
+                    out.textContent = "💪 Yuk ulang pelan-pelan. Ingat: STOP → TANYA.";
+                }
+            }
+
+            if (typeof toast === "function") toast(`Skor Bagian 2: ${score}/${total}`);
+        }
+
+        function b2Reset() {
+            Object.keys(b2State).forEach(k => delete b2State[k]);
+
+            document.querySelectorAll('#b2Wrap .choice').forEach(b => {
+                b.classList.remove('ring-2', 'ring-green-300', 'ring-orange-300', 'bg-orange-50');
+            });
+
+            const msg = document.getElementById('b2Msg');
+            msg.textContent = "Jawab semua dulu ya 🙂";
+            msg.className = "mt-4 font-bold text-slate-700";
+
+            const out = document.getElementById('b2ScoreOut');
+            if (out) out.textContent = "";
+
+            if (typeof toast === "function") toast("Bagian 2 di-reset 🙂");
+        }
+
+        // ====== BAGIAN 3: STUDI KASUS (2 langkah) ======
+        const caseState = {}; // {case1:'b', case2:'a'}
+
+        function casePick(btn, qid, val) {
+            caseState[qid] = val;
+
+            // highlight pilihan (netral)
+            const group = btn.parentElement;
+            Array.from(group.children).forEach(b => {
+                b.classList.remove('ring-2', 'ring-orange-300', 'bg-orange-50');
+            });
+            btn.classList.add('ring-2', 'ring-orange-300', 'bg-orange-50');
+
+            const msg = document.getElementById('caseMsg');
+            msg.textContent = "Tersimpan ✅ Lanjut pilih langkah berikutnya 🙂";
+        }
+
+        function caseCheck() {
+            const msg = document.getElementById('caseMsg');
+
+            if (!caseState.case1 || !caseState.case2) {
+                msg.textContent = "Masih ada yang belum dipilih. Lengkapi langkah 1 dan 2 dulu 🙂";
+                msg.className = "mt-4 font-black text-orange-700";
+                if (typeof toast === "function") toast("Lengkapi dulu ya 🙂");
+                return;
+            }
+
+            const ok1 = caseState.case1 === 'b';
+            const ok2 = caseState.case2 === 'a';
+
+            // ubah highlight jadi hijau/oranye untuk pilihan yg dipilih
+            ['case1', 'case2'].forEach((qid) => {
+                const wrap = document.querySelector(`[data-id="${qid}"]`);
+                if (!wrap) return;
+                const buttons = wrap.querySelectorAll('.choice');
+                buttons.forEach(b => b.classList.remove('ring-green-300', 'ring-orange-300', 'bg-orange-50'));
+                const user = caseState[qid];
+                const pickedBtn = Array.from(buttons).find(b => b.getAttribute('onclick')?.includes(`'${qid}'`) && b.getAttribute('onclick')?.includes(`'${user}'`));
+                const correct = (qid === 'case1') ? ok1 : ok2;
+                if (pickedBtn) {
+                    pickedBtn.classList.add('ring-2', correct ? 'ring-green-300' : 'ring-orange-300');
+                }
+            });
+
+            if (ok1 && ok2) {
+                msg.textContent = "✅ Mantap! Kamu sudah pakai jurus aman: STOP → TANYA.";
+                msg.className = "mt-4 font-black text-green-700";
+                if (typeof toast === "function") toast("STOP → TANYA ✅");
+            } else {
+                msg.textContent = "⚠️ Masih ada yang kurang aman. Coba reset lalu pilih lagi ya 🙂";
+                msg.className = "mt-4 font-black text-orange-700";
+                if (typeof toast === "function") toast("Coba lagi 🙂");
+            }
+        }
+
+        function caseReset() {
+            delete caseState.case1; delete caseState.case2;
+            document.querySelectorAll('#caseWrap .choice').forEach(b => {
+                b.classList.remove('ring-2', 'ring-green-300', 'ring-orange-300', 'bg-orange-50');
+            });
+            const msg = document.getElementById('caseMsg');
+            msg.textContent = "Pilih dulu langkah 1 dan 2 🙂";
+            msg.className = "mt-4 font-bold text-slate-700";
+            if (typeof toast === "function") toast("Di-reset 🙂");
+        }
+
+        // ====== BAGIAN 4A: URUTAN STOP–TANYA (klik berurutan) ======
+        let stSelected = [];
+        const stAnswer = ['stop', 'read', 'ask']; // urutan aman
+
+        function stPick(btn) {
+            const key = btn.getAttribute('data-key');
+            const msg = document.getElementById('stMsg');
+
+            if (stSelected.includes(key)) {
+                msg.textContent = "Yang itu sudah kamu pilih 🙂";
+                msg.className = "mt-2 text-sm font-black text-orange-700";
+                return;
+            }
+            if (stSelected.length >= 3) {
+                msg.textContent = "Sudah 3 langkah. Klik 'Cek Urutan' ya ✅";
+                msg.className = "mt-2 text-sm font-black text-slate-700";
+                return;
+            }
+
+            stSelected.push(key);
+            btn.classList.add('ring-2', 'ring-orange-300', 'bg-orange-50');
+            renderStList();
+
+            msg.textContent = stSelected.length < 3 ? "Pilih 1 lagi 🙂" : "Sudah 3 langkah. Klik 'Cek Urutan' ya ✅";
+            msg.className = "mt-2 text-sm font-black text-slate-700";
+        }
+
+        function renderStList() {
+            const list = document.getElementById('stList');
+            const labelMap = {
+                stop: "🛑 STOP (jangan isi dulu)",
+                read: "👀 Baca dulu permintaannya",
+                ask: "❓ TANYA orang tua/guru",
+                share: "📤 Share ke grup teman"
+            };
+
+            if (stSelected.length === 0) {
+                list.innerHTML = `<li class="text-slate-400">Belum ada pilihan</li>`;
+                return;
+            }
+            list.innerHTML = stSelected.map(k => `<li>${labelMap[k]}</li>`).join('');
+        }
+
+        function stReset() {
+            stSelected = [];
+            document.querySelectorAll('#stChoices .choice').forEach(b => {
+                b.classList.remove('ring-2', 'ring-green-300', 'ring-orange-300', 'bg-orange-50');
+            });
+            renderStList();
+            const msg = document.getElementById('stMsg');
+            msg.textContent = "Klik 3 langkah yang paling aman 🙂";
+            msg.className = "mt-2 text-sm text-slate-600";
+        }
+
+        function stCheck() {
+            const msg = document.getElementById('stMsg');
+
+            if (stSelected.length < 3) {
+                msg.textContent = "Belum lengkap. Pilih 3 dulu ya 🙂";
+                msg.className = "mt-2 text-sm font-black text-orange-700";
+                return;
+            }
+
+            // highlight benar/salah per posisi
+            stSelected.forEach((key, idx) => {
+                const btn = document.querySelector(`#stChoices .choice[data-key="${key}"]`);
+                if (!btn) return;
+                btn.classList.remove('ring-green-300', 'ring-orange-300');
+                btn.classList.add('ring-2', key === stAnswer[idx] ? 'ring-green-300' : 'ring-orange-300');
+            });
+
+            const correct = stSelected.join('|') === stAnswer.join('|');
+            if (correct) {
+                msg.textContent = "✅ Benar! Urutannya aman: STOP → BACA → TANYA.";
+                msg.className = "mt-2 text-sm font-black text-green-700";
+                if (typeof toast === "function") toast("Urutan aman ✅");
+            } else {
+                msg.textContent = "⚠️ Masih ada yang ketukar. Reset lalu coba lagi ya 🙂";
+                msg.className = "mt-2 text-sm font-black text-orange-700";
+                if (typeof toast === "function") toast("Coba lagi 🙂");
+            }
+        }
+
+        // ====== BAGIAN 4B: KATA KUNCI STOP–TANYA ======
+        function kwCheck() {
+            const stopVal = (document.getElementById('kwStop').value || '').toUpperCase();
+            const askVal = (document.getElementById('kwAsk').value || '').toUpperCase();
+            const msg = document.getElementById('kwMsg');
+
+            const okStop = stopVal.includes('JANGAN') || stopVal.includes('BERHENTI') || stopVal.includes('STOP');
+            const okAsk = askVal.includes('ORANG TUA') || askVal.includes('GURU') || askVal.includes('TANYA');
+
+            if (okStop && okAsk) {
+                msg.textContent = "✅ Mantap! Kamu ingat arti STOP dan TANYA.";
+                msg.className = "mt-2 text-sm font-black text-green-700";
+                if (typeof toast === "function") toast("Kata kunci benar ✅");
+            } else {
+                msg.textContent = "⚠️ Coba tulis pakai kata kunci: STOP = JANGAN/BERHENTI, TANYA = ORANG TUA/GURU.";
+                msg.className = "mt-2 text-sm font-black text-orange-700";
+                if (typeof toast === "function") toast("Coba lagi 🙂");
+            }
+        }
+
+        function kwReset() {
+            document.getElementById('kwStop').value = '';
+            document.getElementById('kwAsk').value = '';
+            const msg = document.getElementById('kwMsg');
+            msg.textContent = "Tulis singkat saja 🙂";
+            msg.className = "mt-2 text-sm text-slate-600";
+        }
+
+
+        function toast(msg) {
+            const t = document.createElement('div');
+            t.textContent = msg;
+            t.style.position = 'fixed';
+            t.style.bottom = '24px';
+            t.style.left = '50%';
+            t.style.transform = 'translateX(-50%)';
+            t.style.background = '#FB923C';
+            t.style.color = 'white';
+            t.style.padding = '12px 18px';
+            t.style.borderRadius = '999px';
+            t.style.fontWeight = '800';
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 1500);
+        }
+    </script>
+
+</body>
+
+</html>
