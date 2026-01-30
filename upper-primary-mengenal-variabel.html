@@ -753,23 +753,6 @@
                     solving.
                 </div>
             </div>
-
-            <script>
-                document.addEventListener("DOMContentLoaded", () => {
-                    document.querySelectorAll("[data-reveal]").forEach(btn => {
-                        btn.addEventListener("click", () => {
-                            const id = btn.dataset.reveal;
-                            const el = document.getElementById(id);
-                            if (!el) {
-                                console.error("Target reveal tidak ketemu:", id);
-                                return;
-                            }
-                            el.classList.toggle("hidden");
-                        });
-                    });
-                });
-            </script>
-
         </section>
 
 
@@ -1110,6 +1093,20 @@
             toast("Skor quiz sudah dihitung.");
         });
 
+        document.addEventListener("DOMContentLoaded", () => {
+                    document.querySelectorAll("[data-reveal]").forEach(btn => {
+                        btn.addEventListener("click", () => {
+                            const id = btn.dataset.reveal;
+                            const el = document.getElementById(id);
+                            if (!el) {
+                                console.error("Target reveal tidak ketemu:", id);
+                                return;
+                            }
+                            el.classList.toggle("hidden");
+                        });
+                    });
+                });
+
         // Reflections
         document.querySelectorAll(".ref").forEach(btn => {
             btn.addEventListener("click", () => toast("Ajak 2–3 siswa menjawab lisan 👍"));
@@ -1119,5 +1116,6 @@
         showSlide(0);
     </script>
 </body>
+
 
 </html>
