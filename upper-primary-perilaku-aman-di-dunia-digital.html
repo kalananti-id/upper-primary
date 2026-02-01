@@ -1,0 +1,1916 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>UOB MDS Upper Primary — Sesi 32: Perilaku Aman di Dunia Digital</title>
+    <style>
+        :root {
+            --bg: #F7FAFF;
+            --card: #FFFFFF;
+            --ink: #1F2A44;
+            --muted: #607099;
+            --line: #E5EAF5;
+
+            --brand: #4F46E5;
+            /* indigo */
+            --brand2: #06B6D4;
+            /* cyan */
+            --accent: #F97316;
+            /* orange */
+            --ok: #16A34A;
+            /* green */
+            --bad: #DC2626;
+            /* red */
+            --soft: #EEF2FF;
+
+            --radius: 26px;
+            --shadow: 0 14px 34px rgba(31, 42, 68, .10);
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            height: 100%
+        }
+
+        body {
+            margin: 0;
+            font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(1200px 520px at 10% 0%, rgba(6, 182, 212, .18), transparent 60%),
+                radial-gradient(1200px 520px at 90% 0%, rgba(79, 70, 229, .16), transparent 55%),
+                linear-gradient(180deg, #F7FAFF, #F4F7FF 40%, #F7FAFF);
+            overflow: hidden;
+        }
+
+        /* Layout */
+        .deck {
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 16px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 260px;
+        }
+
+        .logo {
+            width: 42px;
+            height: 42px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--brand), var(--brand2));
+            display: grid;
+            place-items: center;
+            color: #fff;
+            font-weight: 1000;
+            box-shadow: 0 14px 26px rgba(79, 70, 229, .18);
+            user-select: none;
+            flex: 0 0 auto;
+        }
+
+        .brandText {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1
+        }
+
+        .brandText b {
+            font-size: 14px
+        }
+
+        .brandText span {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 800
+        }
+
+        .centerInfo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .pill {
+            font-size: 12px;
+            font-weight: 900;
+            color: var(--muted);
+            background: rgba(255, 255, 255, .75);
+            border: 1px solid var(--line);
+            padding: 8px 10px;
+            border-radius: 999px;
+            box-shadow: 0 10px 22px rgba(31, 42, 68, .06);
+            user-select: none;
+            backdrop-filter: blur(6px);
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 260px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            border: 0;
+            cursor: pointer;
+            user-select: none;
+            padding: 10px 12px;
+            border-radius: 14px;
+            font-weight: 1000;
+            font-size: 13px;
+            transition: transform .06s ease, opacity .2s ease;
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+            opacity: .92
+        }
+
+        .btn.primary {
+            color: #fff;
+            background: linear-gradient(135deg, var(--brand), #6D28D9);
+            box-shadow: 0 14px 26px rgba(79, 70, 229, .18);
+        }
+
+        .btn.secondary {
+            color: var(--ink);
+            background: #fff;
+            border: 1px solid var(--line);
+            box-shadow: 0 10px 20px rgba(31, 42, 68, .06);
+        }
+
+        .btn.ghost {
+            color: var(--muted);
+            background: transparent;
+            border: 1px dashed rgba(96, 112, 153, .35);
+        }
+
+        .stage {
+            flex: 1;
+            display: flex;
+            padding: 10px 16px 16px;
+            gap: 14px;
+        }
+
+        .slide {
+            flex: 1;
+            background: rgba(255, 255, 255, .65);
+            border: 1px solid rgba(229, 234, 245, .9);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            overflow: hidden;
+            /* ⬅️ ubah ini */
+            backdrop-filter: blur(8px);
+        }
+
+
+        .slideInner {
+            max-width: 980px;
+            margin: 0 auto;
+
+            /* ⬇️ TAMBAHAN UNTUK SCROLL */
+            max-height: calc(100vh - 160px);
+            /* sesuaikan tinggi topbar + progress */
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+
+        .kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 1000;
+            color: var(--muted);
+            background: var(--soft);
+            border: 1px solid var(--line);
+            padding: 6px 10px;
+            border-radius: 999px;
+        }
+
+        h1 {
+            margin: 12px 0 8px;
+            font-size: 34px;
+            letter-spacing: -.03em
+        }
+
+        h2 {
+            margin: 10px 0 8px;
+            font-size: 28px;
+            letter-spacing: -.02em
+        }
+
+        p {
+            margin: 8px 0;
+            color: var(--muted);
+            font-weight: 700;
+            line-height: 1.55
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .cols2 {
+            grid-template-columns: 1fr 1fr
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            padding: 16px;
+            box-shadow: 0 12px 24px rgba(31, 42, 68, .06);
+        }
+
+        .card h3 {
+            margin: 0 0 8px;
+            font-size: 16px
+        }
+
+        .list {
+            margin: 0;
+            padding-left: 18px;
+            color: var(--muted);
+            font-weight: 750;
+            line-height: 1.55
+        }
+
+        .big3 {
+            display: grid;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .bigItem {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            background: linear-gradient(180deg, #FFFFFF, #F7FAFF);
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            padding: 14px 14px;
+            box-shadow: 0 12px 22px rgba(31, 42, 68, .06);
+        }
+
+        .dot {
+            width: 36px;
+            height: 36px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            background: rgba(79, 70, 229, .10);
+            color: var(--brand);
+            font-weight: 1000;
+            flex: 0 0 auto;
+        }
+
+        .bigItem b {
+            display: block;
+            margin-top: 2px
+        }
+
+        .bigItem span {
+            display: block;
+            color: var(--muted);
+            font-weight: 800;
+            margin-top: 3px;
+            line-height: 1.35
+        }
+
+        /* Interactive choices */
+        .choices {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px
+        }
+
+        .choice {
+            flex: 1 1 220px;
+            border: 1px solid var(--line);
+            background: #fff;
+            border-radius: 18px;
+            padding: 12px 12px;
+            cursor: pointer;
+            font-weight: 1000;
+            text-align: center;
+            box-shadow: 0 10px 18px rgba(31, 42, 68, .06);
+            transition: transform .06s ease, box-shadow .2s ease, border-color .2s ease;
+            user-select: none;
+        }
+
+        .choice:hover {
+            transform: translateY(-1px)
+        }
+
+        .choice.active {
+            border-color: rgba(79, 70, 229, .55);
+            box-shadow: 0 14px 24px rgba(79, 70, 229, .14);
+            background: linear-gradient(180deg, #fff, #F2F5FF);
+        }
+
+        .choice.ok {
+            border-color: rgba(22, 163, 74, .55);
+            background: rgba(22, 163, 74, .06);
+        }
+
+        .choice.bad {
+            border-color: rgba(220, 38, 38, .55);
+            background: rgba(220, 38, 38, .06);
+        }
+
+        .feedback {
+            margin-top: 12px;
+            display: none;
+            padding: 12px 14px;
+            border-radius: 18px;
+            border: 1px solid var(--line);
+            background: #F8FAFF;
+            color: var(--muted);
+            font-weight: 800;
+            line-height: 1.45;
+        }
+
+        .feedback.show {
+            display: block
+        }
+
+        .fbOk {
+            border-color: rgba(22, 163, 74, .35);
+            background: rgba(22, 163, 74, .06);
+            color: #1E5B2E
+        }
+
+        .fbBad {
+            border-color: rgba(220, 38, 38, .30);
+            background: rgba(220, 38, 38, .06);
+            color: #7A1E1E
+        }
+
+        .hint {
+            margin-top: 12px;
+            padding: 12px 14px;
+            border-radius: 18px;
+            border: 1px solid rgba(249, 115, 22, .35);
+            background: rgba(249, 115, 22, .08);
+            color: #8A4B12;
+            font-weight: 850;
+            line-height: 1.45;
+        }
+
+        .miniRow {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-top: 12px
+        }
+
+        .tag {
+            font-size: 12px;
+            font-weight: 1000;
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: #fff;
+            color: var(--muted);
+        }
+
+        /* Reflection input */
+        .input {
+            width: 100%;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 12px 12px;
+            font-size: 14px;
+            font-weight: 750;
+            outline: none;
+            background: #FBFCFF;
+        }
+
+        .input:focus {
+            border-color: rgba(79, 70, 229, .55);
+            box-shadow: 0 12px 22px rgba(79, 70, 229, .12);
+            background: #fff;
+        }
+
+        /* Progress */
+        .progressWrap {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 10px 16px 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            pointer-events: none;
+        }
+
+        .bar {
+            flex: 1;
+            height: 10px;
+            background: rgba(255, 255, 255, .75);
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            overflow: hidden;
+            box-shadow: 0 10px 22px rgba(31, 42, 68, .06);
+            backdrop-filter: blur(6px);
+        }
+
+        .fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--brand), var(--brand2));
+        }
+
+        .page {
+            pointer-events: auto;
+            font-size: 12px;
+            font-weight: 1000;
+            color: var(--muted);
+            background: rgba(255, 255, 255, .75);
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            padding: 7px 10px;
+            box-shadow: 0 10px 22px rgba(31, 42, 68, .06);
+            backdrop-filter: blur(6px);
+            user-select: none;
+        }
+
+        /* Small */
+        .kbd {
+            font-weight: 1000;
+            border: 1px solid var(--line);
+            background: #fff;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        @media (max-width:820px) {
+            h1 {
+                font-size: 28px
+            }
+
+            h2 {
+                font-size: 24px
+            }
+
+            .brand {
+                min-width: auto
+            }
+
+            .nav {
+                min-width: auto
+            }
+
+            .cols2 {
+                grid-template-columns: 1fr
+            }
+        }
+
+        .habit {
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 12px;
+            margin-top: 10px;
+            background: linear-gradient(180deg, #FFFFFF, #F7FAFF);
+        }
+
+        .habitHead {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .miniBtn {
+            padding: 8px 10px;
+            border-radius: 14px;
+            font-size: 12px;
+            font-weight: 1000;
+        }
+
+        .habitBody {
+            margin-top: 10px;
+            display: none;
+            padding: 10px 12px;
+            border-radius: 16px;
+            border: 1px dashed rgba(96, 112, 153, .35);
+            background: rgba(79, 70, 229, .06);
+            color: var(--muted);
+            font-weight: 800;
+            line-height: 1.5;
+        }
+
+        .habitBody.show {
+            display: block;
+        }
+
+        .habitBody p {
+            margin: 6px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Access Gate -->
+<div id="accessGate" style="
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  background:
+    radial-gradient(1200px 520px at 10% 0%, rgba(6,182,212,.18), transparent 60%),
+    radial-gradient(1200px 520px at 90% 0%, rgba(79,70,229,.16), transparent 55%),
+    linear-gradient(180deg, #F7FAFF, #F4F7FF 40%, #F7FAFF);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+">
+  <div class="card" style="max-width:420px;width:100%;text-align:center">
+    <div class="kicker">🔐 Akses Materi</div>
+    <h2>Masukkan Kode Akses</h2>
+    <p>Masukkan kode dari guru untuk membuka materi ini.</p>
+
+    <input
+      id="accessInput"
+      class="input"
+      placeholder=""
+      style="text-transform:uppercase;text-align:center;font-weight:1000;letter-spacing:.08em"
+    />
+
+    <div class="miniRow" style="justify-content:center">
+      <button class="btn primary" id="accessBtn">Buka Materi</button>
+    </div>
+
+    <div class="feedback fbBad" id="accessError" style="display:none;margin-top:12px">
+      ❌ Kode salah. Coba lagi ya.
+    </div>
+  </div>
+</div>
+
+    <div class="deck">
+        <!-- Topbar -->
+        <div class="topbar">
+            <div class="brand">
+                <div class="logo">32</div>
+                <div class="brandText">
+                    <b>UOB My Digital Space</b>
+                    <span>Upper Primary • Sesi 32</span>
+                </div>
+            </div>
+
+            <div class="centerInfo">
+                <div class="pill" id="slideTitle">—</div>
+                <div class="pill">Navigasi: <span class="kbd">←</span> <span class="kbd">→</span> atau tombol</div>
+            </div>
+
+            <div class="nav">
+                <button class="btn secondary" id="prevBtn" type="button">← Sebelumnya</button>
+                <button class="btn primary" id="nextBtn" type="button">Berikutnya →</button>
+            </div>
+        </div>
+
+        <!-- Stage -->
+        <div class="stage">
+            <main class="slide" id="slide">
+                <div class="slideInner" id="content"></div>
+            </main>
+        </div>
+
+        <!-- Progress -->
+        <div class="progressWrap">
+            <div class="page" id="page">Slide 1 / 1</div>
+            <div class="bar">
+                <div class="fill" id="fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --------- Slide Data (Sesi 32) ----------
+        const slides = [
+            {
+                title: "Pembuka",
+                html: `
+          <div class="kicker">🛡️ Sesi 32 • Perilaku Aman di Dunia Digital</div>
+          <h1>Belajar aman saat pakai internet</h1>
+          <p>Hari ini kita latihan 2 hal: <b>menilai situasi</b> (aman atau tidak aman) dan <b>jaga password</b>.</p>
+
+          <div class="grid cols2">
+            <div class="card">
+              <h3>📌 Pertanyaan cepat</h3>
+              <p>Siapa yang hari ini sudah pegang HP / tablet / laptop?</p>
+              <div class="choices" data-poll="q1">
+                <div class="choice" data-poll-choice="angkat">🙋 Aku</div>
+                <div class="choice" data-poll-choice="belum">🙂 Belum</div>
+              </div>
+              <div class="feedback" data-poll-feedback="q1"></div>
+            </div>
+            <div class="card">
+              <h3>🎯 Tujuan kita</h3>
+              <ul class="list">
+                <li>Bisa bedakan <b>aman</b> dan <b>tidak aman</b> dari contoh situasi.</li>
+                <li>Tahu apa yang harus dilakukan kalau ada hal mencurigakan.</li>
+                <li>Tahu password yang <b>lebih aman</b>.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="hint">
+            <b>Catatan:</b> Kamu tidak perlu cerita password kamu ya. Kita latihan pakai contoh saja.
+          </div>
+        `
+            },
+
+            {
+                title: "Kenapa harus aman?",
+                html: `
+          <div class="kicker">📌 Kenapa ini penting?</div>
+          <h2>Karena internet itu ramai… dan tidak semua orang baik</h2>
+          <div class="big3">
+            <div class="bigItem">
+              <div class="dot">1</div>
+              <div>
+                <b>Hal buruk bisa menyebar cepat</b>
+                <span>Sekali terkirim, bisa dibaca banyak orang.</span>
+              </div>
+            </div>
+            <div class="bigItem">
+              <div class="dot">2</div>
+              <div>
+                <b>Jejak digital bisa lama</b>
+                <span>Pesan/komentar/foto bisa sulit dihapus.</span>
+              </div>
+            </div>
+            <div class="bigItem">
+              <div class="dot">3</div>
+              <div>
+                <b>Data pribadi itu berharga</b>
+                <span>Kalau bocor, bisa disalahgunakan.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px">
+            <h3>🤔 Tanya cepat</h3>
+            <p>Kalau ada komentar jahat sudah terkirim, bisa hilang sendiri begitu saja?</p>
+            <div class="choices" data-quiz="q_jejak">
+              <div class="choice" data-answer="wrong">Ya, hilang sendiri</div>
+              <div class="choice" data-answer="right">Tidak, bisa tersimpan / tersebar</div>
+            </div>
+            <div class="feedback" data-quiz-feedback="q_jejak"></div>
+          </div>
+        `
+            },
+
+            {
+                title: "Apa itu perilaku aman?",
+                html: `
+    <div class="kicker">🧠 Konsep</div>
+    <h2>Apa itu perilaku aman?</h2>
+    <p>Perilaku aman itu kebiasaan yang bikin kita <b>selamat</b> dan <b>tidak mudah tertipu</b> saat pakai internet.</p>
+
+    <div class="grid cols2">
+      <div class="card">
+        <h3>🛡️ Perilaku aman itu seperti…</h3>
+        <ul class="list">
+          <li><b>Seperti menyeberang jalan:</b> lihat kiri–kanan dulu, tidak langsung lari.</li>
+          <li><b>Seperti mengunci pintu:</b> tidak kasih kunci (password) ke orang lain.</li>
+          <li><b>Seperti pilih teman:</b> tidak semua orang di internet bisa dipercaya.</li>
+        </ul>
+
+        <div class="hint" style="margin-top:12px">
+          Kalau ragu… <b>BERHENTI</b> dulu, lalu <b>TANYA</b> orang dewasa.
+        </div>
+
+        <div class="miniRow" style="margin-top:10px">
+          <span class="tag">Berhenti</span>
+          <span class="tag">Pikir</span>
+          <span class="tag">Tanya</span>
+          <span class="tag">Lapor</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>🔎 Bedanya aman vs tidak aman</h3>
+        <div class="grid" style="margin-top:10px">
+          <div class="card" style="box-shadow:none">
+            <b>✅ AMAN</b>
+            <ul class="list" style="margin-top:6px">
+              <li>Berhenti dulu sebelum klik</li>
+              <li>Tidak membagikan data pribadi</li>
+              <li>Lapor kalau ada yang aneh</li>
+            </ul>
+          </div>
+          <div class="card" style="box-shadow:none">
+            <b>❌ TIDAK AMAN</b>
+            <ul class="list" style="margin-top:6px">
+              <li>Langsung klik link hadiah</li>
+              <li>Kasih nomor HP / alamat</li>
+              <li>Balas ejekan dengan marah</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <h3 style="margin:0 0 8px">🎯 Cek cepat</h3>
+          <p style="margin:0 0 10px">Ada pesan: “Klik link ini sekarang biar dapat hadiah.” Kamu harus…</p>
+          <div class="choices" data-quiz="konsep1">
+            <div class="choice" data-answer="wrong">Klik cepat biar nggak ketinggalan</div>
+            <div class="choice" data-answer="right">Berhenti dulu, jangan klik, tanya orang dewasa</div>
+          </div>
+          <div class="feedback" data-quiz-feedback="konsep1"></div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <h3>🎯 Target hari ini</h3>
+          <ul class="list">
+            <li>Latihan “Aman / Tidak Aman” (jawab bareng)</li>
+            <li>Latihan “Password kuat” (pakai contoh)</li>
+          </ul>
+          <p style="margin-top:10px"><b>Siap?</b> Kita mulai!</p>
+        </div>
+      </div>
+    </div>
+  `
+            },
+
+
+            {
+                title: "8 kebiasaan aman",
+                html: `
+    <div class="kicker">🧩 Gambaran besar</div>
+    <h2>8 kebiasaan aman di dunia digital</h2>
+    <p>Kita tidak perlu hafal semua sekarang. Yang penting <b>paham maksudnya</b> lewat contoh.</p>
+
+    <div class="grid cols2">
+      <div class="card">
+        <h3>🟦 Saat menerima pesan / link</h3>
+
+        <div class="habit">
+          <div class="habitHead">
+            <b>1) Tidak asal klik link / file</b>
+            <button class="btn secondary miniBtn" data-toggle="h1">Lihat Contoh</button>
+          </div>
+          <div class="habitBody" id="h1">
+            <p><b>Kenapa?</b> Link bisa jebakan atau virus.</p>
+            <p><b>Contoh:</b> “Kamu menang hadiah! Klik link ini!” (dari akun asing)</p>
+            <p><b>Yang aman:</b> jangan klik, tanya orang dewasa.</p>
+          </div>
+        </div>
+
+        <div class="habit">
+          <div class="habitHead">
+            <b>2) Cek kalau ada yang minta data pribadi</b>
+            <button class="btn secondary miniBtn" data-toggle="h2">Lihat Contoh</button>
+          </div>
+          <div class="habitBody" id="h2">
+            <p><b>Data pribadi</b> misalnya: alamat rumah, nomor HP, password.</p>
+            <p><b>Contoh:</b> “Kirim alamat rumah biar hadiah dikirim.”</p>
+            <p><b>Yang aman:</b> jangan kasih, lapor orang tua/guru.</p>
+          </div>
+        </div>
+
+        <div class="habit">
+          <div class="habitHead">
+            <b>3) Laporkan hal mencurigakan</b>
+            <button class="btn secondary miniBtn" data-toggle="h3">Lihat Contoh</button>
+          </div>
+          <div class="habitBody" id="h3">
+            <p><b>Kenapa?</b> Biar kamu tidak sendirian dan bisa dibantu.</p>
+            <p><b>Contoh:</b> ada orang mengejek / mengancam / minta password.</p>
+            <p><b>Yang aman:</b> simpan bukti (screenshot) lalu lapor.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>🟩 Jaga akun & perangkat</h3>
+
+        <div class="habit">
+          <div class="habitHead">
+            <b>4) Jaga password</b>
+            <button class="btn secondary miniBtn" data-toggle="h4">Lihat Contoh</button>
+          </div>
+          <div class="habitBody" id="h4">
+            <p><b>Password</b> itu kunci akun.</p>
+            <p><b>Contoh tidak aman:</b> pakai <i>nama sendiri</i> atau <i>123456</i>.</p>
+            <p><b>Yang aman:</b> campur huruf + angka, dan jangan dibagikan.</p>
+          </div>
+        </div>
+
+        <div class="habit">
+          <div class="habitHead">
+            <b>5) Jaga perangkat di tempat umum</b>
+            <button class="btn secondary miniBtn" data-toggle="h5">Lihat Contoh</button>
+          </div>
+          <div class="habitBody" id="h5">
+            <p><b>Kenapa?</b> Biar tidak hilang/diambil orang atau dilihat orang lain.</p>
+            <p><b>Contoh:</b> HP ditinggal di meja kantin.</p>
+            <p><b>Yang aman:</b> simpan di tas dan kunci layar.</p>
+          </div>
+        </div>
+
+        <div class="habit">
+          <div class="habitHead">
+            <b>6) Update aplikasi</b>
+            <button class="btn secondary miniBtn" data-toggle="h6">Lihat Contoh</button>
+          </div>
+          <div class="habitBody" id="h6">
+            <p><b>Kenapa?</b> Update sering berisi perbaikan keamanan.</p>
+            <p><b>Contoh:</b> aplikasi minta update karena ada bug.</p>
+            <p><b>Yang aman:</b> minta izin orang tua/guru untuk update.</p>
+          </div>
+        </div>
+
+        <div class="habit">
+          <div class="habitHead">
+            <b>7) Backup file</b>
+            <button class="btn secondary miniBtn" data-toggle="h7">Lihat Contoh</button>
+          </div>
+          <div class="habitBody" id="h7">
+            <p><b>Backup</b> artinya simpan cadangan.</p>
+            <p><b>Contoh:</b> tugas sekolah hilang karena HP error.</p>
+            <p><b>Yang aman:</b> simpan di tempat cadangan (misal drive/perangkat lain).</p>
+          </div>
+        </div>
+
+        <div class="habit">
+          <div class="habitHead">
+            <b>8) Hapus data penting kalau perlu</b>
+            <button class="btn secondary miniBtn" data-toggle="h8">Lihat Contoh</button>
+          </div>
+          <div class="habitBody" id="h8">
+            <p><b>Kenapa?</b> Supaya data pribadi tidak tersimpan sembarangan.</p>
+            <p><b>Contoh:</b> kamu login di komputer umum.</p>
+            <p><b>Yang aman:</b> logout, hapus riwayat bila perlu, jangan simpan password.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h3>🎯 Fokus kita hari ini</h3>
+      <div class="miniRow">
+        <span class="tag">Tidak asal klik</span>
+        <span class="tag">Tidak kasih data pribadi</span>
+        <span class="tag">Laporkan</span>
+        <span class="tag">Password aman</span>
+      </div>
+      <p style="margin-top:10px"><b>Tips:</b> Coba klik tombol “Lihat Contoh” di atas ya.</p>
+    </div>
+  `
+            }
+            ,
+
+            // Activity 1 intro
+            {
+                title: "Aktivitas 1",
+                html: `
+          <div class="kicker">🎯 Aktivitas Utama 1</div>
+          <h2>Aman atau Tidak Aman?</h2>
+          <p>Kita lihat situasi. Kalian jawab bareng: <b>AMAN</b> atau <b>TIDAK AMAN</b>.</p>
+
+          <div class="card">
+            <h3>Aturan main</h3>
+            <ul class="list">
+              <li>Lihat situasinya</li>
+              <li>Pilih jawaban</li>
+              <li>Lihat penjelasannya</li>
+            </ul>
+          </div>
+
+          <div class="hint">
+            Tips: Kalau ada yang “buru-buru” atau “minta data”, biasanya itu tanda bahaya.
+          </div>
+        `
+            },
+
+            // Scenario 1 (expanded)
+            {
+                title: "Situasi 1",
+                html: `
+    <div class="kicker">📩 Situasi 1</div>
+    <h2>“Kamu menang hadiah! Klik link ini ya 🎁”</h2>
+    <p>Pesan datang dari <b>akun tidak dikenal</b>. Yuk kita cek bareng.</p>
+
+    <!-- Fake chat bubble -->
+    <div class="card">
+      <h3>📱 Pesan yang kamu terima</h3>
+      <div class="chat">
+        <div class="bubble">
+          <div class="from">akun_hadiah_gratis</div>
+          <div class="msg">
+            Selamat! Kamu menang hadiah 🎁<br/>
+            <b>KLIK SEKARANG</b> biar hadiahnya tidak hangus:<br/>
+            <span class="link">http://hadiah-gratis-cek-sekarang.xyz</span>
+          </div>
+          <div class="meta">baru saja</div>
+        </div>
+      </div>
+
+      <div class="hint" style="margin-top:12px">
+        Ingat: pesan yang <b>buru-buru</b> dan pakai kata “klik sekarang” sering jadi jebakan.
+      </div>
+    </div>
+
+    <!-- Q1 -->
+    <div class="card" style="margin-top:14px">
+      <h3>1) Ini AMAN atau TIDAK AMAN?</h3>
+      <div class="choices" data-quiz="s1">
+        <div class="choice" data-answer="wrong">✅ AMAN</div>
+        <div class="choice" data-answer="right">❌ TIDAK AMAN</div>
+      </div>
+      <div class="feedback" data-quiz-feedback="s1"></div>
+    </div>
+
+    <!-- Tanda Bahaya -->
+    <div class="card" style="margin-top:14px">
+      <h3>2) Tanda bahaya apa yang kamu lihat?</h3>
+      <p>Pilih yang menurutmu tanda bahaya. (Boleh lebih dari satu)</p>
+
+      <div class="checks" data-multi="s1_signs">
+        <label class="check"><input type="checkbox" data-key="unknown"> Dari akun tidak dikenal</label>
+        <label class="check"><input type="checkbox" data-key="rush"> Disuruh buru-buru “klik sekarang”</label>
+        <label class="check"><input type="checkbox" data-key="weird"> Linknya aneh / tidak jelas</label>
+        <label class="check"><input type="checkbox" data-key="safe"> Ditanya hobi dan warna favorit</label>
+      </div>
+
+      <div class="miniRow" style="margin-top:12px">
+        <button class="btn secondary miniBtn" data-check-multi="s1_signs">Periksa</button>
+        <span class="tag" id="s1multiTag" style="display:none"></span>
+      </div>
+
+      <div class="feedback" id="s1multiFb" style="display:none"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="card" style="margin-top:14px">
+      <h3>3) Kalau kamu dapat pesan seperti ini, kamu harus…</h3>
+      <div class="choices" data-quiz="s1_action">
+        <div class="choice" data-answer="wrong">Klik linknya biar cepat dapat hadiah</div>
+        <div class="choice" data-answer="wrong">Balas: “Aku mau hadiah!”</div>
+        <div class="choice" data-answer="right">Jangan klik, tutup pesan, lalu tanya/lapor orang dewasa</div>
+      </div>
+      <div class="feedback" data-quiz-feedback="s1_action"></div>
+    </div>
+
+    <!-- Explanation (deeper) -->
+    <div class="card" style="margin-top:14px">
+      <h3>Kenapa ini berbahaya?</h3>
+      <ul class="list">
+        <li>Link bisa membawa ke halaman jebakan (phishing) untuk mencuri akun.</li>
+        <li>Bisa ada virus / aplikasi yang membuat HP/laptop bermasalah.</li>
+        <li>Kalau sudah klik, kadang muncul pertanyaan data pribadi.</li>
+      </ul>
+      <div class="hint" style="margin-top:10px">
+        Kalimat aman yang bisa kamu ingat: <b>“Kalau ragu, jangan klik.”</b>
+      </div>
+    </div>
+  `
+            },
+
+
+            // Scenario 2 (expanded)
+            {
+                title: "Situasi 2",
+                html: `
+    <div class="kicker">📩 Situasi 2</div>
+    <h2>“Kirim nomor HP dan alamat rumah ya”</h2>
+    <p>Orangnya baru kamu kenal di internet. Yuk kita cek pelan-pelan.</p>
+
+    <!-- Fake chat bubble -->
+    <div class="card">
+      <h3>📱 Pesan yang kamu terima</h3>
+      <div class="chat">
+        <div class="bubble">
+          <div class="from">temanBaru_459</div>
+          <div class="msg">
+            Hai! Aku teman baru 😊<br/>
+            Biar kita bisa chat lebih gampang, kirim <b>nomor HP</b> kamu ya.<br/>
+            Sekalian <b>alamat rumah</b> biar aku bisa ngirim hadiah kecil 🎁
+          </div>
+          <div class="meta">baru saja</div>
+        </div>
+      </div>
+
+      <div class="hint" style="margin-top:12px">
+        Kalau orang baru kenal minta <b>nomor HP</b> atau <b>alamat</b>, itu tanda bahaya 🚨
+      </div>
+    </div>
+
+    <!-- Q1 -->
+    <div class="card" style="margin-top:14px">
+      <h3>1) Ini AMAN atau TIDAK AMAN?</h3>
+      <div class="choices" data-quiz="s2">
+        <div class="choice" data-answer="wrong">✅ AMAN</div>
+        <div class="choice" data-answer="right">❌ TIDAK AMAN</div>
+      </div>
+      <div class="feedback" data-quiz-feedback="s2"></div>
+    </div>
+
+    <!-- Mini: Data pribadi -->
+    <div class="card" style="margin-top:14px">
+      <h3>2) Mana yang termasuk data pribadi?</h3>
+      <p>Pilih yang <b>tidak boleh dibagikan sembarangan</b>. (Boleh lebih dari satu)</p>
+
+      <div class="checks" data-multi="s2_private">
+        <label class="check"><input type="checkbox" data-key="hp"> Nomor HP</label>
+        <label class="check"><input type="checkbox" data-key="alamat"> Alamat rumah</label>
+        <label class="check"><input type="checkbox" data-key="pw"> Password</label>
+        <label class="check"><input type="checkbox" data-key="warna"> Warna favorit</label>
+      </div>
+
+      <div class="miniRow" style="margin-top:12px">
+        <button class="btn secondary miniBtn" data-check-multi="s2_private">Periksa</button>
+        <span class="tag" id="s2multiTag" style="display:none"></span>
+      </div>
+
+      <div class="feedback" id="s2multiFb" style="display:none"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="card" style="margin-top:14px">
+      <h3>3) Apa yang paling aman kamu lakukan?</h3>
+      <div class="choices" data-quiz="s2_action">
+        <div class="choice" data-answer="wrong">Kirim saja biar cepat</div>
+        <div class="choice" data-answer="wrong">Kirim nomor HP saja, alamat jangan</div>
+        <div class="choice" data-answer="right">Tolak, jangan kirim data, lalu lapor orang tua/guru</div>
+      </div>
+      <div class="feedback" data-quiz-feedback="s2_action"></div>
+    </div>
+
+    <!-- Deeper explanation -->
+    <div class="card" style="margin-top:14px">
+      <h3>Kenapa ini berbahaya?</h3>
+      <ul class="list">
+        <li><b>Nomor HP</b> dan <b>alamat rumah</b> bisa dipakai orang untuk mengganggu atau menipu.</li>
+        <li>Orang asing bisa pura-pura baik supaya kita percaya.</li>
+        <li>Kalau data sudah tersebar, susah ditarik kembali.</li>
+      </ul>
+
+      <div class="hint" style="margin-top:10px">
+        Kalimat penolakan yang aman: <b>“Maaf, aku tidak bisa membagikan data pribadi.”</b>
+      </div>
+    </div>
+  `
+            },
+
+
+            // Scenario 3 (expanded)
+            {
+                title: "Situasi 3",
+                html: `
+    <div class="kicker">💬 Situasi 3</div>
+    <h2>Ada komentar mengejek di postinganmu</h2>
+    <p>Misalnya ada yang menulis kata-kata kasar atau membuat kamu sedih.</p>
+
+    <!-- Fake comment -->
+    <div class="card">
+      <h3>📱 Contoh komentar</h3>
+
+      <div class="chat">
+        <div class="bubble" style="max-width:820px">
+          <div class="from">orangRandom</div>
+          <div class="msg">
+            Ih kamu cupu 😡<br/>
+            Kamu nggak pantes ikut ini.
+          </div>
+          <div class="meta">1 menit yang lalu</div>
+        </div>
+      </div>
+
+      <div class="hint" style="margin-top:12px">
+        Ini termasuk <b>cyberbullying</b> (bullying lewat internet).
+      </div>
+    </div>
+
+    <!-- Q1 -->
+    <div class="card" style="margin-top:14px">
+      <h3>1) Pilih yang paling aman</h3>
+      <div class="choices" data-quiz="s3">
+        <div class="choice" data-answer="wrong">Balas lebih kasar</div>
+        <div class="choice" data-answer="wrong">Diam saja dan tidak cerita ke siapa pun</div>
+        <div class="choice" data-answer="right">Jangan balas, simpan bukti, lalu lapor</div>
+      </div>
+      <div class="feedback" data-quiz-feedback="s3"></div>
+    </div>
+
+    <!-- Step order activity -->
+    <div class="card" style="margin-top:14px">
+      <h3>2) Urutkan langkah aman</h3>
+      <p>Klik urutan yang paling benar (1 → 2 → 3).</p>
+
+      <div class="choices" data-order="s3_order">
+        <div class="choice" data-step="bukti">Screenshot / simpan bukti</div>
+        <div class="choice" data-step="lapor">Lapor ke orang tua/guru</div>
+        <div class="choice" data-step="stop">Jangan balas dulu</div>
+      </div>
+
+      <div class="miniRow" style="margin-top:12px">
+        <button class="btn secondary miniBtn" data-check-order="s3_order">Periksa</button>
+        <button class="btn ghost miniBtn" data-reset-order="s3_order">Ulangi</button>
+        <span class="tag" id="s3orderTag" style="display:none"></span>
+      </div>
+
+      <div class="feedback" id="s3orderFb" style="display:none"></div>
+    </div>
+
+    <!-- Deeper explanation -->
+    <div class="card" style="margin-top:14px">
+      <h3>Kenapa jangan dibalas?</h3>
+      <ul class="list">
+        <li>Kalau dibalas, masalah bisa makin besar.</li>
+        <li>Orang yang mengejek bisa makin semangat.</li>
+        <li>Lebih aman: <b>jaga diri dulu</b>, lalu minta bantuan.</li>
+      </ul>
+
+      <div class="card" style="margin-top:10px; box-shadow:none">
+        <h3 style="margin:0 0 8px">Kalimat yang bisa kamu pakai</h3>
+        <p style="margin:0; color:var(--muted); font-weight:850; line-height:1.5">
+          “Aku tidak nyaman. Aku akan lapor guru/orang tua dulu.”
+        </p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h3>Langkah aman (ingat 3 kata)</h3>
+      <div class="miniRow">
+        <span class="tag">Jangan balas</span>
+        <span class="tag">Screenshot</span>
+        <span class="tag">Lapor</span>
+      </div>
+    </div>
+  `
+            },
+
+
+            // Activity 1 recap
+            {
+                title: "Ringkasan Aktivitas 1",
+                html: `
+          <div class="kicker">✅ Ringkasan</div>
+          <h2>Kalau situasinya tidak aman…</h2>
+          <div class="big3">
+            <div class="bigItem">
+              <div class="dot">1</div>
+              <div><b>Jangan klik / jangan jawab</b><span>Berhenti dulu. Jangan buru-buru.</span></div>
+            </div>
+            <div class="bigItem">
+              <div class="dot">2</div>
+              <div><b>Jangan kasih data pribadi</b><span>Alamat rumah, nomor HP, password, dll.</span></div>
+            </div>
+            <div class="bigItem">
+              <div class="dot">3</div>
+              <div><b>Lapor ke orang dewasa</b><span>Orang tua / guru + gunakan fitur blokir/report.</span></div>
+            </div>
+          </div>
+
+          <div class="hint">
+            Kalau ragu… <b>STOP</b> dulu, lalu <b>TANYA</b>.
+          </div>
+        `
+            },
+
+            // Activity 2 intro (expanded)
+            {
+                title: "Aktivitas 2",
+                html: `
+    <div class="kicker">🔑 Aktivitas Utama 2</div>
+    <h2>Password itu kunci rumah digital</h2>
+    <p>Password membantu melindungi akun kita. Kalau password lemah, orang lain bisa “masuk” tanpa izin.</p>
+
+    <div class="grid cols2">
+      <div class="card">
+        <h3>🏠 Bayangkan akun itu rumah</h3>
+        <ul class="list">
+          <li><b>Akun = rumah</b> (tempat simpan hal penting)</li>
+          <li><b>Password = kunci</b> (yang membuka pintu)</li>
+          <li>Kalau kuncinya gampang… orang bisa masuk</li>
+        </ul>
+
+        <div class="hint" style="margin-top:12px">
+          Password yang aman itu seperti kunci yang <b>tidak mudah ditebak</b>.
+        </div>
+
+        <div class="card" style="margin-top:12px; box-shadow:none">
+          <h3 style="margin:0 0 8px">🤔 Contoh gampang</h3>
+          <p style="margin:0; color:var(--muted); font-weight:850; line-height:1.5">
+            Kalau password kamu <b>“123456”</b>, orang bisa menebak dengan cepat karena itu password yang sangat umum.
+          </p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>🔎 Ciri password lemah vs lebih aman</h3>
+
+        <div class="grid" style="margin-top:10px">
+          <div class="card" style="box-shadow:none">
+            <b>❌ Password lemah biasanya…</b>
+            <ul class="list" style="margin-top:6px">
+              <li>Pakai nama sendiri</li>
+              <li>Pakai tanggal lahir</li>
+              <li>Terlalu pendek</li>
+              <li>Mudah ditebak (misal: 111111)</li>
+            </ul>
+          </div>
+
+          <div class="card" style="box-shadow:none">
+            <b>✅ Password lebih aman biasanya…</b>
+            <ul class="list" style="margin-top:6px">
+              <li>Campur huruf + angka (boleh simbol)</li>
+              <li>Tidak pakai data pribadi</li>
+              <li>Tidak sama untuk semua akun</li>
+              <li>Lebih panjang (tidak pendek)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <h3 style="margin:0 0 8px">⚡ Cek cepat</h3>
+          <p style="margin:0 0 10px">Kalimat ini benar atau salah?</p>
+          <p style="margin:0 0 10px; color:var(--muted); font-weight:900">
+            “Aku boleh kasih password ke teman dekatku.”
+          </p>
+          <div class="choices" data-quiz="pw_rule">
+            <div class="choice" data-answer="wrong">Benar</div>
+            <div class="choice" data-answer="right">Salah</div>
+          </div>
+          <div class="feedback" data-quiz-feedback="pw_rule"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h3>⭐ 3 aturan emas password (versi gampang)</h3>
+      <div class="miniRow" style="margin-top:10px">
+        <span class="tag">Jangan dibagikan</span>
+        <span class="tag">Jangan pakai data pribadi</span>
+        <span class="tag">Jangan sama semua akun</span>
+      </div>
+      <p style="margin-top:10px">
+        Nanti kita latihan pakai contoh password (bukan password asli kalian).
+      </p>
+    </div>
+
+    <div class="hint">
+      Kita latihan pakai contoh ya. <b>Jangan tulis password kamu sendiri</b> di sini.
+    </div>
+  `
+            },
+
+
+            {
+                title: "Latihan Password",
+                html: `
+    <div class="kicker">🧪 Latihan</div>
+    <h2>Tantangan Password!</h2>
+    <p>Kita jadi “detektif password”. Nilai kekuatannya dan pilih yang paling aman.</p>
+
+    <!-- Part A: Strength meter -->
+    <div class="card">
+      <h3>Bagian A — Kasih skor (0–5)</h3>
+      <p>Skor <b>0</b> = lemah sekali, skor <b>5</b> = sangat aman.</p>
+
+      <div class="grid cols2" style="margin-top:12px">
+        <div class="card" style="box-shadow:none">
+          <h3 style="margin:0 0 8px">Password: <span class="tag">Andi2014</span></h3>
+          <p style="margin:0 0 10px">Pilih skor kamu:</p>
+          <div class="choices" data-strength="st1">
+            <div class="choice" data-score="0">0</div>
+            <div class="choice" data-score="1">1</div>
+            <div class="choice" data-score="2">2</div>
+            <div class="choice" data-score="3">3</div>
+            <div class="choice" data-score="4">4</div>
+            <div class="choice" data-score="5">5</div>
+          </div>
+          <div class="feedback" data-strength-feedback="st1"></div>
+        </div>
+
+        <div class="card" style="box-shadow:none">
+          <h3 style="margin:0 0 8px">Password: <span class="tag">K4p@l2X</span></h3>
+          <p style="margin:0 0 10px">Pilih skor kamu:</p>
+          <div class="choices" data-strength="st2">
+            <div class="choice" data-score="0">0</div>
+            <div class="choice" data-score="1">1</div>
+            <div class="choice" data-score="2">2</div>
+            <div class="choice" data-score="3">3</div>
+            <div class="choice" data-score="4">4</div>
+            <div class="choice" data-score="5">5</div>
+          </div>
+          <div class="feedback" data-strength-feedback="st2"></div>
+        </div>
+      </div>
+
+      <div class="hint" style="margin-top:12px">
+        Petunjuk: password yang pakai <b>nama/tahun lahir</b> biasanya lebih mudah ditebak.
+      </div>
+    </div>
+
+    <!-- Part B: Pick top 2 -->
+    <div class="card" style="margin-top:14px">
+      <h3>Bagian B — Pilih 2 password yang paling aman</h3>
+      <p>Klik <b>dua</b> pilihan yang menurutmu paling aman.</p>
+
+      <div class="choices" data-pick2="pickTop2">
+        <div class="choice" data-key="p1">Budi123</div>
+        <div class="choice" data-key="p2">Rumahku</div>
+        <div class="choice" data-key="p3">Ayu_2015</div>
+        <div class="choice" data-key="p4">M4ta!9K</div>
+        <div class="choice" data-key="p5">K4p@l2X</div>
+        <div class="choice" data-key="p6">111111</div>
+      </div>
+
+      <div class="miniRow" style="margin-top:12px">
+        <button class="btn secondary miniBtn" data-check-pick2="pickTop2">Periksa</button>
+        <button class="btn ghost miniBtn" data-reset-pick2="pickTop2">Ulangi</button>
+        <span class="tag" id="pick2Tag" style="display:none"></span>
+      </div>
+
+      <div class="feedback" id="pick2Fb" style="display:none"></div>
+    </div>
+
+    <!-- Part C: Fix it -->
+    <div class="card" style="margin-top:14px">
+      <h3>Bagian C — Perbaiki password</h3>
+      <p>Password ini terlalu mudah: <span class="tag">sekolahku</span></p>
+      <p>Pilih versi yang <b>paling aman</b> (tidak pakai info pribadi):</p>
+
+      <div class="choices" data-quiz="fix1">
+        <div class="choice" data-answer="wrong">sekolahku123</div>
+        <div class="choice" data-answer="wrong">SekolahKu</div>
+        <div class="choice" data-answer="right">S@t3l!t9K</div>
+        <div class="choice" data-answer="wrong">kelas6A</div>
+      </div>
+      <div class="feedback" data-quiz-feedback="fix1"></div>
+
+      <div class="hint" style="margin-top:12px">
+        Ingat: <b>jangan pakai</b> nama, sekolah, kelas, atau tahun lahir.
+      </div>
+    </div>
+  `
+            },
+
+
+            // Don't do this (interactive)
+{
+  title: "Jangan pernah lakukan",
+  html: `
+    <div class="kicker">🚫 Penting</div>
+    <h2>3 hal yang tidak boleh</h2>
+    <p>Klik tombol <b>Lihat Contoh</b> untuk tahu alasannya.</p>
+
+    <!-- 3 cards with toggle details -->
+    <div class="grid cols2">
+      <div class="card">
+        <div class="habitHead">
+          <h3 style="margin:0">❌ Jangan kasih password</h3>
+          <button class="btn secondary miniBtn" data-toggle="nd1">Lihat Contoh</button>
+        </div>
+        <p>Ke siapa pun. Termasuk teman.</p>
+        <div class="habitBody" id="nd1">
+          <p><b>Kenapa?</b> Password itu seperti kunci rumah. Kalau dibagi-bagi, pintunya jadi tidak aman.</p>
+          <p><b>Contoh:</b> “Pinjem dulu password kamu ya” → jawab: “Maaf, nggak boleh.”</p>
+          <p><b>Yang aman:</b> jangan kasih, lapor kalau dipaksa.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="habitHead">
+          <h3 style="margin:0">❌ Jangan pakai data pribadi</h3>
+          <button class="btn secondary miniBtn" data-toggle="nd2">Lihat Contoh</button>
+        </div>
+        <p>Nama, tanggal lahir, nama sekolah.</p>
+        <div class="habitBody" id="nd2">
+          <p><b>Kenapa?</b> Data pribadi mudah ditebak oleh orang lain.</p>
+          <p><b>Contoh lemah:</b> “Budi2014”, “SDN01”, “Ayu0606”.</p>
+          <p><b>Yang aman:</b> pakai campuran huruf & angka yang tidak berhubungan dengan data diri.</p>
+        </div>
+      </div>
+
+      <div class="card" style="grid-column:1 / -1">
+        <div class="habitHead">
+          <h3 style="margin:0">❌ Jangan login sembarangan (apalagi di perangkat umum)</h3>
+          <button class="btn secondary miniBtn" data-toggle="nd3">Lihat Contoh</button>
+        </div>
+        <p>Kalau terpaksa, pastikan <b>logout</b> dan jangan simpan password.</p>
+        <div class="habitBody" id="nd3">
+          <p><b>Kenapa?</b> Orang setelah kamu bisa membuka akunmu.</p>
+          <p><b>Contoh:</b> login di komputer umum lalu lupa logout.</p>
+          <p><b>Yang aman:</b> logout, hapus “remember password”, dan tutup akun.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mini game: choose violations -->
+    <div class="card" style="margin-top:14px">
+      <h3>🎯 Mini Game: Pilih 2 yang melanggar aturan</h3>
+      <p>Klik <b>dua</b> pilihan yang termasuk “jangan pernah lakukan”.</p>
+
+      <div class="choices" data-pick2="dontPick2">
+        <div class="choice" data-key="d1">Kasih password ke teman dekat</div>
+        <div class="choice" data-key="d2">Password pakai nama + tahun lahir</div>
+        <div class="choice" data-key="d3">Tanya guru/orang tua saat ragu</div>
+        <div class="choice" data-key="d4">Logout setelah pakai komputer umum</div>
+      </div>
+
+      <div class="miniRow" style="margin-top:12px">
+        <button class="btn secondary miniBtn" data-check-pick2="dontPick2">Periksa</button>
+        <button class="btn ghost miniBtn" data-reset-pick2="dontPick2">Ulangi</button>
+        <span class="tag" id="dont2Tag" style="display:none"></span>
+      </div>
+
+      <div class="feedback" id="dont2Fb" style="display:none"></div>
+    </div>
+
+    <!-- Existing quick quiz -->
+    <div class="card" style="margin-top:14px">
+      <h3>Quiz cepat</h3>
+      <p>Ada yang chat: “Aku admin. Kirim password untuk verifikasi.”</p>
+      <div class="choices" data-quiz="admin">
+        <div class="choice" data-answer="wrong">Kirim saja biar aman</div>
+        <div class="choice" data-answer="right">Tolak + lapor orang tua/guru</div>
+      </div>
+      <div class="feedback" data-quiz-feedback="admin"></div>
+    </div>
+
+    <div class="hint">
+      Kalau ada yang minta password, jawabannya selalu: <b>TIDAK</b>.
+    </div>
+  `
+},
+
+
+            // Summary
+            {
+                title: "Ringkasan",
+                html: `
+          <div class="kicker">⭐ Ringkasan Hari Ini</div>
+          <h2>3 pesan utama</h2>
+
+          <div class="big3">
+            <div class="bigItem">
+              <div class="dot">1</div>
+              <div><b>Jangan asal klik & jawab pesan</b><span>Kalau ragu, berhenti dulu.</span></div>
+            </div>
+            <div class="bigItem">
+              <div class="dot">2</div>
+              <div><b>Jaga data & password</b><span>Data pribadi itu berharga.</span></div>
+            </div>
+            <div class="bigItem">
+              <div class="dot">3</div>
+              <div><b>Lapor kalau ada yang mencurigakan</b><span>Orang tua/guru + blokir/report.</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px">
+            <h3>Mini cek</h3>
+            <p>Kalimat kunci yang benar adalah…</p>
+            <div class="choices" data-quiz="kunci">
+              <div class="choice" data-answer="wrong">Kalau ragu, klik dulu</div>
+              <div class="choice" data-answer="right">Kalau ragu, berhenti dulu lalu tanya</div>
+            </div>
+            <div class="feedback" data-quiz-feedback="kunci"></div>
+          </div>
+        `
+            }
+        ];
+
+        // --------- Deck Engine ----------
+        const content = document.getElementById("content");
+        const slideTitle = document.getElementById("slideTitle");
+        const page = document.getElementById("page");
+        const fill = document.getElementById("fill");
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+
+        let idx = 0;
+
+        function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
+
+        function setProgress() {
+            page.textContent = `Slide ${idx + 1} / ${slides.length}`;
+            fill.style.width = `${((idx + 1) / slides.length) * 100}%`;
+            slideTitle.textContent = slides[idx].title;
+            prevBtn.disabled = idx === 0;
+            nextBtn.disabled = idx === slides.length - 1;
+            prevBtn.style.opacity = idx === 0 ? .55 : 1;
+            nextBtn.style.opacity = idx === slides.length - 1 ? .55 : 1;
+        }
+        
+
+        function render() {
+            content.innerHTML = slides[idx].html;
+            setProgress();
+            wireInteractions();
+        }
+
+        function go(n) {
+            idx = clamp(n, 0, slides.length - 1);
+            render();
+        }
+
+        prevBtn.addEventListener("click", () => go(idx - 1));
+        nextBtn.addEventListener("click", () => go(idx + 1));
+
+        window.addEventListener("keydown", (e) => {
+            if (e.key === "ArrowLeft") go(idx - 1);
+            if (e.key === "ArrowRight") go(idx + 1);
+        });
+
+        // --------- Interactions ----------
+        function showFeedback(el, html, kind) {
+            el.classList.add("show");
+            el.classList.remove("fbOk", "fbBad");
+            if (kind === "ok") el.classList.add("fbOk");
+            if (kind === "bad") el.classList.add("fbBad");
+            el.innerHTML = html;
+        }
+
+        function wireQuiz(groupEl) {
+            const groupId = groupEl.getAttribute("data-quiz");
+            const fb = content.querySelector(`[data-quiz-feedback="${groupId}"]`);
+            const choices = [...groupEl.querySelectorAll(".choice")];
+
+            choices.forEach(ch => {
+                ch.addEventListener("click", () => {
+                    choices.forEach(c => c.classList.remove("active", "ok", "bad"));
+                    ch.classList.add("active");
+                    const ok = ch.getAttribute("data-answer") === "right";
+
+                    if (ok) {
+                        ch.classList.add("ok");
+                        showFeedback(fb,
+                            "✅ <b>Benar!</b> Ini pilihan yang aman.",
+                            "ok"
+                        );
+                    } else {
+                        ch.classList.add("bad");
+                        // Slightly tailored feedback by group
+                        const tips = ({
+                            "s1": "Link dari akun tidak dikenal bisa jebakan. Lebih aman: <b>jangan klik</b> dan <b>lapor</b>.",
+                            "s2": "Alamat & nomor HP itu data pribadi. Lebih aman: <b>jangan bagikan</b>.",
+                            "s2_action": "Kalau diminta data pribadi, tindakan aman: <b>tolak</b> dan <b>lapor orang dewasa</b>.",
+                            "s3": "Kalau ada ejekan, jangan dibalas. <b>Simpan bukti</b> lalu <b>lapor</b>.",
+                            "pw1": "Password lebih aman biasanya tidak mudah ditebak (campur huruf+angka).",
+                            "pw2": "Angka urut itu mudah ditebak. Lebih aman pakai campuran huruf/angka/simbol.",
+                            "pw3": "Jangan pakai info yang mudah ditebak (misal nama sekolah).",
+                            "admin": "Admin sungguhan tidak akan minta password. Kalau ada yang minta, <b>tolak</b>.",
+                            "kunci": "Kalau ragu: <b>berhenti dulu</b>, lalu <b>tanya orang dewasa</b>."
+                        })[groupId] || "Coba pikirkan: apakah ini melindungi data dan diri kamu?";
+
+                        showFeedback(fb,
+                            `⚠️ <b>Belum tepat.</b> ${tips}`,
+                            "bad"
+                        );
+                    }
+                });
+            });
+        }
+
+        function wirePoll(groupEl) {
+            const pollId = groupEl.getAttribute("data-poll");
+            const fb = content.querySelector(`[data-poll-feedback="${pollId}"]`);
+            const choices = [...groupEl.querySelectorAll(".choice")];
+
+            choices.forEach(ch => {
+                ch.addEventListener("click", () => {
+                    choices.forEach(c => c.classList.remove("active"));
+                    ch.classList.add("active");
+                    const v = ch.getAttribute("data-poll-choice");
+                    showFeedback(
+                        fb,
+                        (v === "angkat")
+                            ? "Sip! Hari ini kita latihan supaya makin aman saat pakai perangkat."
+                            : "Oke! Walau belum, kamu tetap perlu tahu aturan aman digital ya.",
+                        "ok"
+                    );
+                });
+            });
+        }
+
+        function wireReflection() {
+            const input = content.querySelector("#refInput");
+            const save = content.querySelector("#saveRef");
+            const tag = content.querySelector("#refSaved");
+            if (!input || !save) return;
+
+            // load if exists
+            const key = "mds_up_s32_ref";
+            const saved = localStorage.getItem(key);
+            if (saved) {
+                input.value = saved;
+                tag.style.display = "inline-flex";
+            }
+
+            save.addEventListener("click", () => {
+                const val = (input.value || "").trim();
+                if (!val) {
+                    tag.style.display = "inline-flex";
+                    tag.textContent = "⚠️ Isi dulu ya";
+                    return;
+                }
+                localStorage.setItem(key, val);
+                tag.style.display = "inline-flex";
+                tag.textContent = "✅ Tersimpan";
+            });
+        }
+
+        function wireToggles() {
+            content.querySelectorAll("[data-toggle]").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const id = btn.getAttribute("data-toggle");
+                    const panel = content.querySelector("#" + id);
+                    if (!panel) return;
+
+                    const isOpen = panel.classList.contains("show");
+                    panel.classList.toggle("show", !isOpen);
+                    btn.textContent = isOpen ? "Lihat Contoh" : "Tutup";
+
+                    // opsional: auto scroll sedikit biar panel kelihatan
+                    if (!isOpen) {
+                        panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                    }
+                });
+            });
+        }
+
+        function wireStrength() {
+            const key = {
+                st1: { best: 1, msg: "⚠️ Ini mudah ditebak karena ada <b>nama</b> dan <b>tahun</b>. Skor amannya rendah." },
+                st2: { best: 5, msg: "✅ Bagus! Ada campuran huruf besar-kecil/angka/simbol dan tidak pakai data pribadi." }
+            };
+
+            content.querySelectorAll("[data-strength]").forEach(group => {
+                const id = group.getAttribute("data-strength");
+                const fb = content.querySelector(`[data-strength-feedback="${id}"]`);
+                const choices = [...group.querySelectorAll(".choice")];
+
+                choices.forEach(ch => {
+                    ch.addEventListener("click", () => {
+                        choices.forEach(c => c.classList.remove("active", "ok", "bad"));
+                        ch.classList.add("active");
+                        const s = Number(ch.getAttribute("data-score"));
+                        const best = key[id]?.best ?? 3;
+
+                        // boleh toleransi 1 angka
+                        const ok = Math.abs(s - best) <= 1;
+
+                        if (ok) {
+                            ch.classList.add("ok");
+                            showFeedback(fb, key[id]?.msg || "✅ Penilaianmu masuk akal!", "ok");
+                        } else {
+                            ch.classList.add("bad");
+                            const hint = id === "st1"
+                                ? "Petunjuk: kalau ada <b>nama/tahun lahir</b>, biasanya skornya rendah."
+                                : "Petunjuk: password aman biasanya campuran huruf+angka+simbol dan lebih panjang.";
+                            showFeedback(fb, `⚠️ Coba cek lagi. ${hint}`, "bad");
+                        }
+                    });
+                });
+            });
+        }
+
+        function wirePick2() {
+            const correct = ["p4", "p5"]; // dua yang paling aman
+
+            function selectedKeys(group) {
+                return [...group.querySelectorAll(".choice.active")].map(x => x.getAttribute("data-key"));
+            }
+
+            content.querySelectorAll("[data-pick2]").forEach(group => {
+                const id = group.getAttribute("data-pick2");
+                const items = [...group.querySelectorAll(".choice")];
+
+                items.forEach(it => {
+                    it.addEventListener("click", () => {
+                        // toggle selection
+                        const isActive = it.classList.contains("active");
+                        if (isActive) {
+                            it.classList.remove("active");
+                            return;
+                        }
+                        // limit 2
+                        const sel = selectedKeys(group);
+                        if (sel.length >= 2) return;
+                        it.classList.add("active");
+                    });
+                });
+            });
+
+            const checkBtn = content.querySelector(`[data-check-pick2="pickTop2"]`);
+            const resetBtn = content.querySelector(`[data-reset-pick2="pickTop2"]`);
+            const tag = content.querySelector("#pick2Tag");
+            const fb = content.querySelector("#pick2Fb");
+
+            if (checkBtn) {
+                checkBtn.addEventListener("click", () => {
+                    const group = content.querySelector(`[data-pick2="pickTop2"]`);
+                    if (!group) return;
+
+                    const sel = selectedKeys(group).sort();
+                    const ok = sel.length === 2 && sel.every((v, i) => v === correct.sort()[i]);
+
+                    if (tag) tag.style.display = "inline-flex";
+                    if (fb) fb.style.display = "block";
+
+                    if (ok) {
+                        if (tag) tag.textContent = "✅ Benar!";
+                        fb.classList.add("show", "fbOk");
+                        fb.classList.remove("fbBad");
+                        fb.innerHTML = "Mantap! Dua yang paling aman adalah yang <b>tidak pakai nama/tahun</b> dan punya <b>campuran karakter</b>.";
+                    } else {
+                        if (tag) tag.textContent = "⚠️ Coba lagi";
+                        fb.classList.add("show", "fbBad");
+                        fb.classList.remove("fbOk");
+                        fb.innerHTML = "Belum pas. Petunjuk: hindari <b>nama</b>, <b>tahun lahir</b>, dan angka yang mudah seperti <b>111111</b>.";
+                    }
+                });
+            }
+
+            if (resetBtn) {
+                resetBtn.addEventListener("click", () => {
+                    const group = content.querySelector(`[data-pick2="pickTop2"]`);
+                    if (!group) return;
+
+                    group.querySelectorAll(".choice").forEach(it => it.classList.remove("active"));
+
+                    if (tag) { tag.style.display = "none"; tag.textContent = ""; }
+                    if (fb) {
+                        fb.style.display = "none";
+                        fb.classList.remove("show", "fbOk", "fbBad");
+                        fb.innerHTML = "";
+                    }
+                });
+            }
+        }
+
+        function wirePick2Generic(){
+  const answerKey = {
+    pickTop2: ["p4","p5"],        // dari slide password challenge (kalau masih dipakai)
+    dontPick2: ["d1","d2"]        // ✅ yang melanggar aturan
+  };
+
+  function selectedKeys(group){
+    return [...group.querySelectorAll(".choice.active")].map(x=>x.getAttribute("data-key"));
+  }
+
+  // handle click with limit 2
+  content.querySelectorAll("[data-pick2]").forEach(group=>{
+    const id = group.getAttribute("data-pick2");
+    const items = [...group.querySelectorAll(".choice")];
+
+    items.forEach(it=>{
+      it.addEventListener("click", ()=>{
+        const isActive = it.classList.contains("active");
+        if(isActive){ it.classList.remove("active"); return; }
+        const sel = selectedKeys(group);
+        if(sel.length >= 2) return;
+        it.classList.add("active");
+      });
+    });
+  });
+
+  // check buttons
+  content.querySelectorAll("[data-check-pick2]").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const id = btn.getAttribute("data-check-pick2");
+      const group = content.querySelector(`[data-pick2="${id}"]`);
+      if(!group) return;
+
+      const correct = (answerKey[id] || []).slice().sort();
+      const sel = selectedKeys(group).slice().sort();
+
+      const ok = sel.length===2 && sel.every((v,i)=>v===correct[i]);
+
+      // choose tag+fb depending on id
+      const tag = content.querySelector(id==="dontPick2" ? "#dont2Tag" : "#pick2Tag");
+      const fb  = content.querySelector(id==="dontPick2" ? "#dont2Fb"  : "#pick2Fb");
+
+      if(tag) tag.style.display="inline-flex";
+      if(fb) fb.style.display="block";
+
+      if(ok){
+        if(tag) tag.textContent="✅ Benar!";
+        fb.classList.add("show","fbOk");
+        fb.classList.remove("fbBad");
+        fb.innerHTML = (id==="dontPick2")
+          ? "Mantap! Dua yang melanggar aturan adalah: <b>kasih password</b> dan <b>pakai nama+tahun</b>."
+          : "Mantap! Kamu memilih dua password yang paling aman.";
+      }else{
+        if(tag) tag.textContent="⚠️ Coba lagi";
+        fb.classList.add("show","fbBad");
+        fb.classList.remove("fbOk");
+        fb.innerHTML = (id==="dontPick2")
+          ? "Belum pas. Petunjuk: yang dilarang itu yang berhubungan dengan <b>password</b> dibagikan atau <b>data pribadi</b> dipakai."
+          : "Belum pas. Petunjuk: hindari nama/tahun dan angka mudah.";
+      }
+    });
+  });
+
+  // reset buttons
+  content.querySelectorAll("[data-reset-pick2]").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const id = btn.getAttribute("data-reset-pick2");
+      const group = content.querySelector(`[data-pick2="${id}"]`);
+      if(!group) return;
+
+      group.querySelectorAll(".choice").forEach(it=>it.classList.remove("active"));
+
+      const tag = content.querySelector(id==="dontPick2" ? "#dont2Tag" : "#pick2Tag");
+      const fb  = content.querySelector(id==="dontPick2" ? "#dont2Fb"  : "#pick2Fb");
+
+      if(tag){ tag.style.display="none"; tag.textContent=""; }
+      if(fb){
+        fb.style.display="none";
+        fb.classList.remove("show","fbOk","fbBad");
+        fb.innerHTML="";
+      }
+    });
+  });
+}
+
+
+
+        function wireInteractions() {
+            // quizzes
+            content.querySelectorAll("[data-quiz]").forEach(wireQuiz);
+            // polls
+            content.querySelectorAll("[data-poll]").forEach(wirePoll);
+            // reflection
+            wireReflection();
+
+            // toggles
+            wireToggles();
+
+            // strength meter
+            wireStrength();
+            // pick 2
+            wirePick2();
+            wirePick2Generic();
+        }
+
+        // --------- ACCESS GATE ----------
+const ACCESS_CODE = "RGMDSUP25";
+const gate = document.getElementById("accessGate");
+const input = document.getElementById("accessInput");
+const btn = document.getElementById("accessBtn");
+const err = document.getElementById("accessError");
+
+// force uppercase while typing
+input.addEventListener("input", () => {
+  input.value = input.value.toUpperCase();
+});
+
+// allow Enter key
+input.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") btn.click();
+});
+
+btn.addEventListener("click", () => {
+  const val = (input.value || "").trim().toUpperCase();
+  if (val === ACCESS_CODE) {
+    gate.style.display = "none";
+    render(); // baru render slide setelah lolos
+  } else {
+    err.style.display = "block";
+  }
+});
+
+
+        // init
+       // render();
+    </script>
+</body>
+
+</html>
