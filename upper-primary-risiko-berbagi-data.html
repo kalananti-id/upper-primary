@@ -1,0 +1,1741 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sesi 31 — Aman Berinternet: Risiko Berbagi Data</title>
+
+  <!-- Light, kid-friendly theme (no dark background) -->
+  <style>
+    :root {
+      --bg: #F7FAFF;
+      --card: #FFFFFF;
+      --ink: #1F2A44;
+      --muted: #5B6B8A;
+
+      --brand: #4F46E5;
+      /* indigo */
+      --brand2: #06B6D4;
+      /* cyan */
+      --accent: #F97316;
+      /* orange */
+      --ok: #16A34A;
+      /* green */
+      --bad: #DC2626;
+      /* red */
+      --soft: #EEF2FF;
+      --line: #E5EAF5;
+
+      --shadow: 0 10px 30px rgba(31, 42, 68, .10);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box }
+    html, body { height: 100% }
+
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 500px at 10% 0%, rgba(6, 182, 212, .18), transparent 60%),
+        radial-gradient(1200px 500px at 90% 0%, rgba(79, 70, 229, .16), transparent 55%),
+        linear-gradient(180deg, #F7FAFF, #F4F7FF 40%, #F7FAFF);
+      overflow: hidden;
+    }
+
+    /* Layout */
+    .deck {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+    }
+
+    .badge {
+      font-size: 12px;
+      padding: 6px 10px;
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+    }
+
+    .progressWrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 220px;
+      justify-content: flex-end;
+    }
+
+    .progress {
+      width: 160px;
+      height: 10px;
+      background: #EAF0FF;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+    }
+
+    .bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--brand), var(--brand2));
+      transition: width .25s ease;
+    }
+
+    .slideCount {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 18px 18px;
+    }
+
+    .slide {
+      width: min(1040px, 96vw);
+      height: min(620px, 78vh);
+      background: rgba(255, 255, 255, .7);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slideInner {
+      height: 100%;
+      padding: 26px 28px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .topRow {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    h1, h2 {
+      margin: 0;
+      letter-spacing: -.02em;
+    }
+
+    h1 { font-size: 42px; line-height: 1.05; }
+    h2 { font-size: 30px; line-height: 1.15; }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.45;
+    }
+
+    .pillRow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid var(--line);
+      color: var(--ink);
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .pill small {
+      font-weight: 700;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1.25fr .95fr;
+      gap: 16px;
+      align-items: stretch;
+      margin-top: 6px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .grid3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 6px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: 0 8px 18px rgba(31, 42, 68, .06);
+      min-height: 0;
+      overflow: auto;
+    }
+
+    .card h3 { margin: 0 0 8px; font-size: 18px; }
+
+    .list {
+      margin: 10px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.55;
+    }
+
+    .muted { color: var(--muted) }
+
+    .big {
+      font-size: 22px;
+      color: var(--ink);
+      font-weight: 800;
+      line-height: 1.25;
+    }
+
+    /* Buttons */
+    .btnRow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .btn {
+      border: 0;
+      background: var(--brand);
+      color: #fff;
+      font-weight: 800;
+      font-size: 15px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: transform .06s ease, box-shadow .2s ease, opacity .2s ease;
+      box-shadow: 0 10px 18px rgba(79, 70, 229, .20);
+      user-select: none;
+    }
+
+    .btn:hover { transform: translateY(-1px) }
+    .btn:active { transform: translateY(0px); opacity: .92 }
+
+    .btn.secondary {
+      background: #fff;
+      color: var(--ink);
+      border: 1px solid var(--line);
+      box-shadow: none;
+    }
+
+    .btn.good { background: var(--ok); box-shadow: 0 10px 18px rgba(0, 0, 0, 0.18) }
+    .btn.bad { background: var(--bad); box-shadow: 0 10px 18px rgba(0, 0, 0, 0.16) }
+    .btn.orange { background: var(--accent); box-shadow: 0 10px 18px rgba(249, 115, 22, .18) }
+
+    /* Feedback box */
+    .feedback {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: #F8FAFF;
+      color: var(--muted);
+      font-size: 15px;
+      display: none;
+    }
+
+    .feedback.show { display: block }
+    .feedback strong { color: var(--ink) }
+
+    /* Bottom controls */
+    footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 18px 14px;
+      gap: 10px;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    kbd {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 11px;
+      padding: 4px 6px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      box-shadow: 0 2px 0 rgba(31, 42, 68, .06);
+    }
+
+    /* Slide specific helpers */
+    .hero { display: flex; gap: 16px; flex: 1; min-height: 0; }
+    .heroLeft { flex: 1.15; display: flex; flex-direction: column; justify-content: center; gap: 10px; padding-right: 6px; }
+    .heroRight { flex: 0.85; display: flex; flex-direction: column; justify-content: center; gap: 12px; }
+
+    .bigSticker {
+      background: linear-gradient(135deg, rgba(79, 70, 229, .12), rgba(6, 182, 212, .12));
+      border: 1px dashed rgba(79, 70, 229, .35);
+      border-radius: 22px;
+      padding: 16px;
+    }
+
+    .bigSticker .emoji { font-size: 44px }
+    .bigSticker .title { font-weight: 900; font-size: 18px; margin-top: 4px }
+    .bigSticker .desc { font-size: 14px; color: var(--muted); margin-top: 6px; line-height: 1.45 }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: #fff;
+      border: 1px solid var(--line);
+      font-weight: 800;
+    }
+
+    .tag span { font-size: 13px; color: var(--muted); font-weight: 700 }
+    .tag b { font-size: 14px }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .step {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+      cursor: pointer;
+      transition: transform .06s ease, box-shadow .2s ease, border-color .2s ease;
+      box-shadow: 0 6px 14px rgba(31, 42, 68, .06);
+      user-select: none;
+      min-height: 88px;
+    }
+
+    .step:hover { transform: translateY(-1px) }
+
+    .step.active {
+      border-color: rgba(79, 70, 229, .55);
+      box-shadow: 0 10px 20px rgba(79, 70, 229, .14);
+      background: linear-gradient(180deg, #fff, #F6F8FF);
+    }
+
+    .step .k { font-size: 12px; color: var(--muted); font-weight: 900 }
+    .step .t { font-size: 16px; font-weight: 900; margin-top: 6px }
+    .step .d { font-size: 13px; color: var(--muted); margin-top: 6px; line-height: 1.35 }
+
+    .timerBox {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: #fff;
+      margin-top: 10px;
+    }
+
+    .timerBox .time { font-weight: 1000; font-size: 18px; color: var(--ink); }
+    .timerBox .label { font-size: 13px; color: var(--muted); font-weight: 800; }
+
+    .note {
+      margin-top: 10px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(249, 115, 22, .35);
+      background: rgba(249, 115, 22, .08);
+      color: #8A4B12;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    /* Visibility */
+    .hidden { display: none !important }
+
+    @media (max-width: 900px) {
+      .grid2 { grid-template-columns: 1fr }
+      .steps { grid-template-columns: repeat(2, 1fr) }
+      h1 { font-size: 34px }
+      h2 { font-size: 26px }
+      .slide { height: min(680px, 82vh) }
+    }
+
+    /* =========================
+       ACCESS GATE (Light Theme)
+       ========================= */
+    .gateOverlay {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: rgba(247,250,255,.78);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+    }
+    .gateCard {
+      width: min(520px, 92vw);
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      box-shadow: var(--shadow);
+      padding: 20px 18px;
+    }
+    .gateTop {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .gateLogo{
+      width:44px;height:44px;border-radius:16px;
+      background: linear-gradient(135deg,var(--brand),var(--brand2));
+      display:grid;place-items:center;color:#fff;font-weight:1000;
+      flex:0 0 auto;
+    }
+    .gateTitle{
+      font-weight:1000;
+      letter-spacing:-.02em;
+      font-size:18px;
+      margin:0;
+    }
+    .gateDesc{
+      margin:6px 0 0;
+      color: var(--muted);
+      font-size:14px;
+      line-height:1.45;
+    }
+    .gateInputRow{
+      margin-top:14px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .gateInput{
+      flex:1 1 220px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:12px 14px;
+      font-size:16px;
+      font-weight:900;
+      letter-spacing:.06em;
+      outline:none;
+      background:#FBFCFF;
+      text-transform: uppercase; /* visual uppercase */
+    }
+    .gateInput:focus{
+      border-color: rgba(79,70,229,.55);
+      box-shadow: 0 10px 20px rgba(79,70,229,.12);
+      background:#fff;
+    }
+    .gateHint{
+      margin-top:10px;
+      font-size:12px;
+      color: var(--muted);
+    }
+    .gateError{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(220,38,38,.25);
+      background: rgba(220,38,38,.06);
+      color:#9F1D1D;
+      font-size:13px;
+      display:none;
+    }
+    .gateError.show{display:block}
+    .shake{
+      animation: shake .28s ease-in-out 0s 2;
+    }
+    @keyframes shake{
+      0%{transform: translateX(0)}
+      25%{transform: translateX(-6px)}
+      50%{transform: translateX(6px)}
+      75%{transform: translateX(-4px)}
+      100%{transform: translateX(0)}
+    }
+
+    /* Optional: blur deck when locked */
+    .locked .deck{ filter: blur(2px); pointer-events:none; user-select:none; }
+  </style>
+</head>
+
+<body class="locked">
+  <!-- ACCESS GATE -->
+  <div class="gateOverlay" id="gate">
+    <div class="gateCard" id="gateCard">
+      <div class="gateTop">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="gateLogo">🔒</div>
+          <div>
+            <p class="gateTitle">Masukkan Kode Akses</p>
+            <p class="gateDesc">Agar bisa mulai materi Sesi 31, ketik kode akses dari pengajar.</p>
+          </div>
+        </div>
+        <div class="badge">Upper Primary</div>
+      </div>
+
+      <div class="gateInputRow">
+        <input id="accessInput" class="gateInput" inputmode="latin" autocomplete="off" autocapitalize="characters"
+          placeholder="Ketik kode akses..." aria-label="Kode akses" />
+        <button class="btn" id="unlockBtn">Buka Materi</button>
+      </div>
+
+      <div class="gateError" id="gateError">Kode akses salah. Coba lagi ya 🙂</div>
+    </div>
+  </div>
+
+  <div class="deck">
+    <header>
+      <div class="brand">
+        <div
+          style="width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,var(--brand),var(--brand2));display:grid;place-items:center;color:white;font-weight:1000;">
+          31</div>
+        <div>
+          <div style="font-size:14px;color:var(--muted);font-weight:900;">Sesi 31</div>
+          <div style="font-size:16px;font-weight:1000;">Aman Berinternet</div>
+        </div>
+        <div class="badge">Upper Primary</div>
+      </div>
+
+      <div class="progressWrap">
+        <div class="progress" aria-label="progress">
+          <div class="bar" id="bar"></div>
+        </div>
+        <div class="slideCount" id="count">1 / 14</div>
+      </div>
+    </header>
+
+    <main>
+      <section class="slide" id="slide">
+        <!-- slides will render here -->
+      </section>
+    </main>
+
+    <footer>
+      <div class="hint">
+        Navigasi:
+        <kbd>←</kbd><kbd>→</kbd> atau <kbd>A</kbd><kbd>D</kbd> •
+        <kbd>Space</kbd> = Next •
+        <kbd>R</kbd> = Reset interaksi
+      </div>
+      <div class="btnRow">
+        <button class="btn secondary" id="prevBtn">⬅️ Sebelumnya</button>
+        <button class="btn" id="nextBtn">Lanjut ➡️</button>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // ======================
+    // ACCESS GATE SETTINGS
+    // ======================
+    const ACCESS_CODE = "RGMDSUP25";
+    const ACCESS_KEY = "access_granted_" + ACCESS_CODE;
+
+    const gate = document.getElementById("gate");
+    const gateCard = document.getElementById("gateCard");
+    const accessInput = document.getElementById("accessInput");
+    const unlockBtn = document.getElementById("unlockBtn");
+    const gateError = document.getElementById("gateError");
+
+    let unlocked = false;
+
+    function setUnlocked(state) {
+      unlocked = state;
+      if (state) {
+        document.body.classList.remove("locked");
+        gate.classList.add("hidden");
+      } else {
+        document.body.classList.add("locked");
+        gate.classList.remove("hidden");
+      }
+    }
+
+    function showGateError() {
+      gateError.classList.add("show");
+      gateCard.classList.remove("shake");
+      // reflow for animation
+      void gateCard.offsetWidth;
+      gateCard.classList.add("shake");
+    }
+
+    function tryUnlock() {
+      const val = (accessInput.value || "").trim().toUpperCase();
+      accessInput.value = val; // enforce uppercase in value
+      if (val === ACCESS_CODE) {
+        localStorage.setItem(ACCESS_KEY, "1");
+        gateError.classList.remove("show");
+        setUnlocked(true);
+        // focus deck controls (optional)
+        document.getElementById("nextBtn")?.focus();
+      } else {
+        showGateError();
+      }
+    }
+
+    // Auto uppercase while typing (real value)
+    accessInput.addEventListener("input", (e) => {
+      const start = accessInput.selectionStart;
+      const end = accessInput.selectionEnd;
+      accessInput.value = accessInput.value.toUpperCase();
+      // keep cursor position
+      try { accessInput.setSelectionRange(start, end); } catch (_) {}
+      gateError.classList.remove("show");
+    });
+
+    unlockBtn.addEventListener("click", tryUnlock);
+    accessInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") tryUnlock();
+    });
+
+    // Auto-unlock if previously granted
+    const already = localStorage.getItem(ACCESS_KEY) === "1";
+    setUnlocked(already);
+
+    // ---------- Helpers ----------
+    const $ = (q, el = document) => el.querySelector(q);
+    const $$ = (q, el = document) => [...el.querySelectorAll(q)];
+
+    function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
+
+    // ---------- Slide Templates ----------
+    const slides = [
+      // 1
+      {
+        title: "Aman Berinternet: Risiko Berbagi Data",
+        subtitle: "Hari ini kita belajar cara menjaga data pribadi supaya tetap aman di dunia digital.",
+        render: () => `
+          <div class="slideInner">
+            <div class="topRow">
+              <div>
+                <h1>🛡️ Aman Berinternet</h1>
+                <p class="muted">Risiko Berbagi Data di Lingkungan Digital</p>
+                <div class="pillRow">
+                  <div class="pill">🎯 <span><small>Tujuan:</small> Tahu data pribadi & cara aman</span></div>
+                  <div class="pill">🧠 <span><small>Kunci:</small> Kenali – Tolak – Laporkan – Gunakan fitur</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="hero">
+              <div class="heroLeft">
+                <div class="big">Pertanyaan cepat:</div>
+                <p>Siapa yang pernah main game online, nonton video, atau chat di internet?</p>
+                <div class="btnRow">
+                  <button class="btn orange" data-action="showTip">🙋 Aku pernah</button>
+                  <button class="btn secondary" data-action="showTip">🙂 Belum pernah</button>
+                </div>
+                <div class="feedback" id="fb1">
+                  <strong>Nice!</strong> Hari ini kita belajar supaya aktivitas di internet tetap aman dan nyaman.
+                </div>
+              </div>
+              <div class="heroRight">
+                <div class="bigSticker">
+                  <div class="emoji">🌐</div>
+                  <div class="title">Internet itu luas</div>
+                  <div class="desc">
+                    Kita bisa ketemu banyak orang, tapi tidak semua orang di internet itu kita kenal.
+                  </div>
+                </div>
+                <div class="bigSticker">
+                  <div class="emoji">🔒</div>
+                  <div class="title">Data pribadi itu penting</div>
+                  <div class="desc">
+                    Ada info yang tidak boleh dibagikan sembarangan, supaya tidak disalahgunakan.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `,
+        bind: (root) => {
+          $$("[data-action='showTip']", root).forEach(btn => {
+            btn.addEventListener("click", () => $("#fb1", root).classList.add("show"));
+          });
+        },
+        reset: (root) => { $("#fb1", root).classList.remove("show"); }
+      },
+
+      // 2
+      {
+        title: "Internet = Lapangan Bermain Besar",
+        subtitle: "Menyenangkan, tapi kita harus tetap waspada seperti di dunia nyata.",
+        render: () => `
+          <div class="slideInner">
+            <div class="topRow">
+              <div>
+                <h2>🏟️ Internet = Lapangan Bermain Besar</h2>
+                <p>Di lapangan bermain, kita boleh punya teman. Tapi kita juga harus hati-hati dengan orang asing.</p>
+              </div>
+              <div class="tag"><b>Interaktif</b> <span>angkat tangan / jawab bareng</span></div>
+            </div>
+
+            <div class="grid2">
+              <div class="card">
+                <h3>Bayangkan ini…</h3>
+                <p class="muted">Kamu lagi main di lapangan. Ada orang yang tidak kamu kenal mendekat dan bertanya alamat rumahmu.</p>
+
+                <div class="btnRow">
+                  <button class="btn bad" data-choice="no">Boleh kasih alamat</button>
+                  <button class="btn good" data-choice="yes">Tidak boleh</button>
+                </div>
+
+                <div class="feedback" id="fb2"></div>
+              </div>
+
+              <div class="card">
+                <h3>Kenapa?</h3>
+                <ul class="list">
+                  <li>Orang asing belum tentu punya niat baik</li>
+                  <li>Alamat rumah termasuk <b>data pribadi</b></li>
+                  <li>Kalau ragu, lebih aman <b>tanya orang dewasa</b></li>
+                </ul>
+
+                <div class="note">
+                  <b>Catatan guru (hybrid):</b> Minta siswa jawab dengan angkat tangan / kertas “BOLEH / TIDAK”.
+                </div>
+              </div>
+            </div>
+          </div>
+        `,
+        bind: (root) => {
+          const fb = $("#fb2", root);
+          $$("[data-choice]", root).forEach(btn => {
+            btn.addEventListener("click", () => {
+              const val = btn.getAttribute("data-choice");
+              fb.classList.add("show");
+              if (val === "yes") {
+                fb.innerHTML = "✅ <strong>Benar!</strong> Alamat rumah itu data pribadi. Jangan diberikan ke orang asing.";
+              } else {
+                fb.innerHTML = "⚠️ <strong>Hati-hati.</strong> Memberi alamat ke orang asing bisa berbahaya. Lebih baik menolak dan lapor orang dewasa.";
+              }
+            });
+          });
+        },
+        reset: (root) => { $("#fb2", root).classList.remove("show"); $("#fb2", root).innerHTML = ""; }
+      },
+
+      // 3
+      {
+        title: "Apa Itu Data Pribadi?",
+        subtitle: "Data pribadi = informasi tentang diri kita yang tidak boleh dibagikan sembarangan.",
+        render: () => `
+          <div class="slideInner">
+            <div class="topRow">
+              <div>
+                <h2>🔎 Apa Itu Data Pribadi?</h2>
+                <p>Data pribadi adalah informasi tentang diri kita yang bisa dipakai orang lain untuk hal yang merugikan.</p>
+              </div>
+              <div class="tag"><b>Pendalaman</b> <span>bedakan data pribadi vs data umum</span></div>
+            </div>
+
+            <div class="grid2">
+              <div class="card">
+                <h3>Pilih yang termasuk data pribadi</h3>
+                <p class="muted">Klik semua yang menurutmu <b>data pribadi</b>.</p>
+
+                <div class="btnRow" style="margin-top:12px">
+                  <button class="btn secondary pick" data-correct="1">Nama lengkap</button>
+                  <button class="btn secondary pick" data-correct="1">Alamat rumah</button>
+                  <button class="btn secondary pick" data-correct="1">Nomor telepon</button>
+                  <button class="btn secondary pick" data-correct="1">Nama sekolah</button>
+                  <button class="btn secondary pick" data-correct="1">Foto kartu pelajar</button>
+
+                  <button class="btn secondary pick" data-correct="0">Warna favorit</button>
+                  <button class="btn secondary pick" data-correct="0">Hobi</button>
+                  <button class="btn secondary pick" data-correct="0">Makanan kesukaan</button>
+                </div>
+
+                <div class="btnRow">
+                  <button class="btn" data-action="check">Cek Jawaban</button>
+                  <button class="btn secondary" data-action="clear">Reset</button>
+                </div>
+
+                <div class="feedback" id="fb3"></div>
+              </div>
+
+              <div class="card">
+                <h3>Petunjuk gampang</h3>
+                <ul class="list">
+                  <li>Kalau info itu bisa menunjukkan <b>siapa kamu</b> atau <b>di mana kamu</b>, biasanya itu data pribadi.</li>
+                  <li>Kalau info itu hanya tentang selera (misal makanan), biasanya lebih aman.</li>
+                  <li>Tetap ingat: <b>jangan chat orang asing</b> meski pertanyaannya terlihat “baik”.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        `,
+        bind: (root) => {
+          const fb = $("#fb3", root);
+          const picks = $$(".pick", root);
+
+          picks.forEach(btn => {
+            btn.addEventListener("click", () => {
+              btn.classList.toggle("active");
+              btn.style.borderColor = btn.classList.contains("active") ? "rgba(79,70,229,.55)" : "var(--line)";
+              btn.style.boxShadow = btn.classList.contains("active") ? "0 10px 20px rgba(79,70,229,.14)" : "none";
+              btn.style.transform = btn.classList.contains("active") ? "translateY(-1px)" : "none";
+            });
+          });
+
+          $("[data-action='clear']", root).addEventListener("click", () => {
+            fb.classList.remove("show");
+            fb.innerHTML = "";
+            picks.forEach(b => {
+              b.classList.remove("active");
+              b.style.borderColor = "var(--line)";
+              b.style.boxShadow = "none";
+              b.style.transform = "none";
+            });
+          });
+
+          $("[data-action='check']", root).addEventListener("click", () => {
+            const chosen = picks.filter(b => b.classList.contains("active"));
+            const wrongChosen = chosen.filter(b => b.dataset.correct === "0").length;
+            const missingCorrect = picks.filter(b => b.dataset.correct === "1" && !b.classList.contains("active")).length;
+
+            fb.classList.add("show");
+            if (wrongChosen === 0 && missingCorrect === 0) {
+              fb.innerHTML = "✅ <strong>Hebat!</strong> Kamu bisa membedakan data pribadi dan data umum.";
+            } else {
+              fb.innerHTML = `🧠 <strong>Hampir!</strong> Coba lagi ya. <br>
+                - Kamu memilih <b>${wrongChosen}</b> yang sebenarnya data umum.<br>
+                - Masih ada <b>${missingCorrect}</b> data pribadi yang belum kamu pilih.`;
+            }
+          });
+        },
+        reset: (root) => {
+          const fb = $("#fb3", root);
+          const picks = $$(".pick", root);
+          fb.classList.remove("show"); fb.innerHTML = "";
+          picks.forEach(b => {
+            b.classList.remove("active");
+            b.style.borderColor = "var(--line)";
+            b.style.boxShadow = "none";
+            b.style.transform = "none";
+          });
+        }
+      },
+
+      // 4
+      {
+        title: "Kenapa Tidak Boleh Sembarangan?",
+        subtitle: "Karena data bisa dipakai orang lain untuk hal yang merugikan.",
+        render: () => `
+          <div class="slideInner">
+            <div class="topRow">
+              <div>
+                <h2>🚪 Kenapa Tidak Boleh Sembarangan?</h2>
+                <p>Memberi data pribadi di internet itu seperti membuka pintu rumah untuk orang asing.</p>
+              </div>
+              <div class="tag"><b>Contoh nyata</b> <span>mudah dibayangkan</span></div>
+            </div>
+
+            <div class="grid3">
+              <div class="card">
+                <h3>📍 Orang tahu lokasi</h3>
+                <p class="muted">Kalau kamu menulis alamat rumah, orang asing bisa tahu kamu tinggal di mana.</p>
+                <div class="btnRow">
+                  <button class="btn secondary" data-action="reveal" data-target="a">Contoh</button>
+                </div>
+                <div class="feedback" id="a">Misal: “Rumahku di Jalan … nomor …” — itu berbahaya.</div>
+              </div>
+
+              <div class="card">
+                <h3>🎭 Dipakai pura-pura</h3>
+                <p class="muted">Data bisa dipakai orang lain untuk berpura-pura jadi kamu.</p>
+                <div class="btnRow">
+                  <button class="btn secondary" data-action="reveal" data-target="b">Contoh</button>
+                </div>
+                <div class="feedback" id="b">Misal: foto kartu pelajar bisa disalahgunakan.</div>
+              </div>
+
+              <div class="card">
+                <h3>💸 Penipuan (scam)</h3>
+                <p class="muted">Ada yang pura-pura baik, lalu minta data atau uang.</p>
+                <div class="btnRow">
+                  <button class="btn secondary" data-action="reveal" data-target="c">Contoh</button>
+                </div>
+                <div class="feedback" id="c">Misal: “Kamu menang hadiah, kirim nomor HP dulu ya.”</div>
+              </div>
+            </div>
+
+            <div class="note">
+              <b>Poin penting:</b> Kalau ada yang minta data pribadi, lebih aman <b>berhenti</b> dan <b>tanya orang dewasa</b>.
+            </div>
+          </div>
+        `,
+        bind: (root) => {
+          $$("[data-action='reveal']", root).forEach(btn => {
+            btn.addEventListener("click", () => {
+              const id = btn.dataset.target;
+              $("#" + id, root).classList.add("show");
+            });
+          });
+        },
+        reset: (root) => { ["a", "b", "c"].forEach(id => $("#" + id, root).classList.remove("show")); }
+      },
+
+      // 5
+      {
+        title: "Risiko Lain di Dunia Digital",
+        subtitle: "Selain berbagi data, ada juga cyberbullying, penipuan, dan reputasi digital.",
+        render: () => `
+          <div class="slideInner">
+            <div class="topRow">
+              <div>
+                <h2>⚠️ Risiko Lain di Dunia Digital</h2>
+                <p>Yuk kenali 3 hal ini supaya kamu bisa lebih aman.</p>
+              </div>
+              <div class="tag"><b>Interaktif</b> <span>klik kartu</span></div>
+            </div>
+
+            <div class="grid3" id="riskCards">
+              <div class="step" data-risk="bully">
+                <div class="k">1</div>
+                <div class="t">😔 Cyberbullying</div>
+                <div class="d">Ejekan/hinaan lewat chat, komentar, atau postingan.</div>
+              </div>
+              <div class="step" data-risk="scam">
+                <div class="k">2</div>
+                <div class="t">🎣 Penipuan (Scam)</div>
+                <div class="d">Orang asing pura-pura jadi teman dan meminta data/uang.</div>
+              </div>
+              <div class="step" data-risk="rep">
+                <div class="k">3</div>
+                <div class="t">🧾 Reputasi Digital</div>
+                <div class="d">Jejak digital bisa sulit dihapus, jadi pikir dulu sebelum posting.</div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3 id="riskTitle">Klik salah satu kartu di atas</h3>
+              <p id="riskText" class="muted">Nanti akan muncul penjelasan dan apa yang sebaiknya kamu lakukan.</p>
+              <div class="feedback" id="fb5"></div>
+            </div>
+          </div>
+        `,
+        bind: (root) => {
+          const map = {
+            bully: {
+              title: "😔 Cyberbullying",
+              text: "Kalau ada yang mengejek, jangan dibalas. Simpan bukti (screenshot), lalu lapor orang tua/guru.",
+              tip: "Langkah aman: <b>Berhenti</b> → <b>Simpan bukti</b> → <b>Lapor</b> → <b>Blokir</b>."
+            },
+            scam: {
+              title: "🎣 Penipuan (Scam)",
+              text: "Kalau ada akun asing minta data/uang, itu tanda bahaya. Jangan kasih informasi apa pun.",
+              tip: "Langkah aman: <b>Kenali</b> → <b>Tolak</b> → <b>Laporkan</b>."
+            },
+            rep: {
+              title: "🧾 Reputasi Digital",
+              text: "Postingan bisa dilihat orang banyak dan jejaknya bisa lama. Pikir dulu sebelum upload.",
+              tip: "Tanya diri sendiri: “Kalau orang tua/guruku lihat ini, aku tetap nyaman?”"
+            }
+          };
+
+          const cards = $$("#riskCards .step", root);
+          const title = $("#riskTitle", root);
+          const text = $("#riskText", root);
+          const fb = $("#fb5", root);
+
+          cards.forEach(c => {
+            c.addEventListener("click", () => {
+              cards.forEach(x => x.classList.remove("active"));
+              c.classList.add("active");
+              const k = c.dataset.risk;
+              title.textContent = map[k].title;
+              text.textContent = map[k].text;
+              fb.classList.add("show");
+              fb.innerHTML = "💡 <strong>Ingat:</strong> " + map[k].tip;
+            });
+          });
+        },
+        reset: (root) => {
+          $$("#riskCards .step", root).forEach(x => x.classList.remove("active"));
+          $("#riskTitle", root).textContent = "Klik salah satu kartu di atas";
+          $("#riskText", root).textContent = "Nanti akan muncul penjelasan dan apa yang sebaiknya kamu lakukan.";
+          $("#fb5", root).classList.remove("show");
+          $("#fb5", root).innerHTML = "";
+        }
+      },
+
+      // 6
+      {
+        title: "Skenario: Pesan Misterius",
+        subtitle: "Akun tidak dikenal minta nomor HP dan alamat rumah untuk hadiah.",
+        render: () => `
+          <div class="slideInner">
+            <div class="topRow">
+              <div>
+                <h2>🎭 Skenario: Pesan Misterius</h2>
+                <p>Bayangkan kamu menerima pesan seperti ini.</p>
+              </div>
+              <div class="tag"><b>Interaktif</b> <span>AMAN / BAHAYA</span></div>
+            </div>
+
+            <div class="grid2">
+              <div class="card">
+                <h3>Isi pesan:</h3>
+                <div style="margin-top:10px;padding:14px;border-radius:16px;border:1px solid var(--line);background:#F9FBFF">
+                  <div style="font-weight:900;margin-bottom:8px;">📩 Dari: akun_tidak_dikenal</div>
+                  <div class="muted" style="line-height:1.5;">
+                    “Hai! Kamu menang hadiah. Kirim <b>nomor telepon</b> dan <b>alamat rumah</b> ya, biar aku kirim hadiahnya.”
+                  </div>
+                </div>
+
+                <div class="btnRow">
+                  <button class="btn bad" data-ans="wrong">Aman, kasih saja</button>
+                  <button class="btn good" data-ans="right">Bahaya, jangan kasih</button>
+                </div>
+
+                <div class="feedback" id="fb6"></div>
+              </div>
+
+              <div class="card">
+                <h3>Petunjuk tanda bahaya</h3>
+                <ul class="list">
+                  <li>Akun tidak dikenal</li>
+                  <li>Meminta data pribadi (nomor HP & alamat)</li>
+                  <li>Iming-iming hadiah supaya kita cepat percaya</li>
+                </ul>
+                <div class="note">
+                  <b>Untuk siswa:</b> Kalau ada yang minta data pribadi, itu tanda bahaya 🚨
+                </div>
+              </div>
+            </div>
+          </div>
+        `,
+        bind: (root) => {
+          const fb = $("#fb6", root);
+          $$("[data-ans]", root).forEach(btn => {
+            btn.addEventListener("click", () => {
+              const ok = btn.dataset.ans === "right";
+              fb.classList.add("show");
+              fb.innerHTML = ok
+                ? "✅ <strong>Benar!</strong> Ini bahaya. Jangan kasih nomor HP/alamat. Lebih baik menolak dan lapor orang dewasa."
+                : "⚠️ <strong>Hati-hati!</strong> Ini bahaya. Hadiah bisa jadi trik supaya kamu membocorkan data pribadi.";
+            });
+          });
+        },
+        reset: (root) => { $("#fb6", root).classList.remove("show"); $("#fb6", root).innerHTML = ""; }
+      },
+
+      // 7
+      {
+        title: "Diskusi Kelompok (Hybrid Friendly)",
+        subtitle: "Diskusi offline, jawabannya dibahas bersama dengan guru online.",
+        render: () => `
+          <div class="slideInner">
+            <div class="topRow">
+              <div>
+                <h2>👥 Diskusi Kelompok</h2>
+                <p>Buat kelompok kecil (3–4 orang). Diskusikan dan tulis jawaban singkat.</p>
+              </div>
+              <div class="tag"><b>Timer</b> <span>3 menit diskusi</span></div>
+            </div>
+
+            <div class="grid2">
+              <div class="card">
+                <h3>Tugas kelompok</h3>
+                <ol class="list">
+                  <li><b>Apa risikonya</b> kalau data diberikan?</li>
+                  <li><b>Boleh atau tidak</b> memberikan info itu?</li>
+                  <li><b>Apa tindakan paling tepat</b> yang harus dilakukan?</li>
+                </ol>
+
+                <div class="timerBox">
+                  <div>
+                    <div class="label">Waktu diskusi</div>
+                    <div class="time" id="time">03:00</div>
+                  </div>
+                  <div class="btnRow" style="margin:0">
+                    <button class="btn" data-action="start">Mulai</button>
+                    <button class="btn secondary" data-action="pause">Pause</button>
+                    <button class="btn secondary" data-action="resetTimer">Reset</button>
+                  </div>
+                </div>
+
+                <div class="feedback" id="fb7"></div>
+              </div>
+
+              <div class="card">
+                <h3>Output yang dikumpulkan</h3>
+                <ul class="list">
+                  <li>1 kalimat: <b>“Ini bahaya karena…”</b></li>
+                  <li>1 tindakan: <b>“Aku akan…”</b></li>
+                  <li>1 kalimat menolak: <b>“Maaf, aku…”</b></li>
+                </ul>
+                <div class="note">
+                  <b>Catatan guru (hybrid):</b> Setelah diskusi, minta 2–3 kelompok presentasi singkat (15–20 detik).
+                </div>
+              </div>
+            </div>
+          </div>
+        `,
+        bind: (root) => {
+          const fb = $("#fb7", root);
+          let total = 180;
+          let left = total;
+          let timer = null;
+
+          const timeEl = $("#time", root);
+          const fmt = (s) => {
+            const m = String(Math.floor(s / 60)).padStart(2, "0");
+            const ss = String(s % 60).padStart(2, "0");
+            return `${m}:${ss}`;
+          };
+          const renderTime = () => timeEl.textContent = fmt(left);
+
+          const stop = () => { if (timer) { clearInterval(timer); timer = null; } };
+
+          const tick = () => {
+            left = Math.max(0, left - 1);
+            renderTime();
+            if (left === 0) {
+              stop();
+              fb.classList.add("show");
+              fb.innerHTML = "⏰ <strong>Waktu habis!</strong> Sekarang pilih 2–3 kelompok untuk sharing.";
+            }
+          };
+
+          $("[data-action='start']", root).addEventListener("click", () => {
+            if (timer) return;
+            fb.classList.remove("show"); fb.innerHTML = "";
+            timer = setInterval(tick, 1000);
+          });
+
+          $("[data-action='pause']", root).addEventListener("click", () => stop());
+
+          $("[data-action='resetTimer']", root).addEventListener("click", () => {
+            stop();
+            left = total;
+            renderTime();
+            fb.classList.remove("show"); fb.innerHTML = "";
+          });
+
+          renderTime();
+
+          root.__timerReset = () => {
+            stop(); left = total; renderTime();
+            fb.classList.remove("show"); fb.innerHTML = "";
+          };
+        },
+        reset: (root) => { if (root.__timerReset) root.__timerReset(); }
+      },
+
+      // 8
+      {
+        title: "Cara Menolak dengan Aman",
+        subtitle: "Menolak itu boleh. Yang penting sopan dan tegas.",
+        render: () => `
+          <div class="slideInner">
+            <div class="topRow">
+              <div>
+                <h2>🗣️ Cara Menolak dengan Aman</h2>
+                <p>Kalau ada yang minta data pribadi, kamu bisa menolak tanpa kasar.</p>
+              </div>
+              <div class="tag"><b>Pendalaman</b> <span>contoh kalimat siap pakai</span></div>
+            </div>
+
+            <div class="grid2">
+              <div class="card">
+                <h3>Pilih 1 kalimat terbaik</h3>
+                <p class="muted">Klik salah satu pilihan.</p>
+
+                <div class="btnRow">
+                  <button class="btn secondary say" data-good="1">“Maaf, aku tidak bisa membagikan data pribadi.”</button>
+                  <button class="btn secondary say" data-good="1">“Aku harus tanya orang tua/guru dulu.”</button>
+                  <button class="btn secondary say" data-good="0">“Boleh, tapi kamu janji ya.”</button>
+                  <button class="btn secondary say" data-good="0">“Alamatku di… (mulai menulis alamat)”</button>
+                </div>
+
+                <div class="feedback" id="fb8"></div>
+              </div>
+
+              <div class="card">
+                <h3>Ingat 2 aturan ini</h3>
+                <ul class="list">
+                  <li>❌ Jangan menjelaskan terlalu banyak</li>
+                  <li>❌ Jangan lanjut chat dengan orang asing</li>
+                  <li>✅ Kalau ragu: berhenti dan <b>lapor orang dewasa</b></li>
+                </ul>
+                <div class="note">
+                  <b>Tips:</b> Setelah menolak, kamu boleh langsung <b>blokir</b> akun yang mencurigakan.
+                </div>
+              </div>
+            </div>
+          </div>
+        `,
+        bind: (root) => {
+          const fb = $("#fb8", root);
+          const items = $$(".say", root);
+
+          items.forEach(btn => {
+            btn.addEventListener("click", () => {
+              items.forEach(x => {
+                x.classList.remove("active");
+                x.style.borderColor = "var(--line)";
+                x.style.boxShadow = "none";
+              });
+
+              btn.classList.add("active");
+              btn.style.borderColor = "rgba(79,70,229,.55)";
+              btn.style.boxShadow = "0 10px 20px rgba(79,70,229,.14)";
+
+              const ok = btn.dataset.good === "1";
+              fb.classList.add("show");
+              fb.innerHTML = ok
+                ? "✅ <strong>Bagus!</strong> Kalimat ini sopan, tegas, dan tidak membocorkan data."
+                : "⚠️ <strong>Kurang aman.</strong> Ini bisa membuat kamu membagikan data pribadi.";
+            });
+          });
+        },
+        reset: (root) => {
+          $$(".say", root).forEach(x => {
+            x.classList.remove("active");
+            x.style.borderColor = "var(--line)";
+            x.style.boxShadow = "none";
+          });
+          $("#fb8", root).classList.remove("show");
+          $("#fb8", root).innerHTML = "";
+        }
+      },
+
+      // 9
+      {
+        title: "Langkah Aman Digital",
+        subtitle: "Kenali – Tolak – Laporkan – Gunakan fitur",
+        render: () => `
+          <div class="slideInner">
+            <div class="topRow">
+              <div>
+                <h2>✅ Langkah Aman Digital</h2>
+                <p>Klik tiap langkah untuk melihat contohnya.</p>
+              </div>
+              <div class="tag"><b>Framework</b> <span>mudah diingat</span></div>
+            </div>
+
+            <div class="card">
+              <div class="steps" id="steps">
+                <div class="step" data-step="kenali">
+                  <div class="k">1</div>
+                  <div class="t">Kenali</div>
+                  <div class="d">Ada pesan aneh? Minta data pribadi? Itu tanda bahaya.</div>
+                </div>
+                <div class="step" data-step="tolak">
+                  <div class="k">2</div>
+                  <div class="t">Tolak</div>
+                  <div class="d">Jangan berikan info apa pun. Tolak dengan sopan.</div>
+                </div>
+                <div class="step" data-step="lapor">
+                  <div class="k">3</div>
+                  <div class="t">Laporkan</div>
+                  <div class="d">Cerita ke orang tua/guru supaya dibantu.</div>
+                </div>
+                <div class="step" data-step="fitur">
+                  <div class="k">4</div>
+                  <div class="t">Gunakan fitur</div>
+                  <div class="d">Blokir akun, atur privasi, atau report.</div>
+                </div>
+              </div>
+
+              <div class="feedback" id="fb9" style="margin-top:12px"></div>
+            </div>
+
+            <div class="note">
+              <b>Bonus aman:</b> Kalau ada cyberbullying, kamu juga bisa <b>simpan bukti</b> (screenshot) sebelum melapor.
+            </div>
+          </div>
+        `,
+        bind: (root) => {
+          const fb = $("#fb9", root);
+          const map = {
+            kenali: "🔎 <strong>Kenali:</strong> Kalau akun tidak dikenal minta nomor HP/alamat, itu tanda bahaya.",
+            tolak: "🗣️ <strong>Tolak:</strong> “Maaf, aku tidak bisa membagikan data pribadi.”",
+            lapor: "👨‍👩‍👧 <strong>Laporkan:</strong> Cerita ke orang tua/guru. Kamu tidak sendirian.",
+            fitur: "🔧 <strong>Gunakan fitur:</strong> Blokir akun mencurigakan agar tidak mengganggu lagi."
+          };
+
+          const items = $$("#steps .step", root);
+          items.forEach(it => {
+            it.addEventListener("click", () => {
+              items.forEach(x => x.classList.remove("active"));
+              it.classList.add("active");
+              fb.classList.add("show");
+              fb.innerHTML = map[it.dataset.step];
+            });
+          });
+        },
+        reset: (root) => {
+          $$("#steps .step", root).forEach(x => x.classList.remove("active"));
+          $("#fb9", root).classList.remove("show");
+          $("#fb9", root).innerHTML = "";
+        }
+      },
+
+      // 10
+      {
+        title: "Mini Quiz — AMAN atau BAHAYA?",
+        subtitle: "Jawab cepat. Tidak perlu lama-lama.",
+        render: () => `
+          <div class="slideInner">
+            <div class="topRow">
+              <div>
+                <h2>🧩 Mini Quiz 1</h2>
+                <p>Klik jawabanmu: AMAN atau BAHAYA.</p>
+              </div>
+              <div class="tag"><b>Interaktif</b> <span>jawab bareng</span></div>
+            </div>
+
+            <div class="card">
+              <div class="big" id="q1">“Kirim foto kartu pelajarmu ya.”</div>
+              <p class="muted" style="margin-top:8px">Menurutmu ini aman atau bahaya?</p>
+
+              <div class="btnRow">
+                <button class="btn secondary" data-q="1" data-a="aman">✅ AMAN</button>
+                <button class="btn secondary" data-q="1" data-a="bahaya">❌ BAHAYA</button>
+              </div>
+
+              <div class="feedback" id="fb10"></div>
+
+              <div class="btnRow" style="margin-top:14px">
+                <button class="btn" data-action="nextQ">Soal berikutnya ➡️</button>
+                <button class="btn secondary" data-action="resetQ">Reset</button>
+              </div>
+            </div>
+
+            <div class="note">
+              <b>Catatan guru:</b> Untuk hybrid, boleh juga minta siswa angkat kertas “AMAN/BAHAYA” sebelum klik.
+            </div>
+          </div>
+        `,
+        bind: (root) => {
+          const items = [
+            { text: "“Kirim foto kartu pelajarmu ya.”", correct: "bahaya", explain: "✅ <strong>Bahaya.</strong> Kartu pelajar berisi data pribadi." },
+            { text: "“Aku suka warna biru.”", correct: "aman", explain: "✅ <strong>Aman.</strong> Ini data umum, bukan data pribadi." },
+            { text: "“Kirim alamat rumah untuk hadiah.”", correct: "bahaya", explain: "✅ <strong>Bahaya.</strong> Alamat rumah itu data pribadi dan bisa disalahgunakan." },
+          ];
+          let idx = 0;
+          const qEl = $("#q1", root);
+          const fb = $("#fb10", root);
+
+          const paint = () => {
+            qEl.textContent = items[idx].text;
+            fb.classList.remove("show");
+            fb.innerHTML = "";
+            $$(".btn[data-q='1']", root).forEach(b => {
+              b.classList.remove("active");
+              b.style.borderColor = "var(--line)";
+              b.style.boxShadow = "none";
+            });
+          };
+
+          $$(".btn[data-q='1']", root).forEach(btn => {
+            btn.addEventListener("click", () => {
+              $$(".btn[data-q='1']", root).forEach(b => {
+                b.classList.remove("active");
+                b.style.borderColor = "var(--line)";
+                b.style.boxShadow = "none";
+              });
+              btn.classList.add("active");
+              btn.style.borderColor = "rgba(79,70,229,.55)";
+              btn.style.boxShadow = "0 10px 20px rgba(79,70,229,.14)";
+
+              const pick = btn.dataset.a;
+              const ok = pick === items[idx].correct;
+
+              fb.classList.add("show");
+              fb.innerHTML = ok
+                ? items[idx].explain
+                : `⚠️ <strong>Belum tepat.</strong> Jawaban yang benar: <b>${items[idx].correct.toUpperCase()}</b>. <br>${items[idx].explain}`;
+            });
+          });
+
+          $("[data-action='nextQ']", root).addEventListener("click", () => {
+            idx = (idx + 1) % items.length;
+            paint();
+          });
+
+          $("[data-action='resetQ']", root).addEventListener("click", () => {
+            idx = 0;
+            paint();
+          });
+
+          paint();
+        }
+      },
+
+      // 11
+      {
+        title: "Mini Quiz 2 — Pilih Langkahnya",
+        subtitle: "Situasi cepat: kamu pilih langkah yang tepat!",
+        render: () => `
+          <div class="slideInner">
+            <div class="topRow">
+              <div>
+                <h2>🎯 Mini Quiz 2</h2>
+                <p>Klik langkah yang paling tepat untuk situasi ini.</p>
+              </div>
+              <div class="tag"><b>Interaktif</b> <span>pilih langkah</span></div>
+            </div>
+
+            <div class="grid2">
+              <div class="card">
+                <h3>Situasi:</h3>
+                <div class="big" id="sit">“Ada komentar yang mengejek kamu.”</div>
+                <p class="muted" style="margin-top:8px">Langkah yang tepat apa dulu?</p>
+
+                <div class="btnRow">
+                  <button class="btn secondary pickStep" data-step="berhenti">Berhenti sejenak</button>
+                  <button class="btn secondary pickStep" data-step="bukti">Simpan bukti</button>
+                  <button class="btn secondary pickStep" data-step="lapor">Lapor orang tua/guru</button>
+                  <button class="btn secondary pickStep" data-step="blokir">Blokir akun</button>
+                </div>
+
+                <div class="feedback" id="fb11"></div>
+
+                <div class="btnRow" style="margin-top:14px">
+                  <button class="btn" data-action="nextS">Situasi berikutnya ➡️</button>
+                  <button class="btn secondary" data-action="resetS">Reset</button>
+                </div>
+              </div>
+
+              <div class="card">
+                <h3>Kunci jawaban singkat</h3>
+                <ul class="list">
+                  <li><b>Cyberbullying:</b> Berhenti → Simpan bukti → Lapor → Blokir</li>
+                  <li><b>Pesan minta data:</b> Kenali → Tolak → Lapor → Blokir/Report</li>
+                </ul>
+                <div class="note">
+                  <b>Tips:</b> Kamu tidak perlu menang sendiri. Lapor itu tindakan berani 👍
+                </div>
+              </div>
+            </div>
+          </div>
+        `,
+        bind: (root) => {
+          const scenarios = [
+            {
+              text: "“Ada komentar yang mengejek kamu.”",
+              correctFirst: "berhenti",
+              explain: "✅ <strong>Benar!</strong> Langkah pertama: berhenti dulu, jangan langsung balas. Setelah itu simpan bukti, lapor, lalu blokir."
+            },
+            {
+              text: "“Akun asing minta alamat rumah untuk hadiah.”",
+              correctFirst: "berhenti",
+              explain: "✅ <strong>Benar!</strong> Berhenti dulu. Lalu tolak, lapor orang dewasa, dan gunakan fitur blokir/report."
+            },
+            {
+              text: "“Ada akun mencurigakan mengirim link aneh.”",
+              correctFirst: "berhenti",
+              explain: "✅ <strong>Benar!</strong> Jangan klik. Berhenti, lapor, dan blokir akun tersebut."
+            }
+          ];
+
+          let i = 0;
+          const sit = $("#sit", root);
+          const fb = $("#fb11", root);
+          const btns = $$(".pickStep", root);
+
+          const paint = () => {
+            sit.textContent = scenarios[i].text;
+            fb.classList.remove("show"); fb.innerHTML = "";
+            btns.forEach(b => {
+              b.classList.remove("active");
+              b.style.borderColor = "var(--line)";
+              b.style.boxShadow = "none";
+            });
+          };
+
+          btns.forEach(b => {
+            b.addEventListener("click", () => {
+              btns.forEach(x => {
+                x.classList.remove("active");
+                x.style.borderColor = "var(--line)";
+                x.style.boxShadow = "none";
+              });
+              b.classList.add("active");
+              b.style.borderColor = "rgba(79,70,229,.55)";
+              b.style.boxShadow = "0 10px 20px rgba(79,70,229,.14)";
+
+              const ok = b.dataset.step === scenarios[i].correctFirst;
+              fb.classList.add("show");
+              fb.innerHTML = ok
+                ? scenarios[i].explain
+                : "⚠️ <strong>Belum tepat.</strong> Langkah pertama yang aman: <b>Berhenti sejenak</b> (jangan langsung balas/klik).";
+            });
+          });
+
+          $("[data-action='nextS']", root).addEventListener("click", () => {
+            i = (i + 1) % scenarios.length;
+            paint();
+          });
+
+          $("[data-action='resetS']", root).addEventListener("click", () => {
+            i = 0;
+            paint();
+          });
+
+          paint();
+        }
+      },
+
+      // 12
+      {
+        title: "Ringkasan",
+        subtitle: "Yang paling penting hari ini: jaga data pribadi dan berani minta bantuan.",
+        render: () => `
+          <div class="slideInner">
+            <div class="topRow">
+              <div>
+                <h2>📌 Ringkasan</h2>
+                <p>3 hal yang perlu kamu ingat.</p>
+              </div>
+              <div class="tag"><b>Recap</b> <span>1 menit</span></div>
+            </div>
+
+            <div class="grid3">
+              <div class="card">
+                <h3>1) Jaga data pribadi</h3>
+                <p class="muted">Nama lengkap, alamat, nomor HP, foto kartu pelajar = jangan dibagikan sembarangan.</p>
+              </div>
+              <div class="card">
+                <h3>2) Waspada orang asing</h3>
+                <p class="muted">Akun tidak dikenal + minta data/uang + iming-iming hadiah = tanda bahaya.</p>
+              </div>
+              <div class="card">
+                <h3>3) Pakai langkah aman</h3>
+                <p class="muted"><b>Kenali – Tolak – Laporkan – Gunakan fitur</b></p>
+              </div>
+            </div>
+
+            <div class="note">
+              <b>Kalimat kunci:</b> “Anak pintar di internet adalah anak yang tahu kapan harus berhenti.”
+            </div>
+          </div>
+        `
+      },
+
+      // 13 (NEW) — Checkout Quiz
+      {
+        title: "Checkout Quiz Sesi 31",
+        subtitle: "Sekarang waktunya mengerjakan checkout quiz di LMS.",
+        render: () => `
+          <div class="slideInner">
+            <div class="topRow">
+              <div>
+                <h2>📝 Checkout Quiz — Sesi 31</h2>
+                <p>Kerjakan quiz di LMS sebagai refleksi. Jawab sesuai pemahamanmu.</p>
+              </div>
+              <div class="tag"><b>Wajib</b> <span>penutup sesi</span></div>
+            </div>
+
+            <div class="grid2">
+              <div class="card">
+                <h3>Instruksi</h3>
+                <ol class="list">
+                  <li>Buka LMS di perangkat yang tersedia (bergantian jika perlu).</li>
+                  <li>Masuk ke <b>Checkout Quiz Sesi 31</b>.</li>
+                  <li>Kerjakan sampai selesai, lalu klik <b>Submit</b>.</li>
+                </ol>
+                <div class="note">
+                  <b>Tips:</b> Kalau ragu, ingat langkah: <b>Kenali – Tolak – Laporkan – Gunakan fitur</b>.
+                </div>
+              </div>
+
+              <div class="card">
+                <h3>Refleksi cepat (lisan)</h3>
+                <p class="muted">Sebelum mulai quiz, jawab cepat:</p>
+                <div class="big" style="margin-top:10px;">“Kalau dapat pesan aneh, aku akan…”</div>
+                <div class="btnRow">
+                  <button class="btn secondary" data-action="ref">Kenali</button>
+                  <button class="btn secondary" data-action="ref">Tolak</button>
+                  <button class="btn secondary" data-action="ref">Laporkan</button>
+                  <button class="btn secondary" data-action="ref">Gunakan fitur</button>
+                </div>
+                <div class="feedback" id="fb13"></div>
+              </div>
+            </div>
+          </div>
+        `,
+        bind: (root) => {
+          const fb = $("#fb13", root);
+          $$("[data-action='ref']", root).forEach(btn => {
+            btn.addEventListener("click", () => {
+              fb.classList.add("show");
+              fb.innerHTML = `✅ <strong>Bagus!</strong> Pilihanmu: <b>${btn.textContent}</b>. Itu bagian dari langkah aman digital.`;
+            });
+          });
+        },
+        reset: (root) => { $("#fb13", root).classList.remove("show"); $("#fb13", root).innerHTML = ""; }
+      },
+
+      // 14 — Penutup
+      {
+        title: "Penutup",
+        subtitle: "Terima kasih! Ingat: kalau ragu, tanya orang dewasa.",
+        render: () => `
+          <div class="slideInner">
+            <div class="topRow">
+              <div>
+                <h2>👏 Terima kasih!</h2>
+                <p>Kamu sudah belajar cara lebih aman di dunia digital.</p>
+              </div>
+              <div class="tag"><b>End</b> <span>see you!</span></div>
+            </div>
+
+            <div class="card" style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:12px">
+              <div class="big" style="font-size:28px">Kalau ragu…</div>
+              <div class="big" style="font-size:34px">🛑 BERHENTI &nbsp;→&nbsp; 🙋 TANYA orang tua/guru</div>
+              <p style="margin-top:6px">Kamu tidak perlu menang sendiri. Lapor itu tindakan berani.</p>
+              <div class="pillRow" style="margin-top:10px">
+                <div class="pill">🔎 Kenali</div>
+                <div class="pill">🗣️ Tolak</div>
+                <div class="pill">👨‍👩‍👧 Laporkan</div>
+                <div class="pill">🔧 Gunakan fitur</div>
+              </div>
+            </div>
+          </div>
+        `
+      }
+    ];
+
+    // ---------- Deck Controller ----------
+    const slideEl = document.getElementById("slide");
+    const countEl = document.getElementById("count");
+    const barEl = document.getElementById("bar");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
+    let idx = 0;
+    let currentRoot = null;
+
+    function updateProgress() {
+      const total = slides.length;
+      countEl.textContent = `${idx + 1} / ${total}`;
+      barEl.style.width = `${((idx + 1) / total) * 100}%`;
+      prevBtn.disabled = idx === 0;
+      prevBtn.style.opacity = idx === 0 ? .6 : 1;
+      nextBtn.textContent = idx === total - 1 ? "Selesai ✅" : "Lanjut ➡️";
+    }
+
+    function mount() {
+      const s = slides[idx];
+      slideEl.innerHTML = s.render();
+      currentRoot = slideEl;
+      if (s.bind) s.bind(currentRoot);
+      updateProgress();
+    }
+
+    function go(n) {
+      idx = clamp(n, 0, slides.length - 1);
+      mount();
+    }
+
+    function next() { if (idx < slides.length - 1) go(idx + 1); }
+    function prev() { if (idx > 0) go(idx - 1); }
+
+    function resetInteractions() {
+      const s = slides[idx];
+      if (s.reset && currentRoot) s.reset(currentRoot);
+    }
+
+    // Guard navigation if locked
+    function requireUnlocked(fn) {
+      return (...args) => {
+        if (!unlocked) {
+          showGateError();
+          return;
+        }
+        return fn(...args);
+      };
+    }
+
+    prevBtn.addEventListener("click", requireUnlocked(prev));
+    nextBtn.addEventListener("click", requireUnlocked(() => {
+      if (idx === slides.length - 1) {
+        resetInteractions();
+      } else {
+        next();
+      }
+    }));
+
+    document.addEventListener("keydown", (e) => {
+      // allow typing in gate input while locked
+      if (!unlocked) return;
+
+      const key = e.key.toLowerCase();
+      if (key === "arrowright" || key === "d" || key === " ") {
+        e.preventDefault();
+        next();
+      }
+      if (key === "arrowleft" || key === "a") {
+        e.preventDefault();
+        prev();
+      }
+      if (key === "r") {
+        e.preventDefault();
+        resetInteractions();
+      }
+    });
+
+    // Init deck even when locked (so after unlock it’s ready)
+    mount();
+
+    // Focus on input when locked
+    if (!unlocked) {
+      setTimeout(() => accessInput.focus(), 50);
+    }
+  </script>
+</body>
+
+</html>
