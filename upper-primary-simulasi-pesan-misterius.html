@@ -1,0 +1,1089 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Worksheet Interaktif — Simulasi Pesan Misterius (Sesi 31)</title>
+
+  <style>
+    :root {
+      --bg: #F7FAFF;
+      --card: #FFFFFF;
+      --ink: #1F2A44;
+      --muted: #5B6B8A;
+
+      --brand: #4F46E5;
+      --brand2: #06B6D4;
+      --accent: #F97316;
+      --ok: #16A34A;
+      --bad: #DC2626;
+      --soft: #EEF2FF;
+      --line: #E5EAF5;
+
+      --radius: 22px;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 500px at 10% 0%, rgba(6, 182, 212, .18), transparent 60%),
+        radial-gradient(1200px 500px at 90% 0%, rgba(79, 70, 229, .16), transparent 55%),
+        linear-gradient(180deg, #F7FAFF, #F4F7FF 40%, #F7FAFF);
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 18px;
+    }
+
+    header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-weight: 1000;
+      box-shadow: 0 12px 22px rgba(79, 70, 229, .18);
+      user-select: none;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: -.02em
+    }
+
+    .sub {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35
+    }
+
+    .topRight {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+    }
+
+    .badge {
+      font-size: 12px;
+      padding: 6px 10px;
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .timer {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 10px 12px;
+      box-shadow: 0 8px 18px rgba(31, 42, 68, .06);
+      width: max-content;
+    }
+
+    .tLabel {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 900
+    }
+
+    .tValue {
+      font-size: 18px;
+      font-weight: 1000;
+      letter-spacing: .03em
+    }
+
+    .tBtns {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end
+    }
+
+    .btn {
+      border: 0;
+      background: var(--brand);
+      color: #fff;
+      font-weight: 900;
+      font-size: 13px;
+      padding: 9px 11px;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 10px 18px rgba(79, 70, 229, .20);
+      transition: transform .06s ease, opacity .2s ease;
+      user-select: none;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px)
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      opacity: .92
+    }
+
+    .btn.secondary {
+      background: #fff;
+      color: var(--ink);
+      border: 1px solid var(--line);
+      box-shadow: none;
+    }
+
+    .btn.good {
+      background: var(--ok);
+      box-shadow: 0 10px 18px rgba(22, 163, 74, .18)
+    }
+
+    .btn.orange {
+      background: var(--accent);
+      box-shadow: 0 10px 18px rgba(249, 115, 22, .18)
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: 0 10px 22px rgba(31, 42, 68, .06);
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+
+    .input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 12px;
+      font-size: 14px;
+      background: #FBFCFF;
+      outline: none;
+    }
+
+    .input:focus {
+      border-color: rgba(79, 70, 229, .55);
+      box-shadow: 0 10px 20px rgba(79, 70, 229, .12);
+      background: #fff;
+    }
+
+    .scenario {
+      border: 1px solid var(--line);
+      background: #F9FBFF;
+      border-radius: 18px;
+      padding: 14px;
+      line-height: 1.5;
+    }
+
+    .from {
+      font-weight: 1000;
+      margin-bottom: 6px;
+    }
+
+    .muted {
+      color: var(--muted)
+    }
+
+    .qTitle {
+      font-weight: 1000;
+      margin: 0 0 10px;
+      letter-spacing: -.01em;
+    }
+
+    .qHead {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .choices {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .choice {
+      flex: 1 1 180px;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 16px;
+      padding: 12px;
+      cursor: pointer;
+      font-weight: 900;
+      text-align: center;
+      user-select: none;
+      transition: transform .06s ease, box-shadow .2s ease, border-color .2s ease;
+      box-shadow: 0 8px 16px rgba(31, 42, 68, .05);
+    }
+
+    .choice:hover {
+      transform: translateY(-1px)
+    }
+
+    .choice.active {
+      border-color: rgba(79, 70, 229, .55);
+      box-shadow: 0 12px 22px rgba(79, 70, 229, .12);
+      background: linear-gradient(180deg, #fff, #F6F8FF);
+    }
+
+    .checklist {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .checkItem {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+    }
+
+    .checkItem b {
+      font-size: 14px
+    }
+
+    .checkItem input {
+      transform: scale(1.15)
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 92px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px;
+      font-size: 14px;
+      background: #FBFCFF;
+      outline: none;
+      line-height: 1.45;
+    }
+
+    textarea:focus {
+      border-color: rgba(79, 70, 229, .55);
+      box-shadow: 0 10px 20px rgba(79, 70, 229, .12);
+      background: #fff;
+    }
+
+    .hint {
+      margin-top: 10px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(249, 115, 22, .35);
+      background: rgba(249, 115, 22, .08);
+      color: #8A4B12;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .feedback {
+      margin-top: 10px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: #F8FAFF;
+      color: var(--muted);
+      font-size: 13px;
+      display: none;
+    }
+
+    .feedback.show {
+      display: block
+    }
+
+    .feedback strong {
+      color: var(--ink)
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 10px;
+    }
+
+    .scoreBox {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: #fff;
+      box-shadow: 0 10px 22px rgba(31, 42, 68, .06);
+      margin-top: 14px;
+    }
+
+    .scoreLeft {
+      display: flex;
+      flex-direction: column;
+      gap: 2px
+    }
+
+    .scoreLeft .lbl {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 900
+    }
+
+    .scoreLeft .val {
+      font-size: 18px;
+      font-weight: 1000
+    }
+
+    .mini {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.35
+    }
+
+    @media (max-width:720px) {
+      .row {
+        grid-template-columns: 1fr
+      }
+
+      header {
+        flex-direction: column;
+        align-items: flex-start
+      }
+
+      .topRight {
+        align-items: flex-start
+      }
+
+      .timer {
+        width: 100%
+      }
+
+      .tBtns {
+        justify-content: flex-start
+      }
+
+      .qHead {
+        flex-direction: column;
+        align-items: flex-start
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff
+      }
+
+      .timer,
+      .actions,
+      .btn,
+      .topRight .badge {
+        display: none !important
+      }
+
+      .card {
+        box-shadow: none
+      }
+
+      .wrap {
+        max-width: 100%;
+        padding: 0
+      }
+
+      header {
+        margin-bottom: 8px
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">31</div>
+        <div>
+          <h1>Worksheet Interaktif — Simulasi Pesan Misterius</h1>
+          <p class="sub">Diskusi 20 menit • Upper Primary • Tujuan: kenali pesan bahaya & pilih tindakan aman</p>
+        </div>
+      </div>
+
+      <div class="topRight">
+        <div class="badge" id="scBadge">Skenario: (acak)</div>
+        <div class="timer" aria-label="timer">
+          <div>
+            <div class="tLabel">Waktu Diskusi</div>
+            <div class="tValue" id="time">20:00</div>
+          </div>
+          <div class="tBtns">
+            <button class="btn" id="startBtn">Mulai</button>
+            <button class="btn secondary" id="pauseBtn">Pause</button>
+            <button class="btn secondary" id="resetBtn">Reset</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="grid">
+      <!-- Identity -->
+      <div class="card">
+        <p class="qTitle">🧑‍🤝‍🧑 Identitas Kelompok</p>
+        <div class="row">
+          <div class="field">
+            <label>Nama Siswa</label>
+            <input class="input" id="nama" placeholder="Tulis nama kamu..." />
+          </div>
+          <div class="field">
+            <label>Kelompok</label>
+            <input class="input" id="kelompok" placeholder="Contoh: Kelompok 2" />
+          </div>
+        </div>
+        <div class="row" style="margin-top:12px">
+          <div class="field">
+            <label>Tanggal</label>
+            <input class="input" id="tanggal" placeholder="Contoh: 2 Feb 2026" />
+          </div>
+          <div class="field">
+            <label>Catatan (opsional)</label>
+            <input class="input" id="catatan" placeholder="Contoh: diskusi bareng..." />
+          </div>
+        </div>
+      </div>
+
+      <!-- Scenario (RANDOM) + button moved here -->
+      <div class="card">
+        <div class="qHead">
+          <p class="qTitle" style="margin:0">📩 Skenario Pesan Misterius (acak)</p>
+          <button class="btn secondary" id="newScBtn" type="button">🎲 Acak Skenario</button>
+        </div>
+
+        <div class="scenario" style="margin-top:12px">
+          <div class="from" id="scFrom">Dari: —</div>
+          <div class="muted" id="scMsg">—</div>
+        </div>
+
+        <div class="hint" id="scHint">
+          <b>Ingat:</b> Kalau ada akun tidak dikenal minta data pribadi, itu tanda bahaya 🚨
+        </div>
+      </div>
+
+      <!-- Task 1 -->
+      <div class="card" id="task1">
+        <p class="qTitle">✏️ Tugas 1 — AMAN atau BAHAYA?</p>
+        <p class="muted">Klik salah satu pilihan.</p>
+        <div class="choices" style="margin-top:10px">
+          <div class="choice" data-group="t1" data-value="AMAN">✅ AMAN</div>
+          <div class="choice" data-group="t1" data-value="BAHAYA">❌ BAHAYA</div>
+        </div>
+        <div class="feedback" id="fb1"></div>
+      </div>
+
+      <!-- Task 2 -->
+      <div class="card">
+        <p class="qTitle">🔍 Tugas 2 — Kenali Risikonya</p>
+        <p class="muted">Tulis jawaban kelompokmu: “Pesan ini (aman/berbahaya) karena…”</p>
+        <textarea id="t2" placeholder="Contoh: karena minta alamat rumah dan nomor telepon..."></textarea>
+        <div class="feedback" id="fb2"></div>
+      </div>
+
+      <!-- Task 3 -->
+      <div class="card">
+        <p class="qTitle">🧠 Tugas 3 — Data Apa yang Diminta?</p>
+        <p class="muted">Centang data yang diminta di pesan.</p>
+
+        <div class="checklist" id="t3">
+          <div class="checkItem"><b>Nama lengkap</b><input type="checkbox" data-key="nama" /></div>
+          <div class="checkItem"><b>Nomor telepon</b><input type="checkbox" data-key="telp" /></div>
+          <div class="checkItem"><b>Alamat rumah</b><input type="checkbox" data-key="alamat" /></div>
+          <div class="checkItem"><b>Warna favorit</b><input type="checkbox" data-key="warna" /></div>
+          <div class="checkItem"><b>Hobi</b><input type="checkbox" data-key="hobi" /></div>
+        </div>
+
+        <div class="feedback" id="fb3"></div>
+      </div>
+
+      <!-- Task 4 -->
+      <div class="card" id="task4">
+        <p class="qTitle">🛑 Tugas 4 — Apa yang Harus Dilakukan?</p>
+        <p class="muted">Pilih satu tindakan yang paling tepat.</p>
+        <div class="choices" style="margin-top:10px">
+          <div class="choice" data-group="t4" data-value="memberikan">Memberikan data agar dapat hadiah</div>
+          <div class="choice" data-group="t4" data-value="abaikan">Mengabaikan tanpa bercerita ke siapa pun</div>
+          <div class="choice" data-group="t4" data-value="menolak_lapor">Menolak dan melaporkan ke orang tua/guru
+          </div>
+          <div class="choice" data-group="t4" data-value="marah">Membalas dengan marah</div>
+        </div>
+        <div class="feedback" id="fb4"></div>
+      </div>
+
+      <!-- Task 5 -->
+      <div class="card">
+        <p class="qTitle">🗣️ Tugas 5 — Cara Menolak dengan Aman</p>
+        <p class="muted">Tulis satu kalimat penolakan yang sopan dan aman.</p>
+        <textarea id="t5" placeholder='Contoh: “Maaf, aku tidak bisa membagikan data pribadi.”'></textarea>
+        <div class="feedback" id="fb5"></div>
+      </div>
+
+      <!-- Task 6 -->
+      <div class="card">
+        <p class="qTitle">✅ Tugas 6 — Urutkan Langkah Aman Digital</p>
+        <p class="muted">Pilih urutan 1–4 (klik tombol angka di tiap langkah).</p>
+
+        <div class="row">
+          <div class="card" style="padding:14px;border-radius:18px;box-shadow:none">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+              <div><b>Kenali</b>
+                <div class="mini">Pesan aneh / minta data pribadi</div>
+              </div>
+              <div class="choices" style="gap:8px">
+                <div class="choice" data-order="kenali" data-num="1" style="flex:0 0 auto; padding:10px 12px;">1</div>
+                <div class="choice" data-order="kenali" data-num="2" style="flex:0 0 auto; padding:10px 12px;">2</div>
+                <div class="choice" data-order="kenali" data-num="3" style="flex:0 0 auto; padding:10px 12px;">3</div>
+                <div class="choice" data-order="kenali" data-num="4" style="flex:0 0 auto; padding:10px 12px;">4</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="padding:14px;border-radius:18px;box-shadow:none">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+              <div><b>Tolak</b>
+                <div class="mini">Jangan berikan data</div>
+              </div>
+              <div class="choices" style="gap:8px">
+                <div class="choice" data-order="tolak" data-num="1" style="flex:0 0 auto; padding:10px 12px;">1</div>
+                <div class="choice" data-order="tolak" data-num="2" style="flex:0 0 auto; padding:10px 12px;">2</div>
+                <div class="choice" data-order="tolak" data-num="3" style="flex:0 0 auto; padding:10px 12px;">3</div>
+                <div class="choice" data-order="tolak" data-num="4" style="flex:0 0 auto; padding:10px 12px;">4</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:12px">
+          <div class="card" style="padding:14px;border-radius:18px;box-shadow:none">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+              <div><b>Laporkan</b>
+                <div class="mini">Cerita ke orang tua/guru</div>
+              </div>
+              <div class="choices" style="gap:8px">
+                <div class="choice" data-order="laporkan" data-num="1" style="flex:0 0 auto; padding:10px 12px;">1</div>
+                <div class="choice" data-order="laporkan" data-num="2" style="flex:0 0 auto; padding:10px 12px;">2</div>
+                <div class="choice" data-order="laporkan" data-num="3" style="flex:0 0 auto; padding:10px 12px;">3</div>
+                <div class="choice" data-order="laporkan" data-num="4" style="flex:0 0 auto; padding:10px 12px;">4</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="padding:14px;border-radius:18px;box-shadow:none">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+              <div><b>Gunakan fitur</b>
+                <div class="mini">Blokir / report / privasi</div>
+              </div>
+              <div class="choices" style="gap:8px">
+                <div class="choice" data-order="fitur" data-num="1" style="flex:0 0 auto; padding:10px 12px;">1</div>
+                <div class="choice" data-order="fitur" data-num="2" style="flex:0 0 auto; padding:10px 12px;">2</div>
+                <div class="choice" data-order="fitur" data-num="3" style="flex:0 0 auto; padding:10px 12px;">3</div>
+                <div class="choice" data-order="fitur" data-num="4" style="flex:0 0 auto; padding:10px 12px;">4</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="feedback" id="fb6"></div>
+      </div>
+
+      <!-- Reflection -->
+      <div class="card">
+        <p class="qTitle">🧩 Refleksi Kelompok (Singkat)</p>
+        <p class="muted">Lengkapi kalimat: “Jika kami menerima pesan aneh di internet, kami akan…”</p>
+        <textarea id="ref" placeholder="Contoh: berhenti, menolak, lalu lapor orang tua/guru..."></textarea>
+        <div class="hint">
+          <b>Kalimat kunci:</b> Kalau ragu… <b>BERHENTI</b> dulu, lalu <b>TANYA</b> orang dewasa.
+        </div>
+      </div>
+
+      <!-- Score/Actions -->
+      <div class="scoreBox">
+        <div class="scoreLeft">
+          <div class="lbl">Cek Pemahaman (otomatis)</div>
+          <div class="val" id="score">—</div>
+          <div class="mini" id="scoreNote">Klik <b>Periksa Jawaban</b> untuk melihat hasil.</div>
+        </div>
+        <div class="actions">
+          <button class="btn good" id="checkBtn" type="button">Periksa Jawaban</button>
+          <button class="btn secondary" id="saveBtn" type="button">Simpan (di perangkat ini)</button>
+          <button class="btn secondary" id="loadBtn" type="button">Muat</button>
+          <button class="btn secondary" id="clearBtn" type="button">Reset Semua</button>
+          <button class="btn orange" type="button" onclick="window.print()">Print</button>
+        </div>
+      </div>
+
+      <div class="card" style="padding:14px">
+        <div class="mini">
+          <b>Catatan:</b> Worksheet ini bisa dipakai tanpa internet setelah file dibuka.
+          Tombol <b>Simpan</b> menyimpan jawaban ke browser perangkat ini (bukan ke server).
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ---------- Helpers ----------
+    const $ = (q, el = document) => el.querySelector(q);
+    const $$ = (q, el = document) => [...el.querySelectorAll(q)];
+    function showFb(id, html) {
+      const el = document.getElementById(id);
+      el.classList.add("show");
+      el.innerHTML = html;
+    }
+    function clearFb() {
+      $$(".feedback").forEach(f => { f.classList.remove("show"); f.innerHTML = ""; });
+    }
+    function getText(id) { return (document.getElementById(id).value || "").trim(); }
+
+    // ================== TIMER (20:00) ==================
+    const timeEl = $("#time");
+    const startBtn = $("#startBtn");
+    const pauseBtn = $("#pauseBtn");
+    const resetBtn = $("#resetBtn");
+
+    const TOTAL = 20 * 60;
+    let left = TOTAL;
+    let timer = null;
+
+    function fmt(s) {
+      const m = String(Math.floor(s / 60)).padStart(2, "0");
+      const ss = String(s % 60).padStart(2, "0");
+      return `${m}:${ss}`;
+    }
+    function renderTime() { timeEl.textContent = fmt(left); }
+    function stop() { if (timer) { clearInterval(timer); timer = null; } }
+    function tick() {
+      left = Math.max(0, left - 1);
+      renderTime();
+      if (left === 0) {
+        stop();
+        timeEl.style.color = "var(--bad)";
+      }
+    }
+    startBtn.addEventListener("click", () => { if (!timer) timer = setInterval(tick, 1000); });
+    pauseBtn.addEventListener("click", stop);
+    resetBtn.addEventListener("click", () => {
+      stop(); left = TOTAL; timeEl.style.color = "var(--ink)"; renderTime();
+    });
+    renderTime();
+
+    // ================== RANDOM SCENARIO ==================
+    const scenarios = [
+      {
+        id: "hadiah-alamat-telp",
+        name: "Hadiah + minta alamat & nomor",
+        from: "akun_tidak_dikenal",
+        msgHtml: `“Hai! Kamu menang hadiah 🎁<br/>Tolong kirim <b>nomor telepon</b> dan <b>alamat rumah</b> kamu ya, supaya hadiahnya bisa dikirim.”`,
+        t1: "BAHAYA",
+        requested: { nama: false, telp: true, alamat: true, warna: false, hobi: false },
+        t4: "menolak_lapor",
+        hintHtml: `<b>Tanda bahaya:</b> akun asing + minta nomor telepon & alamat rumah (data pribadi).`
+      },
+      {
+        id: "verifikasi-kartu-pelajar",
+        name: "Verifikasi akun + minta kartu pelajar",
+        from: "admin_game_official (??)",
+        msgHtml: `“Halo! Ini admin game. Untuk verifikasi akun, kirim <b>foto kartu pelajar</b> dan <b>nama lengkap</b> ya.”`,
+        t1: "BAHAYA",
+        requested: { nama: true, telp: false, alamat: false, warna: false, hobi: false },
+        t4: "menolak_lapor",
+        hintHtml: `<b>Tanda bahaya:</b> mengaku “admin” tapi minta identitas (foto kartu pelajar).`
+      },
+      {
+        id: "teman-baru-nama-sekolah",
+        name: "Teman baru + tanya identitas",
+        from: "temanBaru_123",
+        msgHtml: `“Hai! Aku teman baru. Kamu sekolah di mana? Namanya siapa lengkapnya?”`,
+        t1: "BAHAYA",
+        requested: { nama: true, telp: false, alamat: false, warna: false, hobi: false },
+        t4: "menolak_lapor",
+        hintHtml: `<b>Tanda bahaya:</b> orang asing mulai mengorek identitas (nama lengkap/sekolah).`
+      },
+      {
+        id: "polling-hobi-warna",
+        name: "Polling kelas: hobi & warna",
+        from: "teman_kelas",
+        msgHtml: `“Eh aku lagi bikin polling kelas. Kamu suka <b>warna apa</b> dan <b>hobinya</b> apa?”`,
+        t1: "AMAN",
+        requested: { nama: false, telp: false, alamat: false, warna: true, hobi: true },
+        t4: "abaikan",
+        hintHtml: `<b>Ini lebih aman:</b> yang ditanya hanya hobi & warna (data umum). Tetap jangan share data pribadi.`
+      }
+    ];
+
+    // ordering state
+    const orderState = { kenali: null, tolak: null, laporkan: null, fitur: null };
+
+    function resetAnswersVisual() {
+      delete document.body.dataset.t1;
+      delete document.body.dataset.t4;
+      $$('.choice[data-group="t1"], .choice[data-group="t4"]').forEach(el => el.classList.remove("active"));
+
+      $$('#t3 input[type="checkbox"]').forEach(cb => cb.checked = false);
+      $("#t2").value = "";
+      $("#t5").value = "";
+      $("#ref").value = "";
+
+      for (const k of ["kenali", "tolak", "laporkan", "fitur"]) orderState[k] = null;
+      $$('.choice[data-order]').forEach(el => el.classList.remove("active"));
+
+      clearFb();
+      $("#score").textContent = "—";
+      $("#scoreNote").innerHTML = "Klik <b>Periksa Jawaban</b> untuk melihat hasil.";
+    }
+
+    function pickScenario(forceId = null) {
+      const sc = forceId ? scenarios.find(x => x.id === forceId) : null;
+      const picked = sc || scenarios[Math.floor(Math.random() * scenarios.length)];
+      window.__SC = picked;
+
+      $("#scFrom").textContent = `Dari: ${picked.from}`;
+      $("#scMsg").innerHTML = picked.msgHtml;
+      $("#scHint").innerHTML = picked.hintHtml;
+      $("#scBadge").textContent = `Skenario: ${picked.name}`;
+
+      resetAnswersVisual();
+    }
+
+    // button now lives in scenario card
+    $("#newScBtn").addEventListener("click", () => {
+      pickScenario();
+      $("#scoreNote").innerHTML = "🎲 Skenario diacak. Isi jawaban sesuai pesan baru.";
+    });
+
+    // ================== SINGLE SELECT (Task 1 & 4) ==================
+    function selectChoice(group, value) {
+      document.body.dataset[group] = value;
+      $$(`.choice[data-group="${group}"]`).forEach(el => {
+        el.classList.toggle("active", el.dataset.value === value);
+      });
+    }
+    $$(".choice[data-group]").forEach(el => {
+      el.addEventListener("click", () => selectChoice(el.dataset.group, el.dataset.value));
+    });
+
+    // ================== ORDERING (Task 6) ==================
+    $$('.choice[data-order]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const key = btn.dataset.order;
+        const num = btn.dataset.num;
+        $$(`.choice[data-order="${key}"]`).forEach(x => x.classList.remove("active"));
+        btn.classList.add("active");
+        orderState[key] = num;
+      });
+    });
+
+    // ================== CHECK ANSWERS (dynamic by scenario) ==================
+    function check() {
+      const sc = window.__SC;
+      let score = 0;
+      let max = 6;
+
+      // T1
+      const t1 = document.body.dataset.t1 || "";
+      if (t1 === sc.t1) {
+        score++;
+        showFb("fb1", `✅ <strong>Benar!</strong> Untuk skenario ini: <b>${sc.t1}</b>.`);
+      } else {
+        showFb("fb1", `⚠️ <strong>Belum tepat.</strong> Untuk skenario ini jawabannya: <b>${sc.t1}</b>.`);
+      }
+
+      // T2
+      const t2 = getText("t2").toLowerCase();
+      const t2ok =
+        t2.length >= 10 &&
+        (["alamat", "telepon", "nomor", "data", "pribadi", "akun", "tidak dikenal", "orang asing", "kartu", "pelajar", "sekolah", "verifikasi", "hadiah"].some(k => t2.includes(k)));
+
+      if (t2ok) {
+        score++;
+        showFb("fb2", "✅ <strong>Oke!</strong> Jawabanmu sudah menyebutkan alasan/risiko.");
+      } else {
+        if (sc.id === "polling-hobi-warna") {
+          showFb("fb2", "💡 <strong>Tambahkan ya:</strong> Ini lebih aman karena hanya tanya <b>hobi</b> dan <b>warna</b> (data umum), tapi tetap jangan share data pribadi.");
+        } else if (sc.id === "verifikasi-kartu-pelajar") {
+          showFb("fb2", "🧠 <strong>Tambahkan ya:</strong> Ini bahaya karena minta <b>foto kartu pelajar</b> dan <b>nama lengkap</b> (data pribadi).");
+        } else if (sc.id === "teman-baru-nama-sekolah") {
+          showFb("fb2", "🧠 <strong>Tambahkan ya:</strong> Ini bahaya karena orang asing tanya <b>nama lengkap</b> dan <b>sekolah</b> (identitas).");
+        } else {
+          showFb("fb2", "🧠 <strong>Tambahkan ya:</strong> Sebutkan data apa yang diminta dan kenapa itu berisiko.");
+        }
+      }
+
+      // T3
+      const c = {
+        nama: $('#t3 input[data-key="nama"]').checked,
+        telp: $('#t3 input[data-key="telp"]').checked,
+        alamat: $('#t3 input[data-key="alamat"]').checked,
+        warna: $('#t3 input[data-key="warna"]').checked,
+        hobi: $('#t3 input[data-key="hobi"]').checked
+      };
+      const req = sc.requested;
+      const t3ok =
+        c.nama === req.nama &&
+        c.telp === req.telp &&
+        c.alamat === req.alamat &&
+        c.warna === req.warna &&
+        c.hobi === req.hobi;
+
+      if (t3ok) {
+        score++;
+        if (sc.id === "verifikasi-kartu-pelajar") {
+          showFb("fb3", "✅ <strong>Benar!</strong> Pesan meminta <b>nama lengkap</b> dan juga <b>foto kartu pelajar</b> (data pribadi).");
+        } else if (sc.id === "teman-baru-nama-sekolah") {
+          showFb("fb3", "✅ <strong>Benar!</strong> Pesan meminta <b>nama lengkap</b> (dan info sekolah juga sebaiknya tidak dibagikan ke orang asing).");
+        } else {
+          showFb("fb3", "✅ <strong>Benar!</strong> Kamu mencentang data yang sesuai dengan pesan.");
+        }
+      } else {
+        if (sc.id === "polling-hobi-warna") {
+          showFb("fb3", "⚠️ <strong>Cek lagi.</strong> Pesan ini hanya meminta <b>warna favorit</b> dan <b>hobi</b> (data umum).");
+        } else if (sc.id === "verifikasi-kartu-pelajar") {
+          showFb("fb3", "⚠️ <strong>Cek lagi.</strong> Centang <b>nama lengkap</b>. (Dan ingat: pesan juga minta <b>foto kartu pelajar</b>.)");
+        } else if (sc.id === "teman-baru-nama-sekolah") {
+          showFb("fb3", "⚠️ <strong>Cek lagi.</strong> Centang <b>nama lengkap</b>. (Dan ingat: tanya <b>sekolah</b> juga termasuk mengorek identitas.)");
+        } else {
+          showFb("fb3", "⚠️ <strong>Cek lagi.</strong> Centang hanya data yang diminta di pesan.");
+        }
+      }
+
+      // T4
+      const t4 = document.body.dataset.t4 || "";
+      if (t4 === sc.t4) {
+        score++;
+        if (sc.t1 === "AMAN") {
+          showFb("fb4", "✅ <strong>Oke!</strong> Ini lebih aman. Kamu boleh jawab seperlunya, tapi tetap jangan share data pribadi.");
+        } else {
+          showFb("fb4", "✅ <strong>Tepat!</strong> Tindakan aman: menolak dan melapor orang tua/guru.");
+        }
+      } else {
+        if (sc.t1 === "AMAN") {
+          showFb("fb4", "💡 <strong>Untuk yang aman:</strong> boleh jawab seperlunya. Pilihan paling aman di worksheet ini: <b>abaikan</b> (agar tidak oversharing).");
+        } else {
+          showFb("fb4", "✅ <strong>Yang paling aman:</strong> menolak dan melaporkan ke orang tua/guru.");
+        }
+      }
+
+      // T5
+      const t5 = getText("t5").toLowerCase();
+      const t5ok =
+        t5.length >= 10 &&
+        (
+          (t5.includes("maaf") || t5.includes("tidak") || t5.includes("nggak") || t5.includes("ga")) &&
+          (t5.includes("data") || t5.includes("pribadi") || t5.includes("orang tua") || t5.includes("guru") || t5.includes("tanya"))
+        );
+
+      if (t5ok) {
+        score++;
+        showFb("fb5", "✅ <strong>Bagus!</strong> Kalimatmu sopan dan aman.");
+      } else {
+        if (sc.t1 === "AMAN") {
+          showFb("fb5", "💡 <strong>Kalau ragu tetap bisa menolak:</strong> “Makasih, tapi aku tidak mau membagikan info pribadi.”");
+        } else {
+          showFb("fb5", "💡 <strong>Contoh aman:</strong> “Maaf, aku tidak bisa membagikan data pribadi.” atau “Aku harus tanya orang tua/guru dulu.”");
+        }
+      }
+
+      // T6 (fixed order)
+      const t6ok = orderState.kenali === "1" && orderState.tolak === "2" && orderState.laporkan === "3" && orderState.fitur === "4";
+      if (t6ok) {
+        score++;
+        showFb("fb6", "✅ <strong>Benar!</strong> Urutan aman: Kenali → Tolak → Laporkan → Gunakan fitur.");
+      } else {
+        showFb("fb6", "🧩 <strong>Ingat urutannya:</strong> <b>Kenali (1)</b> → <b>Tolak (2)</b> → <b>Laporkan (3)</b> → <b>Gunakan fitur (4)</b>.");
+      }
+
+      $("#score").textContent = `${score} / ${max}`;
+      $("#scoreNote").innerHTML =
+        (score === max)
+          ? "🎉 <b>Hebat!</b> Kelompokmu sudah paham langkah aman digital."
+          : "✅ Sudah dicek. Kalau ada yang belum tepat, perbaiki bersama kelompok ya.";
+    }
+    $("#checkBtn").addEventListener("click", check);
+
+    // ================== SAVE / LOAD / CLEAR ==================
+    const KEY = "worksheet_s31_pesan_misterius_random_v2";
+
+    function getState() {
+      const sc = window.__SC;
+      return {
+        scenarioId: sc?.id || null,
+        nama: $("#nama").value || "",
+        kelompok: $("#kelompok").value || "",
+        tanggal: $("#tanggal").value || "",
+        catatan: $("#catatan").value || "",
+        t1: document.body.dataset.t1 || "",
+        t2: $("#t2").value || "",
+        t3: {
+          nama: $('#t3 input[data-key="nama"]').checked,
+          telp: $('#t3 input[data-key="telp"]').checked,
+          alamat: $('#t3 input[data-key="alamat"]').checked,
+          warna: $('#t3 input[data-key="warna"]').checked,
+          hobi: $('#t3 input[data-key="hobi"]').checked
+        },
+        t4: document.body.dataset.t4 || "",
+        t5: $("#t5").value || "",
+        order: { ...orderState },
+        ref: $("#ref").value || "",
+        timerLeft: left
+      };
+    }
+
+    function setChoice(group, value) {
+      document.body.dataset[group] = value || "";
+      $$(`.choice[data-group="${group}"]`).forEach(el => {
+        el.classList.toggle("active", el.dataset.value === value);
+      });
+    }
+
+    function setState(s) {
+      if (s.scenarioId) {
+        pickScenario(s.scenarioId);
+      }
+
+      $("#nama").value = s.nama || "";
+      $("#kelompok").value = s.kelompok || "";
+      $("#tanggal").value = s.tanggal || "";
+      $("#catatan").value = s.catatan || "";
+
+      setChoice("t1", s.t1 || "");
+      $("#t2").value = s.t2 || "";
+
+      const t3 = s.t3 || {};
+      $('#t3 input[data-key="nama"]').checked = !!t3.nama;
+      $('#t3 input[data-key="telp"]').checked = !!t3.telp;
+      $('#t3 input[data-key="alamat"]').checked = !!t3.alamat;
+      $('#t3 input[data-key="warna"]').checked = !!t3.warna;
+      $('#t3 input[data-key="hobi"]').checked = !!t3.hobi;
+
+      setChoice("t4", s.t4 || "");
+      $("#t5").value = s.t5 || "";
+
+      const ord = s.order || {};
+      for (const k of ["kenali", "tolak", "laporkan", "fitur"]) {
+        orderState[k] = ord[k] || null;
+        $$(`.choice[data-order="${k}"]`).forEach(btn => {
+          btn.classList.toggle("active", btn.dataset.num === orderState[k]);
+        });
+      }
+
+      $("#ref").value = s.ref || "";
+
+      stop();
+      left = (typeof s.timerLeft === "number") ? s.timerLeft : TOTAL;
+      timeEl.style.color = (left === 0) ? "var(--bad)" : "var(--ink)";
+      renderTime();
+
+      clearFb();
+      $("#score").textContent = "—";
+      $("#scoreNote").innerHTML = "📂 Data berhasil dimuat. Klik <b>Periksa Jawaban</b> bila perlu.";
+    }
+
+    $("#saveBtn").addEventListener("click", () => {
+      localStorage.setItem(KEY, JSON.stringify(getState()));
+      $("#scoreNote").innerHTML = "💾 Tersimpan di perangkat ini.";
+    });
+
+    $("#loadBtn").addEventListener("click", () => {
+      const raw = localStorage.getItem(KEY);
+      if (!raw) {
+        $("#scoreNote").innerHTML = "Belum ada data tersimpan.";
+        return;
+      }
+      try {
+        setState(JSON.parse(raw));
+      } catch (e) {
+        $("#scoreNote").innerHTML = "Data tersimpan rusak. Coba reset.";
+      }
+    });
+
+    $("#clearBtn").addEventListener("click", () => {
+      resetAnswersVisual();
+      stop();
+      left = TOTAL;
+      timeEl.style.color = "var(--ink)";
+      renderTime();
+      $("#scoreNote").innerHTML = "🔄 Semua jawaban direset.";
+    });
+
+    // ================== Nice defaults + INIT ==================
+    (function () {
+      const t = $("#tanggal");
+      if (!t.value) {
+        const d = new Date();
+        const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+        t.value = `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+      }
+    })();
+
+    pickScenario(); // random on load
+  </script>
+</body>
+
+</html>
