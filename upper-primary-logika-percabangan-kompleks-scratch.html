@@ -1,0 +1,1725 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Upper Primary – Logika Percabangan Kompleks (Scratch)</title>
+  <style>
+    :root {
+      --bg1: #F7FAFF;
+      --bg2: #ECFEFF;
+      --card: #FFFFFF;
+      --ink: #0F172A;
+      --muted: #475569;
+      --line: rgba(226, 232, 240, .95);
+      --brand: #4F46E5;
+      --brand2: #06B6D4;
+      --ok: #16A34A;
+      --bad: #DC2626;
+      --radius: 22px;
+      --shadow: 0 18px 40px rgba(15, 23, 42, .08);
+      --shadow2: 0 10px 22px rgba(15, 23, 42, .06);
+      --focus: 0 0 0 4px rgba(79, 70, 229, .18);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 520px at 10% 0%, rgba(6, 182, 212, .18), transparent 60%),
+        radial-gradient(1200px 520px at 90% 0%, rgba(79, 70, 229, .16), transparent 55%),
+        linear-gradient(180deg, var(--bg1), #F3F6FF 45%, var(--bg2));
+      min-height: 100vh;
+    }
+
+    .app {
+      width: min(1100px, 96vw);
+      margin: 18px auto 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .72);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow2);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(79, 70, 229, .18), rgba(6, 182, 212, .20));
+      border: 1px solid rgba(226, 232, 240, .9);
+      display: grid;
+      place-items: center;
+      font-weight: 1000;
+      color: rgba(79, 70, 229, 1);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.15;
+      letter-spacing: .2px
+    }
+
+    .brand .sub {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 800;
+      margin-top: 2px
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .9);
+      padding: 10px 12px;
+      border-radius: 16px;
+      font-weight: 1000;
+      cursor: pointer;
+      box-shadow: 0 8px 16px rgba(15, 23, 42, .06);
+      transition: transform .06s ease, box-shadow .12s ease, background .12s ease;
+      user-select: none;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px)
+    }
+
+    .btn:active {
+      transform: translateY(0px)
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, rgba(79, 70, 229, .12), rgba(6, 182, 212, .14));
+      border-color: rgba(79, 70, 229, .18);
+    }
+
+    .btn.ghost {
+      background: transparent;
+      box-shadow: none
+    }
+
+    .btn:focus {
+      outline: none;
+      box-shadow: var(--focus);
+    }
+
+    .progressWrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 260px;
+      justify-content: flex-end;
+    }
+
+    .progress {
+      width: 180px;
+      height: 10px;
+      background: rgba(226, 232, 240, .9);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(226, 232, 240, .95);
+    }
+
+    .bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, rgba(79, 70, 229, .85), rgba(6, 182, 212, .85));
+      border-radius: 999px;
+      transition: width .25s ease;
+    }
+
+    .count {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 900;
+    }
+
+    .stage {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, .60);
+      box-shadow: var(--shadow);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: calc(100vh - 145px);
+    }
+
+    .slide {
+      flex: 1;
+      background: rgba(255, 255, 255, .68);
+      border: 1px solid rgba(229, 234, 245, .95);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow2);
+      padding: 20px;
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+    }
+
+    .slideInner {
+      max-width: 980px;
+      margin: 0 auto;
+      max-height: calc(100vh - 190px);
+      overflow-y: auto;
+      padding-right: 8px;
+    }
+
+    .slideInner::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    .slideInner::-webkit-scrollbar-thumb {
+      background: rgba(96, 112, 153, .25);
+      border-radius: 999px;
+      border: 3px solid rgba(255, 255, 255, .9);
+    }
+
+    .slideInner::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    h2 {
+      margin: 6px 0 10px;
+      font-size: 30px;
+      letter-spacing: -.3px
+    }
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 18px
+    }
+
+    p {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-weight: 800;
+      line-height: 1.55
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 1000;
+      font-size: 12px;
+      letter-spacing: .2px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(79, 70, 229, .16);
+      background: rgba(79, 70, 229, .06);
+      color: rgba(55, 65, 81, .95);
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px
+    }
+
+    .cols2 {
+      grid-template-columns: 1fr 1fr
+    }
+
+    @media (max-width: 860px) {
+      .cols2 {
+        grid-template-columns: 1fr
+      }
+
+      .progressWrap {
+        min-width: unset
+      }
+
+      .progress {
+        width: 130px
+      }
+
+      h2 {
+        font-size: 26px
+      }
+    }
+
+    .card {
+      background: rgba(255, 255, 255, .92);
+      border: 1px solid rgba(226, 232, 240, .95);
+      border-radius: 22px;
+      padding: 14px;
+      box-shadow: 0 10px 18px rgba(15, 23, 42, .06);
+    }
+
+    .hint {
+      background: rgba(6, 182, 212, .10);
+      border: 1px dashed rgba(6, 182, 212, .35);
+      border-radius: 18px;
+      padding: 12px 14px;
+      color: rgba(30, 41, 59, .92);
+      font-weight: 900;
+      line-height: 1.5;
+    }
+
+    .miniRow {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .92);
+      color: rgba(30, 41, 59, .92);
+      font-weight: 1000;
+      font-size: 12px;
+    }
+
+    ul.list {
+      margin: 8px 0 0 18px;
+      color: var(--muted);
+      font-weight: 850;
+      line-height: 1.55
+    }
+
+    .choices {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px
+    }
+
+    .choice {
+      border: 1px solid rgba(226, 232, 240, .95);
+      border-radius: 18px;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, .96);
+      font-weight: 950;
+      color: rgba(30, 41, 59, .96);
+      cursor: pointer;
+      user-select: none;
+      transition: transform .06s ease, border-color .12s ease, background .12s ease;
+    }
+
+    .choice:hover {
+      transform: translateY(-1px)
+    }
+
+    .choice.active {
+      border-color: rgba(79, 70, 229, .35);
+      background: rgba(79, 70, 229, .06)
+    }
+
+    .choice.ok {
+      border-color: rgba(22, 163, 74, .35);
+      background: rgba(22, 163, 74, .08)
+    }
+
+    .choice.bad {
+      border-color: rgba(220, 38, 38, .35);
+      background: rgba(220, 38, 38, .08)
+    }
+
+    .feedback {
+      display: none;
+      margin-top: 10px;
+      border-radius: 18px;
+      padding: 12px 14px;
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .92);
+      color: var(--muted);
+      font-weight: 900;
+      line-height: 1.5;
+    }
+
+    .feedback.show {
+      display: block
+    }
+
+    .fbOk {
+      border-color: rgba(22, 163, 74, .35);
+      background: rgba(22, 163, 74, .08);
+      color: rgba(15, 23, 42, .92)
+    }
+
+    .fbBad {
+      border-color: rgba(220, 38, 38, .35);
+      background: rgba(220, 38, 38, .08);
+      color: rgba(15, 23, 42, .92)
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .92);
+      font-weight: 950;
+      color: rgba(30, 41, 59, .92);
+      font-size: 12px;
+    }
+
+    .step {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 10px 12px;
+      border-radius: 18px;
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .96);
+    }
+
+    .dot {
+      width: 26px;
+      height: 26px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: rgba(79, 70, 229, .10);
+      border: 1px solid rgba(79, 70, 229, .18);
+      font-weight: 1000;
+      color: rgba(79, 70, 229, .95);
+      flex: 0 0 auto;
+    }
+
+    .kbd {
+      font-family: var(--mono);
+      padding: 2px 6px;
+      border-radius: 10px;
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .92);
+      font-weight: 900;
+      font-size: 12px;
+    }
+
+    /* Mini simulator */
+    .sim {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 860px) {
+      .sim {
+        grid-template-columns: 1fr
+      }
+    }
+
+    .bigBtn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid rgba(226, 232, 240, .95);
+      border-radius: 18px;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, .96);
+      cursor: pointer;
+      font-weight: 1000;
+    }
+
+    .bigBtn .mini {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 900
+    }
+
+    .bigBtn.on {
+      border-color: rgba(22, 163, 74, .35);
+      background: rgba(22, 163, 74, .08)
+    }
+
+    .bigBtn.off {
+      border-color: rgba(220, 38, 38, .25);
+      background: rgba(220, 38, 38, .06)
+    }
+
+    .door {
+      border: 1px solid rgba(226, 232, 240, .95);
+      border-radius: 22px;
+      padding: 14px;
+      background: rgba(255, 255, 255, .92);
+      box-shadow: 0 10px 18px rgba(15, 23, 42, .06);
+    }
+
+    .doorFace {
+      height: 170px;
+      border-radius: 18px;
+      border: 1px dashed rgba(96, 112, 153, .35);
+      display: grid;
+      place-items: center;
+      font-size: 56px;
+      background: linear-gradient(180deg, rgba(79, 70, 229, .05), rgba(6, 182, 212, .06));
+      user-select: none;
+      cursor: pointer;
+    }
+
+    .doorMsg {
+      margin-top: 10px;
+      font-weight: 950;
+      color: rgba(30, 41, 59, .92);
+    }
+
+    .switchRow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ACCESS GATE -->
+  <div id="accessGate" style="
+  position:fixed;
+  inset:0;
+  background:linear-gradient(135deg,#eef2ff,#ecfeff);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+">
+    <div class="card" style="max-width:420px;width:92%;text-align:center">
+      <h2>🔐 Kode Akses</h2>
+      <p>Masukkan kode untuk memulai sesi.</p>
+
+      <input id="accessInput" class="input" placeholder="MASUKKAN KODE" autocomplete="off"
+        style="text-align:center;font-weight:900;letter-spacing:2px" />
+
+      <button class="btn primary" id="accessBtn" style="margin-top:12px">
+        Masuk
+      </button>
+
+      <div class="feedback" id="accessFb" style="margin-top:10px"></div>
+
+      <div class="hint" style="margin-top:10px">
+        Kode diberikan oleh guru.
+      </div>
+    </div>
+  </div>
+
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">UP</div>
+        <div>
+          <h1>Upper Primary</h1>
+          <div class="sub">Logika Percabangan Kompleks di Scratch (AND • OR • NOT)</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="btn ghost" id="btnHome" title="Kembali ke awal">🏠 Awal</button>
+        <button class="btn" id="btnPrev" title="Sebelumnya (←)">←</button>
+        <button class="btn primary" id="btnNext" title="Berikutnya (→)">→</button>
+      </div>
+
+      <div class="progressWrap">
+        <div class="progress" aria-label="Progress">
+          <div class="bar" id="bar"></div>
+        </div>
+        <div class="count" id="count">1/1</div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="slide" role="region" aria-label="Slide">
+        <div class="slideInner" id="content"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const slides = [
+      {
+        title: "Pembuka",
+        html: `
+          <div class="kicker">✨ Mulai</div>
+          <h2>Komputer Bisa “Memilih”</h2>
+          <p>Hari ini kita bikin komputer mengambil keputusan dengan aturan yang jelas. Kita juga bikin mini game <b>Pintu Digital</b> di Scratch.</p>
+
+          <div class="grid cols2" style="margin-top:10px">
+            <div class="card">
+              <h3>Target kita</h3>
+              <ul class="list">
+                <li>Paham bedanya <b>AND</b>, <b>OR</b>, <b>NOT</b></li>
+                <li>Bisa pakai <b>if – then – else</b> di Scratch</li>
+                <li>Bisa jelaskan aturan game “pintu”</li>
+              </ul>
+              <div class="hint" style="margin-top:12px">Tenang, kita main sambil belajar. Tidak harus cepat.</div>
+            </div>
+            <div class="card">
+              <h3>Siap mulai?</h3>
+              <div class="choices" data-quiz="ready">
+                <div class="choice" data-answer="right">✅ Siap!</div>
+                <div class="choice" data-answer="right">✅ Siap banget!</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="ready"></div>
+              <div class="miniRow" style="margin-top:12px">
+                <button class="btn primary" data-goto="1">🚀 Mulai</button>
+              </div>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Apersepsi",
+        html: `
+          <div class="kicker">🧠 Pemanasan</div>
+          <h2>Kapan butuh lebih dari 1 syarat?</h2>
+          <p>Contoh: “Boleh masuk kelas kalau <b>sudah hadir</b> dan <b>membawa buku</b>.”</p>
+
+          <div class="grid cols2" style="margin-top:10px">
+            <div class="card">
+              <h3>Poll cepat</h3>
+              <p>Kalau <b>sudah hadir</b> tapi <b>lupa buku</b>, boleh masuk?</p>
+              <div class="choices" data-quiz="poll1">
+                <div class="choice" data-answer="right">Tidak dulu (cari buku dulu)</div>
+                <div class="choice" data-answer="wrong">Boleh, tidak masalah</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="poll1"></div>
+            </div>
+            <div class="card">
+              <h3>Kata kuncinya</h3>
+              <div class="miniRow" style="margin-top:6px">
+                <span class="tag">Syarat 1</span>
+                <span class="tag">Syarat 2</span>
+                <span class="tag">Keputusan</span>
+              </div>
+              <div class="hint" style="margin-top:12px">Komputer juga begitu. Dia butuh syarat yang jelas.</div>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Percabangan",
+        html: `
+    <div class="kicker">🧩 Konsep</div>
+    <h2>Apa itu percabangan?</h2>
+    <p>
+      Percabangan itu seperti kamu lagi di <b>persimpangan jalan</b>.<br>
+      Kamu harus memilih: <b>jalan A</b> atau <b>jalan B</b>.<br>
+      Komputer juga begitu: dia memilih berdasarkan <b>kondisi</b>.
+    </p>
+
+    <div class="hint" style="margin-top:10px">
+      <b>Kondisi</b> itu pertanyaan yang jawabannya cuma 2: <b>YA</b> atau <b>TIDAK</b>.
+      <br>Contoh: “Apakah kamu sudah punya kunci?”
+    </div>
+
+    <div class="grid cols2" style="margin-top:12px">
+      <div class="card">
+        <h3>Kalau jawabannya YA (benar)…</h3>
+        <div class="pill">✅ Jalan A</div>
+        <p style="margin-top:10px">
+          Contoh: “Kalau lampu <b>ON</b> → ruangan jadi terang.”
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Kalau jawabannya TIDAK (salah)…</h3>
+        <div class="pill">❌ Jalan B</div>
+        <p style="margin-top:10px">
+          Contoh: “Kalau lampu <b>OFF</b> → ruangan jadi gelap.”
+        </p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h3>Mini latihan (klik jawaban)</h3>
+      <p style="margin:0 0 10px">
+        <b>Situasi 1:</b> Kalau <b>hujan</b>, kamu sebaiknya…
+      </p>
+
+      <div class="choices" data-quiz="branch1">
+        <div class="choice" data-answer="right">Pakai payung / jas hujan</div>
+        <div class="choice" data-answer="wrong">Tetap keluar tanpa perlindungan</div>
+      </div>
+      <div class="feedback" data-quiz-feedback="branch1"></div>
+
+      <p style="margin:12px 0 10px">
+        <b>Situasi 2:</b> Kalau <b>belum izin orang tua</b>, kamu…
+      </p>
+
+      <div class="choices" data-quiz="branch2">
+        <div class="choice" data-answer="right">Tanya/izin dulu</div>
+        <div class="choice" data-answer="wrong">Langsung pergi saja</div>
+      </div>
+      <div class="feedback" data-quiz-feedback="branch2"></div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h3>Di Scratch, kita pakai ini</h3>
+      <div class="miniRow">
+        <span class="tag">if</span>
+        <span class="tag">then</span>
+        <span class="tag">else</span>
+      </div>
+
+      <div class="hint" style="margin-top:10px">
+        Artinya begini:
+        <br><b>if</b> (kalau kondisi YA) <b>then</b> lakukan ini,
+        <br>kalau TIDAK → <b>else</b> lakukan yang lain.
+      </div>
+
+      <p style="margin-top:10px">
+        Nanti kita pakai untuk game <b>Pintu Digital</b>: terbuka atau terkunci.
+      </p>
+    </div>
+  `
+      },
+
+
+      {
+        title: "AND",
+        html: `
+    <div class="kicker">🔗 Logika</div>
+    <h2>AND = semuanya harus lengkap</h2>
+
+    <p>
+      Logika <b>AND</b> artinya: <br>
+      <b>tidak boleh setengah-setengah</b>.<br>
+      Semua syarat harus ada.
+    </p>
+
+    <div class="hint" style="margin-top:10px">
+      Bayangkan seperti mau masuk rumah.<br>
+      Kalau cuma pegang kunci <b>atau</b> cuma punya kartu, <br>
+      <b>belum tentu bisa masuk</b>.
+    </div>
+
+    <div class="grid cols2" style="margin-top:14px">
+
+      <!-- INTERAKTIF -->
+      <div class="card">
+        <h3>Coba kita cek bareng 👇</h3>
+        <p>
+          Aturannya:<br>
+          <b>“Boleh masuk kalau punya kunci DAN punya kartu.”</b>
+        </p>
+
+        <div class="choices" data-select-group="andCheck" data-limit="2">
+          <div class="choice" data-key="key">🔑 Aku punya kunci</div>
+          <div class="choice" data-key="card">💳 Aku punya kartu</div>
+        </div>
+
+        <div class="miniRow" style="margin-top:12px">
+          <button class="btn primary miniBtn" data-check-and>Periksa</button>
+          <button class="btn ghost miniBtn" data-reset-and>Ulangi</button>
+        </div>
+
+        <div class="feedback" id="andFb"></div>
+      </div>
+
+      <!-- PENJELASAN -->
+      <div class="card">
+        <h3>Apa yang terjadi?</h3>
+
+        <ul class="list">
+          <li>✔️ Kunci <b>dan</b> kartu ada → <b>boleh masuk</b></li>
+          <li>❌ Kunci saja → <b>belum boleh</b></li>
+          <li>❌ Kartu saja → <b>belum boleh</b></li>
+        </ul>
+
+        <div class="hint" style="margin-top:10px">
+          AND itu artinya:<br>
+          <b>“harus ini DAN itu”</b>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h3>Di Scratch nanti…</h3>
+      <p>
+        Scratch akan mengecek:<br>
+        “Apakah punya kunci <b>dan</b> punya kartu?”
+      </p>
+
+      <div class="miniRow">
+        <span class="tag">if</span>
+        <span class="tag">AND</span>
+        <span class="tag">then</span>
+      </div>
+
+      <p style="margin-top:10px">
+        Kalau jawabannya <b>YA</b> → pintu terbuka.<br>
+        Kalau <b>TIDAK</b> → pintu tetap terkunci.
+      </p>
+    </div>
+  `
+      },
+
+      {
+        title: "OR",
+        html: `
+    <div class="kicker">🔀 Logika</div>
+    <h2>OR = salah satu sudah cukup</h2>
+
+    <p>
+      Logika <b>OR</b> artinya:<br>
+      kamu boleh pilih <b>salah satu</b> syarat.<br>
+      Tidak perlu dua-duanya.
+    </p>
+
+    <div class="hint" style="margin-top:10px">
+      Bayangkan kamu mau masuk perpustakaan.<br>
+      Kamu boleh masuk kalau punya <b>kartu</b> <b>ATAU</b> punya <b>izin</b>.
+    </div>
+
+    <div class="grid cols2" style="margin-top:14px">
+
+      <!-- INTERAKTIF -->
+      <div class="card">
+        <h3>Coba kita cek bareng 👇</h3>
+        <p>
+          Aturannya:<br>
+          <b>“Boleh masuk kalau punya kartu ATAU punya izin.”</b>
+        </p>
+
+        <div class="choices" data-select-group="orCheck" data-limit="2">
+          <div class="choice" data-key="card">💳 Aku punya kartu</div>
+          <div class="choice" data-key="izin">📝 Aku punya izin</div>
+        </div>
+
+        <div class="miniRow" style="margin-top:12px">
+          <button class="btn primary miniBtn" data-check-or>Periksa</button>
+          <button class="btn ghost miniBtn" data-reset-or>Ulangi</button>
+        </div>
+
+        <div class="feedback" id="orFb"></div>
+
+        <div class="hint" style="margin-top:12px">
+          Tips: coba pilih <b>1</b> dulu, lalu periksa. Setelah itu coba pilih <b>2</b>.
+        </div>
+      </div>
+
+      <!-- PENJELASAN -->
+      <div class="card">
+        <h3>Kapan boleh masuk?</h3>
+        <ul class="list">
+          <li>✔️ Punya kartu saja → <b>boleh</b></li>
+          <li>✔️ Punya izin saja → <b>boleh</b></li>
+          <li>✔️ Punya dua-duanya → <b>boleh juga</b></li>
+          <li>❌ Tidak punya dua-duanya → <b>belum boleh</b></li>
+        </ul>
+
+        <div class="hint" style="margin-top:10px">
+          OR itu artinya:<br>
+          <b>“boleh ini ATAU itu”</b>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h3>Di Scratch nanti…</h3>
+      <p>
+        Scratch akan mengecek:<br>
+        “Apakah punya kartu <b>atau</b> punya izin?”
+      </p>
+
+      <div class="miniRow">
+        <span class="tag">if</span>
+        <span class="tag">OR</span>
+        <span class="tag">then</span>
+      </div>
+
+      <p style="margin-top:10px">
+        Kalau jawabannya <b>YA</b> → boleh masuk.<br>
+        Kalau <b>TIDAK</b> → cari salah satu syaratnya.
+      </p>
+    </div>
+  `
+      },
+
+      {
+        title: "NOT",
+        html: `
+    <div class="kicker">↩️ Logika</div>
+    <h2>NOT = dibalik</h2>
+
+    <p>
+      Logika <b>NOT</b> itu seperti tombol <b>kebalikan</b>.<br>
+      Kalau aslinya <b>YA</b>, jadi <b>TIDAK</b>.<br>
+      Kalau aslinya <b>TIDAK</b>, jadi <b>YA</b>.
+    </p>
+
+    <div class="hint" style="margin-top:10px">
+      Kita coba pelan-pelan ya. Klik tombolnya, lalu lihat apa yang berubah.
+    </div>
+
+    <div class="grid cols2" style="margin-top:14px">
+
+      <!-- INTERAKTIF -->
+      <div class="card">
+        <h3>Coba ubah kondisi 👇</h3>
+
+        <div class="bigBtn off" data-toggle-not="rain">
+          <span id="rainText">🌧️ Sekarang: HUJAN</span>
+          <span class="mini">(klik untuk ganti)</span>
+        </div>
+
+        <div class="card" style="margin-top:12px; box-shadow:none">
+          <h3 style="margin:0 0 8px">Apa artinya?</h3>
+
+          <div class="miniRow">
+            <span class="tag" id="rainTag">Hujan</span>
+            <span class="tag" id="notRainTag">NOT hujan = Tidak hujan</span>
+          </div>
+        </div>
+
+        <div class="hint" style="margin-top:12px">
+          Kalau kondisi berubah, hasil <b>NOT</b>-nya ikut berubah.
+        </div>
+      </div>
+
+      <!-- PENJELASAN -->
+      <div class="card">
+        <h3>Contoh lain yang gampang</h3>
+        <ul class="list">
+          <li>NOT lampu menyala → lampu mati</li>
+          <li>NOT menyentuh garis → tidak menyentuh garis</li>
+          <li>NOT kalah → belum kalah</li>
+        </ul>
+
+        <div class="card" style="margin-top:12px">
+          <h3 style="margin:0 0 8px">Quiz cepat</h3>
+          <p style="margin:0 0 10px">NOT “Lapar” artinya…</p>
+
+          <div class="choices" data-quiz="not1">
+            <div class="choice" data-answer="right">Tidak lapar</div>
+            <div class="choice" data-answer="wrong">Lapar banget</div>
+          </div>
+          <div class="feedback" data-quiz-feedback="not1"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h3>Di Scratch nanti…</h3>
+      <p>
+        Scratch bisa mengecek kondisi seperti ini:<br>
+        <b>NOT menyentuh warna merah</b>
+      </p>
+
+      <div class="miniRow">
+        <span class="tag">if</span>
+        <span class="tag">NOT</span>
+        <span class="tag">then</span>
+      </div>
+
+      <p style="margin-top:10px">
+        Artinya: lakukan sesuatu <b>selama tidak menyentuh</b> warna itu.
+      </p>
+    </div>
+  `
+      },
+
+
+      {
+        title: "Kenalan Game",
+        html: `
+    <div class="kicker">🎮 Mini Game Scratch</div>
+    <h2>Pintu Digital: Masuk atau Tidak?</h2>
+
+    <p>
+      Kita akan bikin game sederhana di Scratch.<br>
+      Kamu “mengambil” barang dulu, lalu kamu cek pintunya: <b>terbuka atau terkunci</b>.
+    </p>
+
+    <div class="hint" style="margin-top:10px">
+      Game ini bukan soal cepat-cepat. Ini soal <b>aturan</b>.<br>
+      Kalau aturannya jelas, game-nya jalan dengan benar.
+    </div>
+
+    <div class="grid cols2" style="margin-top:14px">
+
+      <!-- KENALAN SPRITE -->
+      <div class="card">
+        <h3>Kenalan sprite kita</h3>
+
+        <div class="grid" style="gap:10px; margin-top:10px">
+          <div class="step">
+            <div class="dot">🚪</div>
+            <div>
+              <b>Pintu</b><br>
+              <span style="color:var(--muted); font-weight:850">
+                Kalau pintu diklik, pintu akan “memeriksa syarat”.
+              </span>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="dot">🔑</div>
+            <div>
+              <b>Kunci</b><br>
+              <span style="color:var(--muted); font-weight:850">
+                Kalau kunci diklik, artinya kamu <b>sudah punya kunci</b>.
+              </span>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="dot">💳</div>
+            <div>
+              <b>Kartu</b><br>
+              <span style="color:var(--muted); font-weight:850">
+                Kalau kartu diklik, artinya kamu <b>sudah punya kartu</b>.
+              </span>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="dot">💬</div>
+            <div>
+              <b>Teks (opsional)</b><br>
+              <span style="color:var(--muted); font-weight:850">
+                Untuk menampilkan pesan: “terbuka!” atau “masih terkunci!”
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hint" style="margin-top:12px">
+          Fokus dulu: <b>logikanya</b>. Hiasan boleh belakangan.
+        </div>
+      </div>
+
+      <!-- CERITA + INTERAKTIF -->
+      <div class="card">
+        <h3>Cerita singkat</h3>
+        <p>
+          “Ada pintu digital. Kamu mau masuk. Tapi pintunya punya aturan.”<br>
+          Kita mulai dari aturan paling mudah dulu.
+        </p>
+
+        <div class="pill">Aturan utama: <b>AND</b></div>
+
+        <div class="card" style="margin-top:12px; box-shadow:none">
+          <h3 style="margin:0 0 8px">Mini interaktif: pilih peran</h3>
+          <p style="margin:0 0 10px">
+            Di kelas, kamu mau jadi yang mana?
+          </p>
+
+          <div class="choices" data-quiz="rolePick">
+            <div class="choice" data-answer="right">Aku yang klik 🔑 Kunci</div>
+            <div class="choice" data-answer="right">Aku yang klik 💳 Kartu</div>
+            <div class="choice" data-answer="right">Aku yang klik 🚪 Pintu</div>
+          </div>
+          <div class="feedback" data-quiz-feedback="rolePick"></div>
+
+          <div class="hint" style="margin-top:10px">
+            Nanti kita main bareng: 1 orang pegang peran, lalu kita cek hasilnya.
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px; box-shadow:none">
+          <h3 style="margin:0 0 8px">Tebak dulu!</h3>
+          <p style="margin:0 0 10px">
+            Kalau kamu baru punya <b>kunci saja</b>, pintu akan…
+          </p>
+
+          <div class="choices" data-quiz="predictDoor">
+            <div class="choice" data-answer="right">Masih terkunci</div>
+            <div class="choice" data-answer="wrong">Langsung terbuka</div>
+          </div>
+          <div class="feedback" data-quiz-feedback="predictDoor"></div>
+        </div>
+      </div>
+
+    </div>
+  `
+      },
+
+
+      {
+        title: "Aturan Game",
+        html: `
+    <div class="kicker">📌 Aturan</div>
+    <h2>Kapan pintu bisa terbuka?</h2>
+
+    <p>
+      Di game ini, pintu tidak sembarang terbuka.<br>
+      Pintu hanya terbuka kalau <b>SEMUA SYARAT</b> terpenuhi.
+    </p>
+
+    <div class="card" style="margin-top:10px">
+      <h3>Aturan utamanya</h3>
+      <div class="pill">🔑 Punya kunci <b>DAN</b> 💳 punya kartu</div>
+
+      <div class="hint" style="margin-top:10px">
+        Kata <b>DAN</b> artinya: <b>harus lengkap</b>, tidak boleh setengah-setengah.
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h3>Ayo kita tebak bareng 👇</h3>
+
+      <div class="grid cols2" style="margin-top:10px">
+
+        <div class="card" style="box-shadow:none">
+          <p style="margin:0 0 10px">
+            <b>Situasi 1:</b><br>
+            Kamu <b>hanya punya kunci</b>, tapi belum punya kartu.
+          </p>
+
+          <div class="choices" data-quiz="rule1">
+            <div class="choice" data-answer="wrong">Pintu langsung terbuka</div>
+            <div class="choice" data-answer="right">Pintu belum terbuka</div>
+          </div>
+          <div class="feedback" data-quiz-feedback="rule1"></div>
+
+          <div class="hint" style="margin-top:8px">
+            Kunci saja belum cukup, masih ada yang kurang.
+          </div>
+        </div>
+
+        <div class="card" style="box-shadow:none">
+          <p style="margin:0 0 10px">
+            <b>Situasi 2:</b><br>
+            Kamu punya <b>kunci</b> dan <b>kartu</b>.
+          </p>
+
+          <div class="choices" data-quiz="rule2">
+            <div class="choice" data-answer="right">Pintu terbuka 🎉</div>
+            <div class="choice" data-answer="wrong">Pintu tetap terkunci</div>
+          </div>
+          <div class="feedback" data-quiz-feedback="rule2"></div>
+
+          <div class="hint" style="margin-top:8px">
+            Nah, sekarang syaratnya sudah lengkap.
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h3>Kesimpulan kecil</h3>
+      <ul class="list">
+        <li>Kalau ada <b>yang kurang</b> → pintu <b>belum</b> terbuka</li>
+        <li>Kalau <b>semua ada</b> → pintu <b>bisa</b> terbuka</li>
+      </ul>
+
+      <div class="hint" style="margin-top:10px">
+        Inilah contoh logika <b>AND</b> di dalam game Scratch.
+      </div>
+    </div>
+  `
+      },
+
+
+      {
+        title: "Simulator",
+        html: `
+    <div class="kicker">🧪 Latihan Bareng</div>
+    <h2>Simulasi Pintu Digital</h2>
+
+    <p>
+      Sekarang kita <b>latihan dulu</b> di sini.<br>
+      Belum pakai Scratch, tapi aturannya <b>sama persis</b>.
+    </p>
+
+    <div class="hint" style="margin-top:10px">
+      Ikuti urutannya ya:<br>
+      <b>1)</b> Pilih barang → <b>2)</b> Pilih mode → <b>3)</b> Klik pintu
+    </div>
+
+    <div class="sim" style="margin-top:14px">
+
+      <!-- KONTROL -->
+      <div class="card">
+        <h3>Barang yang kamu punya</h3>
+        <p style="margin:0 0 10px">
+          Klik untuk memberi tahu pintu apa yang kamu punya.
+        </p>
+
+        <div class="bigBtn off" data-sim-toggle="key">
+          <span>🔑 Kunci</span>
+          <span class="mini" id="simKeyText">Belum punya</span>
+        </div>
+
+        <div class="bigBtn off" data-sim-toggle="card" style="margin-top:10px">
+          <span>💳 Kartu</span>
+          <span class="mini" id="simCardText">Belum punya</span>
+        </div>
+
+        <div class="card" style="margin-top:14px; box-shadow:none">
+          <h3 style="margin:0 0 8px">Pilih aturan</h3>
+          <p style="margin:0 0 10px">
+            Mau pakai aturan <b>AND</b> atau <b>OR</b>?
+          </p>
+
+          <div class="switchRow">
+            <span class="tag">Mode:</span>
+            <button class="btn primary miniBtn" data-sim-mode="AND">AND</button>
+            <button class="btn miniBtn" data-sim-mode="OR">OR</button>
+          </div>
+
+          <div class="hint" style="margin-top:10px">
+            AND = harus lengkap<br>
+            OR = salah satu cukup
+          </div>
+        </div>
+      </div>
+
+      <!-- PINTU -->
+      <div class="door">
+        <h3>🚪 Pintu Digital</h3>
+
+        <p style="margin:0 0 8px">
+          Setelah siap, <b>klik pintunya</b> untuk melihat hasilnya.
+        </p>
+
+        <div class="doorFace" data-sim-door title="Klik pintu">🚪</div>
+
+        <div class="doorMsg" id="doorMsg">
+          Pilih barang dulu, lalu klik pintu.
+        </div>
+
+        <div class="miniRow" style="margin-top:10px">
+          <span class="tag" id="modeTag">Mode: AND</span>
+          <span class="tag" id="stateTag">Kunci 0 | Kartu 0</span>
+        </div>
+
+        <div class="hint" style="margin-top:10px">
+          Perhatikan: barang sama, tapi mode beda → hasil bisa beda.
+        </div>
+      </div>
+
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h3>Apa yang harus kamu perhatikan?</h3>
+      <ul class="list">
+        <li>Coba <b>AND</b>: apa yang terjadi kalau cuma punya satu?</li>
+        <li>Coba <b>OR</b>: apa bedanya dengan AND?</li>
+        <li>Ubah barangnya, lalu klik pintu lagi.</li>
+      </ul>
+
+      <div class="hint" style="margin-top:10px">
+        Ini latihan supaya nanti saat di Scratch, kamu tidak bingung.
+      </div>
+    </div>
+  `
+      },
+
+
+      {
+        title: "Langkah Scratch",
+        html: `
+          <div class="kicker">🧱 Praktik Scratch</div>
+          <h2>Langkah bikin game</h2>
+          <p>Ikuti urutan ini. Satu-satu saja.</p>
+
+          <div class="grid cols2" style="margin-top:10px">
+            <div class="card">
+              <h3>1) Siapkan sprite</h3>
+              <div class="step"><div class="dot">1</div><div><b>Tambahkan</b> sprite Pintu, Kunci, Kartu.</div></div>
+              <div class="step" style="margin-top:8px"><div class="dot">2</div><div>Atur posisinya di panggung.</div></div>
+              <div class="hint" style="margin-top:12px">Kalau bingung, cukup pakai gambar sederhana.</div>
+            </div>
+
+            <div class="card">
+              <h3>2) Buat variabel</h3>
+              <div class="step"><div class="dot">A</div><div>Buat variabel: <b>punya kunci</b> (0/1)</div></div>
+              <div class="step" style="margin-top:8px"><div class="dot">B</div><div>Buat variabel: <b>punya kartu</b> (0/1)</div></div>
+              <div class="hint" style="margin-top:12px">0 artinya belum punya, 1 artinya sudah punya.</div>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Kode Kunci & Kartu",
+        html: `
+          <div class="kicker">🧩 Kode</div>
+          <h2>Kode untuk Kunci & Kartu</h2>
+          <p>Kita buat supaya kalau diklik, itemnya “diambil”.</p>
+
+          <div class="grid cols2" style="margin-top:10px">
+            <div class="card">
+              <h3>🔑 Sprite Kunci</h3>
+              <div class="pill">Saat bendera hijau</div>
+              <ul class="list">
+                <li>set <b>punya kunci</b> ke 0</li>
+                <li>show</li>
+              </ul>
+              <div class="pill" style="margin-top:10px">Saat kunci diklik</div>
+              <ul class="list">
+                <li>set <b>punya kunci</b> ke 1</li>
+                <li>hide</li>
+                <li>say “Kunci didapat!” 2 detik</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>💳 Sprite Kartu</h3>
+              <div class="pill">Saat bendera hijau</div>
+              <ul class="list">
+                <li>set <b>punya kartu</b> ke 0</li>
+                <li>show</li>
+              </ul>
+              <div class="pill" style="margin-top:10px">Saat kartu diklik</div>
+              <ul class="list">
+                <li>set <b>punya kartu</b> ke 1</li>
+                <li>hide</li>
+                <li>say “Kartu didapat!” 2 detik</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="hint" style="margin-top:12px">
+            Kalau sudah, coba klik kunci & kartu saat game jalan. Variabel harus berubah jadi 1.
+          </div>
+        `
+      },
+
+      {
+        title: "Kode Pintu (AND)",
+        html: `
+          <div class="kicker">🚪 Logika Inti</div>
+          <h2>Kode untuk Pintu (AND)</h2>
+          <p>Ini bagian keputusan: pintu terbuka atau tidak.</p>
+
+          <div class="grid cols2" style="margin-top:10px">
+            <div class="card">
+              <h3>Saat pintu diklik</h3>
+              <div class="pill">Jika (punya kunci = 1) AND (punya kartu = 1)</div>
+              <ul class="list">
+                <li>say “Pintu terbuka!”</li>
+                <li>ganti kostum pintu terbuka (opsional)</li>
+              </ul>
+
+              <div class="pill" style="margin-top:10px">Jika tidak</div>
+              <ul class="list">
+                <li>say “Masih terkunci. Cari kunci dan kartu!”</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Quiz cepat</h3>
+              <p>Kalau punya kunci=1 dan kartu=0, pintu…</p>
+              <div class="choices" data-quiz="doorQ1">
+                <div class="choice" data-answer="right">Belum terbuka</div>
+                <div class="choice" data-answer="wrong">Terbuka</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="doorQ1"></div>
+
+              <p style="margin-top:10px">Kalau kunci=1 dan kartu=1, pintu…</p>
+              <div class="choices" data-quiz="doorQ2">
+                <div class="choice" data-answer="right">Terbuka</div>
+                <div class="choice" data-answer="wrong">Terkunci</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="doorQ2"></div>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Upgrade (OR / NOT)",
+        html: `
+          <div class="kicker">🛠️ Upgrade</div>
+          <h2>Naik level (opsional)</h2>
+          <p>Kalau sudah selesai versi AND, kamu bisa coba ini:</p>
+
+          <div class="grid cols2" style="margin-top:10px">
+            <div class="card">
+              <h3>Upgrade OR</h3>
+              <p>Ganti AND jadi OR. Artinya: cukup salah satu punya.</p>
+              <div class="hint">
+                Pintu terbuka jika punya <b>kunci</b> <b>ATAU</b> punya <b>kartu</b>.
+              </div>
+            </div>
+            <div class="card">
+              <h3>Upgrade NOT</h3>
+              <p>Tambahkan “penjaga tidur”.</p>
+              <ul class="list">
+                <li>Buat variabel: <b>penjaga tidur</b> (0/1)</li>
+                <li>Pintu terbuka kalau <b>NOT penjaga tidur</b></li>
+              </ul>
+              <div class="hint" style="margin-top:10px">Kalau penjaga tidur = 1, NOT penjaga tidur = salah.</div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px">
+            <h3>Diskusi cepat</h3>
+            <p>Menurut kamu, mode OR itu lebih mudah atau lebih sulit?</p>
+            <div class="choices" data-quiz="easyhard">
+              <div class="choice" data-answer="right">Lebih mudah</div>
+              <div class="choice" data-answer="right">Tergantung aturan game</div>
+            </div>
+            <div class="feedback" data-quiz-feedback="easyhard"></div>
+          </div>
+        `
+      },
+
+      {
+        title: "Refleksi",
+        html: `
+          <div class="kicker">🪞 Refleksi</div>
+          <h2>Apa yang kamu ingat?</h2>
+          <p>Pilih satu kalimat yang paling kamu setuju.</p>
+
+          <div class="card">
+            <div class="choices" data-quiz="ref">
+              <div class="choice" data-answer="right">AND: semua syarat harus benar</div>
+              <div class="choice" data-answer="right">OR: salah satu cukup</div>
+              <div class="choice" data-answer="right">NOT: kebalikannya</div>
+            </div>
+            <div class="feedback show fbOk" style="display:block">
+              Tidak ada jawaban salah. Pilih yang paling kamu ingat ya.
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px">
+            <h3>Kalimat presentasi (boleh dibaca)</h3>
+            <div class="hint" style="margin-top:10px">
+              “Di game saya, pintu terbuka jika punya <b>kunci</b> dan <b>kartu</b>. Ini contoh logika <b>AND</b>.”
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Penutup",
+        html: `
+          <div class="kicker">✅ Selesai</div>
+          <h2>Kerja bagus! 🎉</h2>
+          <p>Hari ini kamu sudah belajar membuat komputer mengambil keputusan.</p>
+
+          <div class="grid cols2" style="margin-top:10px">
+            <div class="card">
+              <h3>Ringkasannya</h3>
+              <div class="miniRow" style="margin-top:8px">
+                <span class="tag">if–then–else</span>
+                <span class="tag">AND</span>
+                <span class="tag">OR</span>
+                <span class="tag">NOT</span>
+              </div>
+              <p style="margin-top:10px">Kamu bisa pakai logika ini untuk game lain juga.</p>
+            </div>
+            <div class="card">
+              <h3>📌 Sekarang</h3>
+              <p><b>Kerjakan Checkout Quiz Sesi 34</b> ya.</p>
+              <div class="hint">Ikuti arahan guru pendamping di kelas.</div>
+            </div>
+          </div>
+        `
+      }
+    ];
+
+    let idx = 0;
+    const content = document.getElementById("content");
+    const bar = document.getElementById("bar");
+    const count = document.getElementById("count");
+    const btnPrev = document.getElementById("btnPrev");
+    const btnNext = document.getElementById("btnNext");
+    const btnHome = document.getElementById("btnHome");
+
+    function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
+
+    /* ===============================
+   ACCESS CODE GATE
+================================ */
+    const ACCESS_CODE = "RGMDSUP25";
+
+    const gate = document.getElementById("accessGate");
+    const input = document.getElementById("accessInput");
+    const btn = document.getElementById("accessBtn");
+    const fb = document.getElementById("accessFb");
+
+    // auto uppercase
+    input.addEventListener("input", () => {
+      input.value = input.value.toUpperCase();
+    });
+
+    // submit handler
+    btn.addEventListener("click", checkAccess);
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") checkAccess();
+    });
+
+    function checkAccess() {
+      if (input.value.trim() === ACCESS_CODE) {
+        gate.style.display = "none";
+      } else {
+        fb.className = "feedback show fbBad";
+        fb.textContent = "Kode salah. Coba lagi.";
+      }
+    }
+
+    function render() {
+      const s = slides[idx];
+      content.innerHTML = s.html;
+      const pct = ((idx + 1) / slides.length) * 100;
+      bar.style.width = pct + "%";
+      count.textContent = `${idx + 1}/${slides.length}`;
+      wireInteractions();
+
+      content.querySelectorAll("[data-goto]").forEach(b => {
+        b.addEventListener("click", () => {
+          const to = Number(b.getAttribute("data-goto"));
+          idx = clamp(to, 0, slides.length - 1);
+          render();
+          content.scrollTop = 0;
+        });
+      });
+    }
+
+    function showFeedback(el, html, type) {
+      if (!el) return;
+      el.classList.add("show");
+      el.style.display = "block";
+      el.classList.remove("fbOk", "fbBad");
+      if (type === "ok") el.classList.add("fbOk");
+      if (type === "bad") el.classList.add("fbBad");
+      el.innerHTML = html;
+    }
+
+    function wireQuiz(group) {
+      const id = group.getAttribute("data-quiz");
+      const fb = content.querySelector(`[data-quiz-feedback="${id}"]`);
+      const items = [...group.querySelectorAll(".choice")];
+
+      items.forEach(ch => {
+        ch.addEventListener("click", () => {
+          items.forEach(x => x.classList.remove("active", "ok", "bad"));
+          ch.classList.add("active");
+          const isRight = ch.getAttribute("data-answer") === "right";
+          if (isRight) {
+            ch.classList.add("ok");
+            showFeedback(fb, "✅ Mantap!", "ok");
+          } else {
+            ch.classList.add("bad");
+            showFeedback(fb, "⚠️ Coba pikir lagi ya.", "bad");
+          }
+        });
+      });
+    }
+
+    function wireSelectGroup() {
+      content.querySelectorAll("[data-select-group]").forEach(group => {
+        const limit = Number(group.getAttribute("data-limit")) || 999;
+        const choices = [...group.querySelectorAll(".choice")];
+
+        choices.forEach(ch => {
+          ch.addEventListener("click", () => {
+            const isActive = ch.classList.contains("active");
+            if (isActive) { ch.classList.remove("active"); return; }
+            const activeCount = choices.filter(c => c.classList.contains("active")).length;
+            if (activeCount >= limit) return;
+            ch.classList.add("active");
+          });
+        });
+      });
+    }
+
+    function wireANDCheck() {
+      const group = content.querySelector('[data-select-group="andCheck"]');
+      const checkBtn = content.querySelector("[data-check-and]");
+      const resetBtn = content.querySelector("[data-reset-and]");
+      const fb = content.querySelector("#andFb");
+      if (!group || !checkBtn || !resetBtn || !fb) return;
+
+      checkBtn.addEventListener("click", () => {
+        const n = group.querySelectorAll(".choice.active").length;
+        if (n === 2) {
+          showFeedback(fb, "✅ Benar! AND butuh dua-duanya.", "ok");
+        } else {
+          showFeedback(fb, `⚠️ AND butuh dua syarat. Kamu baru pilih ${n}/2.`, "bad");
+        }
+      });
+
+      resetBtn.addEventListener("click", () => {
+        group.querySelectorAll(".choice").forEach(c => c.classList.remove("active"));
+        fb.className = "feedback"; fb.style.display = "none"; fb.innerHTML = "";
+      });
+    }
+
+    function wireORCheck() {
+      const group = content.querySelector('[data-select-group="orCheck"]');
+      const checkBtn = content.querySelector("[data-check-or]");
+      const resetBtn = content.querySelector("[data-reset-or]");
+      const fb = content.querySelector("#orFb");
+      if (!group || !checkBtn || !resetBtn || !fb) return;
+
+      checkBtn.addEventListener("click", () => {
+        const n = group.querySelectorAll(".choice.active").length;
+        if (n >= 1) {
+          showFeedback(fb, "✅ Betul! OR cukup salah satu.", "ok");
+        } else {
+          showFeedback(fb, "⚠️ OR butuh minimal satu dipilih.", "bad");
+        }
+      });
+
+      resetBtn.addEventListener("click", () => {
+        group.querySelectorAll(".choice").forEach(c => c.classList.remove("active"));
+        fb.className = "feedback"; fb.style.display = "none"; fb.innerHTML = "";
+      });
+    }
+
+    function wireNOTToggle() {
+      const btn = content.querySelector("[data-toggle-not='rain']");
+      const rainTag = content.querySelector("#rainTag");
+      const notRainTag = content.querySelector("#notRainTag");
+      if (!btn || !rainTag || !notRainTag) return;
+
+      let raining = true;
+
+      function paint() {
+        if (raining) {
+          btn.classList.add("on"); btn.classList.remove("off");
+          btn.querySelector("span").textContent = "🌧️ Kondisi: HUJAN";
+          rainTag.textContent = "Hujan";
+          notRainTag.textContent = "NOT hujan = Tidak hujan";
+        } else {
+          btn.classList.add("off"); btn.classList.remove("on");
+          btn.querySelector("span").textContent = "☀️ Kondisi: TIDAK HUJAN";
+          rainTag.textContent = "Tidak hujan";
+          notRainTag.textContent = "NOT tidak hujan = Hujan";
+        }
+      }
+      paint();
+
+      btn.addEventListener("click", () => {
+        raining = !raining;
+        paint();
+      });
+    }
+
+    function wireSimDoor() {
+      const keyBtn = content.querySelector("[data-sim-toggle='key']");
+      const cardBtn = content.querySelector("[data-sim-toggle='card']");
+      const door = content.querySelector("[data-sim-door]");
+      const msg = content.querySelector("#doorMsg");
+      const modeTag = content.querySelector("#modeTag");
+      const stateTag = content.querySelector("#stateTag");
+      const simKeyText = content.querySelector("#simKeyText");
+      const simCardText = content.querySelector("#simCardText");
+      const modeBtns = [...content.querySelectorAll("[data-sim-mode]")];
+
+      if (!keyBtn || !cardBtn || !door || !msg || !modeTag || !stateTag) return;
+
+      let hasKey = 0;
+      let hasCard = 0;
+      let mode = "AND";
+
+      function paintBtn(btn, on, labelEl) {
+        btn.classList.toggle("on", on);
+        btn.classList.toggle("off", !on);
+        if (labelEl) labelEl.textContent = on ? "Sudah punya" : "Belum punya";
+      }
+
+      function paint() {
+        paintBtn(keyBtn, !!hasKey, simKeyText);
+        paintBtn(cardBtn, !!hasCard, simCardText);
+        modeTag.textContent = "Mode: " + mode;
+        stateTag.textContent = `Kunci ${hasKey} | Kartu ${hasCard}`;
+      }
+
+      function canOpen() {
+        if (mode === "AND") return hasKey === 1 && hasCard === 1;
+        return hasKey === 1 || hasCard === 1; // OR
+      }
+
+      keyBtn.addEventListener("click", () => { hasKey = hasKey ? 0 : 1; paint(); });
+      cardBtn.addEventListener("click", () => { hasCard = hasCard ? 0 : 1; paint(); });
+
+      modeBtns.forEach(b => {
+        b.addEventListener("click", () => {
+          mode = b.getAttribute("data-sim-mode");
+          // style buttons
+          modeBtns.forEach(x => x.classList.remove("primary"));
+          b.classList.add("primary");
+          paint();
+          msg.textContent = "Klik pintu untuk cek hasil.";
+        });
+      });
+
+      door.addEventListener("click", () => {
+        if (canOpen()) {
+          msg.textContent = "✅ Pintu terbuka! (Aturannya terpenuhi)";
+        } else {
+          msg.textContent = mode === "AND"
+            ? "🔒 Masih terkunci. AND butuh kunci dan kartu."
+            : "🔒 Masih terkunci. OR butuh minimal salah satu.";
+        }
+      });
+
+      // init
+      paint();
+      modeBtns.forEach(x => { if (x.getAttribute("data-sim-mode") === "AND") x.classList.add("primary"); });
+    }
+
+    function wireInteractions() {
+      content.querySelectorAll("[data-quiz]").forEach(wireQuiz);
+      wireSelectGroup();
+      wireANDCheck();
+      wireORCheck();
+      wireNOTToggle();
+      wireSimDoor();
+    }
+
+    function go(d) {
+      idx = clamp(idx + d, 0, slides.length - 1);
+      render();
+      content.scrollTop = 0;
+    }
+
+    btnPrev.addEventListener("click", () => go(-1));
+    btnNext.addEventListener("click", () => go(1));
+    btnHome.addEventListener("click", () => { idx = 0; render(); content.scrollTop = 0; });
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") go(-1);
+      if (e.key === "ArrowRight") go(1);
+      if (e.key === "Home") { idx = 0; render(); content.scrollTop = 0; }
+    });
+
+    render();
+  </script>
+</body>
+
+</html>
