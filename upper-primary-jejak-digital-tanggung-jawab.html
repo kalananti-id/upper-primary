@@ -1,0 +1,1439 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>UOB MDS – Upper Primary – Tanggung Jawab Jejak Digital</title>
+  <style>
+    :root {
+      --bg1: #F7FAFF;
+      --bg2: #F3F6FF;
+      --card: #FFFFFF;
+      --ink: #0F172A;
+      --muted: #475569;
+      --line: rgba(226, 232, 240, .95);
+      --brand: #4F46E5;
+      --brand2: #06B6D4;
+      --ok: #16A34A;
+      --bad: #DC2626;
+      --radius: 22px;
+      --shadow: 0 18px 40px rgba(15, 23, 42, .08);
+      --shadow2: 0 10px 22px rgba(15, 23, 42, .06);
+      --focus: 0 0 0 4px rgba(79, 70, 229, .18);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 520px at 10% 0%, rgba(6, 182, 212, .18), transparent 60%),
+        radial-gradient(1200px 520px at 90% 0%, rgba(79, 70, 229, .16), transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2) 45%, var(--bg1));
+      min-height: 100vh;
+    }
+
+    .app {
+      width: min(1100px, 96vw);
+      margin: 18px auto 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .72);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow2);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(79, 70, 229, .18), rgba(6, 182, 212, .20));
+      border: 1px solid rgba(226, 232, 240, .9);
+      display: grid;
+      place-items: center;
+      font-weight: 1000;
+      color: rgba(79, 70, 229, 1);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.15;
+      letter-spacing: .2px;
+    }
+
+    .brand .sub {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 800;
+      margin-top: 2px;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .9);
+      padding: 10px 12px;
+      border-radius: 16px;
+      font-weight: 1000;
+      cursor: pointer;
+      box-shadow: 0 8px 16px rgba(15, 23, 42, .06);
+      transition: transform .06s ease, box-shadow .12s ease, background .12s ease;
+      user-select: none;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px)
+    }
+
+    .btn:active {
+      transform: translateY(0px)
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, rgba(79, 70, 229, .12), rgba(6, 182, 212, .14));
+      border-color: rgba(79, 70, 229, .18);
+    }
+
+    .btn.ghost {
+      background: transparent;
+      box-shadow: none
+    }
+
+    .btn:focus {
+      outline: none;
+      box-shadow: var(--focus);
+    }
+
+    .progressWrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 260px;
+      justify-content: flex-end;
+    }
+
+    .progress {
+      width: 180px;
+      height: 10px;
+      background: rgba(226, 232, 240, .9);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(226, 232, 240, .95);
+    }
+
+    .bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, rgba(79, 70, 229, .85), rgba(6, 182, 212, .85));
+      border-radius: 999px;
+      transition: width .25s ease;
+    }
+
+    .count {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 900;
+    }
+
+    .stage {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, .60);
+      box-shadow: var(--shadow);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: calc(100vh - 145px);
+    }
+
+    .slide {
+      flex: 1;
+      background: rgba(255, 255, 255, .68);
+      border: 1px solid rgba(229, 234, 245, .95);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow2);
+      padding: 20px;
+      overflow: hidden;
+      /* important for internal scroll */
+      backdrop-filter: blur(8px);
+    }
+
+    .slideInner {
+      max-width: 980px;
+      margin: 0 auto;
+      max-height: calc(100vh - 190px);
+      overflow-y: auto;
+      padding-right: 8px;
+    }
+
+    .slideInner::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    .slideInner::-webkit-scrollbar-thumb {
+      background: rgba(96, 112, 153, .25);
+      border-radius: 999px;
+      border: 3px solid rgba(255, 255, 255, .9);
+    }
+
+    .slideInner::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    h2 {
+      margin: 6px 0 10px;
+      font-size: 30px;
+      letter-spacing: -.3px
+    }
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 18px
+    }
+
+    p {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-weight: 800;
+      line-height: 1.55
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 1000;
+      font-size: 12px;
+      letter-spacing: .2px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(79, 70, 229, .16);
+      background: rgba(79, 70, 229, .06);
+      color: rgba(55, 65, 81, .95);
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px
+    }
+
+    .cols2 {
+      grid-template-columns: 1fr 1fr
+    }
+
+    @media (max-width: 860px) {
+      .cols2 {
+        grid-template-columns: 1fr
+      }
+
+      .progressWrap {
+        min-width: unset
+      }
+
+      .progress {
+        width: 130px
+      }
+
+      h2 {
+        font-size: 26px
+      }
+    }
+
+    .card {
+      background: rgba(255, 255, 255, .92);
+      border: 1px solid rgba(226, 232, 240, .95);
+      border-radius: 22px;
+      padding: 14px;
+      box-shadow: 0 10px 18px rgba(15, 23, 42, .06);
+    }
+
+    .hint {
+      background: rgba(6, 182, 212, .10);
+      border: 1px dashed rgba(6, 182, 212, .35);
+      border-radius: 18px;
+      padding: 12px 14px;
+      color: rgba(30, 41, 59, .92);
+      font-weight: 900;
+      line-height: 1.5;
+    }
+
+    .miniRow {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .92);
+      color: rgba(30, 41, 59, .92);
+      font-weight: 1000;
+      font-size: 12px;
+    }
+
+    ul.list {
+      margin: 8px 0 0 18px;
+      color: var(--muted);
+      font-weight: 850;
+      line-height: 1.55
+    }
+
+    .choices {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px
+    }
+
+    .choice {
+      border: 1px solid rgba(226, 232, 240, .95);
+      border-radius: 18px;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, .96);
+      font-weight: 950;
+      color: rgba(30, 41, 59, .96);
+      cursor: pointer;
+      user-select: none;
+      transition: transform .06s ease, border-color .12s ease, background .12s ease;
+    }
+
+    .choice:hover {
+      transform: translateY(-1px)
+    }
+
+    .choice.active {
+      border-color: rgba(79, 70, 229, .35);
+      background: rgba(79, 70, 229, .06)
+    }
+
+    .choice.ok {
+      border-color: rgba(22, 163, 74, .35);
+      background: rgba(22, 163, 74, .08)
+    }
+
+    .choice.bad {
+      border-color: rgba(220, 38, 38, .35);
+      background: rgba(220, 38, 38, .08)
+    }
+
+    .feedback {
+      display: none;
+      margin-top: 10px;
+      border-radius: 18px;
+      padding: 12px 14px;
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .92);
+      color: var(--muted);
+      font-weight: 900;
+      line-height: 1.5;
+    }
+
+    .feedback.show {
+      display: block
+    }
+
+    .fbOk {
+      border-color: rgba(22, 163, 74, .35);
+      background: rgba(22, 163, 74, .08);
+      color: rgba(15, 23, 42, .92)
+    }
+
+    .fbBad {
+      border-color: rgba(220, 38, 38, .35);
+      background: rgba(220, 38, 38, .08);
+      color: rgba(15, 23, 42, .92)
+    }
+
+    /* Toggle blocks (reused) */
+    .habit {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 12px;
+      margin-top: 10px;
+      background: linear-gradient(180deg, #FFFFFF, #F7FAFF);
+    }
+
+    .habitHead {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px
+    }
+
+    .miniBtn {
+      padding: 8px 10px;
+      border-radius: 14px;
+      font-size: 12px;
+      font-weight: 1000
+    }
+
+    .habitBody {
+      margin-top: 10px;
+      display: none;
+      padding: 10px 12px;
+      border-radius: 16px;
+      border: 1px dashed rgba(96, 112, 153, .35);
+      background: rgba(79, 70, 229, .06);
+      color: var(--muted);
+      font-weight: 850;
+      line-height: 1.5;
+    }
+
+    .habitBody.show {
+      display: block
+    }
+
+    .habitBody p {
+      margin: 6px 0
+    }
+
+    /* Mini “digital tree” */
+    .tree {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .treeBox {
+      border: 1px solid rgba(226, 232, 240, .95);
+      border-radius: 22px;
+      padding: 14px;
+      background: rgba(255, 255, 255, .92);
+      box-shadow: 0 10px 18px rgba(15, 23, 42, .06);
+    }
+
+    .treeTop {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+      font-weight: 1000;
+    }
+
+    .fruitRow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px
+    }
+
+    .fruit {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .96);
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      cursor: pointer;
+      user-select: none;
+      transition: transform .06s ease, background .12s ease, border-color .12s ease;
+    }
+
+    .fruit:hover {
+      transform: translateY(-1px)
+    }
+
+    .fruit.good.active {
+      border-color: rgba(22, 163, 74, .35);
+      background: rgba(22, 163, 74, .10)
+    }
+
+    .fruit.bad.active {
+      border-color: rgba(220, 38, 38, .35);
+      background: rgba(220, 38, 38, .10)
+    }
+
+    .input {
+      width: 100%;
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .96);
+      border-radius: 16px;
+      padding: 12px 14px;
+      font-weight: 950;
+      color: rgba(30, 41, 59, .96);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ACCESS GATE -->
+  <div id="accessGate" style="
+  position:fixed;
+  inset:0;
+  background:linear-gradient(135deg,#eef2ff,#ecfeff);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+">
+    <div class="card" style="max-width:420px;width:92%;text-align:center">
+      <h2>🔐 Kode Akses</h2>
+      <p>Masukkan kode untuk memulai sesi.</p>
+
+      <input id="accessInput" class="input" placeholder="MASUKKAN KODE" autocomplete="off"
+        style="text-align:center;font-weight:900;letter-spacing:2px" />
+
+      <button class="btn primary" id="accessBtn" style="margin-top:12px">
+        Masuk
+      </button>
+
+      <div class="feedback" id="accessFb" style="margin-top:10px"></div>
+
+      <div class="hint" style="margin-top:10px">
+        Kode diberikan oleh guru.
+      </div>
+    </div>
+  </div>
+
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">UP</div>
+        <div>
+          <h1>Upper Primary</h1>
+          <div class="sub">Jejak Digital: Tanggung Jawab Sebelum & Sesudah Posting</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="btn ghost" id="btnHome" title="Kembali ke awal">🏠 Awal</button>
+        <button class="btn" id="btnPrev" title="Sebelumnya (←)">←</button>
+        <button class="btn primary" id="btnNext" title="Berikutnya (→)">→</button>
+      </div>
+
+      <div class="progressWrap">
+        <div class="progress" aria-label="Progress">
+          <div class="bar" id="bar"></div>
+        </div>
+        <div class="count" id="count">1/1</div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="slide" role="region" aria-label="Slide">
+        <div class="slideInner" id="content"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const slides = [
+      {
+        title: "Pembuka",
+        html: `
+          <h2>Jejak Digital & Tanggung Jawab Kita</h2>
+          <p>Jejak digital itu seperti <b>cerita tentang kamu</b> di internet. Hari ini kita belajar cara menjaga cerita itu supaya tetap baik.</p>
+
+          <div class="grid cols2" style="margin-top:10px">
+            <div class="card">
+              <h3>Tujuan hari ini</h3>
+              <ul class="list">
+                <li>Tahu cara <b>berpikir dulu</b> sebelum posting</li>
+                <li>Tahu apa yang harus dilakukan kalau <b>terjadi masalah</b> setelah posting</li>
+              </ul>
+              <div class="hint" style="margin-top:12px">Kita latihan pakai contoh. Bukan akun asli ya.</div>
+            </div>
+            <div class="card">
+              <h3>Siap?</h3>
+              <p>Klik tombol di bawah untuk mulai.</p>
+              <button class="btn primary" data-goto="1">🚀 Mulai sesi</button>
+              
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Penghubung",
+        html: `
+          <h2>Ingat yang sudah kita pelajari?</h2>
+          <p>Sebelumnya kita sudah kenal jejak digital, dan belajar cara mengelolanya. Sekarang kita naik level: <b>tanggung jawab</b>.</p>
+
+          <div class="grid cols2" style="margin-top:10px">
+            <div class="card">
+              <h3>📌 Yang sudah kita tahu</h3>
+              <ul class="list">
+                <li>Jejak digital bisa <b>tertahan lama</b></li>
+                <li>Jejak digital bisa <b>membantu</b> atau <b>merugikan</b></li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>🎯 Hari ini kita latihan</h3>
+              <ul class="list">
+                <li>Apa yang dilakukan <b>sebelum posting</b></li>
+                <li>Apa yang dilakukan <b>setelah posting</b></li>
+              </ul>
+
+              <div class="card" style="margin-top:12px">
+                <h3 style="margin:0 0 8px">Klik kalau kamu ingat ✅</h3>
+                <div class="choices" data-quiz="recap1">
+                  <div class="choice" data-answer="right">Jejak digital bisa bertahan lama</div>
+                  <div class="choice" data-answer="wrong">Jejak digital hilang otomatis besok</div>
+                </div>
+                <div class="feedback" data-quiz-feedback="recap1"></div>
+              </div>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Tanggung jawab itu apa?",
+        html: `
+          <h2>Tanggung jawab digital itu apa?</h2>
+          <p>Tanggung jawab digital artinya: kita <b>sadar</b> dengan yang kita lakukan di internet, dan siap menjaga dampaknya.</p>
+
+          <div class="grid cols2" style="margin-top:10px">
+            <div class="card">
+              <h3>🚢 Seperti kapten kapal</h3>
+              <p>Kamu itu “kapten” kapal digitalmu. Kamu yang menentukan arah.</p>
+              <div class="miniRow">
+                <span class="tag">Kapten = kamu</span>
+                <span class="tag">Kapal = akun</span>
+                <span class="tag">Arah = pilihanmu</span>
+              </div>
+              <button class="btn secondary miniBtn" data-toggle="cap1" style="margin-top:12px">Klik untuk contoh</button>
+              <div class="habitBody" id="cap1">
+                <p><b>Contoh:</b> Kalau kapten buru-buru, kapal bisa nabrak. Kalau kamu buru-buru posting, bisa bikin masalah.</p>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>✨ Ciri anak yang bertanggung jawab</h3>
+              <ul class="list">
+                <li>Berpikir dulu sebelum posting</li>
+                <li>Pakai kata-kata yang sopan</li>
+                <li>Berani minta bantuan kalau ada masalah</li>
+              </ul>
+
+              <div class="card" style="margin-top:12px">
+                <h3 style="margin:0 0 8px">Cek cepat</h3>
+                <p style="margin:0 0 10px">Kalau aku ragu, aku sebaiknya…</p>
+                <div class="choices" data-quiz="capQuiz">
+                  <div class="choice" data-answer="right">Berhenti dulu dan tanya orang dewasa</div>
+                  <div class="choice" data-answer="wrong">Posting saja biar cepat</div>
+                </div>
+                <div class="feedback" data-quiz-feedback="capQuiz"></div>
+              </div>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "STOP sebelum POST",
+        html: `
+          <h2>STOP sebelum POST</h2>
+          <p>Ini “rem” sebelum kamu membagikan sesuatu.</p>
+
+          <div class="grid cols2" style="margin-top:10px">
+            <div class="card">
+              <h3>4 langkahnya</h3>
+
+              <div class="habit">
+                <div class="habitHead">
+                  <b>🛑 STOP</b>
+                  <button class="btn ghost miniBtn" data-toggle="sp1">Lihat</button>
+                </div>
+                <div class="habitBody" id="sp1">
+                  <p>Jangan buru-buru. Tarik napas dulu.</p>
+                </div>
+              </div>
+
+              <div class="habit">
+                <div class="habitHead">
+                  <b>🧠 PIKIR</b>
+                  <button class="btn ghost miniBtn" data-toggle="sp2">Lihat</button>
+                </div>
+                <div class="habitBody" id="sp2">
+                  <p>Tanya diri sendiri: ini aman? sopan? ada data pribadi?</p>
+                </div>
+              </div>
+
+              <div class="habit">
+                <div class="habitHead">
+                  <b>❓ TANYA</b>
+                  <button class="btn ghost miniBtn" data-toggle="sp3">Lihat</button>
+                </div>
+                <div class="habitBody" id="sp3">
+                  <p>Kalau ragu, tanya orang tua/guru dulu.</p>
+                </div>
+              </div>
+
+              <div class="habit">
+                <div class="habitHead">
+                  <b>👍 POST</b>
+                  <button class="btn ghost miniBtn" data-toggle="sp4">Lihat</button>
+                </div>
+                <div class="habitBody" id="sp4">
+                  <p>Kalau sudah yakin aman dan sopan, baru posting.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Quiz mini</h3>
+              <p>Kalau masih ragu, sebaiknya…</p>
+              <div class="choices" data-quiz="stop1">
+                <div class="choice" data-answer="right">Tunda dulu dan tanya orang dewasa</div>
+                <div class="choice" data-answer="wrong">Posting sekarang juga</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="stop1"></div>
+
+              <div class="hint" style="margin-top:12px">
+                Tips cepat: kalau ragu, <b>jangan posting</b> dulu.
+              </div>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Mini Game 1",
+        html: `
+    <div class="kicker">🎮 Mini Game</div>
+    <h2>Boleh diposting atau tidak?</h2>
+    <p>
+      Kita main lebih seru: <b>pilih jawabannya</b>, lalu <b>pilih alasannya</b>.
+      (Jadi tidak asal tebak 😊)
+    </p>
+
+    <div class="grid cols2" style="margin-top:10px">
+
+      <!-- A -->
+      <div class="card">
+        <h3>Situasi A</h3>
+        <p><b>“Aku lagi marah!”</b> lalu kamu ingin menulis komentar kasar.</p>
+
+        <div class="choices" data-quiz="postA">
+          <div class="choice" data-answer="wrong">👍 BOLEH</div>
+          <div class="choice" data-answer="right">🚫 SEBAIKNYA TIDAK</div>
+        </div>
+        <div class="feedback" data-quiz-feedback="postA"></div>
+
+        <div class="card" style="margin-top:12px; box-shadow:none">
+          <h3 style="margin:0 0 8px">Kenapa?</h3>
+          <div class="choices" data-quiz="whyA">
+            <div class="choice" data-answer="right">Karena saat emosi, kata-kata bisa menyakiti orang lain.</div>
+            <div class="choice" data-answer="wrong">Karena kalau marah harus langsung ditulis.</div>
+          </div>
+          <div class="feedback" data-quiz-feedback="whyA"></div>
+        </div>
+
+        <div class="hint" style="margin-top:10px">Tips: kalau emosi → <b>STOP dulu</b>.</div>
+      </div>
+
+      <!-- B -->
+      <div class="card">
+        <h3>Situasi B</h3>
+        <p>Kamu mau posting <b>foto karya</b> yang kamu buat sendiri dengan kata-kata sopan.</p>
+
+        <div class="choices" data-quiz="postB">
+          <div class="choice" data-answer="right">👍 BOLEH</div>
+          <div class="choice" data-answer="wrong">🚫 SEBAIKNYA TIDAK</div>
+        </div>
+        <div class="feedback" data-quiz-feedback="postB"></div>
+
+        <div class="card" style="margin-top:12px; box-shadow:none">
+          <h3 style="margin:0 0 8px">Kenapa?</h3>
+          <div class="choices" data-quiz="whyB">
+            <div class="choice" data-answer="right">Karena ini karya sendiri dan bahasanya sopan.</div>
+            <div class="choice" data-answer="wrong">Karena semakin sering posting, semakin aman.</div>
+          </div>
+          <div class="feedback" data-quiz-feedback="whyB"></div>
+        </div>
+
+        <div class="hint" style="margin-top:10px">Ini contoh jejak digital yang <b>baik</b>.</div>
+      </div>
+
+      <!-- C -->
+      <div class="card">
+        <h3>Situasi C</h3>
+        <p>Kamu mau posting <b>foto teman</b> tanpa izin karena lucu menurutmu.</p>
+
+        <div class="choices" data-quiz="postC">
+          <div class="choice" data-answer="wrong">👍 BOLEH</div>
+          <div class="choice" data-answer="right">🚫 SEBAIKNYA TIDAK</div>
+        </div>
+        <div class="feedback" data-quiz-feedback="postC"></div>
+
+        <div class="card" style="margin-top:12px; box-shadow:none">
+          <h3 style="margin:0 0 8px">Kenapa?</h3>
+          <div class="choices" data-quiz="whyC">
+            <div class="choice" data-answer="right">Karena kita harus minta izin dan menghargai teman.</div>
+            <div class="choice" data-answer="wrong">Karena kalau lucu, pasti boleh.</div>
+          </div>
+          <div class="feedback" data-quiz-feedback="whyC"></div>
+        </div>
+
+        <div class="hint" style="margin-top:10px">Ingat: <b>minta izin</b> dulu.</div>
+      </div>
+
+      <!-- D -->
+      <div class="card">
+        <h3>Situasi D</h3>
+        <p>Kamu mau posting: <b>“Ini nomor HP-ku, chat aku ya!”</b></p>
+
+        <div class="choices" data-quiz="postD">
+          <div class="choice" data-answer="wrong">👍 BOLEH</div>
+          <div class="choice" data-answer="right">🚫 SEBAIKNYA TIDAK</div>
+        </div>
+        <div class="feedback" data-quiz-feedback="postD"></div>
+
+        <div class="card" style="margin-top:12px; box-shadow:none">
+          <h3 style="margin:0 0 8px">Kenapa?</h3>
+          <div class="choices" data-quiz="whyD">
+            <div class="choice" data-answer="right">Karena nomor HP itu data pribadi dan bisa disalahgunakan.</div>
+            <div class="choice" data-answer="wrong">Karena kalau mau punya teman online, harus dibagikan.</div>
+          </div>
+          <div class="feedback" data-quiz-feedback="whyD"></div>
+        </div>
+
+        <div class="hint" style="margin-top:10px">Data pribadi bukan untuk diumumkan.</div>
+      </div>
+
+      <!-- E -->
+      <div class="card">
+        <h3>Situasi E</h3>
+        <p>Kamu mau repost info: <b>“Besok libur 2 minggu!”</b> tapi kamu belum yakin benar.</p>
+
+        <div class="choices" data-quiz="postE">
+          <div class="choice" data-answer="wrong">👍 BOLEH</div>
+          <div class="choice" data-answer="right">🚫 SEBAIKNYA TIDAK</div>
+        </div>
+        <div class="feedback" data-quiz-feedback="postE"></div>
+
+        <div class="card" style="margin-top:12px; box-shadow:none">
+          <h3 style="margin:0 0 8px">Kenapa?</h3>
+          <div class="choices" data-quiz="whyE">
+            <div class="choice" data-answer="right">Karena harus cek dulu. Jangan sebar info yang belum pasti.</div>
+            <div class="choice" data-answer="wrong">Karena kalau seru, langsung saja.</div>
+          </div>
+          <div class="feedback" data-quiz-feedback="whyE"></div>
+        </div>
+
+        <div class="hint" style="margin-top:10px">Kalau belum pasti → <b>tanya guru</b>.</div>
+      </div>
+
+      <!-- F -->
+      <div class="card">
+        <h3>Situasi F</h3>
+        <p>Kamu mau posting: <b>“Selamat ulang tahun!”</b> ke teman, tanpa menyebut alamat/nomor, dan bahasanya sopan.</p>
+
+        <div class="choices" data-quiz="postF">
+          <div class="choice" data-answer="right">👍 BOLEH</div>
+          <div class="choice" data-answer="wrong">🚫 SEBAIKNYA TIDAK</div>
+        </div>
+        <div class="feedback" data-quiz-feedback="postF"></div>
+
+        <div class="card" style="margin-top:12px; box-shadow:none">
+          <h3 style="margin:0 0 8px">Kenapa?</h3>
+          <div class="choices" data-quiz="whyF">
+            <div class="choice" data-answer="right">Karena sopan dan tidak membagikan data pribadi.</div>
+            <div class="choice" data-answer="wrong">Karena semua hal tentang teman boleh dibagikan.</div>
+          </div>
+          <div class="feedback" data-quiz-feedback="whyF"></div>
+        </div>
+
+        <div class="hint" style="margin-top:10px">Ucapan baik = jejak baik.</div>
+      </div>
+
+      <!-- BONUS -->
+      <div class="card" style="grid-column:1 / -1">
+        <h3>Bonus cepat</h3>
+        <p>Sebelum posting, urutan yang paling benar adalah…</p>
+        <div class="choices" data-quiz="postBonus">
+          <div class="choice" data-answer="right">STOP → PIKIR → TANYA</div>
+          <div class="choice" data-answer="wrong">POST → baru pikir</div>
+        </div>
+        <div class="feedback" data-quiz-feedback="postBonus"></div>
+      </div>
+
+    </div>
+  `
+      },
+
+
+      {
+        title: "Setelah posting",
+        html: `
+          <h2>Setelah posting, tanggung jawabnya belum selesai</h2>
+          <p>Posting itu bukan akhir cerita. Kalau ada masalah, kita harus bertindak dengan aman.</p>
+
+          <div class="grid cols2" style="margin-top:10px">
+            <div class="card">
+              <h3>4 langkah aman</h3>
+
+              <div class="habit">
+                <div class="habitHead">
+                  <b>1) Tenang dulu</b>
+                  <button class="btn ghost miniBtn" data-toggle="ap1">Contoh</button>
+                </div>
+                <div class="habitBody" id="ap1">
+                  <p>Tarik napas. Jangan panik dan jangan buru-buru.</p>
+                </div>
+              </div>
+
+              <div class="habit">
+                <div class="habitHead">
+                  <b>2) Jangan balas pakai emosi</b>
+                  <button class="btn ghost miniBtn" data-toggle="ap2">Contoh</button>
+                </div>
+                <div class="habitBody" id="ap2">
+                  <p>Kalau marah, komentar bisa makin panjang dan makin banyak yang lihat.</p>
+                </div>
+              </div>
+
+              <div class="habit">
+                <div class="habitHead">
+                  <b>3) Simpan bukti (kalau perlu)</b>
+                  <button class="btn ghost miniBtn" data-toggle="ap3">Contoh</button>
+                </div>
+                <div class="habitBody" id="ap3">
+                  <p>Misalnya screenshot komentar yang kasar.</p>
+                </div>
+              </div>
+
+              <div class="habit">
+                <div class="habitHead">
+                  <b>4) Cerita ke orang dewasa</b>
+                  <button class="btn ghost miniBtn" data-toggle="ap4">Contoh</button>
+                </div>
+                <div class="habitBody" id="ap4">
+                  <p>Cerita ke guru/orang tua agar kamu dibantu.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Kenapa begitu?</h3>
+              <ul class="list">
+                <li>Biar masalah tidak makin besar</li>
+                <li>Biar kamu tidak sendirian</li>
+                <li>Biar ada orang dewasa yang membantu</li>
+              </ul>
+              <div class="hint" style="margin-top:12px">
+                Anak yang bertanggung jawab itu <b>berani minta bantuan</b>.
+              </div>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Mini Game 2",
+        html: `
+    <div class="kicker">🎮 Mini Game</div>
+    <h2>Kalau terjadi masalah, apa yang kamu lakukan?</h2>
+    <p>
+      Sekarang kita latihan <b>ambil keputusan setelah posting</b>.
+      Tidak hanya satu langkah, tapi <b>urutan yang benar</b>.
+    </p>
+
+    <div class="grid cols2" style="margin-top:10px">
+
+      <!-- Situasi 1 -->
+      <div class="card">
+        <h3>Situasi 1</h3>
+        <p>Postinganmu disalahpahami dan ada komentar kasar.</p>
+
+        <div class="choices" data-quiz="afterA">
+          <div class="choice" data-answer="wrong">Balas dengan kata-kata kasar</div>
+          <div class="choice" data-answer="wrong">Hapus postingan tanpa cerita ke siapa pun</div>
+          <div class="choice" data-answer="right">Tenang dulu dan jangan balas dengan emosi</div>
+        </div>
+        <div class="feedback" data-quiz-feedback="afterA"></div>
+
+        <div class="card" style="margin-top:12px; box-shadow:none">
+          <h3 style="margin:0 0 8px">Langkah selanjutnya?</h3>
+          <div class="choices" data-quiz="afterA2">
+            <div class="choice" data-answer="right">Simpan bukti lalu cerita ke guru/orang tua</div>
+            <div class="choice" data-answer="wrong">Balas komentar agar terlihat berani</div>
+          </div>
+          <div class="feedback" data-quiz-feedback="afterA2"></div>
+        </div>
+
+        <div class="hint" style="margin-top:10px">
+          Masalah online lebih aman diselesaikan <b>bersama orang dewasa</b>.
+        </div>
+      </div>
+
+      <!-- Situasi 2 -->
+      <div class="card">
+        <h3>Situasi 2</h3>
+        <p>Ada teman yang ikut-ikutan mengejek di kolom komentar.</p>
+
+        <div class="choices" data-quiz="afterB">
+          <div class="choice" data-answer="wrong">Ikut mengejek balik</div>
+          <div class="choice" data-answer="wrong">Diam dan memendam sendiri</div>
+          <div class="choice" data-answer="right">Tidak membalas dan tetap tenang</div>
+        </div>
+        <div class="feedback" data-quiz-feedback="afterB"></div>
+
+        <div class="card" style="margin-top:12px; box-shadow:none">
+          <h3 style="margin:0 0 8px">Kenapa begitu?</h3>
+          <div class="choices" data-quiz="afterB2">
+            <div class="choice" data-answer="right">Karena membalas ejekan bisa memperbesar masalah</div>
+            <div class="choice" data-answer="wrong">Karena lebih baik pura-pura tidak peduli</div>
+          </div>
+          <div class="feedback" data-quiz-feedback="afterB2"></div>
+        </div>
+
+        <div class="hint" style="margin-top:10px">
+          Diam boleh, tapi <b>tetap cerita ke orang dewasa</b>.
+        </div>
+      </div>
+
+      <!-- Situasi 3 -->
+      <div class="card">
+        <h3>Situasi 3</h3>
+        <p>Kamu merasa postinganmu salah dan ingin memperbaikinya.</p>
+
+        <div class="choices" data-quiz="afterC">
+          <div class="choice" data-answer="right">Cerita dulu ke guru/orang tua dan minta saran</div>
+          <div class="choice" data-answer="wrong">Panik lalu hapus semua akun</div>
+          <div class="choice" data-answer="wrong">Balas semua komentar satu per satu</div>
+        </div>
+        <div class="feedback" data-quiz-feedback="afterC"></div>
+
+        <div class="hint" style="margin-top:10px">
+          Bertanggung jawab itu berani <b>memperbaiki</b>, bukan panik.
+        </div>
+      </div>
+
+      <!-- Urutan -->
+      <div class="card">
+        <h3>Susun urutan yang benar</h3>
+        <p>Kalau ada masalah setelah posting, urutan paling aman adalah…</p>
+
+        <div class="choices" data-quiz="afterOrder">
+          <div class="choice" data-answer="right">
+            Tenang → Jangan balas emosi → Simpan bukti → Cerita ke orang dewasa
+          </div>
+          <div class="choice" data-answer="wrong">
+            Balas dulu → Baru cerita → Panik
+          </div>
+        </div>
+        <div class="feedback" data-quiz-feedback="afterOrder"></div>
+
+        <div class="miniRow" style="margin-top:10px">
+          <span class="tag">Tenang</span>
+          <span class="tag">Tidak emosi</span>
+          <span class="tag">Minta bantuan</span>
+        </div>
+      </div>
+
+    </div>
+  `
+      },
+
+      {
+        title: "Pohon Digital",
+        html: `
+    <h2>Pohon Digitalmu</h2>
+<p>
+  Setiap postingan itu seperti <b>benih</b>.<br>
+  Sekarang kita lihat contoh <b>perilaku digital</b>.
+</p>
+
+<div class="hint" style="margin-top:10px">
+  Kita kerjakan bersama-sama.<br>
+  Pilih <b>3 contoh jejak baik</b> dan <b>3 contoh jejak tidak baik</b>.
+</div>
+
+<div class="grid cols2" style="margin-top:14px">
+
+  <div class="card">
+    <h3>✅ Jejak Digital yang Baik</h3>
+    <p>Pilih 3 perilaku yang baik dilakukan di internet.</p>
+    <div class="choices" data-select-group="good" data-limit="3">
+      <div class="choice">Memuji teman dengan kata sopan</div>
+      <div class="choice">Posting hasil karya sendiri</div>
+      <div class="choice">Berbagi tips belajar</div>
+      <div class="choice">Memberi komentar yang menghargai</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>❌ Jejak Digital yang Tidak Baik</h3>
+    <p>Pilih 3 perilaku yang sebaiknya tidak dilakukan.</p>
+    <div class="choices" data-select-group="bad" data-limit="3">
+      <div class="choice">Mengejek atau merendahkan orang lain</div>
+      <div class="choice">Menyebarkan gosip</div>
+      <div class="choice">Membagikan data pribadi</div>
+      <div class="choice">Menulis komentar saat marah</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="miniRow" style="margin-top:12px">
+  <button class="btn secondary miniBtn" data-check-tree>Periksa bersama</button>
+  <button class="btn ghost miniBtn" data-reset-tree>Ulangi pilihan</button>
+  <span class="tag" id="treeTag" style="display:none"></span>
+</div>
+
+<div class="feedback" id="treeFb"></div>
+
+<div class="hint" style="margin-top:10px">
+  Ini bukan tes. Yang penting kamu <b>paham pilihannya</b>.
+</div>`
+      },
+
+
+      {
+        title: "Refleksi",
+        html: `
+          <h2>Sebelum aku posting, aku akan…</h2>
+          <p>Pilih 1 yang paling kamu ingat dan mau kamu lakukan mulai sekarang.</p>
+
+          <div class="card">
+            <div class="choices" data-quiz="ref1">
+              <div class="choice" data-answer="right">🧠 Pikir dulu: aman & sopan</div>
+              <div class="choice" data-answer="right">❓ Tanya orang dewasa kalau ragu</div>
+              <div class="choice" data-answer="right">💬 Jaga kata-kata saat komentar</div>
+            </div>
+            <div class="feedback show fbOk" style="display:block">
+              Tidak ada jawaban salah. Pilih satu yang kamu paling siap lakukan ya.
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px">
+            <h3>Kalimat komitmen (boleh dibaca keras-keras)</h3>
+            <div class="hint" style="margin-top:10px">
+              “Mulai sekarang, sebelum posting aku akan <b>STOP dulu</b> dan memilih yang <b>aman & sopan</b>.”
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Penutup",
+        html: `
+          <div class="kicker">✅ Selesai</div>
+          <h2>Jejak Digital adalah Ceritamu</h2>
+          <p>Internet bisa “ingat” lebih lama. Jadi kita pilih cerita yang baik, ya.</p>
+
+          <div class="grid cols2" style="margin-top:10px">
+            <div class="card">
+              <h3>Ringkasannya</h3>
+              <div class="miniRow" style="margin-top:8px">
+                <span class="tag">STOP sebelum POST</span>
+                <span class="tag">Jaga kata-kata</span>
+                <span class="tag">Minta bantuan</span>
+              </div>
+              <p style="margin-top:10px">Kamu sudah latihan ambil keputusan yang bertanggung jawab.</p>
+            </div>
+            <div class="card">
+              <h3>📌 Sekarang waktunya</h3>
+              <p><b>Kerjakan Checkout Quiz Sesi 34</b> ya.</p>
+              <div class="hint">Ikuti arahan guru pendamping di kelas.</div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px">
+            <h3>Terima kasih! 🙌</h3>
+            <p style="margin:0">Kamu hebat karena belajar menjaga diri di dunia digital.</p>
+          </div>
+        `
+      }
+    ];
+
+    let idx = 0;
+    const content = document.getElementById("content");
+    const bar = document.getElementById("bar");
+    const count = document.getElementById("count");
+    const btnPrev = document.getElementById("btnPrev");
+    const btnNext = document.getElementById("btnNext");
+    const btnHome = document.getElementById("btnHome");
+
+    function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
+
+    /* ===============================
+   ACCESS CODE GATE
+================================ */
+const ACCESS_CODE = "RGMDSUP25";
+
+const gate = document.getElementById("accessGate");
+const input = document.getElementById("accessInput");
+const btn   = document.getElementById("accessBtn");
+const fb    = document.getElementById("accessFb");
+
+// auto uppercase
+input.addEventListener("input", () => {
+  input.value = input.value.toUpperCase();
+});
+
+// submit handler
+btn.addEventListener("click", checkAccess);
+input.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") checkAccess();
+});
+
+function checkAccess() {
+  if (input.value.trim() === ACCESS_CODE) {
+    gate.style.display = "none";
+  } else {
+    fb.className = "feedback show fbBad";
+    fb.textContent = "Kode salah. Coba lagi.";
+  }
+}
+
+    function render() {
+      const s = slides[idx];
+      content.innerHTML = s.html;
+      // update progress
+      const pct = ((idx + 1) / slides.length) * 100;
+      bar.style.width = pct + "%";
+      count.textContent = `${idx + 1}/${slides.length}`;
+      // wire interactivity
+      wireInteractions();
+      // handle goto buttons
+      content.querySelectorAll("[data-goto]").forEach(b => {
+        b.addEventListener("click", () => {
+          const to = Number(b.getAttribute("data-goto"));
+          idx = clamp(to, 0, slides.length - 1);
+          render();
+          content.scrollTop = 0;
+        });
+      });
+    }
+
+    function showFeedback(el, html, type) {
+      if (!el) return;
+      el.classList.add("show");
+      el.style.display = "block";
+      el.classList.remove("fbOk", "fbBad");
+      if (type === "ok") el.classList.add("fbOk");
+      if (type === "bad") el.classList.add("fbBad");
+      el.innerHTML = html;
+    }
+
+    function wireQuiz(group) {
+      const id = group.getAttribute("data-quiz");
+      const fb = content.querySelector(`[data-quiz-feedback="${id}"]`);
+      const items = [...group.querySelectorAll(".choice")];
+
+      items.forEach(ch => {
+        ch.addEventListener("click", () => {
+          items.forEach(x => x.classList.remove("active", "ok", "bad"));
+          ch.classList.add("active");
+
+          const isRight = ch.getAttribute("data-answer") === "right";
+          if (isRight) {
+            ch.classList.add("ok");
+            const msg = getQuizMsg(id, true);
+            showFeedback(fb, msg, "ok");
+          } else {
+            ch.classList.add("bad");
+            const msg = getQuizMsg(id, false);
+            showFeedback(fb, msg, "bad");
+          }
+        });
+      });
+    }
+
+    function wireSelectGroup() {
+      content.querySelectorAll("[data-select-group]").forEach(group => {
+        const limit = Number(group.getAttribute("data-limit")) || 999;
+        const choices = [...group.querySelectorAll(".choice")];
+
+        choices.forEach(ch => {
+          ch.addEventListener("click", () => {
+            const isActive = ch.classList.contains("active");
+
+            if (isActive) {
+              ch.classList.remove("active");
+              return;
+            }
+
+            const activeCount = choices.filter(c => c.classList.contains("active")).length;
+            if (activeCount >= limit) return;
+
+            ch.classList.add("active");
+          });
+        });
+      });
+    }
+
+
+    function getQuizMsg(id, ok) {
+      const msgs = {
+        recap1: {
+          ok: "✅ Betul! Jejak digital bisa bertahan lama.",
+          bad: "⚠️ Coba ingat lagi. Jejak digital bisa tetap ada lama."
+        },
+        capQuiz: {
+          ok: "✅ Mantap. Kalau ragu, tanya orang dewasa.",
+          bad: "⚠️ Lebih aman berhenti dulu, bukan buru-buru."
+        },
+        stop1: {
+          ok: "✅ Benar. Tunda dulu dan tanya orang dewasa.",
+          bad: "⚠️ Kalau ragu, jangan posting dulu."
+        },
+        postA: {
+          ok: "✅ Setuju. Kalau emosi, sebaiknya tidak diposting.",
+          bad: "⚠️ Kalau marah, stop dulu. Jangan posting saat emosi."
+        },
+        postB: {
+          ok: "✅ Bagus! Posting karya dengan sopan itu jejak baik.",
+          bad: "⚠️ Karya yang sopan biasanya aman untuk diposting."
+        },
+        postC: {
+          ok: "✅ Benar. Foto teman perlu izin dulu.",
+          bad: "⚠️ Lebih aman: minta izin dulu."
+        },
+        postBonus: {
+          ok: "✅ Ya! STOP → PIKIR → TANYA.",
+          bad: "⚠️ Jangan kebalik ya. Pikir dulu sebelum posting."
+        },
+        after1: {
+          ok: "✅ Mantap. Tenang dulu dan minta bantuan orang dewasa.",
+          bad: "⚠️ Balas marah bisa bikin masalah makin panjang."
+        },
+        after2: {
+          ok: "✅ Betul. Simpan bukti dan lapor.",
+          bad: "⚠️ Membalas kasar bikin masalah tambah besar."
+        }
+      };
+      const m = msgs[id];
+      if (!m) return ok ? "✅ Benar!" : "⚠️ Coba lagi.";
+      return ok ? m.ok : m.bad;
+    }
+
+    function wireToggles() {
+      content.querySelectorAll("[data-toggle]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-toggle");
+          const panel = content.querySelector("#" + id);
+          if (!panel) return;
+
+          const isOpen = panel.classList.contains("show");
+          panel.classList.toggle("show", !isOpen);
+
+          // text change if button not ghost
+          if (btn.classList.contains("miniBtn") || btn.classList.contains("btn")) {
+            btn.textContent = isOpen ? (btn.textContent.includes("Tutup") ? btn.textContent.replace("Tutup", "Lihat") : "Lihat") : "Tutup";
+          }
+          if (!isOpen) panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        });
+      });
+    }
+
+    function wireTreeGameV2() {
+      const goodGroup = content.querySelector('[data-select-group="good"]');
+      const badGroup = content.querySelector('[data-select-group="bad"]');
+      const checkBtn = content.querySelector('[data-check-tree]');
+      const resetBtn = content.querySelector('[data-reset-tree]');
+      const tag = content.querySelector('#treeTag');
+      const fb = content.querySelector('#treeFb');
+
+      if (!goodGroup || !badGroup || !checkBtn || !resetBtn) return;
+
+      function countActive(group) {
+        return group.querySelectorAll('.choice.active').length;
+      }
+
+      checkBtn.addEventListener('click', () => {
+        const g = countActive(goodGroup);
+        const b = countActive(badGroup);
+
+        tag.style.display = 'inline-flex';
+        fb.classList.add('show');
+
+        if (g === 3 && b === 3) {
+          tag.textContent = '✅ Mantap!';
+          fb.className = 'feedback show fbOk';
+          fb.innerHTML =
+            'Keren! Kamu sudah bisa membedakan contoh jejak digital yang baik dan tidak baik.';
+        } else {
+          tag.textContent = '⚠️ Belum lengkap';
+          fb.className = 'feedback show fbBad';
+          fb.innerHTML =
+            `Pilih <b>3</b> jejak baik dan <b>3</b> jejak tidak baik.<br>
+        Sekarang: baik ${g}/3, tidak baik ${b}/3.`;
+        }
+      });
+
+      resetBtn.addEventListener('click', () => {
+        goodGroup.querySelectorAll('.choice').forEach(c => c.classList.remove('active'));
+        badGroup.querySelectorAll('.choice').forEach(c => c.classList.remove('active'));
+        tag.style.display = 'none';
+        tag.textContent = '';
+        fb.className = 'feedback';
+        fb.innerHTML = '';
+      });
+    }
+
+
+    function wireInteractions() {
+      content.querySelectorAll("[data-quiz]").forEach(wireQuiz);
+      wireSelectGroup();
+      wireToggles();
+      wireTreeGameV2();
+    }
+
+    function go(d) {
+      idx = clamp(idx + d, 0, slides.length - 1);
+      render();
+      content.scrollTop = 0;
+    }
+
+    btnPrev.addEventListener("click", () => go(-1));
+    btnNext.addEventListener("click", () => go(1));
+    btnHome.addEventListener("click", () => { idx = 0; render(); content.scrollTop = 0; });
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") go(-1);
+      if (e.key === "ArrowRight") go(1);
+      if (e.key === "Home") { idx = 0; render(); content.scrollTop = 0; }
+    });
+
+    // init
+    render();
+  </script>
+</body>
+
+</html>
