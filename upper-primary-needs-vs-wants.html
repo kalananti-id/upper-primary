@@ -1,0 +1,1347 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Upper Primary – Needs vs Wants + Key Pressed (Scratch)</title>
+  <style>
+    :root {
+      --bg1: #F7FAFF;
+      --bg2: #ECFEFF;
+      --card: #FFFFFF;
+      --ink: #0F172A;
+      --muted: #475569;
+      --line: rgba(226, 232, 240, .95);
+      --brand: #4F46E5;
+      --brand2: #06B6D4;
+      --ok: #16A34A;
+      --bad: #DC2626;
+      --radius: 22px;
+      --shadow: 0 18px 40px rgba(15, 23, 42, .08);
+      --shadow2: 0 10px 22px rgba(15, 23, 42, .06);
+      --focus: 0 0 0 4px rgba(79, 70, 229, .18);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 520px at 10% 0%, rgba(6, 182, 212, .18), transparent 60%),
+        radial-gradient(1200px 520px at 90% 0%, rgba(79, 70, 229, .16), transparent 55%),
+        linear-gradient(180deg, var(--bg1), #F3F6FF 45%, var(--bg2));
+      min-height: 100vh;
+    }
+
+    .app {
+      width: min(1100px, 96vw);
+      margin: 18px auto 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .72);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow2);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(79, 70, 229, .18), rgba(6, 182, 212, .20));
+      border: 1px solid rgba(226, 232, 240, .9);
+      display: grid;
+      place-items: center;
+      font-weight: 1000;
+      color: rgba(79, 70, 229, 1);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.15;
+      letter-spacing: .2px
+    }
+
+    .brand .sub {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 800;
+      margin-top: 2px
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .9);
+      padding: 10px 12px;
+      border-radius: 16px;
+      font-weight: 1000;
+      cursor: pointer;
+      box-shadow: 0 8px 16px rgba(15, 23, 42, .06);
+      transition: transform .06s ease, box-shadow .12s ease, background .12s ease;
+      user-select: none;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px)
+    }
+
+    .btn:active {
+      transform: translateY(0px)
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, rgba(79, 70, 229, .12), rgba(6, 182, 212, .14));
+      border-color: rgba(79, 70, 229, .18);
+    }
+
+    .btn.ghost {
+      background: transparent;
+      box-shadow: none
+    }
+
+    .btn:focus {
+      outline: none;
+      box-shadow: var(--focus);
+    }
+
+    .progressWrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 260px;
+      justify-content: flex-end;
+    }
+
+    .progress {
+      width: 180px;
+      height: 10px;
+      background: rgba(226, 232, 240, .9);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(226, 232, 240, .95);
+    }
+
+    .bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, rgba(79, 70, 229, .85), rgba(6, 182, 212, .85));
+      border-radius: 999px;
+      transition: width .25s ease;
+    }
+
+    .count {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 900;
+    }
+
+    .stage {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, .60);
+      box-shadow: var(--shadow);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: calc(100vh - 145px);
+    }
+
+    .slide {
+      flex: 1;
+      background: rgba(255, 255, 255, .68);
+      border: 1px solid rgba(229, 234, 245, .95);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow2);
+      padding: 20px;
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+    }
+
+    .slideInner {
+      max-width: 980px;
+      margin: 0 auto;
+      max-height: calc(100vh - 190px);
+      overflow-y: auto;
+      padding-right: 8px;
+    }
+
+    .slideInner::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    .slideInner::-webkit-scrollbar-thumb {
+      background: rgba(96, 112, 153, .25);
+      border-radius: 999px;
+      border: 3px solid rgba(255, 255, 255, .9);
+    }
+
+    .slideInner::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    h2 {
+      margin: 6px 0 10px;
+      font-size: 30px;
+      letter-spacing: -.3px
+    }
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 18px
+    }
+
+    p {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-weight: 800;
+      line-height: 1.55
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 1000;
+      font-size: 12px;
+      letter-spacing: .2px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(79, 70, 229, .16);
+      background: rgba(79, 70, 229, .06);
+      color: rgba(55, 65, 81, .95);
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px
+    }
+
+    .cols2 {
+      grid-template-columns: 1fr 1fr
+    }
+
+    @media (max-width: 860px) {
+      .cols2 {
+        grid-template-columns: 1fr
+      }
+
+      .progressWrap {
+        min-width: unset
+      }
+
+      .progress {
+        width: 130px
+      }
+
+      h2 {
+        font-size: 26px
+      }
+    }
+
+    .card {
+      background: rgba(255, 255, 255, .92);
+      border: 1px solid rgba(226, 232, 240, .95);
+      border-radius: 22px;
+      padding: 14px;
+      box-shadow: 0 10px 18px rgba(15, 23, 42, .06);
+    }
+
+    .hint {
+      background: rgba(6, 182, 212, .10);
+      border: 1px dashed rgba(6, 182, 212, .35);
+      border-radius: 18px;
+      padding: 12px 14px;
+      color: rgba(30, 41, 59, .92);
+      font-weight: 900;
+      line-height: 1.5;
+    }
+
+    .miniRow {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .92);
+      color: rgba(30, 41, 59, .92);
+      font-weight: 1000;
+      font-size: 12px;
+    }
+
+    ul.list {
+      margin: 8px 0 0 18px;
+      color: var(--muted);
+      font-weight: 850;
+      line-height: 1.55
+    }
+
+    .choices {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px
+    }
+
+    .choice {
+      border: 1px solid rgba(226, 232, 240, .95);
+      border-radius: 18px;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, .96);
+      font-weight: 950;
+      color: rgba(30, 41, 59, .96);
+      cursor: pointer;
+      user-select: none;
+      transition: transform .06s ease, border-color .12s ease, background .12s ease;
+    }
+
+    .choice:hover {
+      transform: translateY(-1px)
+    }
+
+    .choice.active {
+      border-color: rgba(79, 70, 229, .35);
+      background: rgba(79, 70, 229, .06)
+    }
+
+    .choice.ok {
+      border-color: rgba(22, 163, 74, .35);
+      background: rgba(22, 163, 74, .08)
+    }
+
+    .choice.bad {
+      border-color: rgba(220, 38, 38, .35);
+      background: rgba(220, 38, 38, .08)
+    }
+
+    .feedback {
+      display: none;
+      margin-top: 10px;
+      border-radius: 18px;
+      padding: 12px 14px;
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .92);
+      color: var(--muted);
+      font-weight: 900;
+      line-height: 1.5;
+    }
+
+    .feedback.show {
+      display: block
+    }
+
+    .fbOk {
+      border-color: rgba(22, 163, 74, .35);
+      background: rgba(22, 163, 74, .08);
+      color: rgba(15, 23, 42, .92)
+    }
+
+    .fbBad {
+      border-color: rgba(220, 38, 38, .35);
+      background: rgba(220, 38, 38, .08);
+      color: rgba(15, 23, 42, .92)
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .92);
+      font-weight: 950;
+      color: rgba(30, 41, 59, .92);
+      font-size: 12px;
+    }
+
+    .step {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 10px 12px;
+      border-radius: 18px;
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .96);
+    }
+
+    .dot {
+      width: 26px;
+      height: 26px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: rgba(79, 70, 229, .10);
+      border: 1px solid rgba(79, 70, 229, .18);
+      font-weight: 1000;
+      color: rgba(79, 70, 229, .95);
+      flex: 0 0 auto;
+    }
+
+    .kbd {
+      font-family: var(--mono);
+      padding: 2px 6px;
+      border-radius: 10px;
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .92);
+      font-weight: 900;
+      font-size: 12px;
+    }
+
+    /* Keyboard simulator */
+    .simKey {
+      border: 1px solid rgba(226, 232, 240, .95);
+      border-radius: 22px;
+      padding: 14px;
+      background: rgba(255, 255, 255, .92);
+      box-shadow: 0 10px 18px rgba(15, 23, 42, .06);
+    }
+
+    .bigKeyRow {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .keyBox {
+      display: grid;
+      place-items: center;
+      width: 78px;
+      height: 54px;
+      border-radius: 18px;
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .96);
+      font-family: var(--mono);
+      font-weight: 1000;
+      font-size: 18px;
+      user-select: none;
+    }
+
+    .keyBox.on {
+      border-color: rgba(79, 70, 229, .35);
+      background: rgba(79, 70, 229, .06);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ACCESS GATE -->
+  <div id="accessGate" style="
+    position:fixed; inset:0;
+    background:linear-gradient(135deg,#eef2ff,#ecfeff);
+    display:flex; align-items:center; justify-content:center;
+    z-index:9999;">
+    <div class="card" style="max-width:420px;width:92%;text-align:center">
+      <h2>🔐 Kode Akses</h2>
+      <p>Masukkan kode untuk memulai sesi.</p>
+
+      <input id="accessInput" placeholder="MASUKKAN KODE" autocomplete="off" style="width:100%;padding:12px 14px;border-radius:16px;border:1px solid rgba(226,232,240,.95);
+        font-weight:900;letter-spacing:2px;text-align:center" />
+
+      <button class="btn primary" id="accessBtn" style="margin-top:12px">Masuk</button>
+      <div class="feedback" id="accessFb" style="margin-top:10px"></div>
+
+      <div class="hint" style="margin-top:10px">Kode diberikan oleh guru.</div>
+    </div>
+  </div>
+
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">UP</div>
+        <div>
+          <h1>Upper Primary</h1>
+          <div class="sub">Needs vs Wants + Event Keyboard (Scratch)</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="btn ghost" id="btnHome" title="Kembali ke awal">🏠 Awal</button>
+        <button class="btn" id="btnPrev" title="Sebelumnya (←)">←</button>
+        <button class="btn primary" id="btnNext" title="Berikutnya (→)">→</button>
+      </div>
+
+      <div class="progressWrap">
+        <div class="progress" aria-label="Progress">
+          <div class="bar" id="bar"></div>
+        </div>
+        <div class="count" id="count">1/1</div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="slide" role="region" aria-label="Slide">
+        <div class="slideInner" id="content"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /**********************
+     * SLIDES
+     **********************/
+    const slides = [
+      {
+        title: "Pembuka",
+        html: `
+          <div class="kicker">✨ Mulai</div>
+          <h2>Needs vs Wants + Event Keyboard</h2>
+          <p>Hari ini kita belajar <b>membedakan kebutuhan dan keinginan</b>, lalu membuat program Scratch yang merespons <b>tombol keyboard</b>.</p>
+
+          <div class="grid cols2" style="margin-top:10px">
+            <div class="card">
+              <h3>Target kita</h3>
+              <ul class="list">
+                <li>Paham bedanya <b>Needs</b> dan <b>Wants</b></li>
+                <li>Kenalan dengan <b>Event</b> di Scratch</li>
+                <li>Bisa pakai <b>when key pressed</b> (tekan tombol)</li>
+              </ul>
+              <div class="hint" style="margin-top:12px">Santai ya. Kita belajar sambil main.</div>
+            </div>
+
+            <div class="card">
+              <h3>Siap mulai?</h3>
+              <div class="choices" data-quiz="ready">
+                <div class="choice" data-answer="right">✅ Siap!</div>
+                <div class="choice" data-answer="right">✅ Siap banget!</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="ready"></div>
+              <div class="miniRow" style="margin-top:12px">
+                <button class="btn primary" data-goto="1">🚀 Mulai</button>
+              </div>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Warm Up",
+        html: `
+          <div class="kicker">🧠 Pemanasan</div>
+          <h2>Kalau punya Rp50.000…</h2>
+          <p>Tuliskan di kepala kamu: kamu mau pakai untuk apa? (Tidak perlu bilang keras-keras.)</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Poll cepat</h3>
+              <p>Kalau kamu harus memilih, kamu akan pilih yang mana?</p>
+              <div class="choices" data-quiz="pollA">
+                <div class="choice" data-answer="right">📚 Beli buku tulis (buat sekolah)</div>
+                <div class="choice" data-answer="right">🍦 Beli es krim (buat senang-senang)</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="pollA"></div>
+            </div>
+
+            <div class="card">
+              <h3>Catatan penting</h3>
+              <div class="hint">
+                Tidak semua pilihan itu “salah”.<br>
+                Tapi kita perlu tahu mana yang <b>lebih diprioritaskan</b>.
+              </div>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Situasi",
+        html: `
+          <div class="kicker">🎭 Situasi</div>
+          <h2>Sepatu rusak vs mainan baru</h2>
+          <p>
+            Sepatumu rusak 👟<br>
+            Tapi kamu juga ingin beli mainan baru 🤖
+          </p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Kamu pilih…</h3>
+              <div class="choices" data-quiz="case1">
+                <div class="choice" data-answer="right">👟 Beli sepatu dulu</div>
+                <div class="choice" data-answer="wrong">🤖 Beli mainan dulu</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="case1"></div>
+            </div>
+
+            <div class="card">
+              <h3>Kenapa ini penting?</h3>
+              <ul class="list">
+                <li>Kita belajar <b>prioritas</b></li>
+                <li>Kita belajar membuat keputusan</li>
+                <li>Nanti keputusan ini kita buat jadi <b>game Scratch</b></li>
+              </ul>
+            </div>
+          </div>
+        `
+      },
+
+      /* NEW: Concept slide */
+      {
+        title: "Konsep",
+        html: `
+          <div class="kicker">💡 Konsep</div>
+          <h2>Apa itu Needs vs Wants?</h2>
+          <p>Ini adalah cara kita membedakan: mana yang <b>harus</b> dan mana yang <b>ingin</b>.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>✅ Kebutuhan (Needs)</h3>
+              <p>Hal yang <b>harus dipenuhi</b> agar kita bisa hidup dengan baik dan aman.</p>
+              <div class="miniRow" style="margin-top:8px">
+                <span class="tag">sehat</span>
+                <span class="tag">aman</span>
+                <span class="tag">sekolah</span>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>✨ Keinginan (Wants)</h3>
+              <p>Hal yang <b>ingin dimiliki</b>, tapi tidak wajib dan <b>bisa ditunda</b>.</p>
+              <div class="miniRow" style="margin-top:8px">
+                <span class="tag">seru</span>
+                <span class="tag">lucu</span>
+                <span class="tag">gaya</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hint" style="margin-top:12px">
+            Ingat: wants tidak salah. Tapi biasanya needs harus didahulukan.
+          </div>
+        `
+      },
+
+      /* NEW: Explanation + tool questions */
+      {
+        title: "Ciri-ciri",
+        html: `
+          <div class="kicker">🔎 Lebih Detail</div>
+          <h2>Ciri-ciri Needs & Wants</h2>
+          <p>Kita pakai <b>pertanyaan panduan</b> supaya tidak bingung.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>✅ Needs biasanya…</h3>
+              <ul class="list">
+                <li>Kalau tidak ada → hidup jadi sulit</li>
+                <li>Berhubungan dengan kesehatan/pendidikan/keamanan</li>
+                <li>Harus dipenuhi lebih dulu</li>
+              </ul>
+              <div class="hint" style="margin-top:12px">
+                Pertanyaan: <b>“Kalau tidak ada ini, apakah hidupku terganggu?”</b>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>✨ Wants biasanya…</h3>
+              <ul class="list">
+                <li>Membuat kita senang</li>
+                <li>Tidak wajib</li>
+                <li>Bisa ditunda / nanti dulu</li>
+              </ul>
+              <div class="hint" style="margin-top:12px">
+                Pertanyaan: <b>“Apakah aku tetap bisa hidup tanpa ini?”</b>
+              </div>
+            </div>
+          </div>
+        `
+      },
+
+      /* Examples slide */
+      {
+        title: "Contoh",
+        html: `
+          <div class="kicker">🧺 Contoh</div>
+          <h2>Needs atau Wants?</h2>
+          <p>Jawab cepat. Yang penting: jelaskan alasannya.</p>
+
+          <div class="card" style="margin-top:12px">
+            <h3>Poll</h3>
+            <p style="margin:0 0 8px"><b>📚 Buku pelajaran</b> itu…</p>
+            <div class="choices" data-quiz="ex1">
+              <div class="choice" data-answer="right">Needs</div>
+              <div class="choice" data-answer="wrong">Wants</div>
+            </div>
+            <div class="feedback" data-quiz-feedback="ex1"></div>
+
+            <p style="margin:12px 0 8px"><b>🎮 Game baru</b> itu…</p>
+            <div class="choices" data-quiz="ex2">
+              <div class="choice" data-answer="wrong">Needs</div>
+              <div class="choice" data-answer="right">Wants</div>
+            </div>
+            <div class="feedback" data-quiz-feedback="ex2"></div>
+          </div>
+
+          <div class="hint" style="margin-top:12px">
+            Nanti di Scratch, kita juga akan “memilih” seperti ini, tapi pakai tombol keyboard.
+          </div>
+        `
+      },
+
+      /* HOTS Case 1 */
+      {
+        title: "HOTS 1",
+        html: `
+          <div class="kicker">🔥 HOTS</div>
+          <h2>Kasus Abu-abu: HP Baru</h2>
+          <p>Jawabannya bisa “tergantung”. Yuk analisis.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Situasi</h3>
+              <ul class="list">
+                <li>HP lama masih bisa dipakai</li>
+                <li>HP baru kameranya lebih bagus</li>
+                <li>Katanya untuk belajar juga</li>
+              </ul>
+              <div class="hint" style="margin-top:12px">
+                Diskusi 2 menit: kapan HP bisa jadi <b>needs</b>? kapan jadi <b>wants</b>?
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Pilih jawabanmu</h3>
+              <div class="choices" data-quiz="hots1">
+                <div class="choice" data-answer="right">Tergantung situasi</div>
+                <div class="choice" data-answer="right">Bisa jadi wants, bisa jadi needs</div>
+                <div class="choice" data-answer="wrong">Selalu needs</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="hots1"></div>
+
+              <div class="hint" style="margin-top:12px">
+                Yang penting: kamu punya <b>alasan</b>.
+              </div>
+            </div>
+          </div>
+        `
+      },
+
+      /* HOTS Case 2 */
+      {
+        title: "HOTS 2",
+        html: `
+          <div class="kicker">🔥 HOTS</div>
+          <h2>Kasus: Sepatu Model Baru</h2>
+          <p>Ini sering terjadi di kehidupan nyata.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Situasi</h3>
+              <ul class="list">
+                <li>Sudah punya sepatu olahraga</li>
+                <li>Sepatunya masih bagus</li>
+                <li>Tapi teman-teman pakai model terbaru</li>
+              </ul>
+              <div class="hint" style="margin-top:12px">
+                Pertanyaan: <b>apa dampaknya</b> kalau selalu ikut teman?
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Pilih jawabanmu</h3>
+              <div class="choices" data-quiz="hots2">
+                <div class="choice" data-answer="right">Lebih ke wants (kalau sepatu lama masih bagus)</div>
+                <div class="choice" data-answer="wrong">Selalu needs (harus update)</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="hots2"></div>
+
+              <div class="hint" style="margin-top:12px">
+                Kalau sepatu lama <b>rusak</b> dan tidak aman dipakai → bisa berubah jadi <b>needs</b>.
+              </div>
+            </div>
+          </div>
+        `
+      },
+
+      /* Bridge to coding */
+      {
+        title: "Bridge",
+        html: `
+          <div class="kicker">🔗 Hubungkan</div>
+          <h2>Dari Keputusan ke Coding</h2>
+          <p>Di hidup nyata, kamu memilih needs atau wants. Di Scratch, kamu bisa membuat game yang memilih berdasarkan <b>event</b>.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Di kehidupan</h3>
+              <ul class="list">
+                <li>Terima uang saku → <b>pemicu</b></li>
+                <li>Memilih → <b>keputusan</b></li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>Di Scratch</h3>
+              <ul class="list">
+                <li>Menekan tombol → <b>event</b></li>
+                <li>Sprite merespons → <b>aksi</b></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="hint" style="margin-top:12px">
+            Hari ini kita pakai tombol: <span class="kbd">N</span> = Needs, <span class="kbd">W</span> = Wants
+          </div>
+        `
+      },
+
+      /* What is event */
+      {
+        title: "Event",
+        html: `
+          <div class="kicker">🎯 Konsep Scratch</div>
+          <h2>Apa itu Event?</h2>
+          <p>Event adalah peristiwa yang membuat sesuatu terjadi.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Contoh Event</h3>
+              <div class="miniRow" style="margin-top:8px">
+                <span class="tag">Klik bendera hijau</span>
+                <span class="tag">Klik sprite</span>
+                <span class="tag">Tekan keyboard</span>
+              </div>
+              <div class="hint" style="margin-top:12px">
+                Tanpa event, game tidak merespons pemain.
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Mini quiz</h3>
+              <p>“Saat tombol ditekan, program berjalan.” Itu disebut…</p>
+              <div class="choices" data-quiz="qEvent">
+                <div class="choice" data-answer="right">Event</div>
+                <div class="choice" data-answer="wrong">Paint</div>
+                <div class="choice" data-answer="wrong">Costume</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="qEvent"></div>
+            </div>
+          </div>
+        `
+      },
+
+      /* Key pressed introduction */
+      {
+        title: "Key Pressed",
+        html: `
+    <div class="kicker">⌨️ Event</div>
+    <h2>when key pressed</h2>
+    <p>Blok ini menjalankan script saat kamu menekan tombol tertentu.</p>
+
+    <div class="grid cols2" style="margin-top:12px">
+      <div class="card">
+        <h3>Yang kita pakai</h3>
+
+        <div class="step">
+          <div class="dot">1</div>
+          <div>
+            <img
+              src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/bc445c60-dd90-426b-bc1e-73da20248d59.png"
+              alt="when n key pressed"
+              style="max-width:100%; height:auto; display:block;"
+            />
+          </div>
+        </div>
+
+        <div class="step" style="margin-top:8px">
+          <div class="dot">2</div>
+          <div>
+            <img
+              src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/5231f260-5b1d-4c6b-b3d5-c4bf7b6b9fb9.png"
+              alt="when w key pressed"
+              style="max-width:100%; height:auto; display:block;"
+            />
+          </div>
+        </div>
+
+        <div class="hint" style="margin-top:12px">
+          Ini membuat game terasa “hidup” karena bisa merespons pemain.
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Kenapa ini berguna?</h3>
+        <ul class="list">
+          <li>Kontrol karakter (kiri/kanan/lompat)</li>
+          <li>Memilih jawaban (A/B/C)</li>
+          <li>Memilih kategori (Needs/Wants)</li>
+        </ul>
+      </div>
+    </div>
+  `
+      },
+
+      /* Keyboard simulator: press N/W */
+      {
+        title: "Simulator",
+        html: `
+          <div class="kicker">🧪 Coba di sini</div>
+          <h2>Simulator Keyboard (Tekan N / W)</h2>
+          <p>Tekan tombol di keyboard kamu sekarang. Fokus ke event: saat tombol ditekan, sistem merespons.</p>
+
+          <div class="simKey" data-key-sim>
+            <div class="miniRow">
+              <span class="pill">Rules: <span class="kbd">N</span> = Needs</span>
+              <span class="pill"><span class="kbd">W</span> = Wants</span>
+              <span class="pill">Tekan <span class="kbd">ESC</span> untuk reset</span>
+            </div>
+
+            <div class="bigKeyRow">
+              <div class="keyBox" id="boxN">N</div>
+              <div class="keyBox" id="boxW">W</div>
+              <div class="keyBox" id="boxEsc">ESC</div>
+            </div>
+
+            <div class="feedback show" id="keySimFb" style="display:block; margin-top:12px">
+              Siap? Tekan <b>N</b> atau <b>W</b> ya.
+            </div>
+
+            <div class="hint" style="margin-top:12px">
+              Ini mirip Scratch: <b>when key pressed</b> → jalankan aksi.
+            </div>
+          </div>
+        `
+      },
+
+      /* Open Scratch + setup */
+      {
+        title: "Buka Scratch",
+        html: `
+          <div class="kicker">🧱 Praktik Scratch</div>
+          <h2>Siapkan Proyek</h2>
+          <p>Ikuti langkahnya satu-satu. Tidak perlu buru-buru.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>1) Bikin sprite “Item”</h3>
+              <div class="step"><div class="dot">1</div><div>Tambahkan 1 sprite (contoh: <b>nasi</b>).</div></div>
+              <div class="step" style="margin-top:8px"><div class="dot">2</div><div>Tambah 1 sprite lain (contoh: <b>mainan</b>).</div></div>
+              <div class="hint" style="margin-top:12px">Boleh pakai gambar sederhana dulu.</div>
+            </div>
+
+            <div class="card">
+              <h3>2) Buat variabel (opsional)</h3>
+              <div class="step"><div class="dot">A</div><div>Buat variabel: <b>Skor</b> (mulai dari 0)</div></div>
+              <div class="step" style="margin-top:8px"><div class="dot">B</div><div>Buat variabel: <b>JawabanBenar</b> (Needs/Wants)</div></div>
+              
+            </div>
+          </div>
+        `
+      },
+
+      /* Coding step: green flag */
+      {
+        title: "Kode Start",
+        html: `
+          <div class="kicker">🟢 Start</div>
+          <h2>Kode Awal</h2>
+          <p>Ini event pertama kita: bendera hijau.</p>
+
+          <div class="card" style="margin-top:12px">
+            <h3>Tambahkan blok ini</h3>
+            <div class="step"><div class="dot">1</div><div><b>when green flag clicked</b></div></div>
+            <div class="step" style="margin-top:8px"><div class="dot">2</div><div><b>say</b> “Tekan N untuk Needs, W untuk Wants!”</div></div>
+
+            <div class="hint" style="margin-top:12px">
+              Jalankan. Apakah teksnya muncul?
+            </div>
+          </div>
+        `
+      },
+
+      /* Coding step: key pressed */
+      {
+        title: "Kode Key Press",
+        html: `
+          <div class="kicker">⌨️ Key Press</div>
+          <h2>Tambah Event Keyboard</h2>
+          <p>Sekarang kita buat program merespons tombol.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Event N</h3>
+              <div class="step"><div class="dot">N</div><div><b>when</b> <span class="kbd">n</span> <b>key pressed</b></div></div>
+              <div class="step" style="margin-top:8px"><div class="dot">→</div><div><b>say</b> “Needs!”</div></div>
+            </div>
+
+            <div class="card">
+              <h3>Event W</h3>
+              <div class="step"><div class="dot">W</div><div><b>when</b> <span class="kbd">w</span> <b>key pressed</b></div></div>
+              <div class="step" style="margin-top:8px"><div class="dot">→</div><div><b>say</b> “Wants!”</div></div>
+            </div>
+          </div>
+
+          <div class="hint" style="margin-top:12px">
+            Coba tekan <b>N</b> dan <b>W</b>. Apakah sprite merespons?
+          </div>
+        `
+      },
+
+      /* Add logic correctness (optional) */
+      {
+        title: "Tambah Logika",
+        html: `
+          <div class="kicker">🧠 Logika</div>
+          <h2>Benar atau Salah?</h2>
+          <p>Kalau mau lebih menantang, kita cek pilihanmu.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Ide mudah (tanpa variabel)</h3>
+              <ul class="list">
+                <li>Gunakan 1 sprite = 1 item</li>
+                <li>Untuk item “nasi” → N benar, W salah</li>
+                <li>Untuk item “mainan” → W benar, N salah</li>
+              </ul>
+              <div class="hint" style="margin-top:12px">
+                Kamu bisa duplikat script di tiap sprite item.
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Quiz cepat</h3>
+              <p>Event itu terjadi saat…</p>
+              <div class="choices" data-quiz="q2">
+                <div class="choice" data-answer="right">tombol ditekan / sesuatu dipicu</div>
+                <div class="choice" data-answer="wrong">warna background berubah sendiri</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="q2"></div>
+            </div>
+          </div>
+        `
+      },
+
+      /* Mini Challenge */
+      {
+        title: "Challenge",
+        html: `
+          <div class="kicker">🏁 Tantangan</div>
+          <h2>Mini Challenge: 4 Barang</h2>
+          <p>Buat program yang bisa menguji pilihan Needs/Wants.</p>
+
+          <div class="card" style="margin-top:12px">
+            <h3>Checklist</h3>
+            <ul class="list">
+              <li>Minimal <b>4 barang</b> (contoh: nasi, buku, mainan, es krim)</li>
+              <li>Ada instruksi: “Tekan N untuk Needs, W untuk Wants”</li>
+              <li>Tekan tombol → ada respon</li>
+              <li>(Bonus) Ada pesan “Benar!” / “Coba lagi!”</li>
+            </ul>
+
+            <div class="hint" style="margin-top:12px">
+              Tantangan: tambahkan <b>skor</b> (+1 kalau benar).
+            </div>
+          </div>
+        `
+      },
+
+      /* Debug */
+      {
+        title: "Debug",
+        html: `
+          <div class="kicker">🛠️ Debug</div>
+          <h2>Kalau belum jalan…</h2>
+          <p>Tenang. Cek ini dulu ya.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Checklist cepat</h3>
+              <ul class="list">
+                <li>Sudah klik <b>green flag</b>?</li>
+                <li>Blok <b>when key pressed</b> sudah pilih tombol yang benar?</li>
+                <li>Script ditempel di sprite yang benar?</li>
+                <li>Kalau pakai variabel: apakah set-nya sudah benar?</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Mindset</h3>
+              <div class="hint">
+                Debug itu bukan berarti kamu gagal.<br>
+                Debug itu bagian dari cara programmer belajar.
+              </div>
+            </div>
+          </div>
+        `
+      },
+
+      /* Reflection */
+      {
+        title: "Refleksi",
+        html: `
+          <div class="kicker">🪞 Refleksi</div>
+          <h2>Apa yang kamu pelajari?</h2>
+          <p>Pilih jawaban yang paling kamu setuju.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Needs vs Wants</h3>
+              <div class="choices" data-quiz="ref1">
+                <div class="choice" data-answer="right">Needs itu harus dipenuhi dulu</div>
+                <div class="choice" data-answer="right">Wants itu boleh, tapi bisa ditunda</div>
+                <div class="choice" data-answer="wrong">Wants itu selalu dilarang</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="ref1"></div>
+            </div>
+
+            <div class="card">
+              <h3>Event di Scratch</h3>
+              <div class="choices" data-quiz="ref2">
+                <div class="choice" data-answer="right">Event = pemicu aksi</div>
+                <div class="choice" data-answer="wrong">Event = menggambar sprite</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="ref2"></div>
+            </div>
+          </div>
+
+          <div class="hint" style="margin-top:12px">
+            Next session: setelah bisa pilih needs vs wants, kita belajar <b>menabung</b> dan bikin <b>Saving Goal Tracker</b>.
+          </div>
+        `
+      },
+
+      /* Closing */
+      {
+        title: "Penutup",
+        html: `
+          <div class="kicker">✅ Selesai</div>
+          <h2>Kerja bagus! 🎉</h2>
+          <p>Kamu sudah belajar membuat keputusan, lalu mengubahnya jadi program Scratch yang interaktif.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Ringkasan</h3>
+              <div class="miniRow" style="margin-top:8px">
+                <span class="tag">Needs</span>
+                <span class="tag">Wants</span>
+                <span class="tag">Event</span>
+                <span class="tag">when key pressed</span>
+              </div>
+              <div class="hint" style="margin-top:12px">
+                “Kalau ada pemicu, program bergerak.” Sama seperti game!
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Kalimat presentasi</h3>
+              <div class="hint">
+                “Di proyek saya, tombol <b>N</b> untuk kebutuhan dan tombol <b>W</b> untuk keinginan.
+                Saat tombol ditekan, sprite akan merespons. Itu namanya <b>event</b>.”
+              </div>
+            </div>
+          </div>
+        `
+      }
+    ];
+
+    /**********************
+     * NAV + RENDER
+     **********************/
+    let idx = 0;
+    const content = document.getElementById("content");
+    const bar = document.getElementById("bar");
+    const count = document.getElementById("count");
+    const btnPrev = document.getElementById("btnPrev");
+    const btnNext = document.getElementById("btnNext");
+    const btnHome = document.getElementById("btnHome");
+
+    function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
+
+    function showFeedback(el, html, type) {
+      if (!el) return;
+      el.classList.add("show");
+      el.style.display = "block";
+      el.classList.remove("fbOk", "fbBad");
+      if (type === "ok") el.classList.add("fbOk");
+      if (type === "bad") el.classList.add("fbBad");
+      el.innerHTML = html;
+    }
+
+    function wireQuiz(group) {
+      const id = group.getAttribute("data-quiz");
+      const fb = content.querySelector(`[data-quiz-feedback="${id}"]`);
+      const items = [...group.querySelectorAll(".choice")];
+
+      items.forEach(ch => {
+        ch.addEventListener("click", () => {
+          items.forEach(x => x.classList.remove("active", "ok", "bad"));
+          ch.classList.add("active");
+          const isRight = ch.getAttribute("data-answer") === "right";
+          if (isRight) {
+            ch.classList.add("ok");
+            showFeedback(fb, "✅ Mantap!", "ok");
+          } else {
+            ch.classList.add("bad");
+            showFeedback(fb, "⚠️ Coba pikir lagi ya.", "bad");
+          }
+        });
+      });
+    }
+
+    /**********************
+     * KEYBOARD SIM (slide)
+     **********************/
+    let keySimHandler = null;
+
+    function detachKeySim() {
+      if (keySimHandler) {
+        window.removeEventListener("keydown", keySimHandler);
+        keySimHandler = null;
+      }
+    }
+
+    function wireKeySim() {
+      const wrap = content.querySelector("[data-key-sim]");
+      if (!wrap) return;
+
+      const boxN = content.querySelector("#boxN");
+      const boxW = content.querySelector("#boxW");
+      const boxEsc = content.querySelector("#boxEsc");
+      const fb = content.querySelector("#keySimFb");
+
+      function resetBoxes() {
+        [boxN, boxW, boxEsc].forEach(b => b && b.classList.remove("on"));
+      }
+
+      function flash(el) {
+        if (!el) return;
+        el.classList.add("on");
+        setTimeout(() => el.classList.remove("on"), 180);
+      }
+
+      detachKeySim(); // ensure no double listeners
+
+      keySimHandler = (e) => {
+        const k = (e.key || "").toLowerCase();
+        if (k === "n") {
+          resetBoxes(); flash(boxN);
+          fb.className = "feedback show fbOk";
+          fb.style.display = "block";
+          fb.innerHTML = "✅ Kamu menekan <b>N</b> → event terjadi → pilihanmu: <b>Needs</b>.";
+        } else if (k === "w") {
+          resetBoxes(); flash(boxW);
+          fb.className = "feedback show fbOk";
+          fb.style.display = "block";
+          fb.innerHTML = "✅ Kamu menekan <b>W</b> → event terjadi → pilihanmu: <b>Wants</b>.";
+        } else if (k === "escape") {
+          resetBoxes(); flash(boxEsc);
+          fb.className = "feedback show";
+          fb.style.display = "block";
+          fb.innerHTML = "Reset ✅ Sekarang tekan <b>N</b> atau <b>W</b> lagi.";
+        }
+      };
+
+      window.addEventListener("keydown", keySimHandler);
+    }
+
+    function wireInteractions() {
+      // quizzes
+      content.querySelectorAll("[data-quiz]").forEach(wireQuiz);
+      // key simulator
+      wireKeySim();
+      // goto buttons
+      content.querySelectorAll("[data-goto]").forEach(b => {
+        b.addEventListener("click", () => {
+          const to = Number(b.getAttribute("data-goto"));
+          idx = clamp(to, 0, slides.length - 1);
+          render();
+          content.scrollTop = 0;
+        });
+      });
+    }
+
+    function render() {
+      detachKeySim(); // important: remove listener when leaving slide
+      const s = slides[idx];
+      content.innerHTML = s.html;
+      const pct = ((idx + 1) / slides.length) * 100;
+      bar.style.width = pct + "%";
+      count.textContent = `${idx + 1}/${slides.length}`;
+      wireInteractions();
+      content.scrollTop = 0;
+    }
+
+    function go(d) {
+      idx = clamp(idx + d, 0, slides.length - 1);
+      render();
+    }
+
+    btnPrev.addEventListener("click", () => go(-1));
+    btnNext.addEventListener("click", () => go(1));
+    btnHome.addEventListener("click", () => { idx = 0; render(); });
+
+    window.addEventListener("keydown", (e) => {
+      if (document.getElementById("accessGate").style.display !== "none") return; // lock navigation in gate
+      if (e.key === "ArrowLeft") go(-1);
+      if (e.key === "ArrowRight") go(1);
+      if (e.key === "Home") { idx = 0; render(); }
+    });
+
+    /**********************
+     * ACCESS GATE
+     **********************/
+    const ACCESS_CODE = "RGMDSUP25"; // samakan dengan file contoh
+    const gate = document.getElementById("accessGate");
+    const input = document.getElementById("accessInput");
+    const btn = document.getElementById("accessBtn");
+    const fb = document.getElementById("accessFb");
+
+    input.addEventListener("input", () => { input.value = input.value.toUpperCase(); });
+    btn.addEventListener("click", checkAccess);
+    input.addEventListener("keydown", (e) => { if (e.key === "Enter") checkAccess(); });
+
+    function checkAccess() {
+      if (input.value.trim() === ACCESS_CODE) {
+        gate.style.display = "none";
+      } else {
+        fb.className = "feedback show fbBad";
+        fb.style.display = "block";
+        fb.textContent = "Kode salah. Coba lagi.";
+      }
+    }
+
+    // initial
+    render();
+  </script>
+</body>
+
+</html>
