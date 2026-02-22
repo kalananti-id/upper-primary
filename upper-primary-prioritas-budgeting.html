@@ -1,0 +1,1141 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>UP 5.7 – Prioritas & Budgeting (Sprite Clicked)</title>
+  <style>
+    :root {
+      --bg1: #F7FAFF;
+      --bg2: #ECFEFF;
+      --card: #FFFFFF;
+      --ink: #0F172A;
+      --muted: #475569;
+      --line: rgba(226, 232, 240, .95);
+      --brand: #4F46E5;
+      --brand2: #06B6D4;
+      --ok: #16A34A;
+      --bad: #DC2626;
+      --radius: 22px;
+      --shadow: 0 18px 40px rgba(15, 23, 42, .08);
+      --shadow2: 0 10px 22px rgba(15, 23, 42, .06);
+      --focus: 0 0 0 4px rgba(79, 70, 229, .18);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 520px at 10% 0%, rgba(6, 182, 212, .18), transparent 60%),
+        radial-gradient(1200px 520px at 90% 0%, rgba(79, 70, 229, .16), transparent 55%),
+        linear-gradient(180deg, var(--bg1), #F3F6FF 45%, var(--bg2));
+      min-height: 100vh;
+    }
+
+    .app {
+      width: min(1100px, 96vw);
+      margin: 18px auto 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .72);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow2);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(79, 70, 229, .18), rgba(6, 182, 212, .20));
+      border: 1px solid rgba(226, 232, 240, .9);
+      display: grid;
+      place-items: center;
+      font-weight: 1000;
+      color: rgba(79, 70, 229, 1);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.15;
+      letter-spacing: .2px
+    }
+
+    .brand .sub {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 800;
+      margin-top: 2px
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .9);
+      padding: 10px 12px;
+      border-radius: 16px;
+      font-weight: 1000;
+      cursor: pointer;
+      box-shadow: 0 8px 16px rgba(15, 23, 42, .06);
+      transition: transform .06s ease, box-shadow .12s ease, background .12s ease;
+      user-select: none;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px)
+    }
+
+    .btn:active {
+      transform: translateY(0px)
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, rgba(79, 70, 229, .12), rgba(6, 182, 212, .14));
+      border-color: rgba(79, 70, 229, .18);
+    }
+
+    .btn.ghost {
+      background: transparent;
+      box-shadow: none
+    }
+
+    .btn:focus {
+      outline: none;
+      box-shadow: var(--focus);
+    }
+
+    .progressWrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 260px;
+      justify-content: flex-end;
+    }
+
+    .progress {
+      width: 180px;
+      height: 10px;
+      background: rgba(226, 232, 240, .9);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(226, 232, 240, .95);
+    }
+
+    .bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, rgba(79, 70, 229, .85), rgba(6, 182, 212, .85));
+      border-radius: 999px;
+      transition: width .25s ease;
+    }
+
+    .count {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 900;
+    }
+
+    .stage {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, .60);
+      box-shadow: var(--shadow);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: calc(100vh - 145px);
+    }
+
+    .slide {
+      flex: 1;
+      background: rgba(255, 255, 255, .68);
+      border: 1px solid rgba(229, 234, 245, .95);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow2);
+      padding: 20px;
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+    }
+
+    .slideInner {
+      max-width: 980px;
+      margin: 0 auto;
+      max-height: calc(100vh - 190px);
+      overflow-y: auto;
+      padding-right: 8px;
+    }
+
+    .slideInner::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    .slideInner::-webkit-scrollbar-thumb {
+      background: rgba(96, 112, 153, .25);
+      border-radius: 999px;
+      border: 3px solid rgba(255, 255, 255, .9);
+    }
+
+    .slideInner::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    h2 {
+      margin: 6px 0 10px;
+      font-size: 30px;
+      letter-spacing: -.3px
+    }
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 18px
+    }
+
+    p {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-weight: 800;
+      line-height: 1.55
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 1000;
+      font-size: 12px;
+      letter-spacing: .2px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(79, 70, 229, .16);
+      background: rgba(79, 70, 229, .06);
+      color: rgba(55, 65, 81, .95);
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px
+    }
+
+    .cols2 {
+      grid-template-columns: 1fr 1fr
+    }
+
+    @media (max-width: 860px) {
+      .cols2 {
+        grid-template-columns: 1fr
+      }
+
+      .progressWrap {
+        min-width: unset
+      }
+
+      .progress {
+        width: 130px
+      }
+
+      h2 {
+        font-size: 26px
+      }
+    }
+
+    .card {
+      background: rgba(255, 255, 255, .92);
+      border: 1px solid rgba(226, 232, 240, .95);
+      border-radius: 22px;
+      padding: 14px;
+      box-shadow: 0 10px 18px rgba(15, 23, 42, .06);
+    }
+
+    .hint {
+      background: rgba(6, 182, 212, .10);
+      border: 1px dashed rgba(6, 182, 212, .35);
+      border-radius: 18px;
+      padding: 12px 14px;
+      color: rgba(30, 41, 59, .92);
+      font-weight: 900;
+      line-height: 1.5;
+    }
+
+    ul.list {
+      margin: 8px 0 0 18px;
+      color: var(--muted);
+      font-weight: 850;
+      line-height: 1.55
+    }
+
+    .choices {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px
+    }
+
+    .choice {
+      border: 1px solid rgba(226, 232, 240, .95);
+      border-radius: 18px;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, .96);
+      font-weight: 950;
+      color: rgba(30, 41, 59, .96);
+      cursor: pointer;
+      user-select: none;
+      transition: transform .06s ease, border-color .12s ease, background .12s ease;
+    }
+
+    .choice:hover {
+      transform: translateY(-1px)
+    }
+
+    .choice.active {
+      border-color: rgba(79, 70, 229, .35);
+      background: rgba(79, 70, 229, .06)
+    }
+
+    .choice.ok {
+      border-color: rgba(22, 163, 74, .35);
+      background: rgba(22, 163, 74, .08)
+    }
+
+    .choice.bad {
+      border-color: rgba(220, 38, 38, .35);
+      background: rgba(220, 38, 38, .08)
+    }
+
+    .feedback {
+      display: none;
+      margin-top: 10px;
+      border-radius: 18px;
+      padding: 12px 14px;
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .92);
+      color: var(--muted);
+      font-weight: 900;
+      line-height: 1.5;
+    }
+
+    .feedback.show {
+      display: block
+    }
+
+    .fbOk {
+      border-color: rgba(22, 163, 74, .35);
+      background: rgba(22, 163, 74, .08);
+      color: rgba(15, 23, 42, .92)
+    }
+
+    .fbBad {
+      border-color: rgba(220, 38, 38, .35);
+      background: rgba(220, 38, 38, .08);
+      color: rgba(15, 23, 42, .92)
+    }
+
+    .step {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 10px 12px;
+      border-radius: 18px;
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .96);
+    }
+
+    .dot {
+      width: 26px;
+      height: 26px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: rgba(79, 70, 229, .10);
+      border: 1px solid rgba(79, 70, 229, .18);
+      font-weight: 1000;
+      color: rgba(79, 70, 229, .95);
+      flex: 0 0 auto;
+    }
+
+    .kbd {
+      font-family: var(--mono);
+      padding: 2px 6px;
+      border-radius: 10px;
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .92);
+      font-weight: 900;
+      font-size: 12px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .92);
+      font-weight: 950;
+      color: rgba(30, 41, 59, .92);
+      font-size: 12px;
+    }
+
+    /* Budget simulator */
+    .sim {
+      border: 1px solid rgba(226, 232, 240, .95);
+      border-radius: 22px;
+      padding: 14px;
+      background: rgba(255, 255, 255, .92);
+      box-shadow: 0 10px 18px rgba(15, 23, 42, .06);
+    }
+
+    .money {
+      font-family: var(--mono);
+      font-weight: 1000;
+      font-size: 14px;
+      padding: 8px 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .95);
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .simBtns {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .simBtn {
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .96);
+      border-radius: 18px;
+      padding: 12px 14px;
+      font-weight: 1000;
+      cursor: pointer;
+      user-select: none;
+      transition: transform .06s ease, background .12s ease, border-color .12s ease;
+    }
+
+    .simBtn:hover {
+      transform: translateY(-1px)
+    }
+
+    .simBtn:active {
+      transform: translateY(0px)
+    }
+
+    .simBtn.primary {
+      border-color: rgba(79, 70, 229, .28);
+      background: rgba(79, 70, 229, .06)
+    }
+
+    .simBtn.warn {
+      border-color: rgba(220, 38, 38, .28);
+      background: rgba(220, 38, 38, .06)
+    }
+
+    .log {
+      margin-top: 10px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: rgba(71, 85, 105, .95);
+      background: rgba(255, 255, 255, .75);
+      border: 1px solid rgba(226, 232, 240, .95);
+      border-radius: 18px;
+      padding: 10px 12px;
+      max-height: 130px;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ACCESS GATE -->
+  <div id="accessGate" style="
+    position:fixed; inset:0;
+    background:linear-gradient(135deg,#eef2ff,#ecfeff);
+    display:flex; align-items:center; justify-content:center;
+    z-index:9999;">
+    <div class="card" style="max-width:420px;width:92%;text-align:center">
+      <h2>🔐 Kode Akses</h2>
+      <p>Masukkan kode untuk memulai sesi.</p>
+
+      <input id="accessInput" placeholder="MASUKKAN KODE" autocomplete="off" style="width:100%;padding:12px 14px;border-radius:16px;border:1px solid rgba(226,232,240,.95);
+        font-weight:900;letter-spacing:2px;text-align:center" />
+
+      <button class="btn primary" id="accessBtn" style="margin-top:12px">Masuk</button>
+      <div class="feedback" id="accessFb" style="margin-top:10px"></div>
+
+      <div class="hint" style="margin-top:10px">Kode diberikan oleh guru.</div>
+    </div>
+  </div>
+
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">UP</div>
+        <div>
+          <h1>Upper Primary</h1>
+          <div class="sub">5.7 Klik dan Tentukan – Prioritas & Budgeting (Sprite Clicked)</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="btn ghost" id="btnHome" title="Kembali ke awal">🏠 Awal</button>
+        <button class="btn" id="btnPrev" title="Sebelumnya (←)">←</button>
+        <button class="btn primary" id="btnNext" title="Berikutnya (→)">→</button>
+      </div>
+
+      <div class="progressWrap">
+        <div class="progress" aria-label="Progress">
+          <div class="bar" id="bar"></div>
+        </div>
+        <div class="count" id="count">1/1</div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="slide" role="region" aria-label="Slide">
+        <div class="slideInner" id="content"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /**********************
+     * SLIDES
+     **********************/
+    const slides = [
+      {
+        title: "Judul",
+        html: `
+          <div class="kicker">✨ Mulai</div>
+          <h2>Klik dan Tentukan</h2>
+          <p>Hari ini kita belajar <b>prioritas</b> dan <b>budgeting</b> lewat Scratch. Kita juga kenalan event: <b>when this sprite clicked</b>.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Target kita</h3>
+              <ul class="list">
+                <li>Tahu arti <b>prioritas</b> dan <b>budgeting</b></li>
+                <li>Tahu fungsi <b>sprite clicked</b></li>
+                <li>Bisa bikin animasi interaktif sederhana + variabel <b>Uang</b></li>
+              </ul>
+              <div class="hint" style="margin-top:12px">Navigasi: tombol <span class="kbd">←</span> <span class="kbd">→</span></div>
+            </div>
+
+            <div class="card">
+              <h3>Siap mulai?</h3>
+              <div class="choices" data-quiz="ready">
+                <div class="choice" data-answer="right">✅ Siap!</div>
+                <div class="choice" data-answer="right">✅ Siap banget!</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="ready"></div>
+              <button class="btn primary" data-goto="1" style="margin-top:10px">🚀 Mulai</button>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Warm Up",
+        html: `
+          <div class="kicker">🧠 Pemanasan</div>
+          <h2>Punya Rp100.000</h2>
+          <p>Kamu ingin beli:</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <div class="step"><div class="dot">📚</div><div><b>Buku</b> = Rp30.000</div></div>
+              <div class="step" style="margin-top:8px"><div class="dot">🤖</div><div><b>Mainan</b> = Rp40.000</div></div>
+              <div class="hint" style="margin-top:12px">Pertanyaan: kalau uang terbatas, kamu pilih yang mana dulu?</div>
+            </div>
+
+            <div class="card">
+              <h3>Poll cepat</h3>
+              <div class="choices" data-quiz="poll1">
+                <div class="choice" data-answer="right">Buku dulu (lebih penting)</div>
+                <div class="choice" data-answer="right">Tergantung situasi</div>
+                <div class="choice" data-answer="wrong">Mainan dulu selalu</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="poll1"></div>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Prioritas",
+        html: `
+          <div class="kicker">🎯 Konsep</div>
+          <h2>Apa itu Prioritas?</h2>
+          <p><b>Prioritas</b> adalah sesuatu yang didahulukan karena lebih penting.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Contoh</h3>
+              <ul class="list">
+                <li>📚 Buku sekolah → biasanya prioritas</li>
+                <li>🤖 Mainan → bisa ditunda</li>
+              </ul>
+              <div class="hint" style="margin-top:12px">
+                Pertanyaan: “Kalau tidak beli ini sekarang, apa dampaknya?”
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Mini quiz</h3>
+              <p>Prioritas artinya…</p>
+              <div class="choices" data-quiz="qprio">
+                <div class="choice" data-answer="right">Mendahulukan yang penting</div>
+                <div class="choice" data-answer="wrong">Membeli yang paling mahal</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="qprio"></div>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Budgeting",
+        html: `
+          <div class="kicker">💰 Konsep</div>
+          <h2>Apa itu Budgeting?</h2>
+          <p><b>Budgeting</b> adalah cara mengatur uang supaya tidak habis tanpa rencana.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>3 pertanyaan budgeting</h3>
+              <ul class="list">
+                <li>Uangku ada berapa?</li>
+                <li>Mau dipakai untuk apa?</li>
+                <li>Kalau beli ini, sisa berapa?</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Hitung cepat</h3>
+              <p>Uang = 100.000</p>
+              <ul class="list">
+                <li>Beli buku 30.000 → sisa 70.000</li>
+                <li>Beli mainan 40.000 → sisa 60.000</li>
+              </ul>
+              <div class="hint" style="margin-top:12px">Budgeting membantu kita melihat <b>konsekuensi</b>.</div>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Bridge Scratch",
+        html: `
+          <div class="kicker">🔗 Hubungkan</div>
+          <h2>Dari Uang ke Scratch</h2>
+          <p>Di hidup nyata, kamu memilih barang. Di Scratch, kamu bisa memilih dengan <b>klik sprite</b>.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Di kehidupan</h3>
+              <ul class="list">
+                <li>Pilih barang → uang berkurang</li>
+                <li>Pilih prioritas → uang lebih aman</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Di Scratch</h3>
+              <ul class="list">
+                <li>Klik sprite → event terjadi</li>
+                <li>Variabel <b>Uang</b> berubah</li>
+              </ul>
+              <div class="hint" style="margin-top:12px">Hari ini event-nya: <b>when this sprite clicked</b></div>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Sprite Clicked",
+        html: `
+    <div class="kicker">🟡 Event</div>
+    <h2>when this sprite clicked</h2>
+    <p>Artinya: saat sprite ini diklik, jalankan perintah di bawahnya.</p>
+
+    <div class="grid cols2" style="margin-top:12px">
+      <div class="card">
+        <h3>Contoh sederhana</h3>
+
+        <!-- Gambar blok Scratch (nempel) -->
+        <img
+          src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/0481a94c-d0b7-4228-a5b9-fb4e6f6448d3.png"
+          alt="when this sprite clicked + say Hello for 2 seconds"
+          style="
+            width:100%;
+            max-width:520px;
+            height:auto;
+            display:block;
+            margin:8px 0 0;
+          "
+        />
+
+        <div class="hint" style="margin-top:12px">
+          Tanpa event ini, klik tidak akan melakukan apa-apa.
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Quiz cepat</h3>
+        <p>Event itu…</p>
+        <div class="choices" data-quiz="qevt">
+          <div class="choice" data-answer="right">Pemicu aksi</div>
+          <div class="choice" data-answer="wrong">Warna background</div>
+        </div>
+        <div class="feedback" data-quiz-feedback="qevt"></div>
+      </div>
+    </div>
+  `
+      },
+      {
+        title: "Simulator",
+        html: `
+          <div class="kicker">🧪 Coba Interaktif</div>
+          <h2>Simulasi Budgeting (Klik Pilihan)</h2>
+          <p>Ini contoh “klik = keputusan”. Klik tombol barang dan lihat uangmu berubah.</p>
+
+          <div class="sim" data-budget-sim>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between">
+              <div class="money">UANG: <span id="simMoney">Rp100.000</span></div>
+              <button class="btn" id="simReset">Reset</button>
+            </div>
+
+            <div class="simBtns">
+              <div class="simBtn primary" data-buy="Buku" data-cost="30000">📚 Buku (-30.000)</div>
+              <div class="simBtn warn" data-buy="Mainan" data-cost="40000">🤖 Mainan (-40.000)</div>
+              <div class="simBtn primary" data-buy="Makan" data-cost="20000">🍱 Makan (-20.000)</div>
+            </div>
+
+            <div class="feedback show" id="simFb" style="display:block; margin-top:12px">
+              Tip: pilih <b>prioritas</b> dulu ya 😉
+            </div>
+
+            <div class="log" id="simLog">Riwayat klik akan muncul di sini.</div>
+          </div>
+
+          <div class="hint" style="margin-top:12px">
+            Nanti di Scratch, tombol di atas akan diganti jadi <b>sprite</b> yang bisa diklik.
+          </div>
+        `
+      },
+
+      {
+        title: "Setup Scratch",
+        html: `
+          <div class="kicker">🧱 Praktik Scratch</div>
+          <h2>Siapkan Proyek</h2>
+          <p>Kita bikin animasi interaktif sederhana. Belum perlu game ya.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Sprite yang dibutuhkan</h3>
+              <ul class="list">
+                <li>📚 Sprite Buku</li>
+                <li>🤖 Sprite Mainan</li>
+                <li>(Opsional) 🍱 Sprite Makan</li>
+              </ul>
+              <div class="hint" style="margin-top:12px">Kamu boleh pilih gambar yang sederhana dulu.</div>
+            </div>
+
+            <div class="card">
+              <h3>Variabel</h3>
+              <ul class="list">
+                <li>Buat variabel: <b>Uang</b></li>
+                <li>Nanti kita tampilkan di panggung (stage)</li>
+              </ul>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Start Code",
+        html: `
+          <div class="kicker">🟢 Start</div>
+          <h2>Mulai Program</h2>
+          <p>Event pertama: bendera hijau.</p>
+
+          <div class="card" style="margin-top:12px">
+            <div class="step"><div class="dot">1</div><div><b>when green flag clicked</b></div></div>
+            <div class="step" style="margin-top:8px"><div class="dot">2</div><div><b>set</b> Uang to <b>100000</b></div></div>
+            <div class="step" style="margin-top:8px"><div class="dot">3</div><div><b>say</b> “Klik barang untuk belanja!” for 2 seconds</div></div>
+            <div class="hint" style="margin-top:12px">Sekarang nilai Uang harus muncul dan siap berkurang.</div>
+          </div>
+        `
+      },
+
+      {
+        title: "Sprite Buku",
+        html: `
+          <div class="kicker">🟡 Click Event</div>
+          <h2>Script Sprite Buku</h2>
+          <p>Klik Buku = beli buku = uang berkurang 30.000</p>
+
+          <div class="card" style="margin-top:12px">
+            <div class="step"><div class="dot">1</div><div><b>when this sprite clicked</b></div></div>
+            <div class="step" style="margin-top:8px"><div class="dot">2</div><div><b>change</b> Uang by <b>-30000</b></div></div>
+            <div class="step" style="margin-top:8px"><div class="dot">3</div><div><b>say</b> “Aku beli buku.” for 1.5 seconds</div></div>
+            <div class="hint" style="margin-top:12px">Buku biasanya prioritas karena untuk belajar.</div>
+          </div>
+        `
+      },
+
+      {
+        title: "Sprite Mainan",
+        html: `
+          <div class="kicker">🟡 Click Event</div>
+          <h2>Script Sprite Mainan</h2>
+          <p>Klik Mainan = beli mainan = uang berkurang 40.000</p>
+
+          <div class="card" style="margin-top:12px">
+            <div class="step"><div class="dot">1</div><div><b>when this sprite clicked</b></div></div>
+            <div class="step" style="margin-top:8px"><div class="dot">2</div><div><b>change</b> Uang by <b>-40000</b></div></div>
+            <div class="step" style="margin-top:8px"><div class="dot">3</div><div><b>say</b> “Aku beli mainan.” for 1.5 seconds</div></div>
+            <div class="hint" style="margin-top:12px">Mainan itu keinginan. Boleh, tapi pikirkan dulu.</div>
+          </div>
+        `
+      },
+
+      {
+        title: "Observasi",
+        html: `
+          <div class="kicker">👀 Observasi</div>
+          <h2>Lihat Konsekuensi</h2>
+          <p>Coba klik pilihan berbeda. Apa yang terjadi pada variabel Uang?</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Diskusi cepat</h3>
+              <div class="choices" data-quiz="obs1">
+                <div class="choice" data-answer="right">Jika beli barang, uang berkurang</div>
+                <div class="choice" data-answer="wrong">Jika beli barang, uang bertambah</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="obs1"></div>
+            </div>
+
+            <div class="card">
+              <h3>Hubungkan ke budgeting</h3>
+              <div class="hint">
+                Budgeting itu: <b>melihat sisa uang</b> setelah mengambil keputusan.
+              </div>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Latihan",
+        html: `
+          <div class="kicker">🏁 Latihan</div>
+          <h2>Animasi Interaktif Prioritas</h2>
+          <p>Waktunya kamu bikin sendiri.</p>
+
+          <div class="card" style="margin-top:12px">
+            <h3>Checklist</h3>
+            <ul class="list">
+              <li>Minimal <b>3 sprite</b> barang</li>
+              <li>Variabel <b>Uang</b> (mulai 100000)</li>
+              <li>Setiap sprite punya <b>when this sprite clicked</b></li>
+              <li>Uang berkurang sesuai harga</li>
+              <li>Sprite mengatakan pesan saat diklik</li>
+            </ul>
+            <div class="hint" style="margin-top:12px">Target: animasi interaktif (bukan game kompleks).</div>
+          </div>
+        `
+      },
+
+      {
+        title: "Opsional",
+        html: `
+          <div class="kicker">➕ Bonus</div>
+          <h2>Pesan “Uang tidak cukup” (Opsional)</h2>
+          <p>Kalau kelas 6 sudah siap, boleh tambah pengecekan sederhana.</p>
+
+          <div class="card" style="margin-top:12px">
+            <h3>Ide blok (opsional)</h3>
+            <ul class="list">
+              <li>Jika Uang < 0 → katakan “Uang tidak cukup!”</li>
+              <li>Atau: cek dulu sebelum mengurangi Uang</li>
+            </ul>
+            <div class="hint" style="margin-top:12px">Kalau kelas 4, bagian ini boleh dilewati.</div>
+          </div>
+        `
+      },
+
+      {
+        title: "Refleksi",
+        html: `
+          <div class="kicker">🪞 Refleksi</div>
+          <h2>Apa yang kamu pelajari?</h2>
+          <p>Pilih pernyataan yang benar.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Konsep finansial</h3>
+              <div class="choices" data-quiz="refF">
+                <div class="choice" data-answer="right">Prioritas = mendahulukan yang penting</div>
+                <div class="choice" data-answer="right">Budgeting = mengatur uang agar tidak habis</div>
+                <div class="choice" data-answer="wrong">Budgeting = membeli apa saja yang kita mau</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="refF"></div>
+            </div>
+
+            <div class="card">
+              <h3>Konsep Scratch</h3>
+              <div class="choices" data-quiz="refS">
+                <div class="choice" data-answer="right">Sprite clicked = event yang memicu aksi</div>
+                <div class="choice" data-answer="wrong">Sprite clicked = mengganti backdrop</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="refS"></div>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Penutup",
+        html: `
+          <div class="kicker">✅ Selesai</div>
+          <h2>Kerja bagus! 🎉</h2>
+          <p>Kamu sudah belajar bahwa <b>klik</b> bisa menjadi keputusan, dan keputusan membuat <b>Uang</b> berubah.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Ringkasan</h3>
+              <ul class="list">
+                <li>Event: <b>when this sprite clicked</b></li>
+                <li>Prioritas: pilih yang penting dulu</li>
+                <li>Budgeting: lihat sisa uang setelah memilih</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>Next session</h3>
+              <div class="hint">
+                Kita lanjut ke <b>Target Tabungan</b>: menentukan tujuan dan menghitung tabungan per bulan.
+              </div>
+            </div>
+          </div>
+        `
+      }
+    ];
+
+    /**********************
+     * NAV + RENDER
+     **********************/
+    let idx = 0;
+    const content = document.getElementById("content");
+    const bar = document.getElementById("bar");
+    const count = document.getElementById("count");
+    const btnPrev = document.getElementById("btnPrev");
+    const btnNext = document.getElementById("btnNext");
+    const btnHome = document.getElementById("btnHome");
+
+    function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
+
+    function showFeedback(el, html, type) {
+      if (!el) return;
+      el.classList.add("show");
+      el.style.display = "block";
+      el.classList.remove("fbOk", "fbBad");
+      if (type === "ok") el.classList.add("fbOk");
+      if (type === "bad") el.classList.add("fbBad");
+      el.innerHTML = html;
+    }
+
+    function wireQuiz(group) {
+      const id = group.getAttribute("data-quiz");
+      const fb = content.querySelector(`[data-quiz-feedback="${id}"]`);
+      const items = [...group.querySelectorAll(".choice")];
+
+      items.forEach(ch => {
+        ch.addEventListener("click", () => {
+          items.forEach(x => x.classList.remove("active", "ok", "bad"));
+          ch.classList.add("active");
+          const isRight = ch.getAttribute("data-answer") === "right";
+          if (isRight) {
+            ch.classList.add("ok");
+            showFeedback(fb, "✅ Mantap!", "ok");
+          } else {
+            ch.classList.add("bad");
+            showFeedback(fb, "⚠️ Coba pikir lagi ya.", "bad");
+          }
+        });
+      });
+    }
+
+    /**********************
+     * BUDGET SIM
+     **********************/
+    let simState = null;
+
+    function formatRp(n) {
+      const s = Math.max(0, Math.round(n)).toString();
+      return "Rp" + s.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+    function wireBudgetSim() {
+      const wrap = content.querySelector("[data-budget-sim]");
+      if (!wrap) { simState = null; return; }
+
+      simState = { money: 100000, log: [] };
+
+      const moneyEl = content.querySelector("#simMoney");
+      const fb = content.querySelector("#simFb");
+      const logEl = content.querySelector("#simLog");
+      const resetBtn = content.querySelector("#simReset");
+
+      function renderSim(msg) {
+        moneyEl.textContent = formatRp(simState.money);
+        if (msg) {
+          fb.className = "feedback show";
+          fb.style.display = "block";
+          fb.innerHTML = msg;
+        }
+        logEl.textContent = simState.log.length ? simState.log.join("\n") : "Riwayat klik akan muncul di sini.";
+      }
+
+      function addLog(line) {
+        simState.log.unshift(line);
+        simState.log = simState.log.slice(0, 6);
+      }
+
+      wrap.querySelectorAll("[data-buy]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const item = btn.getAttribute("data-buy");
+          const cost = Number(btn.getAttribute("data-cost") || "0");
+          simState.money -= cost;
+
+          addLog(`Klik: ${item} (-${formatRp(cost).replace("Rp", "")}) → sisa ${formatRp(simState.money)}`);
+
+          if (simState.money < 0) {
+            renderSim(`⚠️ Uangmu <b>minus</b>. Ini tanda kamu perlu <b>budgeting</b> dan pilih <b>prioritas</b> dulu.`);
+            fb.classList.add("fbBad");
+          } else {
+            renderSim(`✅ Kamu memilih: <b>${item}</b>. Sisa uang: <b>${formatRp(simState.money)}</b>.`);
+            fb.classList.remove("fbBad");
+            fb.classList.add("fbOk");
+          }
+        });
+      });
+
+      resetBtn.addEventListener("click", () => {
+        simState.money = 100000;
+        simState.log = [];
+        renderSim("Reset ✅ Coba pilih lagi, mana yang lebih prioritas?");
+        fb.classList.remove("fbBad");
+        fb.classList.remove("fbOk");
+      });
+
+      renderSim("Tip: pilih <b>prioritas</b> dulu ya 😉");
+    }
+
+    function wireInteractions() {
+      content.querySelectorAll("[data-quiz]").forEach(wireQuiz);
+
+      content.querySelectorAll("[data-goto]").forEach(b => {
+        b.addEventListener("click", () => {
+          const to = Number(b.getAttribute("data-goto"));
+          idx = clamp(to, 0, slides.length - 1);
+          render();
+          content.scrollTop = 0;
+        });
+      });
+
+      wireBudgetSim();
+    }
+
+    function render() {
+      const s = slides[idx];
+      content.innerHTML = s.html;
+      const pct = ((idx + 1) / slides.length) * 100;
+      bar.style.width = pct + "%";
+      count.textContent = `${idx + 1}/${slides.length}`;
+      wireInteractions();
+      content.scrollTop = 0;
+    }
+
+    function go(d) {
+      idx = clamp(idx + d, 0, slides.length - 1);
+      render();
+    }
+
+    btnPrev.addEventListener("click", () => go(-1));
+    btnNext.addEventListener("click", () => go(1));
+    btnHome.addEventListener("click", () => { idx = 0; render(); });
+
+    window.addEventListener("keydown", (e) => {
+      if (document.getElementById("accessGate").style.display !== "none") return;
+      if (e.key === "ArrowLeft") go(-1);
+      if (e.key === "ArrowRight") go(1);
+      if (e.key === "Home") { idx = 0; render(); }
+    });
+
+    /**********************
+     * ACCESS GATE
+     **********************/
+    const ACCESS_CODE = "RGMDSUP25";
+    const gate = document.getElementById("accessGate");
+    const input = document.getElementById("accessInput");
+    const btn = document.getElementById("accessBtn");
+    const fb = document.getElementById("accessFb");
+
+    input.addEventListener("input", () => { input.value = input.value.toUpperCase(); });
+    btn.addEventListener("click", checkAccess);
+    input.addEventListener("keydown", (e) => { if (e.key === "Enter") checkAccess(); });
+
+    function checkAccess() {
+      if (input.value.trim() === ACCESS_CODE) {
+        gate.style.display = "none";
+      } else {
+        fb.className = "feedback show fbBad";
+        fb.style.display = "block";
+        fb.textContent = "Kode salah. Coba lagi.";
+      }
+    }
+
+    // initial
+    render();
+  </script>
+</body>
+
+</html>
