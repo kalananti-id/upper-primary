@@ -1,0 +1,989 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>UP 5.8 – Menentukan Target Tabungan</title>
+  <style>
+    :root {
+      --bg1: #F7FAFF;
+      --bg2: #ECFEFF;
+      --card: #FFFFFF;
+      --ink: #0F172A;
+      --muted: #475569;
+      --line: rgba(226, 232, 240, .95);
+      --brand: #4F46E5;
+      --brand2: #06B6D4;
+      --ok: #16A34A;
+      --bad: #DC2626;
+      --radius: 22px;
+      --shadow: 0 18px 40px rgba(15, 23, 42, .08);
+      --shadow2: 0 10px 22px rgba(15, 23, 42, .06);
+      --focus: 0 0 0 4px rgba(79, 70, 229, .18);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    }
+
+    * { box-sizing: border-box }
+
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 520px at 10% 0%, rgba(6, 182, 212, .18), transparent 60%),
+        radial-gradient(1200px 520px at 90% 0%, rgba(79, 70, 229, .16), transparent 55%),
+        linear-gradient(180deg, var(--bg1), #F3F6FF 45%, var(--bg2));
+      min-height: 100vh;
+    }
+
+    .app {
+      width: min(1100px, 96vw);
+      margin: 18px auto 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .72);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow2);
+    }
+
+    .brand { display: flex; align-items: center; gap: 10px; }
+
+    .logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(79, 70, 229, .18), rgba(6, 182, 212, .20));
+      border: 1px solid rgba(226, 232, 240, .9);
+      display: grid;
+      place-items: center;
+      font-weight: 1000;
+      color: rgba(79, 70, 229, 1);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.15;
+      letter-spacing: .2px
+    }
+
+    .brand .sub {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 800;
+      margin-top: 2px
+    }
+
+    .controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+    .btn {
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .9);
+      padding: 10px 12px;
+      border-radius: 16px;
+      font-weight: 1000;
+      cursor: pointer;
+      box-shadow: 0 8px 16px rgba(15, 23, 42, .06);
+      transition: transform .06s ease, box-shadow .12s ease, background .12s ease;
+      user-select: none;
+    }
+
+    .btn:hover { transform: translateY(-1px) }
+    .btn:active { transform: translateY(0px) }
+
+    .btn.primary {
+      background: linear-gradient(135deg, rgba(79, 70, 229, .12), rgba(6, 182, 212, .14));
+      border-color: rgba(79, 70, 229, .18);
+    }
+
+    .btn.ghost { background: transparent; box-shadow: none }
+    .btn:focus { outline: none; box-shadow: var(--focus); }
+
+    .progressWrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 260px;
+      justify-content: flex-end;
+    }
+
+    .progress {
+      width: 180px;
+      height: 10px;
+      background: rgba(226, 232, 240, .9);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(226, 232, 240, .95);
+    }
+
+    .bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, rgba(79, 70, 229, .85), rgba(6, 182, 212, .85));
+      border-radius: 999px;
+      transition: width .25s ease;
+    }
+
+    .count {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 900;
+    }
+
+    .stage {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, .60);
+      box-shadow: var(--shadow);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: calc(100vh - 145px);
+    }
+
+    .slide {
+      flex: 1;
+      background: rgba(255, 255, 255, .68);
+      border: 1px solid rgba(229, 234, 245, .95);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow2);
+      padding: 20px;
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+    }
+
+    .slideInner {
+      max-width: 980px;
+      margin: 0 auto;
+      max-height: calc(100vh - 190px);
+      overflow-y: auto;
+      padding-right: 8px;
+    }
+
+    .slideInner::-webkit-scrollbar { width: 10px; }
+    .slideInner::-webkit-scrollbar-thumb {
+      background: rgba(96, 112, 153, .25);
+      border-radius: 999px;
+      border: 3px solid rgba(255, 255, 255, .9);
+    }
+    .slideInner::-webkit-scrollbar-track { background: transparent; }
+
+    h2 { margin: 6px 0 10px; font-size: 30px; letter-spacing: -.3px }
+    h3 { margin: 0 0 8px; font-size: 18px }
+    p { margin: 0 0 10px; color: var(--muted); font-weight: 800; line-height: 1.55 }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 1000;
+      font-size: 12px;
+      letter-spacing: .2px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(79, 70, 229, .16);
+      background: rgba(79, 70, 229, .06);
+      color: rgba(55, 65, 81, .95);
+    }
+
+    .grid { display: grid; gap: 14px }
+    .cols2 { grid-template-columns: 1fr 1fr }
+
+    @media (max-width: 860px) {
+      .cols2 { grid-template-columns: 1fr }
+      .progressWrap { min-width: unset }
+      .progress { width: 130px }
+      h2 { font-size: 26px }
+    }
+
+    .card {
+      background: rgba(255, 255, 255, .92);
+      border: 1px solid rgba(226, 232, 240, .95);
+      border-radius: 22px;
+      padding: 14px;
+      box-shadow: 0 10px 18px rgba(15, 23, 42, .06);
+    }
+
+    .hint {
+      background: rgba(6, 182, 212, .10);
+      border: 1px dashed rgba(6, 182, 212, .35);
+      border-radius: 18px;
+      padding: 12px 14px;
+      color: rgba(30, 41, 59, .92);
+      font-weight: 900;
+      line-height: 1.5;
+    }
+
+    ul.list {
+      margin: 8px 0 0 18px;
+      color: var(--muted);
+      font-weight: 850;
+      line-height: 1.55
+    }
+
+    .choices {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px
+    }
+
+    .choice {
+      border: 1px solid rgba(226, 232, 240, .95);
+      border-radius: 18px;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, .96);
+      font-weight: 950;
+      color: rgba(30, 41, 59, .96);
+      cursor: pointer;
+      user-select: none;
+      transition: transform .06s ease, border-color .12s ease, background .12s ease;
+    }
+
+    .choice:hover { transform: translateY(-1px) }
+    .choice.active { border-color: rgba(79, 70, 229, .35); background: rgba(79, 70, 229, .06) }
+    .choice.ok { border-color: rgba(22, 163, 74, .35); background: rgba(22, 163, 74, .08) }
+    .choice.bad { border-color: rgba(220, 38, 38, .35); background: rgba(220, 38, 38, .08) }
+
+    .feedback {
+      display: none;
+      margin-top: 10px;
+      border-radius: 18px;
+      padding: 12px 14px;
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .92);
+      color: var(--muted);
+      font-weight: 900;
+      line-height: 1.5;
+    }
+
+    .feedback.show { display: block }
+    .fbOk {
+      border-color: rgba(22, 163, 74, .35);
+      background: rgba(22, 163, 74, .08);
+      color: rgba(15, 23, 42, .92)
+    }
+    .fbBad {
+      border-color: rgba(220, 38, 38, .35);
+      background: rgba(220, 38, 38, .08);
+      color: rgba(15, 23, 42, .92)
+    }
+
+    .step {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 10px 12px;
+      border-radius: 18px;
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .96);
+    }
+
+    .dot {
+      width: 26px;
+      height: 26px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: rgba(79, 70, 229, .10);
+      border: 1px solid rgba(79, 70, 229, .18);
+      font-weight: 1000;
+      color: rgba(79, 70, 229, .95);
+      flex: 0 0 auto;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .92);
+      font-weight: 950;
+      color: rgba(30, 41, 59, .92);
+      font-size: 12px;
+    }
+
+    .money {
+      font-family: var(--mono);
+      font-weight: 1000;
+      font-size: 14px;
+      padding: 8px 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .95);
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .sim {
+      border: 1px solid rgba(226, 232, 240, .95);
+      border-radius: 22px;
+      padding: 14px;
+      background: rgba(255, 255, 255, .92);
+      box-shadow: 0 10px 18px rgba(15, 23, 42, .06);
+    }
+
+    .simBtns {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .simBtn {
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .96);
+      border-radius: 18px;
+      padding: 12px 14px;
+      font-weight: 1000;
+      cursor: pointer;
+      user-select: none;
+      transition: transform .06s ease, background .12s ease, border-color .12s ease;
+    }
+
+    .simBtn:hover { transform: translateY(-1px) }
+    .simBtn:active { transform: translateY(0px) }
+    .simBtn.primary { border-color: rgba(79, 70, 229, .28); background: rgba(79, 70, 229, .06) }
+    .simBtn.warn { border-color: rgba(22, 163, 74, .28); background: rgba(22, 163, 74, .06) }
+
+    .log {
+      margin-top: 10px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: rgba(71, 85, 105, .95);
+      background: rgba(255, 255, 255, .75);
+      border: 1px solid rgba(226, 232, 240, .95);
+      border-radius: 18px;
+      padding: 10px 12px;
+      max-height: 130px;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+
+    .calcRow {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .calcBox {
+      padding: 12px 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .96);
+      font-weight: 900;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="accessGate" style="
+    position:fixed; inset:0;
+    background:linear-gradient(135deg,#eef2ff,#ecfeff);
+    display:flex; align-items:center; justify-content:center;
+    z-index:9999;">
+    <div class="card" style="max-width:420px;width:92%;text-align:center">
+      <h2>🔐 Kode Akses</h2>
+      <p>Masukkan kode untuk memulai sesi.</p>
+
+      <input id="accessInput" placeholder="MASUKKAN KODE" autocomplete="off"
+        style="width:100%;padding:12px 14px;border-radius:16px;border:1px solid rgba(226,232,240,.95);
+        font-weight:900;letter-spacing:2px;text-align:center" />
+
+      <button class="btn primary" id="accessBtn" style="margin-top:12px">Masuk</button>
+      <div class="feedback" id="accessFb" style="margin-top:10px"></div>
+
+      <div class="hint" style="margin-top:10px">Kode diberikan oleh guru.</div>
+    </div>
+  </div>
+
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">UP</div>
+        <div>
+          <h1>Upper Primary</h1>
+          <div class="sub">5.8 Menentukan Target Tabungan</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="btn ghost" id="btnHome" title="Kembali ke awal">🏠 Awal</button>
+        <button class="btn" id="btnPrev" title="Sebelumnya (←)">←</button>
+        <button class="btn primary" id="btnNext" title="Berikutnya (→)">→</button>
+      </div>
+
+      <div class="progressWrap">
+        <div class="progress" aria-label="Progress">
+          <div class="bar" id="bar"></div>
+        </div>
+        <div class="count" id="count">1/1</div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="slide" role="region" aria-label="Slide">
+        <div class="slideInner" id="content"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const slides = [
+      {
+        title: "Judul",
+        html: `
+          <div class="kicker">✨ Mulai</div>
+          <h2>Menentukan Target Tabungan</h2>
+          <p>Hari ini kita belajar kenapa perlu menabung, bagaimana menentukan target, dan bagaimana melihat tabungan di Scratch.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Target kita</h3>
+              <ul class="list">
+                <li>Tahu kenapa menabung itu penting</li>
+                <li>Bisa menentukan target tabungan</li>
+                <li>Bisa membuat variabel <b>Tabungan</b> di Scratch</li>
+                <li>Bisa menambah tabungan dengan klik sprite</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Siap mulai?</h3>
+              <div class="choices" data-quiz="ready">
+                <div class="choice" data-answer="right">✅ Siap!</div>
+                <div class="choice" data-answer="right">✅ Yuk mulai!</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="ready"></div>
+              <button class="btn primary" data-goto="1" style="margin-top:10px">🚀 Mulai</button>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Kenapa Menabung",
+        html: `
+          <div class="kicker">💡 Konsep</div>
+          <h2>Mengapa Kita Perlu Menabung?</h2>
+          <p>Bayangkan kamu ingin membeli sesuatu yang kamu sukai. Mungkin headphone, buku komik, atau aksesoris game. Tapi sering kali uang kita sekarang belum cukup.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Contoh</h3>
+              <ul class="list">
+                <li>Harga headphone = Rp150.000</li>
+                <li>Uang yang kamu punya sekarang = Rp20.000</li>
+              </ul>
+              <div class="hint" style="margin-top:12px">
+                Artinya, kamu masih perlu mengumpulkan Rp130.000 lagi.
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Kenapa menabung membantu?</h3>
+              <ul class="list">
+                <li>Mengumpulkan uang sedikit demi sedikit</li>
+                <li>Tidak perlu membayar semuanya sekaligus</li>
+                <li>Membantu kita mencapai tujuan</li>
+              </ul>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Ilustrasi Konsep",
+        html: `
+          <div class="kicker">🐷 Ilustrasi</div>
+          <h2>Menabung Secara Bertahap</h2>
+          <p>Bayangkan sebuah celengan. Setiap kali kamu memasukkan uang, jumlahnya bertambah sedikit demi sedikit.</p>
+
+          <div class="card" style="margin-top:12px">
+            <div class="calcRow">
+              <div class="calcBox">Hari 1 = Rp20.000</div>
+              <div class="calcBox">Hari 2 = Rp40.000</div>
+              <div class="calcBox">Hari 3 = Rp60.000</div>
+            </div>
+            <div class="hint" style="margin-top:12px">
+              Lama-lama, jumlahnya akan mendekati target yang kamu inginkan.
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Target Tabungan",
+        html: `
+          <div class="kicker">🎯 Konsep</div>
+          <h2>Apa itu Target Tabungan?</h2>
+          <p>Target tabungan adalah jumlah uang yang ingin kita kumpulkan untuk membeli sesuatu.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Contoh barang</h3>
+              <ul class="list">
+                <li>Headphone = Rp150.000</li>
+                <li>Buku komik = Rp50.000</li>
+                <li>Mouse komputer = Rp80.000</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Kalau target jelas...</h3>
+              <ul class="list">
+                <li>Kita tahu berapa uang yang perlu dikumpulkan</li>
+                <li>Kita bisa membuat rencana menabung</li>
+                <li>Kita bisa melihat kemajuan tabungan</li>
+              </ul>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Hitung Sederhana",
+        html: `
+          <div class="kicker">🧮 Hitung</div>
+          <h2>Contoh Perhitungan Sederhana</h2>
+          <p>Misalnya kamu menabung Rp25.000 setiap minggu. Targetmu Rp150.000.</p>
+
+          <div class="card" style="margin-top:12px">
+            <div class="step"><div class="dot">1</div><div>Target = Rp150.000</div></div>
+            <div class="step" style="margin-top:8px"><div class="dot">2</div><div>Tabungan per minggu = Rp25.000</div></div>
+            <div class="step" style="margin-top:8px"><div class="dot">3</div><div>150.000 ÷ 25.000 = 6</div></div>
+            <div class="hint" style="margin-top:12px">
+              Artinya, kamu perlu menabung selama <b>6 minggu</b>.
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Quiz Hitung",
+        html: `
+          <div class="kicker">❓ Cek Paham</div>
+          <h2>Quiz Cepat</h2>
+          <p>Kalau targetmu Rp80.000 dan kamu menabung Rp20.000 setiap minggu, berapa minggu yang kamu butuhkan?</p>
+
+          <div class="card" style="margin-top:12px">
+            <div class="choices" data-quiz="math1">
+              <div class="choice" data-answer="wrong">2 minggu</div>
+              <div class="choice" data-answer="right">4 minggu</div>
+              <div class="choice" data-answer="wrong">6 minggu</div>
+            </div>
+            <div class="feedback" data-quiz-feedback="math1"></div>
+          </div>
+        `
+      },
+
+      {
+        title: "Scratch Variabel",
+        html: `
+          <div class="kicker">🧱 Scratch</div>
+          <h2>Menggunakan Scratch untuk Melihat Tabungan</h2>
+          <p>Dalam pemrograman, kita bisa memakai <b>variabel</b> untuk menyimpan nilai yang bisa berubah.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Nama variabel kita</h3>
+              <div class="money">Tabungan</div>
+              <div class="hint" style="margin-top:12px">
+                Variabel ini akan menyimpan jumlah uang yang sudah ditabung.
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Langkah membuat variabel</h3>
+              <ul class="list">
+                <li>Buka menu Variables</li>
+                <li>Klik Make a Variable</li>
+                <li>Beri nama: Tabungan</li>
+              </ul>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Nilai Awal",
+        html: `
+          <div class="kicker">🟢 Start</div>
+          <h2>Mengatur Nilai Awal</h2>
+          <p>Saat program dimulai, tabungan biasanya masih kosong. Jadi kita perlu mengatur nilai awalnya.</p>
+
+          <div class="card" style="margin-top:12px">
+            <div class="step"><div class="dot">1</div><div><b>when green flag clicked</b></div></div>
+            <div class="step" style="margin-top:8px"><div class="dot">2</div><div><b>set</b> Tabungan to <b>0</b></div></div>
+            <div class="hint" style="margin-top:12px">
+              Artinya: saat program dimulai, jumlah tabungan adalah 0.
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Tambah Tabungan",
+        html: `
+          <div class="kicker">🐷 Click Event</div>
+          <h2>Menambahkan Tabungan</h2>
+          <p>Sekarang kita membuat sprite celengan. Setiap kali celengan diklik, jumlah tabungan bertambah.</p>
+
+          <div class="card" style="margin-top:12px">
+            <div class="step"><div class="dot">1</div><div><b>when this sprite clicked</b></div></div>
+            <div class="step" style="margin-top:8px"><div class="dot">2</div><div><b>change</b> Tabungan by <b>25000</b></div></div>
+            <div class="hint" style="margin-top:12px">
+              Artinya: setiap klik, tabungan bertambah Rp25.000.
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Tampilkan Tabungan",
+        html: `
+          <div class="kicker">💬 Output</div>
+          <h2>Menampilkan Jumlah Tabungan</h2>
+          <p>Agar pemain tahu berapa tabungan yang sudah terkumpul, kita bisa menampilkan pesan.</p>
+
+          <div class="card" style="margin-top:12px">
+            <div class="step"><div class="dot">1</div><div><b>say</b> join “Tabungan sekarang: Rp” Tabungan</div></div>
+            <div class="hint" style="margin-top:12px">
+              Contoh hasil: <b>Tabungan sekarang: 50000</b>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Simulasi Tabungan",
+        html: `
+          <div class="kicker">🧪 Simulasi</div>
+          <h2>Coba Klik Celengan</h2>
+          <p>Setiap klik = menabung Rp25.000. Lihat bagaimana jumlah tabungan bertambah.</p>
+
+          <div class="sim" data-saving-sim>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between">
+              <div class="money">TABUNGAN: <span id="savingMoney">Rp0</span></div>
+              <button class="btn" id="savingReset">Reset</button>
+            </div>
+
+            <div class="simBtns">
+              <div class="simBtn warn" id="savingAdd">🐷 Klik Celengan (+25.000)</div>
+            </div>
+
+            <div class="feedback show" id="savingFb" style="display:block; margin-top:12px">
+              Yuk mulai menabung!
+            </div>
+
+            <div class="log" id="savingLog">Riwayat tabungan akan muncul di sini.</div>
+          </div>
+        `
+      },
+
+      {
+        title: "Target dan Tabungan",
+        html: `
+          <div class="kicker">🔗 Hubungkan</div>
+          <h2>Menghubungkan Target dan Tabungan</h2>
+          <p>Agar program lebih menarik, kita bisa menambahkan target tabungan.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Contoh target</h3>
+              <ul class="list">
+                <li>Target = Rp150.000</li>
+                <li>Tabungan bertambah sedikit demi sedikit</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Kalau target tercapai...</h3>
+              <div class="hint">
+                Sprite bisa mengatakan: <b>“Target tercapai!”</b>
+              </div>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Logika",
+        html: `
+          <div class="kicker">🧠 Logika</div>
+          <h2>Jika Tabungan Sudah Cukup</h2>
+          <p>Kita bisa menambahkan logika sederhana untuk mengecek apakah tabungan sudah mencapai target.</p>
+
+          <div class="card" style="margin-top:12px">
+            <div class="step"><div class="dot">1</div><div><b>if</b> Tabungan ≥ 150000</div></div>
+            <div class="step" style="margin-top:8px"><div class="dot">2</div><div><b>say</b> “Target tercapai!”</div></div>
+            <div class="hint" style="margin-top:12px">
+              Dengan cara ini, program menjadi seperti tracker tabungan digital.
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Latihan",
+        html: `
+          <div class="kicker">🏁 Latihan</div>
+          <h2>Buat Tracker Tabunganmu</h2>
+          <p>Waktunya bikin sendiri.</p>
+
+          <div class="card" style="margin-top:12px">
+            <h3>Checklist</h3>
+            <ul class="list">
+              <li>Buat variabel <b>Tabungan</b></li>
+              <li>Set Tabungan = 0 saat green flag</li>
+              <li>Klik sprite celengan → Tabungan bertambah</li>
+              <li>Tampilkan jumlah tabungan</li>
+              <li>(Bonus) Tambahkan target dan pesan berhasil</li>
+            </ul>
+          </div>
+        `
+      },
+
+      {
+        title: "Refleksi",
+        html: `
+          <div class="kicker">🪞 Refleksi</div>
+          <h2>Apa yang kamu pelajari?</h2>
+          <p>Pilih pernyataan yang benar.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Konsep finansial</h3>
+              <div class="choices" data-quiz="refF">
+                <div class="choice" data-answer="right">Menabung membantu kita mencapai tujuan</div>
+                <div class="choice" data-answer="right">Target tabungan membuat rencana lebih jelas</div>
+                <div class="choice" data-answer="wrong">Menabung harus langsung banyak sekaligus</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="refF"></div>
+            </div>
+
+            <div class="card">
+              <h3>Konsep Scratch</h3>
+              <div class="choices" data-quiz="refS">
+                <div class="choice" data-answer="right">Variabel menyimpan nilai yang bisa berubah</div>
+                <div class="choice" data-answer="right">Klik sprite bisa menambah tabungan</div>
+                <div class="choice" data-answer="wrong">Green flag menghapus semua sprite</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="refS"></div>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Penutup",
+        html: `
+          <div class="kicker">✅ Selesai</div>
+          <h2>Kerja bagus! 🎉</h2>
+          <p>Kamu sudah belajar bahwa tabungan bisa bertambah sedikit demi sedikit sampai mencapai target.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Ringkasan</h3>
+              <ul class="list">
+                <li>Menabung = menyimpan uang untuk masa depan</li>
+                <li>Target tabungan = jumlah yang ingin dikumpulkan</li>
+                <li>Variabel <b>Tabungan</b> membantu kita melihat perkembangan</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Next session</h3>
+              <div class="hint">
+                Berikutnya kita bisa membuat proyek tabungan yang lebih lengkap dan interaktif.
+              </div>
+            </div>
+          </div>
+        `
+      }
+    ];
+
+    let idx = 0;
+    const content = document.getElementById("content");
+    const bar = document.getElementById("bar");
+    const count = document.getElementById("count");
+    const btnPrev = document.getElementById("btnPrev");
+    const btnNext = document.getElementById("btnNext");
+    const btnHome = document.getElementById("btnHome");
+
+    function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
+
+    function showFeedback(el, html, type) {
+      if (!el) return;
+      el.classList.add("show");
+      el.style.display = "block";
+      el.classList.remove("fbOk", "fbBad");
+      if (type === "ok") el.classList.add("fbOk");
+      if (type === "bad") el.classList.add("fbBad");
+      el.innerHTML = html;
+    }
+
+    function wireQuiz(group) {
+      const id = group.getAttribute("data-quiz");
+      const fb = content.querySelector('[data-quiz-feedback="' + id + '"]');
+      const items = [...group.querySelectorAll(".choice")];
+
+      items.forEach(ch => {
+        ch.addEventListener("click", () => {
+          items.forEach(x => x.classList.remove("active", "ok", "bad"));
+          ch.classList.add("active");
+          const isRight = ch.getAttribute("data-answer") === "right";
+          if (isRight) {
+            ch.classList.add("ok");
+            showFeedback(fb, "✅ Mantap!", "ok");
+          } else {
+            ch.classList.add("bad");
+            showFeedback(fb, "⚠️ Coba hitung lagi ya.", "bad");
+          }
+        });
+      });
+    }
+
+    let savingState = null;
+
+    function formatRp(n) {
+      const s = Math.max(0, Math.round(n)).toString();
+      return "Rp" + s.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+    function wireSavingSim() {
+      const wrap = content.querySelector("[data-saving-sim]");
+      if (!wrap) { savingState = null; return; }
+
+      savingState = { money: 0, log: [] };
+
+      const moneyEl = content.querySelector("#savingMoney");
+      const fb = content.querySelector("#savingFb");
+      const logEl = content.querySelector("#savingLog");
+      const resetBtn = content.querySelector("#savingReset");
+      const addBtn = content.querySelector("#savingAdd");
+
+      function renderSim(msg) {
+        moneyEl.textContent = formatRp(savingState.money);
+        if (msg) {
+          fb.className = "feedback show";
+          fb.style.display = "block";
+          fb.innerHTML = msg;
+        }
+        logEl.textContent = savingState.log.length ? savingState.log.join("\n") : "Riwayat tabungan akan muncul di sini.";
+      }
+
+      function addLog(line) {
+        savingState.log.unshift(line);
+        savingState.log = savingState.log.slice(0, 6);
+      }
+
+      addBtn.addEventListener("click", () => {
+        savingState.money += 25000;
+        addLog("Klik celengan (+25.000) → total " + formatRp(savingState.money));
+
+        if (savingState.money >= 150000) {
+          renderSim("🎉 Target tercapai! Tabunganmu sudah <b>" + formatRp(savingState.money) + "</b>.");
+          fb.classList.add("fbOk");
+        } else {
+          renderSim("✅ Tabungan sekarang: <b>" + formatRp(savingState.money) + "</b>");
+          fb.classList.add("fbOk");
+        }
+      });
+
+      resetBtn.addEventListener("click", () => {
+        savingState.money = 0;
+        savingState.log = [];
+        renderSim("Reset ✅ Yuk mulai menabung lagi.");
+        fb.classList.remove("fbBad");
+        fb.classList.remove("fbOk");
+      });
+
+      renderSim("Yuk mulai menabung!");
+    }
+
+    function wireInteractions() {
+      content.querySelectorAll("[data-quiz]").forEach(wireQuiz);
+
+      content.querySelectorAll("[data-goto]").forEach(b => {
+        b.addEventListener("click", () => {
+          const to = Number(b.getAttribute("data-goto"));
+          idx = clamp(to, 0, slides.length - 1);
+          render();
+          content.scrollTop = 0;
+        });
+      });
+
+      wireSavingSim();
+    }
+
+    function render() {
+      const s = slides[idx];
+      content.innerHTML = s.html;
+      const pct = ((idx + 1) / slides.length) * 100;
+      bar.style.width = pct + "%";
+      count.textContent = (idx + 1) + "/" + slides.length;
+      wireInteractions();
+      content.scrollTop = 0;
+    }
+
+    function go(d) {
+      idx = clamp(idx + d, 0, slides.length - 1);
+      render();
+    }
+
+    btnPrev.addEventListener("click", () => go(-1));
+    btnNext.addEventListener("click", () => go(1));
+    btnHome.addEventListener("click", () => { idx = 0; render(); });
+
+    window.addEventListener("keydown", (e) => {
+      if (document.getElementById("accessGate").style.display !== "none") return;
+      if (e.key === "ArrowLeft") go(-1);
+      if (e.key === "ArrowRight") go(1);
+      if (e.key === "Home") { idx = 0; render(); }
+    });
+
+    const ACCESS_CODE = "RGMDSUP25";
+    const gate = document.getElementById("accessGate");
+    const input = document.getElementById("accessInput");
+    const btn = document.getElementById("accessBtn");
+    const fb = document.getElementById("accessFb");
+
+    input.addEventListener("input", () => { input.value = input.value.toUpperCase(); });
+    btn.addEventListener("click", checkAccess);
+    input.addEventListener("keydown", (e) => { if (e.key === "Enter") checkAccess(); });
+
+    function checkAccess() {
+      if (input.value.trim() === ACCESS_CODE) {
+        gate.style.display = "none";
+      } else {
+        fb.className = "feedback show fbBad";
+        fb.style.display = "block";
+        fb.textContent = "Kode salah. Coba lagi.";
+      }
+    }
+
+    render();
+  </script>
+</body>
+
+</html>
