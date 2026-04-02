@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>5.10 Mengontrol Karakter Utama</title>
+  <title>Game Interaktif & Kontrol</title>
   <style>
     :root {
       --bg1: #F7FAFF;
@@ -26,9 +26,7 @@
       --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
     }
 
-    * {
-      box-sizing: border-box
-    }
+    * { box-sizing: border-box }
 
     body {
       margin: 0;
@@ -62,11 +60,7 @@
       box-shadow: var(--shadow2);
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    .brand { display: flex; align-items: center; gap: 10px; }
 
     .logo {
       width: 38px;
@@ -94,12 +88,7 @@
       margin-top: 2px;
     }
 
-    .controls {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
+    .controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
     .btn {
       border: 1px solid rgba(226, 232, 240, .95);
@@ -113,23 +102,16 @@
       user-select: none;
     }
 
-    .btn:hover {
-      transform: translateY(-1px)
-    }
-
-    .btn:active {
-      transform: translateY(0px)
-    }
+    .btn:hover { transform: translateY(-1px) }
+    .btn:active { transform: translateY(0px) }
 
     .btn.primary {
       background: linear-gradient(135deg, rgba(79, 70, 229, .12), rgba(6, 182, 212, .14));
       border-color: rgba(79, 70, 229, .18);
     }
 
-    .btn.ghost {
-      background: transparent;
-      box-shadow: none
-    }
+    .btn.ghost { background: transparent; box-shadow: none }
+    .btn:focus { outline: none; box-shadow: var(--focus); }
 
     .progressWrap {
       display: flex;
@@ -194,33 +176,16 @@
       padding-right: 8px;
     }
 
-    .slideInner::-webkit-scrollbar {
-      width: 10px;
-    }
-
+    .slideInner::-webkit-scrollbar { width: 10px; }
     .slideInner::-webkit-scrollbar-thumb {
       background: rgba(96, 112, 153, .25);
       border-radius: 999px;
       border: 3px solid rgba(255, 255, 255, .9);
     }
 
-    h2 {
-      margin: 6px 0 10px;
-      font-size: 30px;
-      letter-spacing: -.3px
-    }
-
-    h3 {
-      margin: 0 0 8px;
-      font-size: 18px
-    }
-
-    p {
-      margin: 0 0 10px;
-      color: var(--muted);
-      font-weight: 800;
-      line-height: 1.55
-    }
+    h2 { margin: 6px 0 10px; font-size: 30px; letter-spacing: -.3px }
+    h3 { margin: 0 0 8px; font-size: 18px }
+    p { margin: 0 0 10px; color: var(--muted); font-weight: 800; line-height: 1.55 }
 
     .kicker {
       display: inline-flex;
@@ -236,31 +201,14 @@
       color: rgba(55, 65, 81, .95);
     }
 
-    .grid {
-      display: grid;
-      gap: 14px
-    }
-
-    .cols2 {
-      grid-template-columns: 1fr 1fr
-    }
+    .grid { display: grid; gap: 14px }
+    .cols2 { grid-template-columns: 1fr 1fr }
 
     @media (max-width: 860px) {
-      .cols2 {
-        grid-template-columns: 1fr
-      }
-
-      .progressWrap {
-        min-width: unset
-      }
-
-      .progress {
-        width: 130px
-      }
-
-      h2 {
-        font-size: 26px
-      }
+      .cols2 { grid-template-columns: 1fr }
+      .progressWrap { min-width: unset }
+      .progress { width: 130px }
+      h2 { font-size: 26px }
     }
 
     .card {
@@ -279,19 +227,6 @@
       color: rgba(30, 41, 59, .92);
       font-weight: 900;
       line-height: 1.5;
-    }
-
-    .money {
-      font-family: var(--mono);
-      font-weight: 1000;
-      font-size: 14px;
-      padding: 8px 10px;
-      border-radius: 14px;
-      border: 1px solid rgba(226, 232, 240, .95);
-      background: rgba(255, 255, 255, .95);
-      display: inline-flex;
-      gap: 10px;
-      align-items: center;
     }
 
     ul.list {
@@ -319,24 +254,10 @@
       transition: transform .06s ease, border-color .12s ease, background .12s ease;
     }
 
-    .choice:hover {
-      transform: translateY(-1px)
-    }
-
-    .choice.active {
-      border-color: rgba(79, 70, 229, .35);
-      background: rgba(79, 70, 229, .06)
-    }
-
-    .choice.ok {
-      border-color: rgba(22, 163, 74, .35);
-      background: rgba(22, 163, 74, .08)
-    }
-
-    .choice.bad {
-      border-color: rgba(220, 38, 38, .35);
-      background: rgba(220, 38, 38, .08)
-    }
+    .choice:hover { transform: translateY(-1px) }
+    .choice.active { border-color: rgba(79, 70, 229, .35); background: rgba(79, 70, 229, .06) }
+    .choice.ok { border-color: rgba(22, 163, 74, .35); background: rgba(22, 163, 74, .08) }
+    .choice.bad { border-color: rgba(220, 38, 38, .35); background: rgba(220, 38, 38, .08) }
 
     .feedback {
       display: none;
@@ -350,42 +271,83 @@
       line-height: 1.5;
     }
 
-    .feedback.show {
-      display: block
-    }
-
+    .feedback.show { display: block }
     .fbOk {
       border-color: rgba(22, 163, 74, .35);
       background: rgba(22, 163, 74, .08);
       color: rgba(15, 23, 42, .92);
     }
-
     .fbBad {
       border-color: rgba(220, 38, 38, .35);
       background: rgba(220, 38, 38, .08);
       color: rgba(15, 23, 42, .92);
     }
+
+    .step {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 10px 12px;
+      border-radius: 18px;
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .96);
+    }
+
+    .dot {
+      width: 26px;
+      height: 26px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: rgba(79, 70, 229, .10);
+      border: 1px solid rgba(79, 70, 229, .18);
+      font-weight: 1000;
+      color: rgba(79, 70, 229, .95);
+      flex: 0 0 auto;
+    }
   </style>
 </head>
 
 <body>
+  <div id="accessGate" style="
+    position:fixed; inset:0;
+    background:linear-gradient(135deg,#eef2ff,#ecfeff);
+    display:flex; align-items:center; justify-content:center;
+    z-index:9999;">
+    <div class="card" style="max-width:420px;width:92%;text-align:center">
+      <h2>🔐 Kode Akses</h2>
+      <p>Masukkan kode untuk memulai sesi.</p>
+
+      <input id="accessInput" placeholder="MASUKKAN KODE" autocomplete="off"
+        style="width:100%;padding:12px 14px;border-radius:16px;border:1px solid rgba(226,232,240,.95);
+        font-weight:900;letter-spacing:2px;text-align:center" />
+
+      <button class="btn primary" id="accessBtn" style="margin-top:12px">Masuk</button>
+      <div class="feedback" id="accessFb" style="margin-top:10px"></div>
+
+      <div class="hint" style="margin-top:10px">Kode diberikan oleh guru.</div>
+    </div>
+  </div>
+
   <div class="app">
     <div class="topbar">
       <div class="brand">
         <div class="logo">UP</div>
         <div>
           <h1>Upper Primary</h1>
-          <div class="sub">6.1 Mengontrol Karakter Utama</div>
+          <div class="sub">6.1 Game Interaktif & Kontrol</div>
         </div>
       </div>
+
       <div class="controls">
         <button class="btn ghost" id="btnHome">🏠 Awal</button>
         <button class="btn" id="btnPrev">←</button>
         <button class="btn primary" id="btnNext">→</button>
       </div>
+
       <div class="progressWrap">
         <div class="progress"><div class="bar" id="bar"></div></div>
-        <div class="count" id="count">1/5</div>
+        <div class="count" id="count">1/1</div>
       </div>
     </div>
 
@@ -399,48 +361,201 @@
   <script>
     const slides = [
       {
-        title: "Pengantar",
+        title: "Judul",
         html: `
-          <div class="kicker">🎮 Mulai</div>
-          <h2>Kontrol Karakter dalam Game</h2>
-          <p>Dalam game ini, kamu akan mengontrol karakter utama menggunakan tombol keyboard atau mouse.</p>
-          <p>Pilih kontrol yang paling nyaman dan buat karaktermu bergerak dengan mulus!</p>
+          <div class="kicker">✨ Bab 6.1</div>
+          <h2>Game Interaktif & Kontrol Karakter</h2>
+          <p>Hari ini kita belajar apa itu game interaktif dan bagaimana membuat karaktermu bergerak menggunakan keyboard atau mouse.</p>
+
           <div class="grid cols2" style="margin-top:12px">
             <div class="card">
-              <h3>Kontrol Keyboard</h3>
-              <p>Gunakan tombol panah pada keyboard untuk memindahkan karakter.</p>
-              <div class="step"><div class="dot">1</div><div><b>Jika tombol panah kanan ditekan</b>, karakter bergerak ke kanan.</div></div>
-              <div class="step"><div class="dot">2</div><div><b>Jika tombol panah kiri ditekan</b>, karakter bergerak ke kiri.</div></div>
+              <h3>Target kita</h3>
+              <ul class="list">
+                <li>Memahami konsep game interaktif</li>
+                <li>Menghubungkan keputusan dengan hasil akhir</li>
+                <li>Menggerakkan karakter dengan keyboard</li>
+                <li>Menggerakkan karakter dengan mouse</li>
+              </ul>
             </div>
+
             <div class="card">
-              <h3>Kontrol Mouse</h3>
-              <p>Karakter bisa mengikuti kursor mouse secara langsung.</p>
-              <div class="step"><div class="dot">1</div><div><b>Go to [mouse-pointer]</b> membuat karakter mengikuti kursor.</div></div>
-              <div class="hint" style="margin-top:12px">Kamu bisa memilih kontrol mana yang lebih nyaman!</div>
+              <h3>Siap mulai?</h3>
+              <div class="choices" data-quiz="ready">
+                <div class="choice" data-answer="right">✅ Siap!</div>
+                <div class="choice" data-answer="right">✅ Yuk belajar!</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="ready"></div>
+              <button class="btn primary" data-goto="1" style="margin-top:10px">🚀 Mulai</button>
             </div>
           </div>
         `
       },
+
       {
-        title: "Aktivitas 6.1",
+        title: "Konsep Awal",
         html: `
-          <div class="kicker">🔨 Aktivitas</div>
-          <h2>Buat Pergerakan Karakter</h2>
-          <p>Buat karakter bergerak menggunakan **keyboard** dan **mouse** di Scratch!</p>
-          <div class="card" style="margin-top:12px">
-            <h3>Langkah 1</h3>
-            <ul class="list">
-              <li>Buka **Scratch** dan buat sprite karakter.</li>
-              <li>Gunakan blok **If [key] pressed** untuk memeriksa tombol panah.</li>
-              <li>Gunakan blok **Change x by** dan **Change y by** untuk menggerakkan karakter.</li>
-            </ul>
+          <div class="kicker">💡 Konsep</div>
+          <h2>Apa Itu Game Interaktif?</h2>
+          <p>Game interaktif adalah permainan di mana <b>pilihanmu</b> akan memengaruhi hasil akhir permainan. Pemain memiliki kontrol atas karakter dan keputusan yang dibuat.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Keputusan Bijak</h3>
+              <ul class="list">
+                <li>Membeli barang penting (kebutuhan).</li>
+                <li>Uang berkurang sedikit, tapi bisa lanjut main.</li>
+                <li>Hasil: <b>Menang!</b></li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Keputusan Tidak Bijak</h3>
+              <ul class="list">
+                <li>Membeli barang tidak penting (keinginan).</li>
+                <li>Uang habis dengan cepat.</li>
+                <li>Hasil: <b>Kalah (Game Over)!</b></li>
+              </ul>
+            </div>
           </div>
+        `
+      },
+
+      {
+        title: "Pemasukan, Pengeluaran & Prioritas",
+        html: `
+          <div class="kicker">🎯 Prioritas</div>
+          <h2>Pemasukan, Pengeluaran & Prioritas</h2>
+          <p>Dalam game "Financial Catcher", kamu akan menghadapi banyak godaan. Sama seperti di dunia nyata, kamu harus pintar mengatur prioritas.</p>
+
           <div class="card" style="margin-top:12px">
-            <h3>Langkah 2</h3>
-            <ul class="list">
-              <li>Buat sprite lain dan gunakan **Go to [mouse-pointer]** untuk membuat karakter mengikuti kursor.</li>
-              <li>Uji dan pastikan karakter bergerak mengikuti kursor mouse.</li>
-            </ul>
+            <div class="step"><div class="dot">✓</div><div><b>Barang Penting</b> (Makanan, Buku) → Harus dipenuhi lebih dulu.</div></div>
+            <div class="step" style="margin-top:8px"><div class="dot">✗</div><div><b>Barang Tidak Penting</b> (Mainan, Aksesori) → Bisa ditunda.</div></div>
+            <div class="hint" style="margin-top:12px">
+              Keputusan finansialmu sangat berpengaruh pada apa yang terjadi selanjutnya, baik di game maupun dunia nyata.
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Quiz Cepat",
+        html: `
+          <div class="kicker">❓ Cek Paham</div>
+          <h2>Apa Hasil Keputusanmu?</h2>
+
+          <div class="card" style="margin-top:12px">
+            <p>Jika kamu terus-menerus membeli <b>barang yang tidak penting</b> di dalam game, apa yang terjadi?</p>
+            <div class="choices" data-quiz="q1">
+              <div class="choice" data-answer="right">Uang cepat habis dan bisa kalah.</div>
+              <div class="choice" data-answer="wrong">Uang bertambah banyak dan menang.</div>
+            </div>
+            <div class="feedback" data-quiz-feedback="q1"></div>
+          </div>
+        `
+      },
+
+      {
+        title: "Mengontrol Karakter Utama",
+        html: `
+          <div class="kicker">🎮 Kontrol</div>
+          <h2>Mengontrol Karakter Utama</h2>
+          <p>Agar bisa menangkap pemasukan dan menghindari pengeluaran, karaktermu harus bisa bergerak. Di Scratch, ada 2 cara kontrol:</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>1. Kontrol Keyboard</h3>
+              <ul class="list">
+                <li>Menggunakan tombol panah (Atas, Bawah, Kanan, Kiri).</li>
+                <li>Cocok untuk <b>kontrol presisi</b> dan bergerak pasti dalam arah tertentu.</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>2. Kontrol Mouse</h3>
+              <ul class="list">
+                <li>Mengikuti arah kursor mouse.</li>
+                <li>Cocok untuk <b>interaksi dinamis</b> dan lebih bebas.</li>
+              </ul>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Kontrol Keyboard",
+        html: `
+          <div class="kicker">⌨️ Scratch</div>
+          <h2>Blok Kode: Kontrol Keyboard</h2>
+          <p>Kita menggunakan perubahan koordinat (X dan Y). Nilai positif untuk ke kanan/atas, nilai negatif untuk ke kiri/bawah.</p>
+
+          <div class="card" style="margin-top:12px">
+            <div class="step"><div class="dot">X</div><div><b>Sumbu X (Kanan/Kiri):</b><br>Kanan → <code>change x by 10</code><br>Kiri → <code>change x by -10</code></div></div>
+            <div class="step" style="margin-top:8px"><div class="dot">Y</div><div><b>Sumbu Y (Atas/Bawah):</b><br>Atas → <code>change y by 10</code><br>Bawah → <code>change y by -10</code></div></div>
+            <div class="hint" style="margin-top:12px">
+              Gunakan blok <code>key [...] pressed?</code> di dalam blok <code>forever</code> agar program selalu mendeteksi tekanan tombolmu!
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Kontrol Mouse",
+        html: `
+          <div class="kicker">🖱️ Scratch</div>
+          <h2>Blok Kode: Kontrol Mouse</h2>
+          <p>Kontrol mouse memberi cara kontrol yang lebih bebas, mudah, dan kodenya lebih singkat!</p>
+
+          <div class="card" style="margin-top:12px">
+            <div class="step"><div class="dot">1</div><div><b>when green flag clicked</b></div></div>
+            <div class="step" style="margin-top:8px"><div class="dot">2</div><div><b>forever</b></div></div>
+            <div class="step" style="margin-top:8px"><div class="dot">3</div><div><b>go to</b> mouse-pointer</div></div>
+            <div class="hint" style="margin-top:12px">
+              Dengan menaruhnya di dalam <code>forever</code>, karakter akan terus berpindah ke lokasi kursor mouse selama permainan berlangsung.
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Pilih Kontrol",
+        html: `
+          <div class="kicker">❓ Cek Paham</div>
+          <h2>Pilih Kontrol yang Tepat</h2>
+
+          <div class="card" style="margin-top:12px">
+            <p>Kalau kamu ingin membuat karakter yang bergerak dengan lincah, <b>bebas mengikuti kursor</b> di layar, kontrol apa yang paling cocok digunakan?</p>
+            <div class="choices" data-quiz="q2">
+              <div class="choice" data-answer="wrong">Kontrol Keyboard</div>
+              <div class="choice" data-answer="right">Kontrol Mouse</div>
+            </div>
+            <div class="feedback" data-quiz-feedback="q2"></div>
+          </div>
+        `
+      },
+
+      {
+        title: "Penutup",
+        html: `
+          <div class="kicker">✅ Selesai</div>
+          <h2>Kerja bagus! 🎉</h2>
+          <p>Kamu sudah paham konsep game interaktif dan tahu dua cara untuk memprogram pergerakan karakter utama.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Ringkasan</h3>
+              <ul class="list">
+                <li>Keputusan beli barang penting/tidak penting menentukan Menang/Kalah.</li>
+                <li><b>Keyboard</b> = Presisi & arah terstruktur, pakai sumbu X & Y.</li>
+                <li><b>Mouse</b> = Bebas & interaktif, pakai go to mouse-pointer.</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Bridge</h3>
+              <div class="hint">
+                Di aktivitas selanjutnya, kita akan mulai memasukkan kode ini ke dalam Scratch agar karaktermu bisa bergerak menangkap pemasukan!
+              </div>
+            </div>
           </div>
         `
       }
@@ -456,12 +571,58 @@
 
     function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
 
+    function showFeedback(el, html, type) {
+      if (!el) return;
+      el.classList.add("show");
+      el.style.display = "block";
+      el.classList.remove("fbOk", "fbBad");
+      if (type === "ok") el.classList.add("fbOk");
+      if (type === "bad") el.classList.add("fbBad");
+      el.innerHTML = html;
+    }
+
+    function wireQuiz(group) {
+      const id = group.getAttribute("data-quiz");
+      const fb = content.querySelector('[data-quiz-feedback="' + id + '"]');
+      const items = [...group.querySelectorAll(".choice")];
+
+      items.forEach(ch => {
+        ch.addEventListener("click", () => {
+          items.forEach(x => x.classList.remove("active", "ok", "bad"));
+          ch.classList.add("active");
+          const isRight = ch.getAttribute("data-answer") === "right";
+          if (isRight) {
+            ch.classList.add("ok");
+            showFeedback(fb, "✅ Mantap!", "ok");
+          } else {
+            ch.classList.add("bad");
+            showFeedback(fb, "⚠️ Coba pikir lagi ya.", "bad");
+          }
+        });
+      });
+    }
+
+    function wireInteractions() {
+      content.querySelectorAll("[data-quiz]").forEach(wireQuiz);
+
+      content.querySelectorAll("[data-goto]").forEach(b => {
+        b.addEventListener("click", () => {
+          const to = Number(b.getAttribute("data-goto"));
+          idx = clamp(to, 0, slides.length - 1);
+          render();
+          content.scrollTop = 0;
+        });
+      });
+    }
+
     function render() {
       const s = slides[idx];
       content.innerHTML = s.html;
       const pct = ((idx + 1) / slides.length) * 100;
       bar.style.width = pct + "%";
       count.textContent = (idx + 1) + "/" + slides.length;
+      wireInteractions();
+      content.scrollTop = 0;
     }
 
     function go(d) {
@@ -472,6 +633,33 @@
     btnPrev.addEventListener("click", () => go(-1));
     btnNext.addEventListener("click", () => go(1));
     btnHome.addEventListener("click", () => { idx = 0; render(); });
+
+    window.addEventListener("keydown", (e) => {
+      if (document.getElementById("accessGate").style.display !== "none") return;
+      if (e.key === "ArrowLeft") go(-1);
+      if (e.key === "ArrowRight") go(1);
+      if (e.key === "Home") { idx = 0; render(); }
+    });
+
+    const ACCESS_CODE = "RGMDSUP25";
+    const gate = document.getElementById("accessGate");
+    const input = document.getElementById("accessInput");
+    const btn = document.getElementById("accessBtn");
+    const fb = document.getElementById("accessFb");
+
+    input.addEventListener("input", () => { input.value = input.value.toUpperCase(); });
+    btn.addEventListener("click", checkAccess);
+    input.addEventListener("keydown", (e) => { if (e.key === "Enter") checkAccess(); });
+
+    function checkAccess() {
+      if (input.value.trim() === ACCESS_CODE) {
+        gate.style.display = "none";
+      } else {
+        fb.className = "feedback show fbBad";
+        fb.style.display = "block";
+        fb.textContent = "Kode salah. Coba lagi.";
+      }
+    }
 
     render();
   </script>
