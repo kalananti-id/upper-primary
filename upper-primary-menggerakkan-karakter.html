@@ -305,6 +305,17 @@
       color: rgba(79, 70, 229, .95);
       flex: 0 0 auto;
     }
+
+    /* Style khusus untuk gambar blok Scratch agar rapi di dalam card */
+    .slide-img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      border: 1px solid rgba(226, 232, 240, .80);
+      box-shadow: 0 4px 12px rgba(15, 23, 42, .05);
+      display: block;
+      margin: 0 auto;
+    }
   </style>
 </head>
 
@@ -488,12 +499,21 @@
           <h2>Blok Kode: Kontrol Keyboard</h2>
           <p>Kita menggunakan perubahan koordinat (X dan Y). Nilai positif untuk ke kanan/atas, nilai negatif untuk ke kiri/bawah.</p>
 
-          <div class="card" style="margin-top:12px">
-            <div class="step"><div class="dot">X</div><div><b>Sumbu X (Kanan/Kiri):</b><br>Kanan → <code>change x by 10</code><br>Kiri → <code>change x by -10</code></div></div>
-            <div class="step" style="margin-top:8px"><div class="dot">Y</div><div><b>Sumbu Y (Atas/Bawah):</b><br>Atas → <code>change y by 10</code><br>Bawah → <code>change y by -10</code></div></div>
-            <div class="hint" style="margin-top:12px">
-              Gunakan blok <code>key [...] pressed?</code> di dalam blok <code>forever</code> agar program selalu mendeteksi tekanan tombolmu!
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card" style="text-align: center;">
+              <p style="font-size: 14px; margin-bottom: 8px;"><b>Sumbu X (Kanan/Kiri)</b></p>
+              <img src="https://d1nhio0ox7pgb.cloudfront.net/_img/v_collection_png/512x512/shadow/keyboard_key_right.png" alt="Panah Kanan" class="slide-img" style="margin-bottom:8px; max-width: 25%;" />
+              <img src="https://d1nhio0ox7pgb.cloudfront.net/_img/v_collection_png/512x512/shadow/keyboard_key_left.png" alt="Panah Kiri" class="slide-img" style="max-width: 25%;" />
             </div>
+            <div class="card" style="text-align: center;">
+              <p style="font-size: 14px; margin-bottom: 8px;"><b>Sumbu Y (Atas/Bawah)</b></p>
+              <img src="https://d1nhio0ox7pgb.cloudfront.net/_img/v_collection_png/512x512/shadow/keyboard_key_up.png" alt="Panah Atas" class="slide-img" style="margin-bottom:8px; max-width: 25%;" />
+              <img src="https://d1nhio0ox7pgb.cloudfront.net/_img/v_collection_png/512x512/shadow/keyboard_key_down.png" alt="Panah Bawah" class="slide-img" style="max-width: 25%;" />
+            </div>
+          </div>
+          
+          <div class="hint" style="margin-top:12px">
+            Gunakan blok <img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/7328dd40-3267-48de-8291-ff9a24d838fd.png" style="max-width: 30%;" /> di dalam blok <img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/26511820-8a86-4751-b11e-8b9263f59cf4.png" style="max-width: 18%;" /> agar program selalu mendeteksi tekanan tombolmu!
           </div>
         `
       },
@@ -505,13 +525,17 @@
           <h2>Blok Kode: Kontrol Mouse</h2>
           <p>Kontrol mouse memberi cara kontrol yang lebih bebas, mudah, dan kodenya lebih singkat!</p>
 
-          <div class="card" style="margin-top:12px">
-            <div class="step"><div class="dot">1</div><div><b>when green flag clicked</b></div></div>
-            <div class="step" style="margin-top:8px"><div class="dot">2</div><div><b>forever</b></div></div>
-            <div class="step" style="margin-top:8px"><div class="dot">3</div><div><b>go to</b> mouse-pointer</div></div>
-            <div class="hint" style="margin-top:12px">
-              Dengan menaruhnya di dalam <code>forever</code>, karakter akan terus berpindah ke lokasi kursor mouse selama permainan berlangsung.
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card" style="text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+               <img src="https://img.icons8.com/ios7/512/cursor.png" alt="Blok Mouse 1" class="slide-img" style="max-width: 15%;" />
             </div>
+            <div class="card" style="text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+               <img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/334b6f93-572b-40df-9207-a1b34e11a9ef.png" alt="Blok Mouse 2" class="slide-img" style="max-width: 30%;" />
+            </div>
+          </div>
+
+          <div class="hint" style="margin-top:12px">
+            Dengan menaruhnya di dalam <img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/26511820-8a86-4751-b11e-8b9263f59cf4.png" style="max-width: 18%;" />, karakter akan terus berpindah ke lokasi kursor mouse selama permainan berlangsung.
           </div>
         `
       },
