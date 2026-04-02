@@ -458,6 +458,7 @@
         }
 
         @media (max-width: 860px) {
+
             .cols2,
             .cols3 {
                 grid-template-columns: 1fr;
@@ -743,46 +744,82 @@
             },
 
             {
-                title: "Pitching",
+                title: "Waktunya Membuat Pitch Deck!",
                 html: `
-                <h2>🎤 Saat Menjelaskan Proyek</h2>
-                <p>Kamu tidak harus menjelaskan terlalu panjang, tapi harus jelas.</p>
-
-                <div class="grid cols2">
-                    <div class="card">
-                        <h3>Yang dijelaskan</h3>
-                        <ul class="list">
-                            <li>Judul proyek</li>
-                            <li>Masalah atau cerita</li>
-                            <li>Cara kerja proyek</li>
-                            <li>Pesan tentang uang</li>
-                        </ul>
-                    </div>
-                    <div class="card">
-                        <h3>Yang harus terlihat</h3>
-                        <ul class="list">
-                            <li>Kamu paham proyekmu</li>
-                            <li>Pilihan dan hasilnya jelas</li>
-                            <li>Pesan financial literacy terlihat</li>
-                        </ul>
-                    </div>
-                </div>
-                `
+      <h2>📢 Pamerkan Karyamu dengan Pitch Deck!</h2>
+      <p>Proyekmu sudah selesai dan berjalan dengan baik? Keren! Sekarang saatnya membuat <b>Pitch Deck</b> (Presentasi singkat 4-5 halaman menggunakan PPT, Google Slides, atau Canva) agar juri dan pengunjung pameran mengerti seberapa hebat karyamu.</p>
+      <div class="card" style="text-align:center; padding: 20px;">
+        <div style="font-size: 3rem;">🖼️🗣️✨</div>
+        <p style="margin-top:10px; font-weight: 500;">Pitch deck membantu orang lain memahami masalah apa yang kamu selesaikan dan bagaimana cara kerja proyekmu secara visual!</p>
+      </div>
+    `
             },
-
             {
-                title: "Latihan Penjelasan",
+                title: "Isi Pitch Deck",
                 html: `
-                <h2>🗣️ Latihan Menjelaskan Proyek</h2>
-                <p>Isi bagian ini sebagai latihan sebelum presentasi.</p>
+      <h2>🧩 4 Komponen Wajib di Pitch Deck-mu</h2>
+      <p>Jangan buat presentasi yang terlalu panjang. Cukup pastikan 4 hal ini ada di dalamnya:</p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+        <div class="card" style="padding: 15px;">
+          <h3 style="margin-top: 0; color: var(--brand);">1. Judul & Perkenalan</h3>
+          <p style="font-size: 0.9em; margin-bottom: 0;">Tuliskan nama proyekmu, nama lengkap, asal sekolah, dan jenjang kategori-mu.</p>
+        </div>
+        <div class="card" style="padding: 15px;">
+          <h3 style="margin-top: 0; color: var(--brand);">2. Masalah</h3>
+          <p style="font-size: 0.9em; margin-bottom: 0;">Ceritakan masalah sehari-hari yang menginspirasimu untuk membuat proyek ini.</p>
+        </div>
+        <div class="card" style="padding: 15px;">
+          <h3 style="margin-top: 0; color: var(--brand);">3. Solusi & Cara Kerja</h3>
+          <p style="font-size: 0.9em; margin-bottom: 0;">Masukkan <i>screenshot</i> proyekmu dan jelaskan langkah-langkah memainkannya/menggunakannya.</p>
+        </div>
+        <div class="card" style="padding: 15px;">
+          <h3 style="margin-top: 0; color: var(--brand);">4. Literasi Keuangan</h3>
+          <p style="font-size: 0.9em; margin-bottom: 0;">Jelaskan manfaat proyekmu dan pesan apa yang ingin kamu sampaikan soal uang atau menabung.</p>
+        </div>
+      </div>
+    `
+            },
+            {
+                title: "Kuis Pitch Deck",
+                html: `
+    <h2>💡 Pitch Deck Aplikasi yang Baik Itu Seperti Apa?</h2>
+    <p>Pilih jawaban yang paling menunjukkan pitch deck yang jelas dan mudah dipahami.</p>
 
-                <div class="grid">
-                    <textarea class="input" placeholder="Judul proyekmu apa?"></textarea>
-                    <textarea class="input" placeholder="Ceritanya tentang apa?"></textarea>
-                    <textarea class="input" placeholder="Pemain membuat pilihan apa saja?"></textarea>
-                    <textarea class="input" placeholder="Pesan tentang uang apa yang ingin kamu sampaikan?"></textarea>
-                </div>
-                `
+    <div class="choices" data-quiz="deck">
+      <div class="choice" data-answer="wrong">
+        Menjelaskan semua blok App Inventor satu per satu dengan teks panjang di setiap slide
+      </div>
+
+      <div class="choice" data-answer="right">
+        Menjelaskan masalah, fitur utama, cara kerja aplikasi, dan manfaatnya dengan visual yang jelas dan ringkas
+      </div>
+
+      <div class="choice" data-answer="wrong">
+        Memenuhi slide dengan semua screenshot layar tanpa penjelasan fungsi aplikasi
+      </div>
+    </div>
+
+    <div class="feedback" data-quiz-feedback="deck"></div>
+  `
+            },
+            {
+                title: "Checklist Pengumpulan",
+                html: `
+    <h2>✅ Checklist Sebelum Mengumpulkan Karya</h2>
+    <p>Pastikan semua komponen ini sudah siap sebelum kamu mengirimkannya ke LMS.</p>
+
+    <div class="checklist" data-checklist="submission">
+      <div class="checkItem"><div class="checkBox">✓</div><div>Proyek selesai, dites, dan berjalan tanpa error</div></div>
+      <div class="checkItem"><div class="checkBox">✓</div><div>Deskripsi singkat proyek sudah ditulis</div></div>
+      <div class="checkItem"><div class="checkBox">✓</div><div>Pitch deck maksimal 5 slide sudah selesai dibuat</div></div>
+      <div class="checkItem"><div class="checkBox">✓</div><div>Video demo sudah direkam jika diminta</div></div>
+    </div>
+
+    <div class="meterWrap">
+      <div class="meter"><div class="meterBar" id="submissionMeter"></div></div>
+      <div class="meterText" id="submissionMeterText">0 dari 4 komponen siap</div>
+    </div>
+  `
             },
 
             {
@@ -882,6 +919,10 @@
                 bug: {
                     ok: "✅ Benar! Kalau ada bagian yang tidak jalan, cek blok, tombol, dan urutan alurnya lagi.",
                     bad: "⚠️ Belum tepat. Proyek yang baik perlu dicek lagi kalau ada bagian yang belum bekerja."
+                },
+                deck: {
+                    ok: "✅ Tepat! Pitch deck aplikasi yang baik menjelaskan masalah, solusi, cara kerja, dan manfaat dengan ringkas dan jelas.",
+                    bad: "⚠️ Belum tepat. Pitch deck bukan tempat menaruh semua detail, tetapi menyampaikan inti aplikasi secara visual dan mudah dipahami."
                 }
             };
             const m = msgs[id];
@@ -915,6 +956,9 @@
             if (parentId === "testing") {
                 meterId = "testingMeter";
                 textId = "testingMeterText";
+            } else if (parentId === "submission") {
+                meterId = "submissionMeter";
+                textId = "submissionMeterText";
             } else if (parentId === "final") {
                 meterId = "finalMeter";
                 textId = "finalMeterText";
