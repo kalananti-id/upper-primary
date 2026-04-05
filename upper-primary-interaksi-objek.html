@@ -1,0 +1,1078 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Interaksi Objek: Uang, Kebutuhan, dan Keinginan</title>
+    <style>
+        :root {
+            --bg1: #F7FAFF;
+            --bg2: #ECFEFF;
+            --card: #FFFFFF;
+            --ink: #0F172A;
+            --muted: #475569;
+            --line: rgba(226, 232, 240, .95);
+            --brand: #4F46E5;
+            --brand2: #06B6D4;
+            --ok: #16A34A;
+            --bad: #DC2626;
+            --warn: #F59E0B;
+            --radius: 22px;
+            --shadow: 0 18px 40px rgba(15, 23, 42, .08);
+            --shadow2: 0 10px 22px rgba(15, 23, 42, .06);
+            --focus: 0 0 0 4px rgba(79, 70, 229, .18);
+            --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--sans);
+            color: var(--ink);
+            background:
+                radial-gradient(1200px 520px at 10% 0%, rgba(6, 182, 212, .18), transparent 60%),
+                radial-gradient(1200px 520px at 90% 0%, rgba(79, 70, 229, .16), transparent 55%),
+                linear-gradient(180deg, var(--bg1), #F3F6FF 45%, var(--bg2));
+            min-height: 100vh;
+        }
+
+        .app {
+            width: min(1100px, 96vw);
+            margin: 18px auto 26px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 12px 14px;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            background: rgba(255, 255, 255, .72);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow2);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            width: 38px;
+            height: 38px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(79, 70, 229, .18), rgba(6, 182, 212, .20));
+            border: 1px solid rgba(226, 232, 240, .9);
+            display: grid;
+            place-items: center;
+            font-weight: 1000;
+            color: rgba(79, 70, 229, 1);
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.15;
+            letter-spacing: .2px;
+        }
+
+        .brand .sub {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 800;
+            margin-top: 2px;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            border: 1px solid rgba(226, 232, 240, .95);
+            background: rgba(255, 255, 255, .9);
+            padding: 10px 12px;
+            border-radius: 16px;
+            font-weight: 1000;
+            cursor: pointer;
+            box-shadow: 0 8px 16px rgba(15, 23, 42, .06);
+            transition: transform .06s ease, box-shadow .12s ease, background .12s ease;
+            user-select: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px)
+        }
+
+        .btn:active {
+            transform: translateY(0px)
+        }
+
+        .btn.primary {
+            background: linear-gradient(135deg, rgba(79, 70, 229, .12), rgba(6, 182, 212, .14));
+            border-color: rgba(79, 70, 229, .18);
+        }
+
+        .btn.ghost {
+            background: transparent;
+            box-shadow: none
+        }
+
+        .btn:focus {
+            outline: none;
+            box-shadow: var(--focus);
+        }
+
+        .progressWrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 260px;
+            justify-content: flex-end;
+        }
+
+        .progress {
+            width: 180px;
+            height: 10px;
+            background: rgba(226, 232, 240, .9);
+            border-radius: 999px;
+            overflow: hidden;
+            border: 1px solid rgba(226, 232, 240, .95);
+        }
+
+        .bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, rgba(79, 70, 229, .85), rgba(6, 182, 212, .85));
+            border-radius: 999px;
+            transition: width .25s ease;
+        }
+
+        .count {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 900;
+        }
+
+        .stage {
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            background: rgba(255, 255, 255, .60);
+            box-shadow: var(--shadow);
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            min-height: calc(100vh - 145px);
+        }
+
+        .slide {
+            flex: 1;
+            background: rgba(255, 255, 255, .68);
+            border: 1px solid rgba(229, 234, 245, .95);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow2);
+            padding: 20px;
+            overflow: hidden;
+            backdrop-filter: blur(8px);
+        }
+
+        .slideInner {
+            max-width: 980px;
+            margin: 0 auto;
+            max-height: calc(100vh - 190px);
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .slideInner::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .slideInner::-webkit-scrollbar-thumb {
+            background: rgba(96, 112, 153, .25);
+            border-radius: 999px;
+            border: 3px solid rgba(255, 255, 255, .9);
+        }
+
+        h2 {
+            margin: 6px 0 10px;
+            font-size: 30px;
+            letter-spacing: -.3px
+        }
+
+        h3 {
+            margin: 0 0 8px;
+            font-size: 18px
+        }
+
+        p {
+            margin: 0 0 10px;
+            color: var(--muted);
+            font-weight: 800;
+            line-height: 1.58
+        }
+
+        .kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 1000;
+            font-size: 12px;
+            letter-spacing: .2px;
+            padding: 7px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(79, 70, 229, .16);
+            background: rgba(79, 70, 229, .06);
+            color: rgba(55, 65, 81, .95);
+        }
+
+        .grid {
+            display: grid;
+            gap: 14px
+        }
+
+        .cols2 {
+            grid-template-columns: 1fr 1fr
+        }
+
+        .cols3 {
+            grid-template-columns: repeat(3, 1fr)
+        }
+
+        @media (max-width: 860px) {
+
+            .cols2,
+            .cols3 {
+                grid-template-columns: 1fr
+            }
+
+            .progressWrap {
+                min-width: unset
+            }
+
+            .progress {
+                width: 130px
+            }
+
+            h2 {
+                font-size: 26px
+            }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, .92);
+            border: 1px solid rgba(226, 232, 240, .95);
+            border-radius: 22px;
+            padding: 14px;
+            box-shadow: 0 10px 18px rgba(15, 23, 42, .06);
+        }
+
+        .hint {
+            background: rgba(6, 182, 212, .10);
+            border: 1px dashed rgba(6, 182, 212, .35);
+            border-radius: 18px;
+            padding: 12px 14px;
+            color: rgba(30, 41, 59, .92);
+            font-weight: 900;
+            line-height: 1.5;
+        }
+
+        .money {
+            font-family: var(--mono);
+            font-weight: 1000;
+            font-size: 14px;
+            padding: 8px 10px;
+            border-radius: 14px;
+            border: 1px solid rgba(226, 232, 240, .95);
+            background: rgba(255, 255, 255, .95);
+            display: inline-flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        ul.list {
+            margin: 8px 0 0 18px;
+            color: var(--muted);
+            font-weight: 850;
+            line-height: 1.58;
+        }
+
+        .choices {
+            display: grid;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .choice {
+            border: 1px solid rgba(226, 232, 240, .95);
+            border-radius: 18px;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, .96);
+            font-weight: 950;
+            color: rgba(30, 41, 59, .96);
+            cursor: pointer;
+            user-select: none;
+            transition: transform .06s ease, border-color .12s ease, background .12s ease;
+        }
+
+        .choice:hover {
+            transform: translateY(-1px)
+        }
+
+        .choice.active {
+            border-color: rgba(79, 70, 229, .35);
+            background: rgba(79, 70, 229, .06)
+        }
+
+        .choice.ok {
+            border-color: rgba(22, 163, 74, .35);
+            background: rgba(22, 163, 74, .08)
+        }
+
+        .choice.bad {
+            border-color: rgba(220, 38, 38, .35);
+            background: rgba(220, 38, 38, .08)
+        }
+
+        .feedback {
+            display: none;
+            margin-top: 10px;
+            border-radius: 18px;
+            padding: 12px 14px;
+            border: 1px solid rgba(226, 232, 240, .95);
+            background: rgba(255, 255, 255, .92);
+            color: var(--muted);
+            font-weight: 900;
+            line-height: 1.5;
+        }
+
+        .feedback.show {
+            display: block
+        }
+
+        .fbOk {
+            border-color: rgba(22, 163, 74, .35);
+            background: rgba(22, 163, 74, .08);
+            color: rgba(15, 23, 42, .92);
+        }
+
+        .fbBad {
+            border-color: rgba(220, 38, 38, .35);
+            background: rgba(220, 38, 38, .08);
+            color: rgba(15, 23, 42, .92);
+        }
+
+        .step {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            padding: 10px 12px;
+            border-radius: 18px;
+            border: 1px solid rgba(226, 232, 240, .95);
+            background: rgba(255, 255, 255, .96);
+        }
+
+        .dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            background: rgba(79, 70, 229, .10);
+            border: 1px solid rgba(79, 70, 229, .18);
+            font-weight: 1000;
+            color: rgba(79, 70, 229, .95);
+            flex: 0 0 auto;
+        }
+
+        .sim {
+            border: 1px solid rgba(226, 232, 240, .95);
+            border-radius: 22px;
+            padding: 14px;
+            background: rgba(255, 255, 255, .92);
+            box-shadow: 0 10px 18px rgba(15, 23, 42, .06);
+        }
+
+        .simBtns {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .simBtn {
+            border: 1px solid rgba(226, 232, 240, .95);
+            background: rgba(255, 255, 255, .96);
+            border-radius: 18px;
+            padding: 12px 14px;
+            font-weight: 1000;
+            cursor: pointer;
+            user-select: none;
+            transition: transform .06s ease, background .12s ease, border-color .12s ease;
+            min-width: 180px;
+            flex: 1 1 180px;
+        }
+
+        .simBtn:hover {
+            transform: translateY(-1px)
+        }
+
+        .simBtn.good {
+            border-color: rgba(22, 163, 74, .28);
+            background: rgba(22, 163, 74, .06)
+        }
+
+        .simBtn.badchoice {
+            border-color: rgba(245, 158, 11, .28);
+            background: rgba(245, 158, 11, .08)
+        }
+
+        .log {
+            margin-top: 10px;
+            font-family: var(--mono);
+            font-size: 12px;
+            color: rgba(71, 85, 105, .95);
+            background: rgba(255, 255, 255, .75);
+            border: 1px solid rgba(226, 232, 240, .95);
+            border-radius: 18px;
+            padding: 10px 12px;
+            max-height: 150px;
+            overflow: auto;
+            white-space: pre-wrap;
+        }
+
+        .pill {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 1000;
+            border: 1px solid rgba(226, 232, 240, .95);
+            background: rgba(255, 255, 255, .9);
+            margin: 4px 6px 0 0;
+        }
+
+        .codeBox {
+            background: #0f172a;
+            color: #e2e8f0;
+            border-radius: 18px;
+            padding: 14px;
+            font-family: var(--mono);
+            font-size: 13px;
+            line-height: 1.6;
+            overflow: auto;
+            box-shadow: 0 10px 18px rgba(15, 23, 42, .12);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="accessGate" style="
+    position:fixed; inset:0;
+    background:linear-gradient(135deg,#eef2ff,#ecfeff);
+    display:flex; align-items:center; justify-content:center;
+    z-index:9999;">
+        <div class="card" style="max-width:420px;width:92%;text-align:center">
+            <h2>🔐 Kode Akses</h2>
+            <p>Masukkan kode untuk memulai sesi.</p>
+
+            <input id="accessInput" placeholder="MASUKKAN KODE" autocomplete="off" style="width:100%;padding:12px 14px;border-radius:16px;border:1px solid rgba(226,232,240,.95);
+        font-weight:900;letter-spacing:2px;text-align:center" />
+
+            <button class="btn primary" id="accessBtn" style="margin-top:12px">Masuk</button>
+            <div class="feedback" id="accessFb" style="margin-top:10px"></div>
+
+            <div class="hint" style="margin-top:10px">Kode diberikan oleh guru.</div>
+        </div>
+    </div>
+
+    <div class="app">
+        <div class="topbar">
+            <div class="brand">
+                <div class="logo">UP</div>
+                <div>
+                    <h1>Upper Primary</h1>
+                    <div class="sub">Interaksi Objek: Uang, Kebutuhan, dan Keinginan</div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn ghost" id="btnHome">🏠 Awal</button>
+                <button class="btn" id="btnPrev">←</button>
+                <button class="btn primary" id="btnNext">→</button>
+            </div>
+
+            <div class="progressWrap">
+                <div class="progress">
+                    <div class="bar" id="bar"></div>
+                </div>
+                <div class="count" id="count">1/1</div>
+            </div>
+        </div>
+
+        <div class="stage">
+            <div class="slide">
+                <div class="slideInner" id="content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const slides = [
+            {
+                title: "Judul",
+                html: `
+          <div class="kicker">✨ Mulai</div>
+          <h2>Interaksi Objek: Uang, Kebutuhan, dan Keinginan</h2>
+          <p>Hari ini kita akan membuat game menjadi lebih seru. Karakter tidak hanya bergerak, tetapi juga berinteraksi dengan objek yang sudah ditempatkan di layar.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Target kita</h3>
+              <ul class="list">
+                <li>Memahami interaksi objek dalam game</li>
+                <li>Mengenal sensor <b>touching</b> di Scratch</li>
+                <li>Membedakan objek yang menambah dan mengurangi saldo</li>
+                <li>Membuat logika tangkap uang dan hindari godaan</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Siap lanjut?</h3>
+              <div class="choices" data-quiz="ready">
+                <div class="choice" data-answer="right">✅ Siap!</div>
+                <div class="choice" data-answer="right">🎮 Yuk buat game lebih hidup!</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="ready"></div>
+              <button class="btn primary" data-goto="1" style="margin-top:10px">🚀 Mulai</button>
+            </div>
+          </div>
+        `
+            },
+
+            {
+                title: "Interaksi Objek",
+                html: `
+          <div class="kicker">🎯 Konsep</div>
+          <h2>Apa itu interaksi objek?</h2>
+          <p>Interaksi objek terjadi saat karakter menyentuh objek tertentu di dalam game. Ketika itu terjadi, game bisa memberikan efek langsung, misalnya menambah nilai, mengurangi nilai, atau menghapus objek.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Contoh interaksi</h3>
+              <ul class="list">
+                <li>Karakter menangkap koin</li>
+                <li>Karakter menyentuh barang godaan</li>
+                <li>Karakter mendapat bonus atau hukuman</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>Kenapa penting?</h3>
+              <p>Karena interaksi membuat game terasa hidup. Setiap pilihan pemain akan memberi dampak yang bisa langsung terlihat.</p>
+            </div>
+          </div>
+        `
+            },
+
+            {
+                title: "Touching",
+                html: `
+          <div class="kicker">🧩 Scratch</div>
+          <h2>Sensor touching di Scratch</h2>
+          <p>Di Scratch, kita bisa mengecek apakah karakter sedang menyentuh objek lain dengan blok <b>touching</b>. Jika sedang menyentuh, program akan menjalankan perintah tertentu.</p>
+
+          <div class="card" style="margin-top:12px">
+            <div class="step"><div class="dot">1</div><div><img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/78c771d6-ae05-49ec-add2-46fe1c2093fa.png" alt="Uang" style="width: 150px"> → berarti karakter menyentuh uang</div></div>
+            <div class="step" style="margin-top:8px"><div class="dot">2</div><div><img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/b4f032a9-3dcd-409e-adf5-3e37e0c413f4.png" alt="Barang Mewah" style="width: 180px"> → berarti karakter menyentuh godaan belanja</div></div>
+            <div class="step" style="margin-top:8px"><div class="dot">3</div><div>Setelah itu, kita bisa mengubah variabel <img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/01096640-26a9-4682-b6e4-f0b9279df276.png" alt="Saldo" style="width: 50px"> </div></div>
+          </div>
+        `
+            },
+
+            {
+                title: "Objek Uang",
+                html: `
+          <div class="kicker">💰 Pemasukan</div>
+          <h2>Objek uang sebagai pemasukan</h2>
+          <p>Objek uang adalah objek yang menguntungkan. Jika karakter berhasil menangkap objek ini, maka saldo akan bertambah. Ini melambangkan pemasukan atau tambahan uang.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Contoh objek</h3>
+              <div class="pill">Koin</div>
+              <div class="pill">Uang</div>
+              <div class="pill">Bonus</div>
+            </div>
+            <div class="card">
+              <h3>Efek dalam game</h3>
+              <p>Jika disentuh karakter, maka <b>Saldo bertambah</b>. Pemain jadi merasa bahwa keputusan yang tepat memberi keuntungan.</p>
+            </div>
+          </div>
+        `
+            },
+
+            {
+                title: "Barang Mewah",
+                html: `
+          <div class="kicker">🛍️ Pengeluaran</div>
+          <h2>Barang mewah sebagai pengeluaran</h2>
+          <p>Tidak semua objek yang ada di layar harus disentuh. Barang mewah atau godaan belanja bisa membuat saldo berkurang karena sifatnya konsumtif.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Contoh objek</h3>
+              <div class="pill">Mainan</div>
+              <div class="pill">Aksesori</div>
+              <div class="pill">Barang trendi</div>
+            </div>
+            <div class="card">
+              <h3>Efek dalam game</h3>
+              <p>Jika tertangkap, <b>Saldo berkurang tajam</b>. Ini mengajarkan bahwa pilihan yang kurang bijak bisa membuat uang cepat habis.</p>
+            </div>
+          </div>
+        `
+            },
+
+            {
+                title: "Kebutuhan dan Keinginan",
+                html: `
+          <div class="kicker">🌍 Hubungkan</div>
+          <h2>Kebutuhan dan keinginan</h2>
+          <p>Game ini terhubung dengan kehidupan nyata. Dalam kehidupan sehari-hari, kita perlu membedakan antara kebutuhan dan keinginan. Jika terlalu sering memilih hal yang tidak penting, uang bisa cepat habis.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Kebutuhan</h3>
+              <ul class="list">
+                <li>Sesuatu yang penting</li>
+                <li>Harus dipenuhi</li>
+                <li>Membantu hidup lebih baik</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>Keinginan</h3>
+              <ul class="list">
+                <li>Terlihat menarik</li>
+                <li>Tidak selalu penting</li>
+                <li>Bisa ditunda</li>
+              </ul>
+            </div>
+          </div>
+        `
+            },
+
+            {
+                title: "Logika Saldo",
+                html: `
+          <div class="kicker">🔄 Logika</div>
+          <h2>Bagaimana saldo berubah?</h2>
+          <p>Setiap interaksi akan memengaruhi variabel <b>Saldo</b>. Inilah inti dari game yang akan kamu buat.</p>
+
+          <div class="card" style="margin-top:12px">
+            <div class="step"><div class="dot">+</div><div>Jika karakter menyentuh <b>Uang</b> → <b>Saldo bertambah</b></div></div>
+            <div class="step" style="margin-top:8px"><div class="dot">-</div><div>Jika karakter menyentuh <b>Barang Mewah</b> → <b>Saldo berkurang</b></div></div>
+            <div class="hint" style="margin-top:12px">Setiap keputusan akan langsung memengaruhi hasil permainan.</div>
+          </div>
+        `
+            },
+
+            {
+                title: "Objek di Posisi Tertentu",
+                html: `
+          <div class="kicker">🗺️ Gameplay</div>
+<h2>Objek berada di posisi tertentu</h2>
+<p>Dalam game ini, objek tidak bergerak. Objek uang dan barang mewah sudah ditempatkan di posisi tertentu di layar.</p>
+
+<div class="card" style="margin-top:12px">
+  <div class="step"><div class="dot">1</div><div>Amati posisi objek di layar</div></div>
+  <div class="step" style="margin-top:8px"><div class="dot">2</div><div>Gerakkan karakter ke arah objek</div></div>
+  <div class="step" style="margin-top:8px"><div class="dot">3</div><div>Pilih objek yang tepat untuk disentuh</div></div>
+</div>
+        `
+            },
+
+            {
+                title: "Kode Konsep",
+                html: `
+          <div class="kicker">🧱 Scratch</div>
+          <h2>Contoh logika kode</h2>
+          <p>Ini adalah konsep sederhana yang akan dipakai di Scratch. Tujuannya bukan menghafal, tetapi memahami idenya.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Saat menyentuh uang</h3>
+              <div class="codeBox"><img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/5c3a2f4a-3116-4a34-a63c-a474fd9fbcf1.png" alt="Uang" style="width: 50%"></div>
+            </div>
+            <div class="card">
+              <h3>Saat menyentuh barang mewah</h3>
+              <div class="codeBox"><img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/5efa6f2e-28e4-42be-86fc-f7d23220143e.png" alt="Barang Mewah" style="width: 50%"></div>
+            </div>
+          </div>
+        `
+            },
+
+            {
+                title: "Quiz 1",
+                html: `
+          <div class="kicker">❓ Cek Paham</div>
+          <h2>Mana pernyataan yang benar?</h2>
+
+          <div class="card" style="margin-top:12px">
+            <div class="choices" data-quiz="q1">
+              <div class="choice" data-answer="right">Jika karakter menangkap uang, saldo bertambah.</div>
+              <div class="choice" data-answer="wrong">Jika karakter menangkap barang mewah, saldo bertambah.</div>
+              <div class="choice" data-answer="wrong">Semua objek harus ditangkap.</div>
+              <div class="choice" data-answer="wrong">Touching tidak memengaruhi game.</div>
+            </div>
+            <div class="feedback" data-quiz-feedback="q1"></div>
+          </div>
+        `
+            },
+
+            {
+                title: "Quiz 2",
+                html: `
+          <div class="kicker">🧠 Pikirkan</div>
+          <h2>Objek mana yang sebaiknya dihindari?</h2>
+          <p>Pilih jawaban yang paling tepat berdasarkan tujuan game.</p>
+
+          <div class="card" style="margin-top:12px">
+            <div class="choices" data-quiz="q2">
+              <div class="choice" data-answer="wrong">Uang dan bonus</div>
+              <div class="choice" data-answer="right">Barang mewah atau godaan belanja</div>
+              <div class="choice" data-answer="wrong">Semua objek yang jatuh</div>
+              <div class="choice" data-answer="wrong">Objek yang paling dekat dengan karakter saja</div>
+            </div>
+            <div class="feedback" data-quiz-feedback="q2"></div>
+          </div>
+        `
+            },
+
+            {
+                title: "Simulasi",
+                html: `
+          <div class="kicker">🧪 Coba Interaktif</div>
+          <h2>Simulator saldo</h2>
+          <p>Klik objek di bawah ini untuk melihat bagaimana saldo berubah. Coba rasakan bedanya antara pemasukan dan pengeluaran.</p>
+
+          <div class="sim" data-money-sim>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between">
+              <div class="money">SALDO: <span id="simMoney">Rp0</span></div>
+              <button class="btn" id="simReset">Reset</button>
+            </div>
+
+            <div class="simBtns">
+              <div class="simBtn good" data-label="Menangkap Uang" data-change="10000">
+                💵 Uang<br><small>+10.000</small>
+              </div>
+              <div class="simBtn good" data-label="Menangkap Bonus" data-change="5000">
+                ⭐ Bonus<br><small>+5.000</small>
+              </div>
+              <div class="simBtn badchoice" data-label="Menangkap Barang Mewah" data-change="-15000">
+                🧸 Barang Mewah<br><small>-15.000</small>
+              </div>
+              <div class="simBtn badchoice" data-label="Menangkap Aksesori" data-change="-10000">
+                🎀 Aksesori<br><small>-10.000</small>
+              </div>
+            </div>
+
+            <div class="feedback show" id="simFb" style="display:block; margin-top:12px">
+              Klik objek untuk melihat perubahan saldo.
+            </div>
+
+            <div class="log" id="simLog">Riwayat perubahan saldo akan muncul di sini.</div>
+            </div>
+            `
+            },
+
+            {
+                title: "Strategi",
+                html: `
+                <div class="kicker">🎯 Strategi</div>
+                <h2>Pilih objek dengan bijak</h2>
+                <p>Dalam game ini, pemain tidak perlu menyentuh semua objek yang ada di layar. Pemain perlu memperhatikan posisi objek, lalu mengarahkan karakter ke objek yang menguntungkan dan menghindari objek yang merugikan agar saldo tetap aman.</p>
+
+                <div class="grid cols2" style="margin-top:12px">
+                <div class="card">
+                    <h3>Strategi yang baik</h3>
+                    <ul class="list">
+                    <li>Dekati objek uang terlebih dahulu</li>
+                    <li>Hindari barang mewah</li>
+                    <li>Perhatikan perubahan saldo</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>Akibat kalau salah memilih</h3>
+                    <ul class="list">
+                    <li>Saldo cepat berkurang</li>
+                    <li>Pemain perlu bergerak lebih hati-hati</li>
+                    <li>Tujuan permainan lebih sulit dicapai</li>
+                    </ul>
+                </div>
+                </div>
+            `
+            },
+
+            {
+                title: "Latihan",
+                html: `
+          <div class="kicker">🏁 Latihan</div>
+          <h2>Ayo buat di Scratch</h2>
+          <p>Sekarang waktunya membuat versi sederhana sendiri. Gunakan logika touching agar game benar-benar interaktif.</p>
+
+          <div class="card" style="margin-top:12px">
+            <h3>Checklist proyek</h3>
+            <ul class="list">
+              <li>Buat variabel <b>Saldo</b></li>
+              <li>Buat sprite <b>Uang</b></li>
+              <li>Buat sprite <b>Barang Mewah</b></li>
+              <li>Tempatkan objek di posisi tertentu di layar</li>
+              <li>Gerakkan karakter untuk mendekati objek</li>
+              <li>Tambahkan logika <b>touching</b></li>
+              <li>Uang menambah saldo, barang mewah mengurangi saldo</li>
+            </ul>
+          </div>
+        `
+            },
+
+            {
+                title: "Refleksi",
+                html: `
+          <div class="kicker">🪞 Refleksi</div>
+          <h2>Apa yang kamu pelajari?</h2>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Tentang coding</h3>
+              <div class="choices" data-quiz="ref1">
+                <div class="choice" data-answer="right">Touching digunakan untuk mendeteksi sentuhan antar objek.</div>
+                <div class="choice" data-answer="wrong">Touching digunakan untuk mengganti background.</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="ref1"></div>
+            </div>
+
+            <div class="card">
+              <h3>Tentang keuangan</h3>
+              <div class="choices" data-quiz="ref2">
+                <div class="choice" data-answer="right">Kita perlu memilih dengan bijak agar saldo tidak cepat habis.</div>
+                <div class="choice" data-answer="wrong">Semua barang yang menarik harus diambil.</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="ref2"></div>
+            </div>
+          </div>
+        `
+            },
+
+            {
+                title: "Penutup",
+                html: `
+          <div class="kicker">✅ Selesai</div>
+          <h2>Kerja bagus! 🎉</h2>
+          <p>Kamu sudah belajar membuat interaksi objek dalam game. Kamu juga sudah memahami bahwa setiap sentuhan bisa mengubah saldo, sama seperti keputusan kita dalam kehidupan nyata bisa memengaruhi uang yang kita miliki.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Ringkasan</h3>
+              <ul class="list">
+                <li>Touching mendeteksi sentuhan antar sprite</li>
+                <li>Uang menambah saldo</li>
+                <li>Barang mewah mengurangi saldo</li>
+                <li>Pemain harus memilih dengan bijak</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Bridge</h3>
+              <div class="hint">
+                Setelah memahami interaksi objek, kamu siap membuat game yang lebih seru dengan tantangan, skor, dan aturan permainan yang lebih lengkap.
+              </div>
+            </div>
+          </div>
+        `
+            }
+        ];
+
+        let idx = 0;
+        const content = document.getElementById("content");
+        const bar = document.getElementById("bar");
+        const count = document.getElementById("count");
+        const btnPrev = document.getElementById("btnPrev");
+        const btnNext = document.getElementById("btnNext");
+        const btnHome = document.getElementById("btnHome");
+
+        function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
+
+        function showFeedback(el, html, type) {
+            if (!el) return;
+            el.classList.add("show");
+            el.style.display = "block";
+            el.classList.remove("fbOk", "fbBad");
+            if (type === "ok") el.classList.add("fbOk");
+            if (type === "bad") el.classList.add("fbBad");
+            el.innerHTML = html;
+        }
+
+        function wireQuiz(group) {
+            const id = group.getAttribute("data-quiz");
+            const fb = content.querySelector('[data-quiz-feedback="' + id + '"]');
+            const items = [...group.querySelectorAll(".choice")];
+
+            items.forEach(ch => {
+                ch.addEventListener("click", () => {
+                    items.forEach(x => x.classList.remove("active", "ok", "bad"));
+                    ch.classList.add("active");
+                    const isRight = ch.getAttribute("data-answer") === "right";
+                    if (isRight) {
+                        ch.classList.add("ok");
+                        showFeedback(fb, "✅ Benar! Kamu paham konsepnya.", "ok");
+                    } else {
+                        ch.classList.add("bad");
+                        showFeedback(fb, "⚠️ Coba pikir lagi ya.", "bad");
+                    }
+                });
+            });
+        }
+
+        let simState = null;
+
+        function formatRp(n) {
+            const sign = n < 0 ? "-" : "";
+            const s = Math.abs(Math.round(n)).toString();
+            return sign + "Rp" + s.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        function wireMoneySim() {
+            const wrap = content.querySelector("[data-money-sim]");
+            if (!wrap) { simState = null; return; }
+
+            simState = { money: 0, log: [] };
+
+            const moneyEl = content.querySelector("#simMoney");
+            const fb = content.querySelector("#simFb");
+            const logEl = content.querySelector("#simLog");
+            const resetBtn = content.querySelector("#simReset");
+
+            function renderSim(msg, type) {
+                moneyEl.textContent = formatRp(simState.money);
+                if (msg) {
+                    fb.className = "feedback show";
+                    fb.style.display = "block";
+                    if (type === "ok") fb.classList.add("fbOk");
+                    if (type === "bad") fb.classList.add("fbBad");
+                    fb.innerHTML = msg;
+                }
+                logEl.textContent = simState.log.length ? simState.log.join("\n") : "Riwayat perubahan saldo akan muncul di sini.";
+            }
+
+            function addLog(line) {
+                simState.log.unshift(line);
+                simState.log = simState.log.slice(0, 8);
+            }
+
+            wrap.querySelectorAll("[data-change]").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const label = btn.getAttribute("data-label");
+                    const change = Number(btn.getAttribute("data-change") || "0");
+                    simState.money += change;
+
+                    const signText = change > 0 ? "+" : "";
+                    addLog(`${label} → ${signText}${formatRp(change)} | Total: ${formatRp(simState.money)}`);
+
+                    if (change > 0) {
+                        renderSim(`✅ <b>${label}</b><br>Saldo bertambah menjadi <b>${formatRp(simState.money)}</b>`, "ok");
+                    } else {
+                        renderSim(`💡 <b>${label}</b><br>Saldo berkurang menjadi <b>${formatRp(simState.money)}</b>`, "bad");
+                    }
+                });
+            });
+
+            resetBtn.addEventListener("click", () => {
+                simState.money = 0;
+                simState.log = [];
+                renderSim("Klik objek untuk melihat perubahan saldo.", null);
+            });
+
+            renderSim("Klik objek untuk melihat perubahan saldo.", null);
+        }
+
+        function wireInteractions() {
+            content.querySelectorAll("[data-quiz]").forEach(wireQuiz);
+
+            content.querySelectorAll("[data-goto]").forEach(b => {
+                b.addEventListener("click", () => {
+                    const to = Number(b.getAttribute("data-goto"));
+                    idx = clamp(to, 0, slides.length - 1);
+                    render();
+                    content.scrollTop = 0;
+                });
+            });
+
+            wireMoneySim();
+        }
+
+        function render() {
+            const s = slides[idx];
+            content.innerHTML = s.html;
+            const pct = ((idx + 1) / slides.length) * 100;
+            bar.style.width = pct + "%";
+            count.textContent = (idx + 1) + "/" + slides.length;
+            wireInteractions();
+            content.scrollTop = 0;
+        }
+
+        function go(d) {
+            idx = clamp(idx + d, 0, slides.length - 1);
+            render();
+        }
+
+        btnPrev.addEventListener("click", () => go(-1));
+        btnNext.addEventListener("click", () => go(1));
+        btnHome.addEventListener("click", () => { idx = 0; render(); });
+
+        window.addEventListener("keydown", (e) => {
+            if (document.getElementById("accessGate").style.display !== "none") return;
+            if (e.key === "ArrowLeft") go(-1);
+            if (e.key === "ArrowRight") go(1);
+            if (e.key === "Home") { idx = 0; render(); }
+        });
+
+        const ACCESS_CODE = "RGMDSUP25";
+        const gate = document.getElementById("accessGate");
+        const input = document.getElementById("accessInput");
+        const btn = document.getElementById("accessBtn");
+        const fb = document.getElementById("accessFb");
+
+        input.addEventListener("input", () => { input.value = input.value.toUpperCase(); });
+        btn.addEventListener("click", checkAccess);
+        input.addEventListener("keydown", (e) => { if (e.key === "Enter") checkAccess(); });
+
+        function checkAccess() {
+            if (input.value.trim() === ACCESS_CODE) {
+                gate.style.display = "none";
+            } else {
+                fb.className = "feedback show fbBad";
+                fb.style.display = "block";
+                fb.textContent = "Kode salah. Coba lagi.";
+            }
+        }
+
+        render();
+    </script>
+</body>
+
+</html>

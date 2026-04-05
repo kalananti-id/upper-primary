@@ -1,0 +1,1254 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Menambah Tekanan: Sistem Timer</title>
+    <style>
+        :root {
+            --bg1: #F7FAFF;
+            --bg2: #ECFEFF;
+            --card: #FFFFFF;
+            --ink: #0F172A;
+            --muted: #475569;
+            --line: rgba(226, 232, 240, .95);
+            --brand: #4F46E5;
+            --brand2: #06B6D4;
+            --ok: #16A34A;
+            --bad: #DC2626;
+            --warn: #F59E0B;
+            --radius: 22px;
+            --shadow: 0 18px 40px rgba(15, 23, 42, .08);
+            --shadow2: 0 10px 22px rgba(15, 23, 42, .06);
+            --focus: 0 0 0 4px rgba(79, 70, 229, .18);
+            --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--sans);
+            color: var(--ink);
+            background:
+                radial-gradient(1200px 520px at 10% 0%, rgba(6, 182, 212, .18), transparent 60%),
+                radial-gradient(1200px 520px at 90% 0%, rgba(79, 70, 229, .16), transparent 55%),
+                linear-gradient(180deg, var(--bg1), #F3F6FF 45%, var(--bg2));
+            min-height: 100vh;
+        }
+
+        .app {
+            width: min(1100px, 96vw);
+            margin: 18px auto 26px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 12px 14px;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            background: rgba(255, 255, 255, .72);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow2);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            width: 38px;
+            height: 38px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(79, 70, 229, .18), rgba(6, 182, 212, .20));
+            border: 1px solid rgba(226, 232, 240, .9);
+            display: grid;
+            place-items: center;
+            font-weight: 1000;
+            color: rgba(79, 70, 229, 1);
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.15;
+            letter-spacing: .2px;
+        }
+
+        .brand .sub {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 800;
+            margin-top: 2px;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            border: 1px solid rgba(226, 232, 240, .95);
+            background: rgba(255, 255, 255, .9);
+            padding: 10px 12px;
+            border-radius: 16px;
+            font-weight: 1000;
+            cursor: pointer;
+            box-shadow: 0 8px 16px rgba(15, 23, 42, .06);
+            transition: transform .06s ease, box-shadow .12s ease, background .12s ease;
+            user-select: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px)
+        }
+
+        .btn:active {
+            transform: translateY(0px)
+        }
+
+        .btn.primary {
+            background: linear-gradient(135deg, rgba(79, 70, 229, .12), rgba(6, 182, 212, .14));
+            border-color: rgba(79, 70, 229, .18);
+        }
+
+        .btn.ghost {
+            background: transparent;
+            box-shadow: none
+        }
+
+        .btn:focus {
+            outline: none;
+            box-shadow: var(--focus);
+        }
+
+        .progressWrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 260px;
+            justify-content: flex-end;
+        }
+
+        .progress {
+            width: 180px;
+            height: 10px;
+            background: rgba(226, 232, 240, .9);
+            border-radius: 999px;
+            overflow: hidden;
+            border: 1px solid rgba(226, 232, 240, .95);
+        }
+
+        .bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, rgba(79, 70, 229, .85), rgba(6, 182, 212, .85));
+            border-radius: 999px;
+            transition: width .25s ease;
+        }
+
+        .count {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 900;
+        }
+
+        .stage {
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            background: rgba(255, 255, 255, .60);
+            box-shadow: var(--shadow);
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            min-height: calc(100vh - 145px);
+        }
+
+        .slide {
+            flex: 1;
+            background: rgba(255, 255, 255, .68);
+            border: 1px solid rgba(229, 234, 245, .95);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow2);
+            padding: 20px;
+            overflow: hidden;
+            backdrop-filter: blur(8px);
+        }
+
+        .slideInner {
+            max-width: 980px;
+            margin: 0 auto;
+            max-height: calc(100vh - 190px);
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .slideInner::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .slideInner::-webkit-scrollbar-thumb {
+            background: rgba(96, 112, 153, .25);
+            border-radius: 999px;
+            border: 3px solid rgba(255, 255, 255, .9);
+        }
+
+        h2 {
+            margin: 6px 0 10px;
+            font-size: 30px;
+            letter-spacing: -.3px
+        }
+
+        h3 {
+            margin: 0 0 8px;
+            font-size: 18px
+        }
+
+        p {
+            margin: 0 0 10px;
+            color: var(--muted);
+            font-weight: 800;
+            line-height: 1.58
+        }
+
+        .kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 1000;
+            font-size: 12px;
+            letter-spacing: .2px;
+            padding: 7px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(79, 70, 229, .16);
+            background: rgba(79, 70, 229, .06);
+            color: rgba(55, 65, 81, .95);
+        }
+
+        .grid {
+            display: grid;
+            gap: 14px
+        }
+
+        .cols2 {
+            grid-template-columns: 1fr 1fr
+        }
+
+        .cols3 {
+            grid-template-columns: repeat(3, 1fr)
+        }
+
+        @media (max-width: 860px) {
+
+            .cols2,
+            .cols3 {
+                grid-template-columns: 1fr
+            }
+
+            .progressWrap {
+                min-width: unset
+            }
+
+            .progress {
+                width: 130px
+            }
+
+            h2 {
+                font-size: 26px
+            }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, .92);
+            border: 1px solid rgba(226, 232, 240, .95);
+            border-radius: 22px;
+            padding: 14px;
+            box-shadow: 0 10px 18px rgba(15, 23, 42, .06);
+        }
+
+        .hint {
+            background: rgba(6, 182, 212, .10);
+            border: 1px dashed rgba(6, 182, 212, .35);
+            border-radius: 18px;
+            padding: 12px 14px;
+            color: rgba(30, 41, 59, .92);
+            font-weight: 900;
+            line-height: 1.5;
+        }
+
+        ul.list {
+            margin: 8px 0 0 18px;
+            color: var(--muted);
+            font-weight: 850;
+            line-height: 1.58;
+        }
+
+        .choices {
+            display: grid;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .choice {
+            border: 1px solid rgba(226, 232, 240, .95);
+            border-radius: 18px;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, .96);
+            font-weight: 950;
+            color: rgba(30, 41, 59, .96);
+            cursor: pointer;
+            user-select: none;
+            transition: transform .06s ease, border-color .12s ease, background .12s ease;
+        }
+
+        .choice:hover {
+            transform: translateY(-1px)
+        }
+
+        .choice.active {
+            border-color: rgba(79, 70, 229, .35);
+            background: rgba(79, 70, 229, .06)
+        }
+
+        .choice.ok {
+            border-color: rgba(22, 163, 74, .35);
+            background: rgba(22, 163, 74, .08)
+        }
+
+        .choice.bad {
+            border-color: rgba(220, 38, 38, .35);
+            background: rgba(220, 38, 38, .08)
+        }
+
+        .feedback {
+            display: none;
+            margin-top: 10px;
+            border-radius: 18px;
+            padding: 12px 14px;
+            border: 1px solid rgba(226, 232, 240, .95);
+            background: rgba(255, 255, 255, .92);
+            color: var(--muted);
+            font-weight: 900;
+            line-height: 1.5;
+        }
+
+        .feedback.show {
+            display: block
+        }
+
+        .fbOk {
+            border-color: rgba(22, 163, 74, .35);
+            background: rgba(22, 163, 74, .08);
+            color: rgba(15, 23, 42, .92);
+        }
+
+        .fbBad {
+            border-color: rgba(220, 38, 38, .35);
+            background: rgba(220, 38, 38, .08);
+            color: rgba(15, 23, 42, .92);
+        }
+
+        .step {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            padding: 10px 12px;
+            border-radius: 18px;
+            border: 1px solid rgba(226, 232, 240, .95);
+            background: rgba(255, 255, 255, .96);
+        }
+
+        .dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            background: rgba(79, 70, 229, .10);
+            border: 1px solid rgba(79, 70, 229, .18);
+            font-weight: 1000;
+            color: rgba(79, 70, 229, .95);
+            flex: 0 0 auto;
+        }
+
+        .pill {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 1000;
+            border: 1px solid rgba(226, 232, 240, .95);
+            background: rgba(255, 255, 255, .9);
+            margin: 4px 6px 0 0;
+        }
+
+        .codeBox {
+            background: #0f172a;
+            color: #e2e8f0;
+            border-radius: 18px;
+            padding: 14px;
+            font-family: var(--mono);
+            font-size: 13px;
+            line-height: 1.6;
+            overflow: auto;
+            box-shadow: 0 10px 18px rgba(15, 23, 42, .12);
+        }
+
+        .imgBox {
+            background: rgba(255, 255, 255, .95);
+            border: 1px solid rgba(226, 232, 240, .95);
+            border-radius: 20px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 180px;
+        }
+
+        .imgBox img {
+            max-width: 100%;
+            max-height: 260px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .sim {
+            border: 1px solid rgba(226, 232, 240, .95);
+            border-radius: 22px;
+            padding: 14px;
+            background: rgba(255, 255, 255, .92);
+            box-shadow: 0 10px 18px rgba(15, 23, 42, .06);
+        }
+
+        .timerBoard {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .timerBadge {
+            font-family: var(--mono);
+            font-size: 14px;
+            font-weight: 1000;
+            padding: 10px 12px;
+            border-radius: 14px;
+            border: 1px solid rgba(226, 232, 240, .95);
+            background: rgba(255, 255, 255, .95);
+        }
+
+        .simBtns {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .simBtn {
+            border: 1px solid rgba(226, 232, 240, .95);
+            background: rgba(255, 255, 255, .96);
+            border-radius: 18px;
+            padding: 12px 14px;
+            font-weight: 1000;
+            cursor: pointer;
+            user-select: none;
+            transition: transform .06s ease, background .12s ease, border-color .12s ease;
+            min-width: 180px;
+            flex: 1 1 180px;
+        }
+
+        .simBtn:hover {
+            transform: translateY(-1px)
+        }
+
+        .simBtn.good {
+            border-color: rgba(22, 163, 74, .28);
+            background: rgba(22, 163, 74, .06)
+        }
+
+        .simBtn.warn {
+            border-color: rgba(245, 158, 11, .28);
+            background: rgba(245, 158, 11, .08)
+        }
+
+        .simBtn.badchoice {
+            border-color: rgba(220, 38, 38, .28);
+            background: rgba(220, 38, 38, .08)
+        }
+
+        .log {
+            margin-top: 10px;
+            font-family: var(--mono);
+            font-size: 12px;
+            color: rgba(71, 85, 105, .95);
+            background: rgba(255, 255, 255, .75);
+            border: 1px solid rgba(226, 232, 240, .95);
+            border-radius: 18px;
+            padding: 10px 12px;
+            max-height: 170px;
+            overflow: auto;
+            white-space: pre-wrap;
+        }
+
+        .bigNumber {
+            font-size: 44px;
+            font-weight: 1000;
+            line-height: 1;
+            margin: 0;
+            color: var(--brand);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="accessGate" style="
+    position:fixed; inset:0;
+    background:linear-gradient(135deg,#eef2ff,#ecfeff);
+    display:flex; align-items:center; justify-content:center;
+    z-index:9999;">
+        <div class="card" style="max-width:420px;width:92%;text-align:center">
+            <h2>🔐 Kode Akses</h2>
+            <p>Masukkan kode untuk memulai sesi.</p>
+
+            <input id="accessInput" placeholder="MASUKKAN KODE" autocomplete="off" style="width:100%;padding:12px 14px;border-radius:16px;border:1px solid rgba(226,232,240,.95);
+      font-weight:900;letter-spacing:2px;text-align:center" />
+
+            <button class="btn primary" id="accessBtn" style="margin-top:12px">Masuk</button>
+            <div class="feedback" id="accessFb" style="margin-top:10px"></div>
+
+            <div class="hint" style="margin-top:10px">Kode diberikan oleh guru.</div>
+        </div>
+    </div>
+
+    <div class="app">
+        <div class="topbar">
+            <div class="brand">
+                <div class="logo">UP</div>
+                <div>
+                    <h1>Upper Primary</h1>
+                    <div class="sub">Menambah Tekanan: Sistem Timer</div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn ghost" id="btnHome">🏠 Awal</button>
+                <button class="btn" id="btnPrev">←</button>
+                <button class="btn primary" id="btnNext">→</button>
+            </div>
+
+            <div class="progressWrap">
+                <div class="progress">
+                    <div class="bar" id="bar"></div>
+                </div>
+                <div class="count" id="count">1/1</div>
+            </div>
+        </div>
+
+        <div class="stage">
+            <div class="slide">
+                <div class="slideInner" id="content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const slides = [
+            {
+                title: "Judul",
+                html: `
+          <div class="kicker">⏱️ Mulai</div>
+          <h2>Menambah Tekanan: Sistem Timer</h2>
+          <p>Sebelumnya, kamu sudah membuat game <b>Financial Catcher</b> dengan objek yang bisa menambah dan mengurangi saldo. Sekarang, game itu akan dibuat lebih menantang dengan menambahkan <b>batas waktu</b>.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Target belajar hari ini</h3>
+              <ul class="list">
+                <li>Memahami apa itu <b>timer</b> dalam game</li>
+                <li>Mengenal cara membuat hitung mundur di Scratch</li>
+                <li>Menentukan apa yang terjadi saat waktu habis</li>
+                <li>Memahami kenapa timer membuat game lebih seru</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Siap lanjut?</h3>
+              <div class="choices" data-quiz="ready">
+                <div class="choice" data-answer="right">✅ Siap belajar timer</div>
+                <div class="choice" data-answer="right">🎮 Yuk bikin game lebih menegangkan</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="ready"></div>
+              <button class="btn primary" data-goto="1" style="margin-top:10px">🚀 Mulai</button>
+            </div>
+          </div>
+        `
+            },
+
+            {
+                title: "Apa itu Timer",
+                html: `
+          <div class="kicker">🧠 Konsep</div>
+          <h2>Apa itu timer?</h2>
+          <p>Dalam game, <b>timer</b> digunakan untuk membatasi lama waktu bermain. Timer biasanya berbentuk hitung mundur, misalnya dimulai dari 10 detik, lalu terus berkurang sampai 0.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Timer membantu game menjadi...</h3>
+              <ul class="list">
+                <li>Punya awal dan akhir yang jelas</li>
+                <li>Lebih terarah</li>
+                <li>Lebih menantang</li>
+                <li>Tidak bisa dimainkan tanpa batas</li>
+              </ul>
+            </div>
+
+            <div class="card">
+  <h3>Contoh sederhana</h3>
+  <p class="bigNumber" id="simpleCountdown">10</p>
+  <p>Setiap detik yang lewat akan mengurangi waktu yang tersisa.</p>
+</div>
+          </div>
+        `
+            },
+
+            {
+                title: "Kenapa Timer Penting",
+                html: `
+          <div class="kicker">🎯 Fungsi</div>
+          <h2>Kenapa game perlu timer?</h2>
+          <p>Dengan adanya timer, pemain harus bergerak lebih cepat dan lebih fokus. Pemain tidak hanya memilih objek yang benar, tetapi juga harus melakukannya sebelum waktu habis.</p>
+
+          <div class="grid cols3" style="margin-top:12px">
+            <div class="card">
+              <h3>Lebih fokus</h3>
+              <p>Pemain harus memperhatikan waktu yang terus berjalan.</p>
+            </div>
+            <div class="card">
+              <h3>Lebih cepat</h3>
+              <p>Pemain tidak bisa terlalu lama ragu saat memilih objek.</p>
+            </div>
+            <div class="card">
+              <h3>Lebih seru</h3>
+              <p>Game terasa lebih menegangkan karena ada batas waktu.</p>
+            </div>
+          </div>
+
+          <div class="hint" style="margin-top:12px">
+            Dalam Financial Catcher, setiap detik menjadi berharga karena pemain harus mengumpulkan saldo sebanyak mungkin sebelum waktu habis.
+          </div>
+        `
+            },
+
+            {
+                title: "Variabel Timer",
+                html: `
+          <div class="kicker">🧩 Scratch</div>
+          <h2>Timer dibuat dengan variabel</h2>
+          <p>Di Scratch, kita bisa membuat timer dengan menggunakan variabel bernama <b>Timer</b>. Variabel ini berfungsi untuk menyimpan jumlah waktu yang tersisa dalam permainan.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Fungsi variabel Timer</h3>
+              <ul class="list">
+                <li>Menyimpan sisa waktu</li>
+                <li>Menampilkan angka timer di layar</li>
+                <li>Menjadi penanda kapan game harus berhenti</li>
+              </ul>
+            </div>
+
+            <div class="card">
+                <h3>Sebelum timer berjalan</h3>
+
+                <div class="step">
+                    <div class="dot">1</div>
+                    <div>
+                    Buat variabel <b>Timer</b>
+                    <div style="margin-top:8px;">
+                        <img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/33445f57-d300-4c0c-9c0d-7fe188ac1190.png" alt="Variabel Timer" style="width: 50%; display:block;">
+                    </div>
+                    </div>
+                </div>
+
+                <div class="step" style="margin-top:8px">
+                    <div class="dot">2</div>
+                    <div>Atur nilai awal, misalnya <b>10</b>
+                        <div style="margin-top:8px;">
+                        <img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/eafc9df6-bfa9-48bb-a45a-4bd45ae1dc3e.png" alt="Variabel Timer" style="width: 50%; display:block;">
+                    </div>
+                    </div>
+                </div>
+
+                <div class="step" style="margin-top:8px">
+                    <div class="dot">3</div>
+                    <div>Tampilkan variabel di layar</div>
+                </div>
+                </div>
+          </div>
+        `
+            },
+
+            {
+                title: "Gambar Kode Timer",
+                html: `
+                    <div class="kicker">🖼️ Contoh Blok</div>
+                    <h2>Blok kode timer hitung mundur</h2>
+                    <p>Perhatikan blok di bawah ini. Kode ini mengatur Timer menjadi 10, lalu menguranginya 1 setiap 1 detik sampai habis.</p>
+
+                    <div class="grid cols2" style="margin-top:12px">
+                        <div class="imgBox">
+                        <img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/ee8a9c39-3cef-4f7e-8479-babfa1870972.png" alt="Blok timer Scratch">
+                        </div>
+                        <div class="card">
+                        <h3>Arti bloknya</h3>
+                        <div class="step"><div class="dot">1</div><div><b>set Timer to 10</b> → timer dimulai dari 10</div></div>
+                        <div class="step" style="margin-top:8px"><div class="dot">2</div><div><b>repeat 10</b> → diulang sebanyak 10 kali</div></div>
+                        <div class="step" style="margin-top:8px"><div class="dot">3</div><div><b>wait 1 seconds</b> → tunggu 1 detik</div></div>
+                        <div class="step" style="margin-top:8px"><div class="dot">4</div><div><b>change Timer by -1</b> → timer berkurang 1</div></div>
+                        </div>
+                    </div>
+                    `
+            },
+
+            {
+                title: "Cara Kerja Timer",
+                html: `
+          <div class="kicker">🔄 Proses</div>
+          <h2>Bagaimana timer bekerja?</h2>
+          <p>Timer berjalan menggunakan <b>perulangan</b> atau <b>loop</b>. Jadi, kita tidak perlu menulis kode berulang-ulang secara manual.</p>
+
+          <div class="card" style="margin-top:12px">
+            <div class="step"><div class="dot">1</div><div>Saat game dimulai, Timer diatur ke angka awal, misalnya 10.</div></div>
+            <div class="step" style="margin-top:8px"><div class="dot">2</div><div>Program menunggu 1 detik.</div></div>
+            <div class="step" style="margin-top:8px"><div class="dot">3</div><div>Nilai Timer dikurangi 1.</div></div>
+            <div class="step" style="margin-top:8px"><div class="dot">4</div><div>Langkah itu diulang terus sampai Timer menjadi 0.</div></div>
+          </div>
+
+          <div class="hint" style="margin-top:12px">
+            Dengan cara ini, pemain bisa melihat waktu yang terus berkurang di layar saat game berlangsung.
+          </div>
+        `
+            },
+
+            {
+                title: "Waktu Habis",
+                html: `
+          <div class="kicker">🛑 Kondisi</div>
+          <h2>Apa yang terjadi saat waktu habis?</h2>
+          <p>Setelah timer mencapai 0, game biasanya akan menampilkan pesan seperti <b>“Waktu Habis!”</b> lalu menghentikan permainan.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="imgBox">
+              <img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/5c66b3d7-829f-4e95-8cd2-096f46c5e3b6.png" alt="Blok waktu habis" style="width: 80%; display:block;">
+            </div>
+
+            <div class="card">
+              <h3>Arti bloknya</h3>
+              <ul class="list">
+                <li><b>say “Waktu Habis!” for 2 seconds</b> → tampilkan pesan</li>
+                <li><b>stop all</b> → hentikan semua skrip</li>
+                <li>Karakter tidak bisa bergerak lagi</li>
+                <li>Permainan selesai</li>
+              </ul>
+            </div>
+          </div>
+        `
+            },
+
+            {
+                title: "Gabungan Kode",
+                html: `
+          <div class="kicker">🧱 Lengkap</div>
+          <h2>Contoh blok timer lengkap</h2>
+          <p>Jika digabung, timer akan dimulai saat bendera hijau diklik, lalu menghitung mundur sampai habis, menampilkan pesan, dan menghentikan game.</p>
+
+          <div class="imgBox" style="margin-top:12px">
+            <img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/8ec58380-5144-4a9a-afea-485b6b717a7f.png" alt="Blok timer lengkap">
+          </div>
+
+          <div class="card" style="margin-top:12px">
+            <h3>Urutannya</h3>
+            <ul class="list">
+              <li>Klik bendera hijau</li>
+              <li>Set Timer ke 10</li>
+              <li>Kurangi Timer setiap 1 detik</li>
+              <li>Saat selesai, tampilkan “Waktu Habis!”</li>
+              <li>Stop semua permainan</li>
+            </ul>
+          </div>
+        `
+            },
+
+            {
+                title: "Dampak Timer",
+                html: `
+          <div class="kicker">⚡ Dampak</div>
+          <h2>Bagaimana timer mengubah cara bermain?</h2>
+          <p>Dengan adanya timer, pemain tidak bisa bergerak santai. Pemain harus segera memutuskan objek mana yang perlu dikejar dan mana yang harus dihindari.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Sebelum ada timer</h3>
+              <ul class="list">
+                <li>Bisa bermain lebih santai</li>
+                <li>Tidak terburu-buru</li>
+                <li>Bisa terlalu lama berpikir</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Sesudah ada timer</h3>
+              <ul class="list">
+                <li>Harus lebih fokus</li>
+                <li>Harus lebih cepat</li>
+                <li>Harus memilih strategi</li>
+              </ul>
+            </div>
+          </div>
+        `
+            },
+
+            {
+                title: "Strategi",
+                html: `
+          <div class="kicker">🎯 Strategi</div>
+          <h2>Strategi bermain dengan batas waktu</h2>
+          <p>Dalam permainan dengan timer, pemain perlu memilih jalur yang efisien dan memprioritaskan objek yang paling menguntungkan.</p>
+
+          <div class="grid cols3" style="margin-top:12px">
+            <div class="card">
+              <h3>Gerak efisien</h3>
+              <p>Jangan membuang waktu dengan gerakan yang tidak perlu.</p>
+            </div>
+            <div class="card">
+              <h3>Pilih yang penting</h3>
+              <p>Dahulukan objek yang memberi keuntungan lebih besar.</p>
+            </div>
+            <div class="card">
+              <h3>Jangan ragu terlalu lama</h3>
+              <p>Kalau terlalu lama berpikir, waktu bisa habis duluan.</p>
+            </div>
+          </div>
+        `
+            },
+
+            {
+                title: "Quiz 1",
+                html: `
+          <div class="kicker">❓ Cek Paham</div>
+          <h2>Mana pernyataan yang benar?</h2>
+
+          <div class="card" style="margin-top:12px">
+            <div class="choices" data-quiz="q1">
+              <div class="choice" data-answer="right">Timer digunakan untuk membatasi lama waktu bermain.</div>
+              <div class="choice" data-answer="wrong">Timer membuat game berjalan tanpa akhir.</div>
+              <div class="choice" data-answer="wrong">Timer dipakai untuk mengganti warna latar saja.</div>
+              <div class="choice" data-answer="wrong">Timer tidak memengaruhi permainan.</div>
+            </div>
+            <div class="feedback" data-quiz-feedback="q1"></div>
+          </div>
+        `
+            },
+
+            {
+                title: "Quiz 2",
+                html: `
+          <div class="kicker">🧠 Pikirkan</div>
+          <h2>Apa yang perlu dilakukan pemain saat ada timer?</h2>
+
+          <div class="card" style="margin-top:12px">
+            <div class="choices" data-quiz="q2">
+              <div class="choice" data-answer="wrong">Berjalan santai dan tidak perlu buru-buru</div>
+              <div class="choice" data-answer="right">Bergerak lebih cepat dan memilih dengan tepat</div>
+              <div class="choice" data-answer="wrong">Membiarkan waktu habis sendiri</div>
+              <div class="choice" data-answer="wrong">Mengambil semua objek tanpa berpikir</div>
+            </div>
+            <div class="feedback" data-quiz-feedback="q2"></div>
+          </div>
+        `
+            },
+
+            {
+                title: "Simulator Timer",
+                html: `
+          <div class="kicker">🧪 Coba Interaktif</div>
+          <h2>Simulator timer sederhana</h2>
+          <p>Klik tombol untuk mencoba timer 10 detik. Lihat bagaimana angka terus berkurang sampai muncul pesan waktu habis.</p>
+
+          <div class="sim" data-timer-sim>
+            <div class="timerBoard">
+              <div class="timerBadge">TIMER: <span id="simTimerValue">10</span> detik</div>
+              <div style="display:flex; gap:8px; flex-wrap:wrap">
+                <button class="btn primary" id="simStart">▶️ Mulai Timer</button>
+                <button class="btn" id="simPause">⏸️ Pause</button>
+                <button class="btn" id="simReset">🔄 Reset</button>
+              </div>
+            </div>
+
+            <div class="feedback show" id="simFb" style="display:block;">
+              Klik <b>Mulai Timer</b> untuk menjalankan hitung mundur.
+            </div>
+
+            <div class="log" id="simLog">Riwayat timer akan muncul di sini.</div>
+          </div>
+        `
+            },
+
+            {
+                title: "Hubungan Kehidupan",
+                html: `
+          <div class="kicker">🌍 Hubungkan</div>
+          <h2>Hubungan timer dengan kehidupan sehari-hari</h2>
+          <p>Timer mengajarkan bahwa waktu adalah hal yang terbatas. Dalam kehidupan sehari-hari, kita juga perlu mengatur waktu dengan baik agar hal penting bisa selesai tepat waktu.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Di game</h3>
+              <ul class="list">
+                <li>Waktu terbatas</li>
+                <li>Perlu cepat mengambil keputusan</li>
+                <li>Harus fokus pada tujuan</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Di kehidupan nyata</h3>
+              <ul class="list">
+                <li>Punya waktu belajar yang terbatas</li>
+                <li>Perlu mengatur jadwal</li>
+                <li>Perlu mendahulukan hal penting</li>
+              </ul>
+            </div>
+          </div>
+        `
+            },
+
+            {
+                title: "Checklist Proyek",
+                html: `
+          <div class="kicker">🏁 Praktik</div>
+          <h2>Ayo lanjutkan proyekmu</h2>
+          <p>Sekarang kamu bisa menambahkan timer ke game Financial Catcher milikmu.</p>
+
+          <div class="card" style="margin-top:12px">
+            <h3>Checklist proyek</h3>
+            <ul class="list">
+              <li>Buat variabel <b>Timer</b></li>
+              <li>Atur nilai awal timer, misalnya 10 atau 20</li>
+              <li>Gunakan <b>repeat</b> untuk hitung mundur</li>
+              <li>Kurangi Timer setiap 1 detik</li>
+              <li>Tampilkan Timer di layar</li>
+              <li>Buat pesan <b>“Waktu Habis!”</b></li>
+              <li>Tambahkan <b>stop all</b> saat timer selesai</li>
+            </ul>
+          </div>
+        `
+            },
+
+            {
+                title: "Refleksi",
+                html: `
+          <div class="kicker">🪞 Refleksi</div>
+          <h2>Apa yang kamu pelajari hari ini?</h2>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Tentang coding</h3>
+              <div class="choices" data-quiz="ref1">
+                <div class="choice" data-answer="right">Timer di Scratch bisa dibuat dengan variabel dan perulangan.</div>
+                <div class="choice" data-answer="wrong">Timer dibuat dengan mengganti kostum sprite saja.</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="ref1"></div>
+            </div>
+
+            <div class="card">
+              <h3>Tentang keterampilan hidup</h3>
+              <div class="choices" data-quiz="ref2">
+                <div class="choice" data-answer="right">Mengatur waktu dan cepat mengambil keputusan itu penting.</div>
+                <div class="choice" data-answer="wrong">Waktu tidak perlu diatur dengan baik.</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="ref2"></div>
+            </div>
+          </div>
+        `
+            },
+
+            {
+                title: "Penutup",
+                html: `
+          <div class="kicker">✅ Selesai</div>
+          <h2>Kerja bagus! 🎉</h2>
+          <p>Kamu sudah belajar menambahkan <b>timer</b> ke dalam game. Sekarang permainanmu punya batas waktu, jadi terasa lebih seru, lebih menantang, dan lebih jelas kapan harus berakhir.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Ringkasan</h3>
+              <ul class="list">
+                <li>Timer membatasi waktu bermain</li>
+                <li>Timer dibuat dengan variabel</li>
+                <li>Loop membantu timer berjalan otomatis</li>
+                <li>Saat waktu habis, game bisa berhenti</li>
+                <li>Timer melatih fokus dan strategi</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Siap lanjut</h3>
+              <div class="hint">
+                Setelah ini, game kamu bisa dibuat lebih seru lagi dengan aturan tambahan, tantangan baru, atau target saldo sebelum waktu habis.
+              </div>
+            </div>
+          </div>
+        `
+            }
+        ];
+
+        let idx = 0;
+        const content = document.getElementById("content");
+        const bar = document.getElementById("bar");
+        const count = document.getElementById("count");
+        const btnPrev = document.getElementById("btnPrev");
+        const btnNext = document.getElementById("btnNext");
+        const btnHome = document.getElementById("btnHome");
+
+        function clamp(n, a, b) {
+            return Math.max(a, Math.min(b, n));
+        }
+
+        function showFeedback(el, html, type) {
+            if (!el) return;
+            el.classList.add("show");
+            el.style.display = "block";
+            el.classList.remove("fbOk", "fbBad");
+            if (type === "ok") el.classList.add("fbOk");
+            if (type === "bad") el.classList.add("fbBad");
+            el.innerHTML = html;
+        }
+
+        function wireQuiz(group) {
+            const id = group.getAttribute("data-quiz");
+            const fb = content.querySelector('[data-quiz-feedback="' + id + '"]');
+            const items = [...group.querySelectorAll(".choice")];
+
+            items.forEach(ch => {
+                ch.addEventListener("click", () => {
+                    items.forEach(x => x.classList.remove("active", "ok", "bad"));
+                    ch.classList.add("active");
+                    const isRight = ch.getAttribute("data-answer") === "right";
+                    if (isRight) {
+                        ch.classList.add("ok");
+                        showFeedback(fb, "✅ Benar! Kamu paham konsepnya.", "ok");
+                    } else {
+                        ch.classList.add("bad");
+                        showFeedback(fb, "⚠️ Coba pikir lagi ya.", "bad");
+                    }
+                });
+            });
+        }
+
+        let simpleCountdownInterval = null;
+
+        function startSimpleCountdown() {
+            const el = document.getElementById("simpleCountdown");
+            if (!el) return;
+
+            if (simpleCountdownInterval) {
+                clearInterval(simpleCountdownInterval);
+            }
+
+            let value = 10;
+            el.textContent = value;
+
+            simpleCountdownInterval = setInterval(() => {
+                value--;
+                if (value < 0) value = 10;
+                el.textContent = value;
+            }, 1000);
+        }
+
+        let simInterval = null;
+        let simState = { value: 10, running: false, history: [] };
+
+        function renderTimerSimMessage(msg, type = null) {
+            const fb = content.querySelector("#simFb");
+            if (!fb) return;
+            fb.className = "feedback show";
+            fb.style.display = "block";
+            if (type === "ok") fb.classList.add("fbOk");
+            if (type === "bad") fb.classList.add("fbBad");
+            fb.innerHTML = msg;
+        }
+
+        function updateTimerSimUI() {
+            const valueEl = content.querySelector("#simTimerValue");
+            const logEl = content.querySelector("#simLog");
+            if (!valueEl || !logEl) return;
+            valueEl.textContent = simState.value;
+            logEl.textContent = simState.history.length
+                ? simState.history.join("\n")
+                : "Riwayat timer akan muncul di sini.";
+        }
+
+        function addTimerLog(text) {
+            simState.history.unshift(text);
+            simState.history = simState.history.slice(0, 10);
+            updateTimerSimUI();
+        }
+
+        function stopTimerLoop() {
+            if (simInterval) {
+                clearInterval(simInterval);
+                simInterval = null;
+            }
+            simState.running = false;
+        }
+
+        function wireTimerSim() {
+            const wrap = content.querySelector("[data-timer-sim]");
+            if (!wrap) {
+                stopTimerLoop();
+                return;
+            }
+
+            simState = { value: 10, running: false, history: [] };
+            updateTimerSimUI();
+            renderTimerSimMessage("Klik <b>Mulai Timer</b> untuk menjalankan hitung mundur.");
+
+            const startBtn = content.querySelector("#simStart");
+            const pauseBtn = content.querySelector("#simPause");
+            const resetBtn = content.querySelector("#simReset");
+
+            startBtn.addEventListener("click", () => {
+                if (simState.running) return;
+                simState.running = true;
+                addTimerLog("▶️ Timer dimulai dari " + simState.value + " detik");
+                renderTimerSimMessage("⏱️ Timer sedang berjalan...");
+
+                simInterval = setInterval(() => {
+                    simState.value -= 1;
+                    addTimerLog("Timer berkurang menjadi " + simState.value);
+
+                    if (simState.value <= 0) {
+                        simState.value = 0;
+                        updateTimerSimUI();
+                        addTimerLog("🛑 Waktu habis. Permainan berhenti.");
+                        renderTimerSimMessage("🛑 <b>Waktu Habis!</b><br>Game akan berhenti.", "bad");
+                        stopTimerLoop();
+                    } else {
+                        updateTimerSimUI();
+                    }
+                }, 1000);
+
+                updateTimerSimUI();
+            });
+
+            pauseBtn.addEventListener("click", () => {
+                if (!simState.running) return;
+                stopTimerLoop();
+                addTimerLog("⏸️ Timer dipause pada " + simState.value + " detik");
+                renderTimerSimMessage("⏸️ Timer dipause.");
+            });
+
+            resetBtn.addEventListener("click", () => {
+                stopTimerLoop();
+                simState.value = 10;
+                simState.history = [];
+                updateTimerSimUI();
+                renderTimerSimMessage("🔄 Timer direset ke 10 detik.");
+            });
+        }
+
+        function wireInteractions() {
+            content.querySelectorAll("[data-quiz]").forEach(wireQuiz);
+
+            content.querySelectorAll("[data-goto]").forEach(b => {
+                b.addEventListener("click", () => {
+                    const to = Number(b.getAttribute("data-goto"));
+                    idx = clamp(to, 0, slides.length - 1);
+                    render();
+                    content.scrollTop = 0;
+                });
+            });
+
+            wireTimerSim();
+        }
+
+        function render() {
+            const s = slides[idx];
+            content.innerHTML = s.html;
+            const pct = ((idx + 1) / slides.length) * 100;
+            bar.style.width = pct + "%";
+            count.textContent = (idx + 1) + "/" + slides.length;
+            wireInteractions();
+            startSimpleCountdown();
+            content.scrollTop = 0;
+        }
+
+        function go(d) {
+            idx = clamp(idx + d, 0, slides.length - 1);
+            render();
+        }
+
+        btnPrev.addEventListener("click", () => go(-1));
+        btnNext.addEventListener("click", () => go(1));
+        btnHome.addEventListener("click", () => {
+            idx = 0;
+            render();
+        });
+
+        window.addEventListener("keydown", (e) => {
+            if (document.getElementById("accessGate").style.display !== "none") return;
+            if (e.key === "ArrowLeft") go(-1);
+            if (e.key === "ArrowRight") go(1);
+            if (e.key === "Home") {
+                idx = 0;
+                render();
+            }
+        });
+
+        const ACCESS_CODE = "RGMDSUP25";
+        const gate = document.getElementById("accessGate");
+        const input = document.getElementById("accessInput");
+        const btn = document.getElementById("accessBtn");
+        const fb = document.getElementById("accessFb");
+
+        input.addEventListener("input", () => {
+            input.value = input.value.toUpperCase();
+        });
+        btn.addEventListener("click", checkAccess);
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") checkAccess();
+        });
+
+        function checkAccess() {
+            if (input.value.trim() === ACCESS_CODE) {
+                gate.style.display = "none";
+            } else {
+                fb.className = "feedback show fbBad";
+                fb.style.display = "block";
+                fb.textContent = "Kode salah. Coba lagi.";
+            }
+        }
+
+        render();
+    </script>
+</body>
+
+</html>

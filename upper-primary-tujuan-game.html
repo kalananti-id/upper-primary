@@ -1,0 +1,1110 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Menentukan Tujuan Game: Menang dan Kalah</title>
+  <style>
+    :root {
+      --bg1: #F7FAFF;
+      --bg2: #ECFEFF;
+      --card: #FFFFFF;
+      --ink: #0F172A;
+      --muted: #475569;
+      --line: rgba(226, 232, 240, .95);
+      --brand: #4F46E5;
+      --brand2: #06B6D4;
+      --ok: #16A34A;
+      --bad: #DC2626;
+      --warn: #F59E0B;
+      --radius: 22px;
+      --shadow: 0 18px 40px rgba(15, 23, 42, .08);
+      --shadow2: 0 10px 22px rgba(15, 23, 42, .06);
+      --focus: 0 0 0 4px rgba(79, 70, 229, .18);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 520px at 10% 0%, rgba(6, 182, 212, .18), transparent 60%),
+        radial-gradient(1200px 520px at 90% 0%, rgba(79, 70, 229, .16), transparent 55%),
+        linear-gradient(180deg, var(--bg1), #F3F6FF 45%, var(--bg2));
+      min-height: 100vh;
+    }
+
+    .app {
+      width: min(1100px, 96vw);
+      margin: 18px auto 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .72);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow2);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(79, 70, 229, .18), rgba(6, 182, 212, .20));
+      border: 1px solid rgba(226, 232, 240, .9);
+      display: grid;
+      place-items: center;
+      font-weight: 1000;
+      color: rgba(79, 70, 229, 1);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.15;
+      letter-spacing: .2px;
+    }
+
+    .brand .sub {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 800;
+      margin-top: 2px;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .9);
+      padding: 10px 12px;
+      border-radius: 16px;
+      font-weight: 1000;
+      cursor: pointer;
+      box-shadow: 0 8px 16px rgba(15, 23, 42, .06);
+      transition: transform .06s ease, box-shadow .12s ease, background .12s ease;
+      user-select: none;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px)
+    }
+
+    .btn:active {
+      transform: translateY(0px)
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, rgba(79, 70, 229, .12), rgba(6, 182, 212, .14));
+      border-color: rgba(79, 70, 229, .18);
+    }
+
+    .btn.ghost {
+      background: transparent;
+      box-shadow: none
+    }
+
+    .btn:focus {
+      outline: none;
+      box-shadow: var(--focus);
+    }
+
+    .progressWrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 260px;
+      justify-content: flex-end;
+    }
+
+    .progress {
+      width: 180px;
+      height: 10px;
+      background: rgba(226, 232, 240, .9);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(226, 232, 240, .95);
+    }
+
+    .bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, rgba(79, 70, 229, .85), rgba(6, 182, 212, .85));
+      border-radius: 999px;
+      transition: width .25s ease;
+    }
+
+    .count {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 900;
+    }
+
+    .stage {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, .60);
+      box-shadow: var(--shadow);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: calc(100vh - 145px);
+    }
+
+    .slide {
+      flex: 1;
+      background: rgba(255, 255, 255, .68);
+      border: 1px solid rgba(229, 234, 245, .95);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow2);
+      padding: 20px;
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+    }
+
+    .slideInner {
+      max-width: 980px;
+      margin: 0 auto;
+      max-height: calc(100vh - 190px);
+      overflow-y: auto;
+      padding-right: 8px;
+    }
+
+    .slideInner::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    .slideInner::-webkit-scrollbar-thumb {
+      background: rgba(96, 112, 153, .25);
+      border-radius: 999px;
+      border: 3px solid rgba(255, 255, 255, .9);
+    }
+
+    h2 {
+      margin: 6px 0 10px;
+      font-size: 30px;
+      letter-spacing: -.3px
+    }
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 18px
+    }
+
+    p {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-weight: 800;
+      line-height: 1.58
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 1000;
+      font-size: 12px;
+      letter-spacing: .2px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(79, 70, 229, .16);
+      background: rgba(79, 70, 229, .06);
+      color: rgba(55, 65, 81, .95);
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px
+    }
+
+    .cols2 {
+      grid-template-columns: 1fr 1fr
+    }
+
+    .cols3 {
+      grid-template-columns: repeat(3, 1fr)
+    }
+
+    @media (max-width: 860px) {
+
+      .cols2,
+      .cols3 {
+        grid-template-columns: 1fr
+      }
+
+      .progressWrap {
+        min-width: unset
+      }
+
+      .progress {
+        width: 130px
+      }
+
+      h2 {
+        font-size: 26px
+      }
+    }
+
+    .card {
+      background: rgba(255, 255, 255, .92);
+      border: 1px solid rgba(226, 232, 240, .95);
+      border-radius: 22px;
+      padding: 14px;
+      box-shadow: 0 10px 18px rgba(15, 23, 42, .06);
+    }
+
+    .hint {
+      background: rgba(6, 182, 212, .10);
+      border: 1px dashed rgba(6, 182, 212, .35);
+      border-radius: 18px;
+      padding: 12px 14px;
+      color: rgba(30, 41, 59, .92);
+      font-weight: 900;
+      line-height: 1.5;
+    }
+
+    ul.list {
+      margin: 8px 0 0 18px;
+      color: var(--muted);
+      font-weight: 850;
+      line-height: 1.58;
+    }
+
+    .choices {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .choice {
+      border: 1px solid rgba(226, 232, 240, .95);
+      border-radius: 18px;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, .96);
+      font-weight: 950;
+      color: rgba(30, 41, 59, .96);
+      cursor: pointer;
+      user-select: none;
+      transition: transform .06s ease, border-color .12s ease, background .12s ease;
+    }
+
+    .choice:hover {
+      transform: translateY(-1px)
+    }
+
+    .choice.active {
+      border-color: rgba(79, 70, 229, .35);
+      background: rgba(79, 70, 229, .06)
+    }
+
+    .choice.ok {
+      border-color: rgba(22, 163, 74, .35);
+      background: rgba(22, 163, 74, .08)
+    }
+
+    .choice.bad {
+      border-color: rgba(220, 38, 38, .35);
+      background: rgba(220, 38, 38, .08)
+    }
+
+    .feedback {
+      display: none;
+      margin-top: 10px;
+      border-radius: 18px;
+      padding: 12px 14px;
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .92);
+      color: var(--muted);
+      font-weight: 900;
+      line-height: 1.5;
+    }
+
+    .feedback.show {
+      display: block
+    }
+
+    .fbOk {
+      border-color: rgba(22, 163, 74, .35);
+      background: rgba(22, 163, 74, .08);
+      color: rgba(15, 23, 42, .92);
+    }
+
+    .fbBad {
+      border-color: rgba(220, 38, 38, .35);
+      background: rgba(220, 38, 38, .08);
+      color: rgba(15, 23, 42, .92);
+    }
+
+    .step {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 10px 12px;
+      border-radius: 18px;
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .96);
+    }
+
+    .dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: rgba(79, 70, 229, .10);
+      border: 1px solid rgba(79, 70, 229, .18);
+      font-weight: 1000;
+      color: rgba(79, 70, 229, .95);
+      flex: 0 0 auto;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 1000;
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .9);
+      margin: 4px 6px 0 0;
+    }
+
+    .codeBox {
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 18px;
+      padding: 14px;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.7;
+      overflow: auto;
+      box-shadow: 0 10px 18px rgba(15, 23, 42, .12);
+      white-space: pre-wrap;
+    }
+
+    .sim {
+      border: 1px solid rgba(226, 232, 240, .95);
+      border-radius: 22px;
+      padding: 14px;
+      background: rgba(255, 255, 255, .92);
+      box-shadow: 0 10px 18px rgba(15, 23, 42, .06);
+    }
+
+    .money {
+      font-family: var(--mono);
+      font-weight: 1000;
+      font-size: 14px;
+      padding: 8px 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .95);
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .simBtns {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .simBtn {
+      border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .96);
+      border-radius: 18px;
+      padding: 12px 14px;
+      font-weight: 1000;
+      cursor: pointer;
+      user-select: none;
+      transition: transform .06s ease, background .12s ease, border-color .12s ease;
+      min-width: 180px;
+      flex: 1 1 180px;
+    }
+
+    .simBtn:hover {
+      transform: translateY(-1px)
+    }
+
+    .simBtn.good {
+      border-color: rgba(22, 163, 74, .28);
+      background: rgba(22, 163, 74, .06)
+    }
+
+    .simBtn.badchoice {
+      border-color: rgba(220, 38, 38, .28);
+      background: rgba(220, 38, 38, .08)
+    }
+
+    .simBtn.warn {
+      border-color: rgba(245, 158, 11, .28);
+      background: rgba(245, 158, 11, .08)
+    }
+
+    .bigNumber {
+      font-size: 42px;
+      font-weight: 1000;
+      line-height: 1;
+      margin: 0;
+      color: var(--brand);
+    }
+
+    .statusWin {
+      color: var(--ok);
+      font-weight: 1000;
+    }
+
+    .statusLose {
+      color: var(--bad);
+      font-weight: 1000;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="accessGate" style="
+    position:fixed; inset:0;
+    background:linear-gradient(135deg,#eef2ff,#ecfeff);
+    display:flex; align-items:center; justify-content:center;
+    z-index:9999;">
+    <div class="card" style="max-width:420px;width:92%;text-align:center">
+      <h2>🔐 Kode Akses</h2>
+      <p>Masukkan kode untuk memulai sesi.</p>
+
+      <input id="accessInput" placeholder="MASUKKAN KODE" autocomplete="off" style="width:100%;padding:12px 14px;border-radius:16px;border:1px solid rgba(226,232,240,.95);
+      font-weight:900;letter-spacing:2px;text-align:center" />
+
+      <button class="btn primary" id="accessBtn" style="margin-top:12px">Masuk</button>
+      <div class="feedback" id="accessFb" style="margin-top:10px"></div>
+
+      <div class="hint" style="margin-top:10px">Kode diberikan oleh guru.</div>
+    </div>
+  </div>
+
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">UP</div>
+        <div>
+          <h1>Upper Primary</h1>
+          <div class="sub">Menentukan Tujuan Game: Menang dan Kalah</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="btn ghost" id="btnHome">🏠 Awal</button>
+        <button class="btn" id="btnPrev">←</button>
+        <button class="btn primary" id="btnNext">→</button>
+      </div>
+
+      <div class="progressWrap">
+        <div class="progress">
+          <div class="bar" id="bar"></div>
+        </div>
+        <div class="count" id="count">1/1</div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="slide">
+        <div class="slideInner" id="content"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const slides = [
+      {
+        title: "Judul",
+        html: `
+          <div class="kicker">🏁 Mulai</div>
+          <h2>Menentukan Tujuan Game: Menang dan Kalah</h2>
+          <p>Pada materi sebelumnya, game <b>Financial Catcher</b> sudah memiliki <b>timer</b>. Sekarang, game akan dibuat lebih lengkap dengan menambahkan <b>tujuan game</b>, yaitu menentukan kapan pemain menang dan kapan pemain kalah.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Target belajar hari ini</h3>
+              <ul class="list">
+                <li>Memahami apa itu tujuan game</li>
+                <li>Mengenal kondisi menang dan kalah</li>
+                <li>Menggunakan logika <b>if</b> untuk menentukan hasil</li>
+                <li>Menambahkan pesan hasil permainan</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Siap lanjut?</h3>
+              <div class="choices" data-quiz="ready">
+                <div class="choice" data-answer="right">✅ Siap menentukan tujuan game</div>
+                <div class="choice" data-answer="right">🎮 Yuk buat game jadi lebih lengkap</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="ready"></div>
+              <button class="btn primary" data-goto="1" style="margin-top:10px">🚀 Mulai</button>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Apa Itu Tujuan Game",
+        html: `
+          <div class="kicker">🎯 Konsep</div>
+          <h2>Apa itu tujuan game?</h2>
+          <p>Setiap game memiliki tujuan yang ingin dicapai oleh pemain. Tanpa tujuan yang jelas, pemain akan bermain tanpa arah dan tidak tahu kapan mereka berhasil.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Contoh tujuan game</h3>
+              <ul class="list">
+                <li>Mendapatkan skor tertentu</li>
+                <li>Menyelesaikan misi</li>
+                <li>Mencapai target sebelum waktu habis</li>
+                <li>Mengumpulkan objek sebanyak mungkin</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Kenapa penting?</h3>
+              <p>Tujuan membuat permainan menjadi lebih jelas, lebih menantang, dan lebih seru. Pemain tahu apa yang harus dilakukan sejak awal.</p>
+              <div class="hint" style="margin-top:12px">Dalam Financial Catcher, tujuan game bisa berupa mencapai target saldo sebelum waktu habis.</div>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Kondisi Menang",
+        html: `
+          <div class="kicker">🏆 Win</div>
+          <h2>Kapan pemain dinyatakan menang?</h2>
+          <p>Kondisi menang terjadi ketika pemain berhasil mencapai tujuan game. Dalam game ini, pemain bisa dinyatakan menang jika <b>saldo mencapai target</b> sebelum waktu habis.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Contoh target</h3>
+              <div class="pill">Target Saldo = 100.000</div>
+              <p style="margin-top:10px">Jika saldo pemain sama dengan atau lebih besar dari target, maka pemain menang.</p>
+            </div>
+
+            <div class="card">
+              <h3>Arti kondisi menang</h3>
+              <ul class="list">
+                <li>Pemain berhasil mencapai target</li>
+                <li>Pemain membuat keputusan yang tepat</li>
+                <li>Pemain mengatur waktu dengan baik</li>
+              </ul>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Kondisi Kalah",
+        html: `
+          <div class="kicker">💥 Lose</div>
+          <h2>Kapan pemain dinyatakan kalah?</h2>
+          <p>Kondisi kalah terjadi ketika pemain belum berhasil mencapai tujuan game. Dalam game ini, pemain kalah jika <b>waktu habis</b> tetapi <b>saldo belum mencapai target</b>.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Contoh kondisi kalah</h3>
+              <div class="pill">Saldo = 70.000</div>
+              <div class="pill">Target = 100.000</div>
+              <div class="pill">Timer = 0</div>
+              <p style="margin-top:10px">Karena saldo masih kurang, maka pemain kalah.</p>
+            </div>
+
+            <div class="card">
+              <h3>Artinya apa?</h3>
+              <ul class="list">
+                <li>Bukan gagal selamanya</li>
+                <li>Bisa mencoba lagi</li>
+                <li>Bisa memperbaiki strategi</li>
+              </ul>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Logika If",
+        html: `
+          <div class="kicker">🧩 Scratch</div>
+          <h2>Menentukan hasil permainan dengan logika if</h2>
+          <p>Untuk mengecek apakah pemain menang atau kalah, kita menggunakan logika <b>if</b>. Program akan membandingkan <b>Saldo</b> dengan <b>Target</b> saat waktu habis.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Jika menang</h3>
+              <div class="codeBox"><img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/67e6345a-b6e7-4daa-9d41-f92bd793ce1c.png" alt="Menang" style="width:50%"></div>
+            </div>
+
+            <div class="card">
+              <h3>Jika kalah</h3>
+              <div class="codeBox"><img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/d18c1f21-4360-4863-b06f-55689b54bb2f.png" alt="Kalah" style="width:50%"></div>
+            </div>
+          </div>
+
+          <div class="hint" style="margin-top:12px">
+            Biasanya logika ini dijalankan setelah timer selesai atau saat waktu habis.
+          </div>
+        `
+      },
+
+      {
+        title: "Menampilkan Hasil",
+        html: `
+          <div class="kicker">📣 Output</div>
+          <h2>Game perlu memberi tahu hasilnya</h2>
+          <p>Setelah program mengecek kondisi, game perlu menampilkan hasil kepada pemain. Dengan begitu, pemain langsung tahu apakah mereka berhasil atau belum.</p>
+
+          <div class="grid cols3" style="margin-top:12px">
+            <div class="card">
+              <h3>Jika menang</h3>
+              <p class="statusWin">“Kamu Menang!”</p>
+            </div>
+            <div class="card">
+              <h3>Jika kalah</h3>
+              <p class="statusLose">“Kalah!” / “Coba Lagi!”</p>
+            </div>
+            <div class="card">
+              <h3>Setelah itu</h3>
+              <p>Game bisa dihentikan agar pemain tahu permainan sudah selesai.</p>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Simulator Hasil",
+        html: `
+          <div class="kicker">🧪 Coba Interaktif</div>
+          <h2>Simulator menang atau kalah</h2>
+          <p>Coba ubah saldo pemain, lalu klik tombol cek hasil. Lihat bagaimana game menentukan apakah pemain menang atau kalah.</p>
+
+          <div class="sim" data-result-sim>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between">
+              <div class="money">SALDO: <span id="simSaldo">Rp0</span></div>
+              <div class="money">TARGET: <span id="simTarget">Rp100.000</span></div>
+            </div>
+
+            <div class="simBtns">
+              <div class="simBtn good" data-add="10000">💵 Tambah 10.000</div>
+              <div class="simBtn good" data-add="25000">💰 Tambah 25.000</div>
+              <div class="simBtn badchoice" data-add="-15000">🛍️ Kurang 15.000</div>
+              <div class="simBtn warn" id="checkResultBtn">🏁 Cek Hasil</div>
+              <div class="simBtn" id="resetResultBtn">🔄 Reset</div>
+            </div>
+
+            <div class="feedback show" id="simResultFb" style="display:block; margin-top:12px">
+              Tambahkan atau kurangi saldo, lalu klik <b>Cek Hasil</b>.
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Strategi Menang",
+        html: `
+          <div class="kicker">🎯 Strategi</div>
+          <h2>Strategi untuk menang</h2>
+          <p>Agar bisa menang, pemain harus memilih objek yang tepat, menghindari objek yang merugikan, dan menggunakan waktu dengan baik.</p>
+
+          <div class="grid cols3" style="margin-top:12px">
+            <div class="card">
+              <h3>Pilih objek yang baik</h3>
+              <p>Dekati objek uang agar saldo cepat bertambah.</p>
+            </div>
+            <div class="card">
+              <h3>Hindari objek merugikan</h3>
+              <p>Jangan terlalu sering menyentuh barang mewah.</p>
+            </div>
+            <div class="card">
+              <h3>Gunakan waktu dengan baik</h3>
+              <p>Jangan terlalu lama ragu, karena timer terus berjalan.</p>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Dampak Keputusan",
+        html: `
+          <div class="kicker">⚖️ Akibat</div>
+          <h2>Keputusan memengaruhi hasil akhir</h2>
+          <p>Dalam game ini, setiap keputusan pemain akan memengaruhi saldo. Jika keputusan yang diambil tepat, peluang menang akan lebih besar. Jika keputusan kurang tepat, peluang kalah akan lebih besar.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Keputusan tepat</h3>
+              <ul class="list">
+                <li>Saldo bertambah</li>
+                <li>Target lebih mudah dicapai</li>
+                <li>Peluang menang lebih besar</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Keputusan kurang tepat</h3>
+              <ul class="list">
+                <li>Saldo berkurang</li>
+                <li>Target lebih sulit dicapai</li>
+                <li>Peluang kalah lebih besar</li>
+              </ul>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Quiz 1",
+        html: `
+          <div class="kicker">❓ Cek Paham</div>
+          <h2>Mana pernyataan yang benar?</h2>
+
+          <div class="card" style="margin-top:12px">
+            <div class="choices" data-quiz="q1">
+              <div class="choice" data-answer="right">Pemain menang jika saldo mencapai target.</div>
+              <div class="choice" data-answer="wrong">Pemain menang jika waktu habis duluan.</div>
+              <div class="choice" data-answer="wrong">Pemain kalah jika saldo bertambah.</div>
+              <div class="choice" data-answer="wrong">Game tidak perlu punya tujuan.</div>
+            </div>
+            <div class="feedback" data-quiz-feedback="q1"></div>
+          </div>
+        `
+      },
+
+      {
+        title: "Quiz 2",
+        html: `
+          <div class="kicker">🧠 Pikirkan</div>
+          <h2>Apa yang terjadi jika waktu habis dan saldo masih di bawah target?</h2>
+
+          <div class="card" style="margin-top:12px">
+            <div class="choices" data-quiz="q2">
+              <div class="choice" data-answer="wrong">Pemain otomatis menang</div>
+              <div class="choice" data-answer="right">Pemain kalah</div>
+              <div class="choice" data-answer="wrong">Target akan hilang</div>
+              <div class="choice" data-answer="wrong">Saldo berubah jadi nol</div>
+            </div>
+            <div class="feedback" data-quiz-feedback="q2"></div>
+          </div>
+        `
+      },
+
+      {
+        title: "Hubungan Kehidupan",
+        html: `
+          <div class="kicker">🌍 Hubungkan</div>
+          <h2>Hubungan dengan kehidupan sehari-hari</h2>
+          <p>Konsep menang dan kalah dalam game mirip dengan kehidupan sehari-hari. Kita juga punya tujuan, seperti menabung atau mengatur pengeluaran agar uang tidak cepat habis.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Di game</h3>
+              <ul class="list">
+                <li>Punya target saldo</li>
+                <li>Harus memilih dengan tepat</li>
+                <li>Harus memanfaatkan waktu</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Di kehidupan nyata</h3>
+              <ul class="list">
+                <li>Punya tujuan keuangan</li>
+                <li>Harus membuat keputusan bijak</li>
+                <li>Harus menghindari pengeluaran tidak penting</li>
+              </ul>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Checklist Proyek",
+        html: `
+          <div class="kicker">🏁 Praktik</div>
+          <h2>Ayo lengkapi game-mu</h2>
+          <p>Sekarang waktunya menambahkan kondisi menang dan kalah ke dalam game Financial Catcher milikmu.</p>
+
+          <div class="card" style="margin-top:12px">
+            <h3>Checklist proyek</h3>
+            <ul class="list">
+              <li>Buat variabel <b>Target</b></li>
+              <li>Tentukan target saldo, misalnya 100.000</li>
+              <li>Cek hasil saat waktu habis</li>
+              <li>Jika saldo ≥ target → tampilkan <b>“Kamu Menang!”</b></li>
+              <li>Jika saldo &lt; target → tampilkan <b>“Kalah!”</b></li>
+              <li>Hentikan game setelah hasil ditampilkan</li>
+            </ul>
+          </div>
+        `
+      },
+
+      {
+        title: "Refleksi",
+        html: `
+          <div class="kicker">🪞 Refleksi</div>
+          <h2>Apa yang kamu pelajari hari ini?</h2>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Tentang coding</h3>
+              <div class="choices" data-quiz="ref1">
+                <div class="choice" data-answer="right">Logika if dapat digunakan untuk menentukan menang atau kalah.</div>
+                <div class="choice" data-answer="wrong">Logika if hanya digunakan untuk mengganti warna latar.</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="ref1"></div>
+            </div>
+
+            <div class="card">
+              <h3>Tentang permainan</h3>
+              <div class="choices" data-quiz="ref2">
+                <div class="choice" data-answer="right">Game perlu memiliki tujuan agar pemain tahu apakah berhasil atau belum.</div>
+                <div class="choice" data-answer="wrong">Game tidak perlu punya target.</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="ref2"></div>
+            </div>
+          </div>
+        `
+      },
+
+      {
+        title: "Penutup",
+        html: `
+          <div class="kicker">✅ Selesai</div>
+          <h2>Kerja bagus! 🎉</h2>
+          <p>Kamu sudah belajar menentukan tujuan game, kondisi menang, dan kondisi kalah. Sekarang game-mu terasa lebih lengkap karena pemain tahu kapan mereka berhasil dan kapan mereka perlu mencoba lagi.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Ringkasan</h3>
+              <ul class="list">
+                <li>Game perlu punya tujuan</li>
+                <li>Menang jika saldo mencapai target</li>
+                <li>Kalah jika waktu habis dan target belum tercapai</li>
+                <li>Logika if membantu mengecek hasil secara otomatis</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Siap lanjut</h3>
+              <div class="hint">
+                Setelah ini, game kamu bisa dibuat lebih ramah untuk pemain dengan menambahkan intro game dan petunjuk cara bermain.
+              </div>
+            </div>
+          </div>
+        `
+      }
+    ];
+
+    let idx = 0;
+    const content = document.getElementById("content");
+    const bar = document.getElementById("bar");
+    const count = document.getElementById("count");
+    const btnPrev = document.getElementById("btnPrev");
+    const btnNext = document.getElementById("btnNext");
+    const btnHome = document.getElementById("btnHome");
+
+    function clamp(n, a, b) {
+      return Math.max(a, Math.min(b, n));
+    }
+
+    function formatRp(n) {
+      const sign = n < 0 ? "-" : "";
+      const s = Math.abs(Math.round(n)).toString();
+      return sign + "Rp" + s.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+    function showFeedback(el, html, type) {
+      if (!el) return;
+      el.classList.add("show");
+      el.style.display = "block";
+      el.classList.remove("fbOk", "fbBad");
+      if (type === "ok") el.classList.add("fbOk");
+      if (type === "bad") el.classList.add("fbBad");
+      el.innerHTML = html;
+    }
+
+    function wireQuiz(group) {
+      const id = group.getAttribute("data-quiz");
+      const fb = content.querySelector('[data-quiz-feedback="' + id + '"]');
+      const items = [...group.querySelectorAll(".choice")];
+
+      items.forEach(ch => {
+        ch.addEventListener("click", () => {
+          items.forEach(x => x.classList.remove("active", "ok", "bad"));
+          ch.classList.add("active");
+          const isRight = ch.getAttribute("data-answer") === "right";
+          if (isRight) {
+            ch.classList.add("ok");
+            showFeedback(fb, "✅ Benar! Kamu paham konsepnya.", "ok");
+          } else {
+            ch.classList.add("bad");
+            showFeedback(fb, "⚠️ Coba pikir lagi ya.", "bad");
+          }
+        });
+      });
+    }
+
+    let resultState = null;
+
+    function wireResultSim() {
+      const wrap = content.querySelector("[data-result-sim]");
+      if (!wrap) {
+        resultState = null;
+        return;
+      }
+
+      resultState = { saldo: 0, target: 100000 };
+
+      const saldoEl = content.querySelector("#simSaldo");
+      const targetEl = content.querySelector("#simTarget");
+      const fb = content.querySelector("#simResultFb");
+
+      function renderResult() {
+        saldoEl.textContent = formatRp(resultState.saldo);
+        targetEl.textContent = formatRp(resultState.target);
+      }
+
+      renderResult();
+
+      wrap.querySelectorAll("[data-add]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const val = Number(btn.getAttribute("data-add") || "0");
+          resultState.saldo += val;
+          renderResult();
+
+          if (val > 0) {
+            showFeedback(fb, `💰 Saldo bertambah menjadi <b>${formatRp(resultState.saldo)}</b>.`, "ok");
+          } else {
+            showFeedback(fb, `⚠️ Saldo berkurang menjadi <b>${formatRp(resultState.saldo)}</b>.`, "bad");
+          }
+        });
+      });
+
+      const checkBtn = content.querySelector("#checkResultBtn");
+      const resetBtn = content.querySelector("#resetResultBtn");
+
+      checkBtn.addEventListener("click", () => {
+        if (resultState.saldo >= resultState.target) {
+          showFeedback(fb, `🏆 <b>Kamu Menang!</b><br>Saldo <b>${formatRp(resultState.saldo)}</b> sudah mencapai target <b>${formatRp(resultState.target)}</b>.`, "ok");
+        } else {
+          showFeedback(fb, `💥 <b>Kalah!</b><br>Saldo <b>${formatRp(resultState.saldo)}</b> masih di bawah target <b>${formatRp(resultState.target)}</b>.`, "bad");
+        }
+      });
+
+      resetBtn.addEventListener("click", () => {
+        resultState.saldo = 0;
+        renderResult();
+        showFeedback(fb, "🔄 Simulator direset. Tambahkan atau kurangi saldo, lalu klik <b>Cek Hasil</b>.", null);
+      });
+    }
+
+    function wireInteractions() {
+      content.querySelectorAll("[data-quiz]").forEach(wireQuiz);
+
+      content.querySelectorAll("[data-goto]").forEach(b => {
+        b.addEventListener("click", () => {
+          const to = Number(b.getAttribute("data-goto"));
+          idx = clamp(to, 0, slides.length - 1);
+          render();
+          content.scrollTop = 0;
+        });
+      });
+
+      wireResultSim();
+    }
+
+    function render() {
+      const s = slides[idx];
+      content.innerHTML = s.html;
+      const pct = ((idx + 1) / slides.length) * 100;
+      bar.style.width = pct + "%";
+      count.textContent = (idx + 1) + "/" + slides.length;
+      wireInteractions();
+      content.scrollTop = 0;
+    }
+
+    function go(d) {
+      idx = clamp(idx + d, 0, slides.length - 1);
+      render();
+    }
+
+    btnPrev.addEventListener("click", () => go(-1));
+    btnNext.addEventListener("click", () => go(1));
+    btnHome.addEventListener("click", () => {
+      idx = 0;
+      render();
+    });
+
+    window.addEventListener("keydown", (e) => {
+      if (document.getElementById("accessGate").style.display !== "none") return;
+      if (e.key === "ArrowLeft") go(-1);
+      if (e.key === "ArrowRight") go(1);
+      if (e.key === "Home") {
+        idx = 0;
+        render();
+      }
+    });
+
+    const ACCESS_CODE = "RGMDSUP25";
+    const gate = document.getElementById("accessGate");
+    const input = document.getElementById("accessInput");
+    const btn = document.getElementById("accessBtn");
+    const fb = document.getElementById("accessFb");
+
+    input.addEventListener("input", () => {
+      input.value = input.value.toUpperCase();
+    });
+    btn.addEventListener("click", checkAccess);
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") checkAccess();
+    });
+
+    function checkAccess() {
+      if (input.value.trim() === ACCESS_CODE) {
+        gate.style.display = "none";
+      } else {
+        fb.className = "feedback show fbBad";
+        fb.style.display = "block";
+        fb.textContent = "Kode salah. Coba lagi.";
+      }
+    }
+
+    render();
+  </script>
+</body>
+
+</html>
