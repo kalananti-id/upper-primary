@@ -1,0 +1,1178 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Membuat Intro Game: Petunjuk Cara Bermain</title>
+    <style>
+        :root {
+            --bg1: #F7FAFF;
+            --bg2: #ECFEFF;
+            --card: #FFFFFF;
+            --ink: #0F172A;
+            --muted: #475569;
+            --line: rgba(226, 232, 240, .95);
+            --brand: #4F46E5;
+            --brand2: #06B6D4;
+            --ok: #16A34A;
+            --bad: #DC2626;
+            --warn: #F59E0B;
+            --radius: 22px;
+            --shadow: 0 18px 40px rgba(15, 23, 42, .08);
+            --shadow2: 0 10px 22px rgba(15, 23, 42, .06);
+            --focus: 0 0 0 4px rgba(79, 70, 229, .18);
+            --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--sans);
+            color: var(--ink);
+            background:
+                radial-gradient(1200px 520px at 10% 0%, rgba(6, 182, 212, .18), transparent 60%),
+                radial-gradient(1200px 520px at 90% 0%, rgba(79, 70, 229, .16), transparent 55%),
+                linear-gradient(180deg, var(--bg1), #F3F6FF 45%, var(--bg2));
+            min-height: 100vh;
+        }
+
+        .app {
+            width: min(1100px, 96vw);
+            margin: 18px auto 26px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 12px 14px;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            background: rgba(255, 255, 255, .72);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow2);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            width: 38px;
+            height: 38px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(79, 70, 229, .18), rgba(6, 182, 212, .20));
+            border: 1px solid rgba(226, 232, 240, .9);
+            display: grid;
+            place-items: center;
+            font-weight: 1000;
+            color: rgba(79, 70, 229, 1);
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.15;
+            letter-spacing: .2px;
+        }
+
+        .brand .sub {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 800;
+            margin-top: 2px;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            border: 1px solid rgba(226, 232, 240, .95);
+            background: rgba(255, 255, 255, .9);
+            padding: 10px 12px;
+            border-radius: 16px;
+            font-weight: 1000;
+            cursor: pointer;
+            box-shadow: 0 8px 16px rgba(15, 23, 42, .06);
+            transition: transform .06s ease, box-shadow .12s ease, background .12s ease;
+            user-select: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px)
+        }
+
+        .btn:active {
+            transform: translateY(0px)
+        }
+
+        .btn.primary {
+            background: linear-gradient(135deg, rgba(79, 70, 229, .12), rgba(6, 182, 212, .14));
+            border-color: rgba(79, 70, 229, .18);
+        }
+
+        .btn.ghost {
+            background: transparent;
+            box-shadow: none
+        }
+
+        .btn:focus {
+            outline: none;
+            box-shadow: var(--focus);
+        }
+
+        .progressWrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 260px;
+            justify-content: flex-end;
+        }
+
+        .progress {
+            width: 180px;
+            height: 10px;
+            background: rgba(226, 232, 240, .9);
+            border-radius: 999px;
+            overflow: hidden;
+            border: 1px solid rgba(226, 232, 240, .95);
+        }
+
+        .bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, rgba(79, 70, 229, .85), rgba(6, 182, 212, .85));
+            border-radius: 999px;
+            transition: width .25s ease;
+        }
+
+        .count {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 900;
+        }
+
+        .stage {
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            background: rgba(255, 255, 255, .60);
+            box-shadow: var(--shadow);
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            min-height: calc(100vh - 145px);
+        }
+
+        .slide {
+            flex: 1;
+            background: rgba(255, 255, 255, .68);
+            border: 1px solid rgba(229, 234, 245, .95);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow2);
+            padding: 20px;
+            overflow: hidden;
+            backdrop-filter: blur(8px);
+        }
+
+        .slideInner {
+            max-width: 980px;
+            margin: 0 auto;
+            max-height: calc(100vh - 190px);
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .slideInner::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .slideInner::-webkit-scrollbar-thumb {
+            background: rgba(96, 112, 153, .25);
+            border-radius: 999px;
+            border: 3px solid rgba(255, 255, 255, .9);
+        }
+
+        h2 {
+            margin: 6px 0 10px;
+            font-size: 30px;
+            letter-spacing: -.3px
+        }
+
+        h3 {
+            margin: 0 0 8px;
+            font-size: 18px
+        }
+
+        p {
+            margin: 0 0 10px;
+            color: var(--muted);
+            font-weight: 800;
+            line-height: 1.58
+        }
+
+        .kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 1000;
+            font-size: 12px;
+            letter-spacing: .2px;
+            padding: 7px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(79, 70, 229, .16);
+            background: rgba(79, 70, 229, .06);
+            color: rgba(55, 65, 81, .95);
+        }
+
+        .grid {
+            display: grid;
+            gap: 14px
+        }
+
+        .cols2 {
+            grid-template-columns: 1fr 1fr
+        }
+
+        .cols3 {
+            grid-template-columns: repeat(3, 1fr)
+        }
+
+        @media (max-width: 860px) {
+
+            .cols2,
+            .cols3 {
+                grid-template-columns: 1fr
+            }
+
+            .progressWrap {
+                min-width: unset
+            }
+
+            .progress {
+                width: 130px
+            }
+
+            h2 {
+                font-size: 26px
+            }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, .92);
+            border: 1px solid rgba(226, 232, 240, .95);
+            border-radius: 22px;
+            padding: 14px;
+            box-shadow: 0 10px 18px rgba(15, 23, 42, .06);
+        }
+
+        .hint {
+            background: rgba(6, 182, 212, .10);
+            border: 1px dashed rgba(6, 182, 212, .35);
+            border-radius: 18px;
+            padding: 12px 14px;
+            color: rgba(30, 41, 59, .92);
+            font-weight: 900;
+            line-height: 1.5;
+        }
+
+        ul.list {
+            margin: 8px 0 0 18px;
+            color: var(--muted);
+            font-weight: 850;
+            line-height: 1.58;
+        }
+
+        .choices {
+            display: grid;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .choice {
+            border: 1px solid rgba(226, 232, 240, .95);
+            border-radius: 18px;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, .96);
+            font-weight: 950;
+            color: rgba(30, 41, 59, .96);
+            cursor: pointer;
+            user-select: none;
+            transition: transform .06s ease, border-color .12s ease, background .12s ease;
+        }
+
+        .choice:hover {
+            transform: translateY(-1px)
+        }
+
+        .choice.active {
+            border-color: rgba(79, 70, 229, .35);
+            background: rgba(79, 70, 229, .06)
+        }
+
+        .choice.ok {
+            border-color: rgba(22, 163, 74, .35);
+            background: rgba(22, 163, 74, .08)
+        }
+
+        .choice.bad {
+            border-color: rgba(220, 38, 38, .35);
+            background: rgba(220, 38, 38, .08)
+        }
+
+        .feedback {
+            display: none;
+            margin-top: 10px;
+            border-radius: 18px;
+            padding: 12px 14px;
+            border: 1px solid rgba(226, 232, 240, .95);
+            background: rgba(255, 255, 255, .92);
+            color: var(--muted);
+            font-weight: 900;
+            line-height: 1.5;
+        }
+
+        .feedback.show {
+            display: block
+        }
+
+        .fbOk {
+            border-color: rgba(22, 163, 74, .35);
+            background: rgba(22, 163, 74, .08);
+            color: rgba(15, 23, 42, .92);
+        }
+
+        .fbBad {
+            border-color: rgba(220, 38, 38, .35);
+            background: rgba(220, 38, 38, .08);
+            color: rgba(15, 23, 42, .92);
+        }
+
+        .step {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            padding: 10px 12px;
+            border-radius: 18px;
+            border: 1px solid rgba(226, 232, 240, .95);
+            background: rgba(255, 255, 255, .96);
+        }
+
+        .dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            background: rgba(79, 70, 229, .10);
+            border: 1px solid rgba(79, 70, 229, .18);
+            font-weight: 1000;
+            color: rgba(79, 70, 229, .95);
+            flex: 0 0 auto;
+        }
+
+        .codeBox {
+            background: #0f172a;
+            color: #e2e8f0;
+            border-radius: 18px;
+            padding: 14px;
+            font-family: var(--mono);
+            font-size: 13px;
+            line-height: 1.7;
+            overflow: auto;
+            box-shadow: 0 10px 18px rgba(15, 23, 42, .12);
+            white-space: pre-wrap;
+        }
+
+        .pill {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 1000;
+            border: 1px solid rgba(226, 232, 240, .95);
+            background: rgba(255, 255, 255, .9);
+            margin: 4px 6px 0 0;
+        }
+
+        .screenMock {
+            border: 1px solid rgba(226, 232, 240, .95);
+            border-radius: 22px;
+            padding: 18px;
+            background: linear-gradient(180deg, rgba(79, 70, 229, .08), rgba(6, 182, 212, .08));
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            gap: 10px;
+        }
+
+        .screenMock h3 {
+            margin: 0;
+            font-size: 26px;
+        }
+
+        .screenMock .mini {
+            font-size: 14px;
+            color: var(--muted);
+            font-weight: 900;
+            line-height: 1.5;
+            max-width: 420px;
+        }
+
+        .playBtn {
+            border: none;
+            border-radius: 999px;
+            background: linear-gradient(135deg, rgba(79, 70, 229, .9), rgba(6, 182, 212, .9));
+            color: white;
+            font-weight: 1000;
+            padding: 12px 22px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(79, 70, 229, .18);
+        }
+
+        .sim {
+            border: 1px solid rgba(226, 232, 240, .95);
+            border-radius: 22px;
+            padding: 14px;
+            background: rgba(255, 255, 255, .92);
+            box-shadow: 0 10px 18px rgba(15, 23, 42, .06);
+        }
+
+        .flowState {
+            border: 1px solid rgba(226, 232, 240, .95);
+            background: rgba(255, 255, 255, .95);
+            border-radius: 18px;
+            padding: 14px;
+            font-weight: 900;
+            color: var(--ink);
+        }
+
+        .simBtns {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .simBtn {
+            border: 1px solid rgba(226, 232, 240, .95);
+            background: rgba(255, 255, 255, .96);
+            border-radius: 18px;
+            padding: 12px 14px;
+            font-weight: 1000;
+            cursor: pointer;
+            user-select: none;
+            transition: transform .06s ease, background .12s ease, border-color .12s ease;
+            min-width: 180px;
+            flex: 1 1 180px;
+        }
+
+        .simBtn:hover {
+            transform: translateY(-1px)
+        }
+
+        .simBtn.good {
+            border-color: rgba(22, 163, 74, .28);
+            background: rgba(22, 163, 74, .06)
+        }
+
+        .simBtn.warn {
+            border-color: rgba(245, 158, 11, .28);
+            background: rgba(245, 158, 11, .08)
+        }
+
+        .log {
+            margin-top: 10px;
+            font-family: var(--mono);
+            font-size: 12px;
+            color: rgba(71, 85, 105, .95);
+            background: rgba(255, 255, 255, .75);
+            border: 1px solid rgba(226, 232, 240, .95);
+            border-radius: 18px;
+            padding: 10px 12px;
+            max-height: 170px;
+            overflow: auto;
+            white-space: pre-wrap;
+        }
+
+        .bigNumber {
+            font-size: 42px;
+            font-weight: 1000;
+            line-height: 1;
+            margin: 0;
+            color: var(--brand);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="accessGate" style="
+    position:fixed; inset:0;
+    background:linear-gradient(135deg,#eef2ff,#ecfeff);
+    display:flex; align-items:center; justify-content:center;
+    z-index:9999;">
+        <div class="card" style="max-width:420px;width:92%;text-align:center">
+            <h2>🔐 Kode Akses</h2>
+            <p>Masukkan kode untuk memulai sesi.</p>
+
+            <input id="accessInput" placeholder="MASUKKAN KODE" autocomplete="off" style="width:100%;padding:12px 14px;border-radius:16px;border:1px solid rgba(226,232,240,.95);
+      font-weight:900;letter-spacing:2px;text-align:center" />
+
+            <button class="btn primary" id="accessBtn" style="margin-top:12px">Masuk</button>
+            <div class="feedback" id="accessFb" style="margin-top:10px"></div>
+
+            <div class="hint" style="margin-top:10px">Kode diberikan oleh guru.</div>
+        </div>
+    </div>
+
+    <div class="app">
+        <div class="topbar">
+            <div class="brand">
+                <div class="logo">UP</div>
+                <div>
+                    <h1>Upper Primary</h1>
+                    <div class="sub">Membuat Intro Game: Petunjuk Cara Bermain</div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn ghost" id="btnHome">🏠 Awal</button>
+                <button class="btn" id="btnPrev">←</button>
+                <button class="btn primary" id="btnNext">→</button>
+            </div>
+
+            <div class="progressWrap">
+                <div class="progress">
+                    <div class="bar" id="bar"></div>
+                </div>
+                <div class="count" id="count">1/1</div>
+            </div>
+        </div>
+
+        <div class="stage">
+            <div class="slide">
+                <div class="slideInner" id="content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const slides = [
+            {
+                title: "Judul",
+                html: `
+          <div class="kicker">🎮 Mulai</div>
+          <h2>Membuat Intro Game: Petunjuk Cara Bermain</h2>
+          <p>Sekarang game <b>Financial Catcher</b> kamu sudah punya kontrol, interaksi objek, saldo, timer, serta kondisi menang dan kalah. Supaya lebih lengkap, kita akan menambahkan <b>intro game</b> dan <b>petunjuk cara bermain</b>.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Target belajar hari ini</h3>
+              <ul class="list">
+                <li>Memahami apa itu intro game</li>
+                <li>Menjelaskan kenapa intro itu penting</li>
+                <li>Membuat tombol “Mulai”</li>
+                <li>Mengatur game agar tidak langsung berjalan</li>
+                <li>Mengecek proyek setelah intro ditambahkan</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Siap lanjut?</h3>
+              <div class="choices" data-quiz="ready">
+                <div class="choice" data-answer="right">✅ Siap bikin intro game</div>
+                <div class="choice" data-answer="right">🚀 Yuk buat game jadi lebih rapi</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="ready"></div>
+              <button class="btn primary" data-goto="1" style="margin-top:10px">Mulai</button>
+            </div>
+          </div>
+        `
+            },
+
+            {
+                title: "Apa Itu Intro",
+                html: `
+          <div class="kicker">🧠 Konsep</div>
+          <h2>Apa itu intro game?</h2>
+          <p>Intro game adalah tampilan awal yang muncul sebelum permainan dimulai. Pada bagian ini, pemain akan melihat informasi penting tentang game yang akan dimainkan.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Biasanya intro berisi</h3>
+              <ul class="list">
+                <li>Judul game</li>
+                <li>Tujuan permainan</li>
+                <li>Cara bermain</li>
+                <li>Tombol untuk memulai game</li>
+              </ul>
+            </div>
+
+            <div class="screenMock">
+              <h3>Financial Catcher</h3>
+              <div class="mini">Kumpulkan uang hingga mencapai target saldo sebelum waktu habis!</div>
+              <div class="mini">Gunakan tombol panah. Hindari barang mewah.</div>
+              <button class="playBtn" type="button">START</button>
+            </div>
+          </div>
+        `
+            },
+
+            {
+                title: "Kenapa Intro Penting",
+                html: `
+          <div class="kicker">✨ Penting</div>
+          <h2>Mengapa intro game penting?</h2>
+          <p>Intro membantu pemain memahami cara bermain sebelum permainan dimulai. Dengan petunjuk yang jelas, pemain tidak perlu menebak-nebak dan bisa langsung tahu apa yang harus dilakukan.</p>
+
+          <div class="grid cols3" style="margin-top:12px">
+            <div class="card">
+              <h3>Lebih jelas</h3>
+              <p>Pemain tahu tujuan permainan sejak awal.</p>
+            </div>
+            <div class="card">
+              <h3>Lebih nyaman</h3>
+              <p>Pemain tidak bingung saat pertama kali bermain.</p>
+            </div>
+            <div class="card">
+              <h3>Lebih rapi</h3>
+              <p>Game terlihat lebih lengkap dan profesional.</p>
+            </div>
+          </div>
+
+          <div class="hint" style="margin-top:12px">
+            Tanpa intro, pemain baru bisa salah langkah atau tidak tahu apa yang harus dilakukan.
+          </div>
+        `
+            },
+
+            {
+                title: "Tidak Langsung Mulai",
+                html: `
+          <div class="kicker">🛑 Alur</div>
+          <h2>Mengapa game tidak boleh langsung mulai?</h2>
+          <p>Secara default di Scratch, saat kita menekan <b>green flag</b>, game biasanya langsung berjalan. Tetapi jika kita ingin menambahkan intro, maka game tidak boleh langsung dimulai.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Kalau game langsung berjalan...</h3>
+              <ul class="list">
+                <li>Pemain belum siap</li>
+                <li>Pemain belum tahu tujuan</li>
+                <li>Pemain bisa merasa bingung</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Alur yang benar</h3>
+              <ul class="list">
+                <li>Green flag diklik → tampil intro</li>
+                <li>Pemain membaca petunjuk</li>
+                <li>Pemain menekan tombol “Mulai”</li>
+                <li>Game baru berjalan</li>
+              </ul>
+            </div>
+          </div>
+        `
+            },
+
+            {
+                title: "Langkah 1",
+                html: `
+          <div class="kicker">1️⃣ Langkah 1</div>
+          <h2>Tampilkan intro saat awal</h2>
+          <p>Saat <b>green flag</b> diklik, jangan langsung menjalankan game. Sebagai gantinya, tampilkan backdrop intro yang berisi judul dan petunjuk cara bermain.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="codeBox"><img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/946d39d6-cfdd-4bc0-8de4-fa3d51075ad3.png" alt="Intro Backdrop" style="width:50%"></div>
+
+            <div class="card">
+              <h3>Artinya</h3>
+              <ul class="list">
+                <li>Saat game dibuka, yang muncul pertama adalah intro</li>
+                <li>Permainan belum dimulai</li>
+                <li>Pemain punya waktu untuk membaca petunjuk</li>
+              </ul>
+            </div>
+          </div>
+        `
+            },
+
+            {
+                title: "Langkah 2",
+                html: `
+          <div class="kicker">2️⃣ Langkah 2</div>
+          <h2>Sembunyikan sprite saat intro</h2>
+          <p>Setelah backdrop intro muncul, atur agar sprite pemain dan objek lainnya tidak langsung terlihat.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="codeBox"><img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/98710dc0-11eb-402c-8f57-8bb26b30dae1.png" alt="Hide Sprite" style="width:50%"></div>
+
+            <div class="card">
+              <h3>Kenapa perlu disembunyikan?</h3>
+              <ul class="list">
+                <li>Agar pemain fokus melihat intro dulu</li>
+                <li>Agar game tidak terlihat langsung berjalan</li>
+                <li>Agar tampilan awal lebih rapi</li>
+              </ul>
+            </div>
+          </div>
+        `
+            },
+
+            {
+                title: "Langkah 3",
+                html: `
+          <div class="kicker">3️⃣ Langkah 3</div>
+          <h2>Buat tombol “Mulai”</h2>
+          <p>Setelah halaman intro ditampilkan, kita perlu membuat tombol “Mulai” agar pemain bisa memulai permainan.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="codeBox"><img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/f92e7487-5720-478f-98b8-46f6b5818864.png" alt="Start Button" style="width:50%"></div>
+
+            <div class="card">
+              <h3>Saat tombol diklik, game akan:</h3>
+              <ul class="list">
+                <li>Mengirim sinyal untuk memulai permainan</li>
+                <li>Menyembunyikan tombol</li>
+                <li>Mengganti tampilan ke layar game</li>
+              </ul>
+            </div>
+          </div>
+        `
+            },
+
+            {
+                title: "Langkah 4",
+                html: `
+          <div class="kicker">4️⃣ Langkah 4</div>
+          <h2>Tampilkan kembali sprite pemain dan objek</h2>
+          <p>Setelah tombol “Mulai” ditekan, sprite pemain dan objek yang sebelumnya disembunyikan perlu dimunculkan kembali.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="codeBox"><img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/e271b170-7577-4d46-9a31-fb7612f6fb6c.png" alt="Show Sprite" style="width:50%"></div>
+
+            <div class="card">
+              <h3>Tujuannya</h3>
+              <ul class="list">
+                <li>Permainan benar-benar siap dimainkan</li>
+                <li>Karakter dan objek baru muncul saat game dimulai</li>
+                <li>Alur game jadi lebih jelas</li>
+              </ul>
+            </div>
+          </div>
+        `
+            },
+
+            {
+                title: "Langkah 5",
+                html: `
+          <div class="kicker">5️⃣ Langkah 5</div>
+          <h2>Cek kode-kodemu dan sesuaikan</h2>
+          <p>Setelah menambahkan tombol “Mulai” dan menggunakan <b>broadcast [START]</b>, sekarang saatnya mengecek kembali semua kode dalam proyekmu.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Periksa hal berikut</h3>
+              <ul class="list">
+                <li>Apakah karakter sudah bergerak saat green flag?</li>
+                <li>Apakah timer sudah berjalan sebelum tombol “Mulai” ditekan?</li>
+                <li>Apakah objek sudah aktif sebelum game dimulai?</li>
+              </ul>
+            </div>
+
+            <div class="card">
+            <h3>Ubah kode ini</h3>
+
+            <div class="grid cols2" style="margin-top:12px">
+                <div class="card" style="padding:12px">
+                <div class="kicker">Sebelumnya</div>
+                <p style="margin-top:8px"><b>Game masih langsung berjalan saat green flag diklik.</b></p>
+                <div style="margin-top:10px; text-align:center">
+                    <img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/a0c0fa14-84c0-438d-a282-1db97483d12c.png" alt="Code Before" style="max-width:100%; width:220px;">
+                </div>
+                </div>
+
+                <div class="card" style="padding:12px">
+                <div class="kicker">Diubah menjadi</div>
+                <p style="margin-top:8px"><b>Game baru berjalan setelah menerima sinyal START.</b></p>
+                <div style="margin-top:10px; text-align:center">
+                    <img src="https://uob-1328237036.cos.ap-singapore.myqcloud.com//file-uploader/images/6bfc2e3d-6061-4107-8c16-cb8c9d351ba0.png" alt="Code After" style="max-width:100%; width:220px;">
+                </div>
+                </div>
+            </div>
+            </div>
+
+          <div class="hint" style="margin-top:12px">
+            Dengan perubahan ini, game tidak akan langsung berjalan saat green flag diklik.
+          </div>
+        `
+            },
+
+            {
+                title: "Simulasi Flow",
+                html: `
+          <div class="kicker">🧪 Coba Interaktif</div>
+          <h2>Simulator alur intro game</h2>
+          <p>Coba jalankan alur game berikut untuk melihat urutan yang benar dari intro ke permainan.</p>
+
+          <div class="sim" data-flow-sim>
+            <div class="flowState" id="flowState">
+              Status: Game belum dimulai. Tekan Green Flag.
+            </div>
+
+            <div class="simBtns">
+              <div class="simBtn warn" id="greenFlagBtn">🚩 Green Flag</div>
+              <div class="simBtn good" id="startGameBtn">▶️ Tombol Mulai</div>
+              <div class="simBtn" id="resetFlowBtn">🔄 Reset</div>
+            </div>
+
+            <div class="feedback show" id="flowFb" style="display:block; margin-top:12px">
+              Ikuti urutannya: Green Flag → Intro → Mulai → Game berjalan.
+            </div>
+
+            <div class="log" id="flowLog">Riwayat alur game akan muncul di sini.</div>
+          </div>
+        `
+            },
+
+            {
+                title: "Kenapa Harus Dicek",
+                html: `
+          <div class="kicker">🔍 Cek Proyek</div>
+          <h2>Mengapa perlu mengecek proyek setelah membuat intro?</h2>
+          <p>Setelah kamu menambahkan intro game, penting untuk mengecek kembali proyek yang sudah kamu buat. Hal ini dilakukan untuk memastikan bahwa semua bagian game berjalan dengan benar.</p>
+
+          <div class="grid cols3" style="margin-top:12px">
+            <div class="card">
+              <h3>Alur tepat</h3>
+              <p>Memastikan urutan intro dan game sudah benar.</p>
+            </div>
+            <div class="card">
+              <h3>Semua berfungsi</h3>
+              <p>Memastikan karakter, timer, dan objek bekerja sesuai rencana.</p>
+            </div>
+            <div class="card">
+              <h3>Perbaiki kesalahan</h3>
+              <p>Menemukan masalah sebelum game dimainkan orang lain.</p>
+            </div>
+          </div>
+        `
+            },
+
+            {
+                title: "Quiz 1",
+                html: `
+          <div class="kicker">❓ Cek Paham</div>
+          <h2>Mana pernyataan yang benar?</h2>
+
+          <div class="card" style="margin-top:12px">
+            <div class="choices" data-quiz="q1">
+              <div class="choice" data-answer="right">Intro game membantu pemain memahami cara bermain.</div>
+              <div class="choice" data-answer="wrong">Intro game hanya untuk hiasan.</div>
+              <div class="choice" data-answer="wrong">Game harus langsung berjalan saat green flag.</div>
+              <div class="choice" data-answer="wrong">Tombol mulai tidak diperlukan.</div>
+            </div>
+            <div class="feedback" data-quiz-feedback="q1"></div>
+          </div>
+        `
+            },
+
+            {
+                title: "Quiz 2",
+                html: `
+          <div class="kicker">🧠 Pikirkan</div>
+          <h2>Setelah menambahkan intro, kode utama game sebaiknya dimulai kapan?</h2>
+
+          <div class="card" style="margin-top:12px">
+            <div class="choices" data-quiz="q2">
+              <div class="choice" data-answer="wrong">Saat komputer dinyalakan</div>
+              <div class="choice" data-answer="wrong">Saat file dibuka</div>
+              <div class="choice" data-answer="right">Saat menerima sinyal START</div>
+              <div class="choice" data-answer="wrong">Saat backdrop intro muncul</div>
+            </div>
+            <div class="feedback" data-quiz-feedback="q2"></div>
+          </div>
+        `
+            },
+
+            {
+                title: "Checklist Proyek",
+                html: `
+          <div class="kicker">🏁 Praktik</div>
+          <h2>Ayo lengkapi game-mu</h2>
+          <p>Sekarang waktunya menambahkan intro dan petunjuk cara bermain ke dalam game Financial Catcher milikmu.</p>
+
+          <div class="card" style="margin-top:12px">
+            <h3>Checklist proyek</h3>
+            <ul class="list">
+              <li>Buat backdrop <b>Intro</b></li>
+              <li>Tulis judul dan petunjuk cara bermain</li>
+              <li>Buat tombol <b>Mulai</b></li>
+              <li>Gunakan <b>broadcast [START]</b></li>
+              <li>Sembunyikan sprite saat intro</li>
+              <li>Tampilkan sprite saat game dimulai</li>
+              <li>Cek kembali semua kode</li>
+            </ul>
+          </div>
+        `
+            },
+
+            {
+                title: "Refleksi",
+                html: `
+          <div class="kicker">🪞 Refleksi</div>
+          <h2>Apa yang kamu pelajari hari ini?</h2>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Tentang coding</h3>
+              <div class="choices" data-quiz="ref1">
+                <div class="choice" data-answer="right">Broadcast START membantu mengatur kapan game dimulai.</div>
+                <div class="choice" data-answer="wrong">Green flag harus selalu langsung menjalankan game.</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="ref1"></div>
+            </div>
+
+            <div class="card">
+              <h3>Tentang pengalaman pemain</h3>
+              <div class="choices" data-quiz="ref2">
+                <div class="choice" data-answer="right">Intro membuat game lebih jelas dan nyaman dimainkan.</div>
+                <div class="choice" data-answer="wrong">Petunjuk tidak penting bagi pemain baru.</div>
+              </div>
+              <div class="feedback" data-quiz-feedback="ref2"></div>
+            </div>
+          </div>
+        `
+            },
+
+            {
+                title: "Penutup",
+                html: `
+          <div class="kicker">✅ Selesai</div>
+          <h2>Kerja bagus! 🎉</h2>
+          <p>Kamu sudah belajar membuat intro game, menambahkan tombol mulai, dan mengatur alur permainan agar lebih rapi. Sekarang game-mu lebih mudah dipahami oleh pemain lain.</p>
+
+          <div class="grid cols2" style="margin-top:12px">
+            <div class="card">
+              <h3>Ringkasan</h3>
+              <ul class="list">
+                <li>Intro membantu pemain memahami game</li>
+                <li>Game tidak boleh langsung mulai jika ada intro</li>
+                <li>Tombol “Mulai” membantu memulai game dengan rapi</li>
+                <li>Broadcast START mengatur alur permainan</li>
+                <li>Mengecek proyek itu penting</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Bab 6 selesai!</h3>
+              <div class="hint">
+                Sekarang game kamu sudah punya kontrol, interaksi, saldo, timer, menang-kalah, dan intro. Artinya, game kamu sudah siap dimainkan orang lain! 🎮
+              </div>
+            </div>
+          </div>
+        `
+            }
+        ];
+
+        let idx = 0;
+        const content = document.getElementById("content");
+        const bar = document.getElementById("bar");
+        const count = document.getElementById("count");
+        const btnPrev = document.getElementById("btnPrev");
+        const btnNext = document.getElementById("btnNext");
+        const btnHome = document.getElementById("btnHome");
+
+        function clamp(n, a, b) {
+            return Math.max(a, Math.min(b, n));
+        }
+
+        function showFeedback(el, html, type) {
+            if (!el) return;
+            el.classList.add("show");
+            el.style.display = "block";
+            el.classList.remove("fbOk", "fbBad");
+            if (type === "ok") el.classList.add("fbOk");
+            if (type === "bad") el.classList.add("fbBad");
+            el.innerHTML = html;
+        }
+
+        function wireQuiz(group) {
+            const id = group.getAttribute("data-quiz");
+            const fb = content.querySelector('[data-quiz-feedback="' + id + '"]');
+            const items = [...group.querySelectorAll(".choice")];
+
+            items.forEach(ch => {
+                ch.addEventListener("click", () => {
+                    items.forEach(x => x.classList.remove("active", "ok", "bad"));
+                    ch.classList.add("active");
+                    const isRight = ch.getAttribute("data-answer") === "right";
+                    if (isRight) {
+                        ch.classList.add("ok");
+                        showFeedback(fb, "✅ Benar! Kamu paham konsepnya.", "ok");
+                    } else {
+                        ch.classList.add("bad");
+                        showFeedback(fb, "⚠️ Coba pikir lagi ya.", "bad");
+                    }
+                });
+            });
+        }
+
+        let flowState = null;
+
+        function wireFlowSim() {
+            const wrap = content.querySelector("[data-flow-sim]");
+            if (!wrap) {
+                flowState = null;
+                return;
+            }
+
+            flowState = { step: 0, history: [] };
+
+            const stateEl = content.querySelector("#flowState");
+            const fb = content.querySelector("#flowFb");
+            const logEl = content.querySelector("#flowLog");
+            const greenBtn = content.querySelector("#greenFlagBtn");
+            const startBtn = content.querySelector("#startGameBtn");
+            const resetBtn = content.querySelector("#resetFlowBtn");
+
+            function renderFlow() {
+                const map = [
+                    "Status: Game belum dimulai. Tekan Green Flag.",
+                    "Status: Intro tampil. Pemain sedang membaca petunjuk.",
+                    "Status: Game dimulai. Sprite muncul dan permainan berjalan."
+                ];
+                stateEl.textContent = map[flowState.step];
+                logEl.textContent = flowState.history.length
+                    ? flowState.history.join("\n")
+                    : "Riwayat alur game akan muncul di sini.";
+            }
+
+            function addLog(txt) {
+                flowState.history.unshift(txt);
+                flowState.history = flowState.history.slice(0, 8);
+                renderFlow();
+            }
+
+            greenBtn.addEventListener("click", () => {
+                flowState.step = 1;
+                addLog("🚩 Green Flag diklik → Backdrop Intro muncul");
+                showFeedback(fb, "📖 Intro tampil terlebih dahulu. Sekarang pemain bisa membaca petunjuk.", "ok");
+            });
+
+            startBtn.addEventListener("click", () => {
+                if (flowState.step === 0) {
+                    showFeedback(fb, "⚠️ Tekan Green Flag dulu agar intro muncul.", "bad");
+                    return;
+                }
+                flowState.step = 2;
+                addLog("▶️ Tombol Mulai ditekan → Broadcast START → Game berjalan");
+                showFeedback(fb, "🎮 Game dimulai! Sprite muncul dan permainan siap dimainkan.", "ok");
+            });
+
+            resetBtn.addEventListener("click", () => {
+                flowState.step = 0;
+                flowState.history = [];
+                renderFlow();
+                showFeedback(fb, "🔄 Simulator direset. Ikuti urutannya lagi dari awal.", null);
+            });
+
+            renderFlow();
+        }
+
+        function wireInteractions() {
+            content.querySelectorAll("[data-quiz]").forEach(wireQuiz);
+
+            content.querySelectorAll("[data-goto]").forEach(b => {
+                b.addEventListener("click", () => {
+                    const to = Number(b.getAttribute("data-goto"));
+                    idx = clamp(to, 0, slides.length - 1);
+                    render();
+                    content.scrollTop = 0;
+                });
+            });
+
+            wireFlowSim();
+        }
+
+        function render() {
+            const s = slides[idx];
+            content.innerHTML = s.html;
+            const pct = ((idx + 1) / slides.length) * 100;
+            bar.style.width = pct + "%";
+            count.textContent = (idx + 1) + "/" + slides.length;
+            wireInteractions();
+            content.scrollTop = 0;
+        }
+
+        function go(d) {
+            idx = clamp(idx + d, 0, slides.length - 1);
+            render();
+        }
+
+        btnPrev.addEventListener("click", () => go(-1));
+        btnNext.addEventListener("click", () => go(1));
+        btnHome.addEventListener("click", () => {
+            idx = 0;
+            render();
+        });
+
+        window.addEventListener("keydown", (e) => {
+            if (document.getElementById("accessGate").style.display !== "none") return;
+            if (e.key === "ArrowLeft") go(-1);
+            if (e.key === "ArrowRight") go(1);
+            if (e.key === "Home") {
+                idx = 0;
+                render();
+            }
+        });
+
+        const ACCESS_CODE = "RGMDSUP25";
+        const gate = document.getElementById("accessGate");
+        const input = document.getElementById("accessInput");
+        const btn = document.getElementById("accessBtn");
+        const fb = document.getElementById("accessFb");
+
+        input.addEventListener("input", () => {
+            input.value = input.value.toUpperCase();
+        });
+        btn.addEventListener("click", checkAccess);
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") checkAccess();
+        });
+
+        function checkAccess() {
+            if (input.value.trim() === ACCESS_CODE) {
+                gate.style.display = "none";
+            } else {
+                fb.className = "feedback show fbBad";
+                fb.style.display = "block";
+                fb.textContent = "Kode salah. Coba lagi.";
+            }
+        }
+
+        render();
+    </script>
+</body>
+
+</html>
