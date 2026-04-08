@@ -1,0 +1,893 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>UOB MDS – Upper Primary – Coding Festival Stage 1 (Part 3)</title>
+    <style>
+        :root {
+            --bg1: #F7FAFF;
+            --bg2: #F3F6FF;
+            --card: #FFFFFF;
+            --ink: #0F172A;
+            --muted: #475569;
+            --line: rgba(226, 232, 240, .95);
+            --brand: #4F46E5;
+            --brand2: #06B6D4;
+            --ok: #16A34A;
+            --bad: #DC2626;
+            --warn: #F59E0B;
+            --radius: 22px;
+            --shadow: 0 18px 40px rgba(15, 23, 42, .08);
+            --shadow2: 0 10px 22px rgba(15, 23, 42, .06);
+            --focus: 0 0 0 4px rgba(79, 70, 229, .18);
+            --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--sans);
+            color: var(--ink);
+            background:
+                radial-gradient(1200px 520px at 10% 0%, rgba(6, 182, 212, .18), transparent 60%),
+                radial-gradient(1200px 520px at 90% 0%, rgba(79, 70, 229, .16), transparent 55%),
+                linear-gradient(180deg, var(--bg1), var(--bg2) 45%, var(--bg1));
+            min-height: 100vh;
+        }
+
+        .app {
+            width: min(1100px, 96vw);
+            margin: 18px auto 26px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 12px 14px;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            background: rgba(255, 255, 255, .72);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow2);
+            flex-wrap: wrap;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            width: 38px;
+            height: 38px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(79, 70, 229, .18), rgba(6, 182, 212, .20));
+            border: 1px solid rgba(226, 232, 240, .9);
+            display: grid;
+            place-items: center;
+            font-weight: 1000;
+            color: rgba(79, 70, 229, 1);
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.15;
+            letter-spacing: .2px;
+        }
+
+        .brand .sub {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 800;
+            margin-top: 2px;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            border: 1px solid rgba(226, 232, 240, .95);
+            background: rgba(255, 255, 255, .9);
+            padding: 10px 12px;
+            border-radius: 16px;
+            font-weight: 1000;
+            cursor: pointer;
+            box-shadow: 0 8px 16px rgba(15, 23, 42, .06);
+            transition: transform .06s ease, box-shadow .12s ease, background .12s ease;
+            user-select: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: translateY(0px);
+        }
+
+        .btn.primary {
+            background: linear-gradient(135deg, rgba(79, 70, 229, .12), rgba(6, 182, 212, .14));
+            border-color: rgba(79, 70, 229, .18);
+        }
+
+        .btn.ghost {
+            background: transparent;
+            box-shadow: none;
+        }
+
+        .btn:focus {
+            outline: none;
+            box-shadow: var(--focus);
+        }
+
+        .progressWrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 260px;
+            justify-content: flex-end;
+        }
+
+        .progress {
+            width: 180px;
+            height: 10px;
+            background: rgba(226, 232, 240, .9);
+            border-radius: 999px;
+            overflow: hidden;
+            border: 1px solid rgba(226, 232, 240, .95);
+        }
+
+        .bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, rgba(79, 70, 229, .85), rgba(6, 182, 212, .85));
+            border-radius: 999px;
+            transition: width .25s ease;
+        }
+
+        .count {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 900;
+        }
+
+        .stage {
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            background: rgba(255, 255, 255, .60);
+            box-shadow: var(--shadow);
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            min-height: calc(100vh - 145px);
+        }
+
+        .slide {
+            flex: 1;
+            background: rgba(255, 255, 255, .68);
+            border: 1px solid rgba(229, 234, 245, .95);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow2);
+            padding: 20px;
+            overflow: hidden;
+            backdrop-filter: blur(8px);
+        }
+
+        .slideInner {
+            max-width: 980px;
+            margin: 0 auto;
+            max-height: calc(100vh - 190px);
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .slideInner::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .slideInner::-webkit-scrollbar-thumb {
+            background: rgba(96, 112, 153, .25);
+            border-radius: 999px;
+            border: 3px solid rgba(255, 255, 255, .9);
+        }
+
+        .slideInner::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        h2 {
+            margin: 6px 0 10px;
+            font-size: 30px;
+            letter-spacing: -.3px;
+        }
+
+        h3 {
+            margin: 0 0 8px;
+            font-size: 18px;
+        }
+
+        p {
+            margin: 0 0 10px;
+            color: var(--muted);
+            font-weight: 800;
+            line-height: 1.55;
+        }
+
+        .kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 1000;
+            font-size: 12px;
+            letter-spacing: .2px;
+            padding: 7px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(79, 70, 229, .16);
+            background: rgba(79, 70, 229, .06);
+            color: rgba(55, 65, 81, .95);
+        }
+
+        .grid {
+            display: grid;
+            gap: 14px;
+        }
+
+        .cols2 {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .cols3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .card {
+            background: rgba(255, 255, 255, .92);
+            border: 1px solid rgba(226, 232, 240, .95);
+            border-radius: 22px;
+            padding: 14px;
+            box-shadow: 0 10px 18px rgba(15, 23, 42, .06);
+        }
+
+        ul.list {
+            margin: 8px 0 0 18px;
+            color: var(--muted);
+            font-weight: 850;
+            line-height: 1.55;
+        }
+
+        .choices {
+            display: grid;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .choice {
+            border: 1px solid rgba(226, 232, 240, .95);
+            border-radius: 18px;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, .96);
+            font-weight: 950;
+            color: rgba(30, 41, 59, .96);
+            cursor: pointer;
+            user-select: none;
+            transition: transform .06s ease, border-color .12s ease, background .12s ease;
+        }
+
+        .choice:hover {
+            transform: translateY(-1px);
+        }
+
+        .choice.active {
+            border-color: rgba(79, 70, 229, .35);
+            background: rgba(79, 70, 229, .06);
+        }
+
+        .choice.ok {
+            border-color: rgba(22, 163, 74, .35);
+            background: rgba(22, 163, 74, .08);
+        }
+
+        .choice.bad {
+            border-color: rgba(220, 38, 38, .35);
+            background: rgba(220, 38, 38, .08);
+        }
+
+        .feedback {
+            display: none;
+            margin-top: 10px;
+            border-radius: 18px;
+            padding: 12px 14px;
+            border: 1px solid rgba(226, 232, 240, .95);
+            background: rgba(255, 255, 255, .92);
+            color: var(--muted);
+            font-weight: 900;
+            line-height: 1.5;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .fbOk {
+            border-color: rgba(22, 163, 74, .35);
+            background: rgba(22, 163, 74, .08);
+            color: rgba(15, 23, 42, .92);
+        }
+
+        .fbBad {
+            border-color: rgba(220, 38, 38, .35);
+            background: rgba(220, 38, 38, .08);
+            color: rgba(15, 23, 42, .92);
+        }
+
+        .input {
+            width: 100%;
+            border: 1px solid rgba(226, 232, 240, .95);
+            background: rgba(255, 255, 255, .96);
+            border-radius: 16px;
+            padding: 12px 14px;
+            font-weight: 950;
+            color: rgba(30, 41, 59, .96);
+            resize: vertical;
+            min-height: 56px;
+        }
+
+        .checklist {
+            display: grid;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkItem {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 18px;
+            border: 1px solid rgba(226, 232, 240, .95);
+            background: rgba(255, 255, 255, .96);
+            cursor: pointer;
+            user-select: none;
+            transition: transform .06s ease, border-color .12s ease, background .12s ease;
+            font-weight: 950;
+            color: rgba(30, 41, 59, .96);
+        }
+
+        .checkItem:hover {
+            transform: translateY(-1px);
+        }
+
+        .checkItem.done {
+            border-color: rgba(79, 70, 229, .30);
+            background: rgba(79, 70, 229, .06);
+        }
+
+        .checkBox {
+            width: 24px;
+            height: 24px;
+            border-radius: 8px;
+            border: 1.5px solid rgba(148, 163, 184, .8);
+            display: grid;
+            place-items: center;
+            font-size: 14px;
+            font-weight: 1000;
+            color: transparent;
+            background: #fff;
+            flex: 0 0 auto;
+        }
+
+        .checkItem.done .checkBox {
+            background: linear-gradient(135deg, rgba(79, 70, 229, .9), rgba(6, 182, 212, .85));
+            border-color: transparent;
+            color: white;
+        }
+
+        .meterWrap {
+            margin-top: 12px;
+        }
+
+        .meter {
+            width: 100%;
+            height: 12px;
+            background: rgba(226, 232, 240, .9);
+            border-radius: 999px;
+            overflow: hidden;
+            border: 1px solid rgba(226, 232, 240, .95);
+        }
+
+        .meterBar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, rgba(79, 70, 229, .85), rgba(6, 182, 212, .85));
+            border-radius: 999px;
+            transition: width .25s ease;
+        }
+
+        .meterText {
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 900;
+        }
+
+        .emojiBig {
+            font-size: 58px;
+            line-height: 1;
+        }
+
+        @media (max-width: 860px) {
+
+            .cols2,
+            .cols3 {
+                grid-template-columns: 1fr;
+            }
+
+            .progressWrap {
+                min-width: unset;
+            }
+
+            .progress {
+                width: 130px;
+            }
+
+            h2 {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="accessGate"
+        style="position:fixed; inset:0; background:linear-gradient(135deg,#eef2ff,#ecfeff); display:flex; align-items:center; justify-content:center; z-index:9999;">
+        <div class="card" style="max-width:420px;width:92%;text-align:center">
+            <h2>🔐 Kode Akses</h2>
+            <p>Masukkan kode untuk memulai sesi.</p>
+            <input id="accessInput" class="input" placeholder="MASUKKAN KODE" autocomplete="off"
+                style="text-align:center;font-weight:900;letter-spacing:2px;min-height:auto" />
+            <button class="btn primary" id="accessBtn" style="margin-top:12px">Masuk</button>
+            <div class="feedback" id="accessFb" style="margin-top:10px"></div>
+            <div class="card" style="margin-top:10px;background:rgba(79,70,229,.05)">
+                <p style="margin:0">Kode diberikan oleh guru.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="app">
+        <div class="topbar">
+            <div class="brand">
+                <div class="logo">UP</div>
+                <div>
+                    <h1>Upper Primary</h1>
+                    <div class="sub">Coding Festival – Stage 1 (Part 3)</div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn ghost" id="btnHome" title="Kembali ke awal">🏠 Awal</button>
+                <button class="btn" id="btnPrev" title="Sebelumnya (←)">←</button>
+                <button class="btn primary" id="btnNext" title="Berikutnya (→)">→</button>
+            </div>
+
+            <div class="progressWrap">
+                <div class="progress" aria-label="Progress">
+                    <div class="bar" id="bar"></div>
+                </div>
+                <div class="count" id="count">1/1</div>
+            </div>
+        </div>
+
+        <div class="stage">
+            <div class="slide" role="region" aria-label="Slide">
+                <div class="slideInner" id="content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const slides = [
+            {
+                title: "Pembuka",
+                html: `
+                <div class="kicker">Upper Primary • Part 3</div>
+                <h2>🛠️ Lanjutkan Proyekmu!</h2>
+                <p>Sekarang kita akan menyelesaikan proyek supaya lebih rapi, jelas, dan siap dikumpulkan.</p>
+
+                <div class="card">
+                    <ul class="list">
+                        <li>Memperbaiki masalah dalam proyek</li>
+                        <li>Melanjutkan isi pitch deck</li>
+                        <li>Merekam video cara memainkan proyek</li>
+                    </ul>
+                </div>
+                `
+            },
+
+            {
+                title: "Perbaiki Proyek",
+                html: `
+                <h2>🐞 Perbaiki Masalah dalam Proyek</h2>
+                <p>Cek lagi proyekmu. Pastikan game atau cerita interaktif berjalan dari awal sampai akhir.</p>
+
+                <div class="grid cols2">
+                    <div class="card">
+                        <h3>Yang perlu dicek</h3>
+                        <ul class="list">
+                            <li>Tombol atau pilihan bisa dipakai</li>
+                            <li>Alur cerita tidak berhenti di tengah</li>
+                            <li>Hasil pilihan muncul dengan benar</li>
+                        </ul>
+                    </div>
+                    <div class="card" style="text-align:center">
+                        <div class="emojiBig">🔧🎮</div>
+                        <p style="margin-top:10px">Kalau ada yang belum jalan, perbaiki dulu sebelum lanjut.</p>
+                    </div>
+                </div>
+                `
+            },
+
+            {
+                title: "Quiz Perbaikan",
+                html: `
+                <h2>🧪 Kalau Ada Masalah, Apa yang Dilakukan?</h2>
+
+                <div class="choices" data-quiz="fix">
+                    <div class="choice" data-answer="wrong">Biarkan saja, yang penting tampilannya bagus</div>
+                    <div class="choice" data-answer="right">Cek bagian yang error lalu perbaiki alurnya</div>
+                    <div class="choice" data-answer="wrong">Langsung ganti proyek baru</div>
+                </div>
+
+                <div class="feedback" data-quiz-feedback="fix"></div>
+                `
+            },
+
+            {
+                title: "Isi Pitch Deck",
+                html: `
+                <h2>📊 Lanjut Isi Pitch Deck</h2>
+                <p>Sekarang kamu mulai menyelesaikan isi slide presentasimu.</p>
+
+                <div class="grid cols2">
+                    <div class="card">
+                        <h3>Isi yang perlu ada</h3>
+                        <ul class="list">
+                            <li>Judul proyek</li>
+                            <li>Masalah atau cerita</li>
+                            <li>Cara kerja proyek</li>
+                            <li>Pesan financial literacy</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>Ingat</h3>
+                        <ul class="list">
+                            <li>Singkat dan jelas</li>
+                            <li>Pakai gambar atau screenshot</li>
+                            <li>Jangan terlalu penuh tulisan</li>
+                        </ul>
+                    </div>
+                </div>
+                `
+            },
+
+            {
+                title: "Mulai Isi Deck",
+                html: `
+                <h2>✍️ Isi Deck-mu Sekarang</h2>
+                <p>Tulis poin utama untuk membantumu mengisi slide.</p>
+
+                <textarea class="input" id="d1" placeholder="Slide 1 - Judul proyek"></textarea>
+                <textarea class="input" id="d2" placeholder="Slide 2 - Masalah atau cerita" style="margin-top:10px"></textarea>
+                <textarea class="input" id="d3" placeholder="Slide 3 - Cara kerja proyek" style="margin-top:10px"></textarea>
+                <textarea class="input" id="d4" placeholder="Slide 4 - Pesan tentang uang" style="margin-top:10px"></textarea>
+
+                <button class="btn primary" id="previewDeck" style="margin-top:10px">Preview</button>
+                <div class="feedback" id="deckPreviewFb"></div>
+                `
+            },
+
+            {
+                title: "Video Demo",
+                html: `
+                <h2>🎥 Rekam Video Cara Memainkan Proyek</h2>
+                <p>Setelah proyek siap, rekam layar saat proyek dijalankan dari awal sampai akhir.</p>
+
+                <div class="card">
+                    <ul class="list">
+                        <li>Rekam layar, bukan wajah</li>
+                        <li>Tidak perlu pakai suara</li>
+                        <li>Tunjukkan dari awal sampai akhir</li>
+                        <li>Pastikan pilihan dan hasil terlihat</li>
+                    </ul>
+                </div>
+                `
+            },
+
+            {
+                title: "Quiz Video",
+                html: `
+                <h2>📹 Video yang Benar Seperti Apa?</h2>
+
+                <div class="choices" data-quiz="video">
+                    <div class="choice" data-answer="wrong">Video berisi wajah pembicara dan penjelasan panjang</div>
+                    <div class="choice" data-answer="right">Video merekam layar saat proyek dimainkan dari awal sampai akhir tanpa suara</div>
+                    <div class="choice" data-answer="wrong">Video hanya menampilkan halaman awal proyek</div>
+                </div>
+
+                <div class="feedback" data-quiz-feedback="video"></div>
+                `
+            },
+
+            {
+                title: "Checklist Pengerjaan",
+                html: `
+                <h2>✅ Cek Pekerjaanmu</h2>
+
+                <div class="checklist" data-checklist="work">
+                    <div class="checkItem"><div class="checkBox">✓</div><div>Proyek sudah diperbaiki</div></div>
+                    <div class="checkItem"><div class="checkBox">✓</div><div>Pitch deck sudah lanjut diisi</div></div>
+                    <div class="checkItem"><div class="checkBox">✓</div><div>Video demo sudah mulai direkam</div></div>
+                </div>
+
+                <div class="meterWrap">
+                    <div class="meter"><div class="meterBar" id="workMeter"></div></div>
+                    <div class="meterText" id="workMeterText">0 dari 3 langkah selesai</div>
+                </div>
+                `
+            },
+
+            {
+                title: "Checklist Pengumpulan",
+                html: `
+                <h2>📦 Checklist Sebelum Submit</h2>
+
+                <div class="checklist" data-checklist="submission">
+                    <div class="checkItem"><div class="checkBox">✓</div><div>Proyek berjalan dengan baik</div></div>
+                    <div class="checkItem"><div class="checkBox">✓</div><div>Pitch deck sudah selesai</div></div>
+                    <div class="checkItem"><div class="checkBox">✓</div><div>Video layar sudah direkam</div></div>
+                    <div class="checkItem"><div class="checkBox">✓</div><div>Semua file siap dikumpulkan</div></div>
+                </div>
+
+                <div class="meterWrap">
+                    <div class="meter"><div class="meterBar" id="submissionMeter"></div></div>
+                    <div class="meterText" id="submissionMeterText">0 dari 4 komponen siap</div>
+                </div>
+                `
+            },
+
+            {
+                title: "Penutup",
+                html: `
+                <h2>🔥 Kamu Hampir Selesai!</h2>
+
+                <div class="card">
+                    <ul class="list">
+                        <li>Perbaiki dulu bagian yang belum jalan</li>
+                        <li>Lanjutkan isi pitch deck</li>
+                        <li>Rekam video proyekmu</li>
+                    </ul>
+                </div>
+
+                <button class="btn primary" data-goto="0">Restart</button>
+                `
+            }
+        ];
+
+        let idx = 0;
+        const content = document.getElementById("content");
+        const bar = document.getElementById("bar");
+        const count = document.getElementById("count");
+        const btnPrev = document.getElementById("btnPrev");
+        const btnNext = document.getElementById("btnNext");
+        const btnHome = document.getElementById("btnHome");
+
+        const ACCESS_CODE = "RGMDSUP25";
+        const gate = document.getElementById("accessGate");
+        const input = document.getElementById("accessInput");
+        const btn = document.getElementById("accessBtn");
+        const fb = document.getElementById("accessFb");
+
+        function clamp(n, a, b) {
+            return Math.max(a, Math.min(b, n));
+        }
+
+        input.addEventListener("input", () => {
+            input.value = input.value.toUpperCase();
+        });
+
+        btn.addEventListener("click", checkAccess);
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") checkAccess();
+        });
+
+        function checkAccess() {
+            if (input.value.trim() === ACCESS_CODE) {
+                gate.style.display = "none";
+                render();
+            } else {
+                fb.className = "feedback show fbBad";
+                fb.textContent = "Kode salah. Coba lagi.";
+            }
+        }
+
+        function showFeedback(el, html, type) {
+            if (!el) return;
+            el.classList.add("show");
+            el.classList.remove("fbOk", "fbBad");
+            if (type === "ok") el.classList.add("fbOk");
+            if (type === "bad") el.classList.add("fbBad");
+            el.innerHTML = html;
+        }
+
+        function getQuizMsg(id, ok) {
+            const msgs = {
+                fix: {
+                    ok: "✅ Benar! Kalau ada masalah, cek dulu bagian yang error lalu perbaiki alurnya.",
+                    bad: "⚠️ Belum tepat. Jangan dibiarkan ya, proyek harus diperbaiki dulu."
+                },
+                video: {
+                    ok: "✅ Tepat! Video cukup merekam layar saat proyek dimainkan dari awal sampai akhir tanpa suara.",
+                    bad: "⚠️ Belum tepat. Video yang diminta adalah rekam layar proyek, bukan presentasi wajah atau hanya halaman awal."
+                }
+            };
+            const m = msgs[id];
+            if (!m) return ok ? "✅ Benar!" : "⚠️ Coba lagi.";
+            return ok ? m.ok : m.bad;
+        }
+
+        function wireQuiz(group) {
+            const id = group.getAttribute("data-quiz");
+            const fb = content.querySelector(`[data-quiz-feedback="${id}"]`);
+            const items = [...group.querySelectorAll(".choice")];
+
+            items.forEach(ch => {
+                ch.addEventListener("click", () => {
+                    items.forEach(x => x.classList.remove("active", "ok", "bad"));
+                    ch.classList.add("active");
+                    const isRight = ch.getAttribute("data-answer") === "right";
+                    ch.classList.add(isRight ? "ok" : "bad");
+                    showFeedback(fb, getQuizMsg(id, isRight), isRight ? "ok" : "bad");
+                });
+            });
+        }
+
+        function wireChecklist(group) {
+            const items = [...group.querySelectorAll(".checkItem")];
+            const parentId = group.getAttribute("data-checklist");
+
+            let meterId = "";
+            let textId = "";
+
+            if (parentId === "work") {
+                meterId = "workMeter";
+                textId = "workMeterText";
+            } else if (parentId === "submission") {
+                meterId = "submissionMeter";
+                textId = "submissionMeterText";
+            }
+
+            const meterBar = content.querySelector(`#${meterId}`);
+            const meterText = content.querySelector(`#${textId}`);
+
+            const refresh = () => {
+                const done = items.filter(item => item.classList.contains("done")).length;
+                const total = items.length;
+                const pct = total ? (done / total) * 100 : 0;
+
+                if (meterBar) meterBar.style.width = `${pct}%`;
+                if (meterText) meterText.textContent = `${done} dari ${total} langkah selesai`;
+            };
+
+            items.forEach(item => {
+                item.addEventListener("click", () => {
+                    item.classList.toggle("done");
+                    refresh();
+                });
+            });
+
+            refresh();
+        }
+
+        function wireDeckPreview() {
+            const btnPreview = content.querySelector("#previewDeck");
+            const fbPreview = content.querySelector("#deckPreviewFb");
+            const d1 = content.querySelector("#d1");
+            const d2 = content.querySelector("#d2");
+            const d3 = content.querySelector("#d3");
+            const d4 = content.querySelector("#d4");
+
+            if (!btnPreview || !fbPreview) return;
+
+            btnPreview.addEventListener("click", () => {
+                const v1 = d1?.value.trim() || "";
+                const v2 = d2?.value.trim() || "";
+                const v3 = d3?.value.trim() || "";
+                const v4 = d4?.value.trim() || "";
+
+                if (!v1 && !v2 && !v3 && !v4) {
+                    showFeedback(fbPreview, "⚠️ Isi dulu poin deck-mu sebelum melihat preview.", "bad");
+                    return;
+                }
+
+                showFeedback(
+                    fbPreview,
+                    `<b>Preview Isi Deck</b><br><br>
+                    <b>Slide 1:</b> ${v1 || "-"}<br>
+                    <b>Slide 2:</b> ${v2 || "-"}<br>
+                    <b>Slide 3:</b> ${v3 || "-"}<br>
+                    <b>Slide 4:</b> ${v4 || "-"}`,
+                    "ok"
+                );
+            });
+        }
+
+        function render() {
+            const s = slides[idx];
+            content.innerHTML = s.html;
+
+            const pct = ((idx + 1) / slides.length) * 100;
+            bar.style.width = pct + "%";
+            count.textContent = `${idx + 1}/${slides.length}`;
+
+            content.querySelectorAll("[data-quiz]").forEach(wireQuiz);
+            content.querySelectorAll("[data-checklist]").forEach(wireChecklist);
+            wireDeckPreview();
+
+            content.querySelectorAll("[data-goto]").forEach(b => {
+                b.addEventListener("click", () => {
+                    const to = Number(b.getAttribute("data-goto"));
+                    idx = clamp(to, 0, slides.length - 1);
+                    render();
+                    content.scrollTop = 0;
+                });
+            });
+        }
+
+        function go(d) {
+            idx = clamp(idx + d, 0, slides.length - 1);
+            render();
+            content.scrollTop = 0;
+        }
+
+        btnPrev.addEventListener("click", () => go(-1));
+        btnNext.addEventListener("click", () => go(1));
+        btnHome.addEventListener("click", () => {
+            idx = 0;
+            render();
+            content.scrollTop = 0;
+        });
+
+        window.addEventListener("keydown", (e) => {
+            if (gate.style.display !== "none") return;
+            if (e.key === "ArrowLeft") go(-1);
+            if (e.key === "ArrowRight") go(1);
+            if (e.key === "Home") {
+                idx = 0;
+                render();
+                content.scrollTop = 0;
+            }
+        });
+
+        render();
+    </script>
+</body>
+
+</html>
