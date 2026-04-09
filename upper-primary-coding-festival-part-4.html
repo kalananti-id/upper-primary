@@ -1,0 +1,754 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>UOB MDS – Upper Primary – Coding Festival Stage 1 (Part 4)</title>
+    <style>
+        :root {
+            --bg1: #F7FAFF;
+            --bg2: #F3F6FF;
+            --card: #FFFFFF;
+            --ink: #0F172A;
+            --muted: #475569;
+            --line: rgba(226, 232, 240, .95);
+            --brand: #4F46E5;
+            --brand2: #06B6D4;
+            --ok: #16A34A;
+            --bad: #DC2626;
+            --warn: #F59E0B;
+            --radius: 22px;
+            --shadow: 0 18px 40px rgba(15, 23, 42, .08);
+            --shadow2: 0 10px 22px rgba(15, 23, 42, .06);
+            --focus: 0 0 0 4px rgba(79, 70, 229, .18);
+            --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--sans);
+            color: var(--ink);
+            background:
+                radial-gradient(1200px 520px at 10% 0%, rgba(6, 182, 212, .18), transparent 60%),
+                radial-gradient(1200px 520px at 90% 0%, rgba(79, 70, 229, .16), transparent 55%),
+                linear-gradient(180deg, var(--bg1), var(--bg2) 45%, var(--bg1));
+            min-height: 100vh;
+        }
+
+        .app {
+            width: min(1100px, 96vw);
+            margin: 18px auto 26px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 12px 14px;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            background: rgba(255, 255, 255, .72);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow2);
+            flex-wrap: wrap;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            width: 38px;
+            height: 38px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(79, 70, 229, .18), rgba(6, 182, 212, .20));
+            border: 1px solid rgba(226, 232, 240, .9);
+            display: grid;
+            place-items: center;
+            font-weight: 1000;
+            color: rgba(79, 70, 229, 1);
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.15;
+            letter-spacing: .2px;
+        }
+
+        .brand .sub {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 800;
+            margin-top: 2px;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            border: 1px solid rgba(226, 232, 240, .95);
+            background: rgba(255, 255, 255, .9);
+            padding: 10px 12px;
+            border-radius: 16px;
+            font-weight: 1000;
+            cursor: pointer;
+            box-shadow: 0 8px 16px rgba(15, 23, 42, .06);
+            transition: transform .06s ease, box-shadow .12s ease, background .12s ease;
+            user-select: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: translateY(0px);
+        }
+
+        .btn.primary {
+            background: linear-gradient(135deg, rgba(79, 70, 229, .12), rgba(6, 182, 212, .14));
+            border-color: rgba(79, 70, 229, .18);
+        }
+
+        .btn.ghost {
+            background: transparent;
+            box-shadow: none;
+        }
+
+        .btn:focus {
+            outline: none;
+            box-shadow: var(--focus);
+        }
+
+        .progressWrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 260px;
+            justify-content: flex-end;
+        }
+
+        .progress {
+            width: 180px;
+            height: 10px;
+            background: rgba(226, 232, 240, .9);
+            border-radius: 999px;
+            overflow: hidden;
+            border: 1px solid rgba(226, 232, 240, .95);
+        }
+
+        .bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, rgba(79, 70, 229, .85), rgba(6, 182, 212, .85));
+            border-radius: 999px;
+            transition: width .25s ease;
+        }
+
+        .count {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 900;
+        }
+
+        .stage {
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            background: rgba(255, 255, 255, .60);
+            box-shadow: var(--shadow);
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            min-height: calc(100vh - 145px);
+        }
+
+        .slide {
+            flex: 1;
+            background: rgba(255, 255, 255, .68);
+            border: 1px solid rgba(229, 234, 245, .95);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow2);
+            padding: 20px;
+            overflow: hidden;
+            backdrop-filter: blur(8px);
+        }
+
+        .slideInner {
+            max-width: 980px;
+            margin: 0 auto;
+            max-height: calc(100vh - 190px);
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .slideInner::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .slideInner::-webkit-scrollbar-thumb {
+            background: rgba(96, 112, 153, .25);
+            border-radius: 999px;
+            border: 3px solid rgba(255, 255, 255, .9);
+        }
+
+        .slideInner::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        h2 {
+            margin: 6px 0 10px;
+            font-size: 30px;
+            letter-spacing: -.3px;
+        }
+
+        h3 {
+            margin: 0 0 8px;
+            font-size: 18px;
+        }
+
+        p {
+            margin: 0 0 10px;
+            color: var(--muted);
+            font-weight: 800;
+            line-height: 1.55;
+        }
+
+        .kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 1000;
+            font-size: 12px;
+            letter-spacing: .2px;
+            padding: 7px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(79, 70, 229, .16);
+            background: rgba(79, 70, 229, .06);
+            color: rgba(55, 65, 81, .95);
+        }
+
+        .grid {
+            display: grid;
+            gap: 14px;
+        }
+
+        .cols2 {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .cols3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .card {
+            background: rgba(255, 255, 255, .92);
+            border: 1px solid rgba(226, 232, 240, .95);
+            border-radius: 22px;
+            padding: 14px;
+            box-shadow: 0 10px 18px rgba(15, 23, 42, .06);
+        }
+
+        ul.list {
+            margin: 8px 0 0 18px;
+            color: var(--muted);
+            font-weight: 850;
+            line-height: 1.55;
+        }
+
+        .checklist {
+            display: grid;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkItem {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 18px;
+            border: 1px solid rgba(226, 232, 240, .95);
+            background: rgba(255, 255, 255, .96);
+            cursor: pointer;
+            user-select: none;
+            transition: transform .06s ease, border-color .12s ease, background .12s ease;
+            font-weight: 950;
+            color: rgba(30, 41, 59, .96);
+        }
+
+        .checkItem:hover {
+            transform: translateY(-1px);
+        }
+
+        .checkItem.done {
+            border-color: rgba(79, 70, 229, .30);
+            background: rgba(79, 70, 229, .06);
+        }
+
+        .checkBox {
+            width: 24px;
+            height: 24px;
+            border-radius: 8px;
+            border: 1.5px solid rgba(148, 163, 184, .8);
+            display: grid;
+            place-items: center;
+            font-size: 14px;
+            font-weight: 1000;
+            color: transparent;
+            background: #fff;
+            flex: 0 0 auto;
+        }
+
+        .checkItem.done .checkBox {
+            background: linear-gradient(135deg, rgba(79, 70, 229, .9), rgba(6, 182, 212, .85));
+            border-color: transparent;
+            color: white;
+        }
+
+        .meterWrap {
+            margin-top: 12px;
+        }
+
+        .meter {
+            width: 100%;
+            height: 12px;
+            background: rgba(226, 232, 240, .9);
+            border-radius: 999px;
+            overflow: hidden;
+            border: 1px solid rgba(226, 232, 240, .95);
+        }
+
+        .meterBar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, rgba(79, 70, 229, .85), rgba(6, 182, 212, .85));
+            border-radius: 999px;
+            transition: width .25s ease;
+        }
+
+        .meterText {
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 900;
+        }
+
+        .emojiBig {
+            font-size: 58px;
+            line-height: 1;
+        }
+
+        @media (max-width: 860px) {
+
+            .cols2,
+            .cols3 {
+                grid-template-columns: 1fr;
+            }
+
+            .progressWrap {
+                min-width: unset;
+            }
+
+            .progress {
+                width: 130px;
+            }
+
+            h2 {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="accessGate"
+        style="position:fixed; inset:0; background:linear-gradient(135deg,#eef2ff,#ecfeff); display:flex; align-items:center; justify-content:center; z-index:9999;">
+        <div class="card" style="max-width:420px;width:92%;text-align:center">
+            <h2>🔐 Kode Akses</h2>
+            <p>Masukkan kode untuk memulai sesi.</p>
+            <input id="accessInput" class="input" placeholder="MASUKKAN KODE" autocomplete="off"
+                style="text-align:center;font-weight:900;letter-spacing:2px;min-height:auto" />
+            <button class="btn primary" id="accessBtn" style="margin-top:12px">Masuk</button>
+            <div class="feedback" id="accessFb" style="margin-top:10px"></div>
+            <div class="card" style="margin-top:10px;background:rgba(79,70,229,.05)">
+                <p style="margin:0">Kode diberikan oleh guru.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="app">
+        <div class="topbar">
+            <div class="brand">
+                <div class="logo">HS</div>
+                <div>
+                    <h1>Upper Primary</h1>
+                    <div class="sub">Coding Festival – Stage 1 (Part 4)</div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn ghost" id="btnHome" title="Kembali ke awal">🏠 Awal</button>
+                <button class="btn" id="btnPrev" title="Sebelumnya (←)">←</button>
+                <button class="btn primary" id="btnNext" title="Berikutnya (→)">→</button>
+            </div>
+
+            <div class="progressWrap">
+                <div class="progress" aria-label="Progress">
+                    <div class="bar" id="bar"></div>
+                </div>
+                <div class="count" id="count">1/1</div>
+            </div>
+        </div>
+
+        <div class="stage">
+            <div class="slide" role="region" aria-label="Slide">
+                <div class="slideInner" id="content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const slides = [
+            {
+                title: "Pembuka",
+                html: `
+                <div class="kicker">Upper Primary • Part 4</div>
+                <h2>🔥 Finalisasi Proyek!</h2>
+                <p>Ini adalah sesi terakhir, mari pastikan semua komponen sudah ada dan proyekmu siap untuk di-submit.</p>
+
+                <div class="card">
+                    Hari ini kita akan:
+                    <br>• Memastikan proyek berjalan dengan baik
+                    <br>• Menyelesaikan deskripsi dan pitch deck
+                    <br>• Mengumpulkan proyek sesuai format
+                </div>
+                `
+            },
+
+            {
+                title: "Memperbaiki Masalah",
+                html: `
+                <h2>🔧 Perbaiki Semua Masalah</h2>
+                <p>Pastikan tidak ada masalah atau error yang terjadi dalam proyekmu.</p>
+
+                <div class="grid cols2">
+                    <div class="card">
+                        <div class="kicker">Langkah yang perlu dilakukan:</div>
+                        <ul class="list">
+                            <li>Uji coba proyek dari awal hingga akhir</li>
+                            <li>Perbaiki interaksi yang tidak berjalan baik</li>
+                            <li>Pastikan hasil pilihan atau interaksi sesuai dengan yang diinginkan</li>
+                        </ul>
+                    </div>
+                    <div class="card" style="text-align:center">
+                        <div class="emojiBig">🛠️🎮</div>
+                    </div>
+                </div>
+                `
+            },
+
+            {
+                title: "Mengisi Pitch Deck",
+                html: `
+                <h2>📝 Isi Pitch Deck</h2>
+                <p>Isi pitch deck dengan informasi yang jelas agar orang lain dapat memahami proyekmu dengan cepat.</p>
+
+                <div class="grid cols2">
+                    <div class="card">
+                        <div class="kicker">Yang perlu ada di pitch deck:</div>
+                        <ul class="list" style="margin-top:10px">
+                            <li>Judul proyek dan nama pembuat</li>
+                            <li>Masalah yang ingin diselesaikan</li>
+                            <li>Cara kerja proyek</li>
+                            <li>Pesan tentang literasi keuangan</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <div class="emojiBig">🎤📊</div>
+                    </div>
+                </div>
+                `
+            },
+
+            {
+                title: "Rekam Video",
+                html: `
+                <h2>🎥 Rekam Video Demo Proyek</h2>
+                <p>Rekam video cara memainkan proyekmu, pastikan untuk menunjukkan dari awal hingga akhir tanpa suara.</p>
+
+                <div class="card">
+                    <ul class="list">
+                        <li>Rekam layar yang menampilkan proyekmu</li>
+                        <li>Jangan pakai suara, hanya visual yang menunjukkan cara bermain</li>
+                        <li>Pastikan video jelas dan menunjukkan interaksi dalam proyek</li>
+                    </ul>
+                </div>
+                <div class="emojiBig">📱🎬</div>
+                `
+            },
+
+            {
+                title: "Menulis Deskripsi Submission",
+                html: `
+    <h2>📝 Cara Menulis Deskripsi untuk Submission</h2>
+    <p>Deskripsi ini akan dibaca oleh juri, jadi harus jelas, singkat, dan mudah dipahami.</p>
+
+    <div class="card">
+        <div class="kicker">📌 Struktur Wajib (3 Bagian)</div>
+        <ul class="list">
+            <li><b>1. Tentang Proyek</b> → Apa yang kamu buat?</li>
+            <li><b>2. Tujuan</b> → Kenapa proyek ini dibuat?</li>
+            <li><b>3. Cara Menggunakan</b> → Bagaimana cara memainkannya / menjalankannya?</li>
+        </ul>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+        <div class="kicker">✍️ Template yang Bisa Digunakan</div>
+        <p>
+        <b>[Nama Proyek]</b> adalah ...<br>
+        Animasi/Game ini digunakan untuk ...<br>
+        Untuk menggunakannya, ...
+        </p>
+    </div>
+    `
+            },
+
+            {
+                title: "Contoh SD",
+                html: `
+                <div class="kicker">SD (Upper Primary)</div>
+                <h2>🧃 Contoh Deskripsi</h2>
+
+                <div class="card">
+                    <p>
+                    <b>Pilih Jajan atau Menabung</b> adalah game interaktif yang menampilkan pilihan penggunaan uang dalam kehidupan sehari-hari.
+                    Game ini digunakan untuk membantu pemain memahami perbedaan antara jajan dan menabung serta dampaknya terhadap jumlah uang.
+                    Untuk menggunakannya, tekan tombol pilihan yang tersedia untuk menentukan apakah ingin jajan atau menabung, lalu perhatikan perubahan jumlah uang.
+                    </p>
+                </div>
+
+                <div class="card" style="margin-top:14px">
+                    <div class="kicker">💡 Ciri Deskripsi SD</div>
+                    <ul class="list">
+                        <li>Kalimat sederhana</li>
+                        <li>Langsung ke fungsi</li>
+                        <li>Tidak terlalu panjang</li>
+                    </ul>
+                </div>
+                `
+            },
+
+            {
+                title: "Finalisasi dan Submission",
+                html: `
+                <h2>✅ Finalisasi Proyek</h2>
+                <p>Pastikan semua komponen sudah selesai dan siap untuk di-submit!</p>
+
+                                <div class="checklist" data-checklist="final">
+                    <div class="checkItem">Proyek berjalan dengan baik dari awal hingga akhir</div>
+                    <div class="checkItem">Pitch deck sudah selesai (judul, masalah, cara kerja, pesan)</div>
+                    <div class="checkItem">Video cara memainkan proyek sudah direkam</div>
+                </div>
+
+                <div class="meter"><div class="meterBar" id="finalBar"></div></div>
+                <div class="meterText" id="finalText">0 dari 3 komponen siap</div>
+                `
+            },
+
+            {
+                title: "Format Pengumpulan",
+                html: `
+                <h2>📦 Format Pengumpulan Proyek</h2>
+                <p>Pilih sesuai jenjangmu dan pastikan format sudah benar sebelum submit.</p>
+
+                <div class="grid cols2">
+
+                    <div class="card">
+                        <div class="kicker">🔵 Upper Primary – Scratch</div>
+                        <ul class="list">
+                            <li>Project sudah di-<b>share (public)</b></li>
+                            <li>Submit link Scratch</li>
+                        </ul>
+                        <div class="checklist" data-checklist="up">
+                            <div class="checkItem"><div class="checkBox"></div><div>Project sudah publish</div></div>
+                            <div class="checkItem"><div class="checkBox"></div><div>Link bisa dibuka publik</div></div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="margin-top:14px">
+                    <div class="kicker">📌 Wajib untuk Semua Jenjang</div>
+                    <ul class="list">
+                        <li>🎥 Video demo proyek</li>
+                        <li>📝 Deskripsi proyek di LMS</li>
+                        <li>📊 Pitch deck (PPT/Canva)</li>
+                        <li>🖼️ Screenshot untuk exhibition</li>
+                    </ul>
+                </div>
+
+                </div>
+
+                
+
+                <div class="card" style="background:rgba(220,38,38,.05);border-color:rgba(220,38,38,.2)">
+                    <b>⚠️ Catatan:</b> Jika link tidak dapat dibuka, peserta akan didiskualifikasi.
+                </div>
+                `
+            },
+
+            {
+                title: "Checklist Submission",
+                html: `
+                <h2>✅ Checklist Sebelum Mengumpulkan Karya</h2>
+                <p>Pastikan semua komponen sudah siap sebelum mengirimkannya ke sistem.</p>
+
+                <div class="checklist" data-checklist="submission">
+                    <div class="checkItem"><div class="checkBox"></div><div>Proyek sudah selesai, dites, dan berjalan tanpa error.</div></div>
+                    <div class="checkItem"><div class="checkBox"></div><div>Deskripsi singkat proyek sudah ditulis (Masalah, Cara Kerja, Manfaat).</div></div>
+                    <div class="checkItem"><div class="checkBox"></div><div>Pitch Deck (PDF/PPT/Canva) maksimal 5 halaman sudah selesai dibuat.</div></div>
+                    <div class="checkItem"><div class="checkBox"></div><div>Video demo singkat sudah direkam (Jika diwajibkan oleh panitia).</div></div>
+                </div>
+
+                <div class="meterWrap">
+                    <div class="meter"><div class="meterBar" id="submissionMeter"></div></div>
+                    <div class="meterText" id="submissionMeterText">0 dari 4 komponen siap</div>
+                </div>
+                `
+            },
+
+            {
+                title: "Penutupan",
+                html: `
+                <h2>🎉 Kamu Selesai!</h2>
+                <p>Setelah semua langkah selesai, proyekmu siap untuk di-submit! 🎉</p>
+
+                <div class="card">
+                    <p>Periksa semua komponen yang telah disiapkan dan pastikan semuanya sudah siap.</p>
+                    <p>Kamu telah menyelesaikan **semua langkah**! Semangat untuk submit proyekmu dan mendapatkan feedback!</p>
+                </div>
+
+                <button class="btn primary" data-goto="0">Kembali ke Awal</button>
+                `
+            }
+        ];
+
+        let idx = 0;
+        const content = document.getElementById("content");
+        const btnPrev = document.getElementById("btnPrev");
+        const btnNext = document.getElementById("btnNext");
+        const bar = document.getElementById("bar");
+
+        const accessBtn = document.getElementById("accessBtn");
+        const accessInput = document.getElementById("accessInput");
+        const accessFb = document.getElementById("accessFb");
+        const accessGate = document.getElementById("accessGate");
+
+        function clamp(n, min, max) {
+            return Math.max(min, Math.min(max, n));
+        }
+
+        function render() {
+            content.innerHTML = slides[idx].html;
+            bar.style.width = ((idx + 1) / slides.length * 100) + "%";
+        }
+
+        function go(step) {
+            idx = clamp(idx + step, 0, slides.length - 1);
+            render();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        btnPrev.addEventListener("click", () => go(-1));
+        btnNext.addEventListener("click", () => go(1));
+
+        window.addEventListener("keydown", (e) => {
+            if (accessGate.style.display !== "none") return;
+            if (e.key === "ArrowLeft") go(-1);
+            if (e.key === "ArrowRight") go(1);
+            if (e.key === "Home") {
+                idx = 0;
+                render();
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+        });
+
+        accessBtn.addEventListener("click", checkAccess);
+        accessInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") checkAccess();
+        });
+        accessInput.addEventListener("input", e => {
+            e.target.value = e.target.value.toUpperCase();
+        });
+
+        function checkAccess() {
+            const val = accessInput.value.toUpperCase().trim();
+            if (val === "RGMDSUP25") {
+                accessGate.style.display = "none";
+                render();
+            } else {
+                accessFb.classList.add("show");
+                accessFb.innerText = "Kode salah. Coba lagi.";
+            }
+        }
+
+        function initChecklist() {
+            const all = document.querySelectorAll(".checkItem");
+
+            all.forEach(item => {
+                item.addEventListener("click", () => {
+                    item.classList.toggle("done");
+                    updateAllMeters();
+                });
+            });
+        }
+
+        function updateAllMeters() {
+            const groups = document.querySelectorAll("[data-checklist]");
+
+            groups.forEach(group => {
+                const items = group.querySelectorAll(".checkItem");
+                const done = group.querySelectorAll(".checkItem.done").length;
+
+                let meter = group.nextElementSibling?.querySelector?.(".meterBar");
+                let text = group.nextElementSibling?.querySelector?.(".meterText");
+
+                if (meter && text) {
+                    const pct = (done / items.length) * 100;
+                    meter.style.width = pct + "%";
+                    text.innerText = done + " dari " + items.length + " selesai";
+                }
+            });
+        }
+
+
+        function render() {
+            content.innerHTML = slides[idx].html;
+            bar.style.width = ((idx + 1) / slides.length * 100) + "%";
+
+            setTimeout(() => {
+                initChecklist();
+            }, 50);
+        }
+
+    </script>
+</body>
+
+</html>
